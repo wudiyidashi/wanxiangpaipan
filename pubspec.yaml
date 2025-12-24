@@ -50,7 +50,7 @@ dev_dependencies:
     sdk: flutter
 
   # Lint 规则
-  flutter_lints: ^5.0.0
+  flutter_lints: ^6.0.0
 
   # 代码生成
   build_runner: ^2.4.13
