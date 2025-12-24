@@ -1,0 +1,173 @@
+name: Flutter CI
+
+on:
+  push:
+    branches: [ main, develop ]
+  pull_request:
+    branches: [ main, develop ]
+
+jobs:
+  analyze:
+    name: 代码分析
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: 检出代码
+        uses: actions/checkout@v4
+
+      - name: 设置 Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version: '3.24.0'
+          channel: 'stable'
+
+      - name: 安装依赖
+        run: flutter pub get
+
+      - name: 代码生成
+        run: flutter pub run build_runner build --delete-conflicting-outputs
+
+      - name: 代码分析
+        run: flutter analyze
+
+      - name: 代码格式检查
+        run: flutter format --set-exit-if-changed lib/ test/
+
+  test:
+    name: 单元测试 & Widget 测试
+    runs-on: ubuntu-latest
+    needs: analyze
+
+    steps:
+      - name: 检出代码
+        uses: actions/checkout@v4
+
+      - name: 设置 Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version: '3.24.0'
+          channel: 'stable'
+
+      - name: 安装依赖
+        run: flutter pub get
+
+      - name: 代码生成
+        run: flutter pub run build_runner build --delete-conflicting-outputs
+
+      - name: 运行测试
+        run: flutter test --coverage
+
+      - name: 上传覆盖率报告到 Codecov
+        uses: codecov/codecov-action@v4
+        with:
+          files: ./coverage/lcov.info
+          fail_ci_if_error: false
+          verbose: true
+        env:
+          CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
+
+      - name: 检查测试覆盖率
+        run: |
+          COVERAGE=$(lcov --summary coverage/lcov.info | grep "lines" | awk '{print $2}' | sed 's/%//')
+          echo "测试覆盖率: ${COVERAGE}%"
+          if (( $(echo "$COVERAGE < 90" | bc -l) )); then
+            echo "⚠️  警告: 测试覆盖率低于 90%"
+          else
+            echo "✅ 测试覆盖率达标"
+          fi
+
+  build-android:
+    name: Android 构建测试
+    runs-on: ubuntu-latest
+    needs: test
+
+    steps:
+      - name: 检出代码
+        uses: actions/checkout@v4
+
+      - name: 设置 Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'zulu'
+          java-version: '17'
+
+      - name: 设置 Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version: '3.24.0'
+          channel: 'stable'
+
+      - name: 安装依赖
+        run: flutter pub get
+
+      - name: 代码生成
+        run: flutter pub run build_runner build --delete-conflicting-outputs
+
+      - name: 构建 APK (Debug)
+        run: flutter build apk --debug --no-shrink
+
+      - name: 上传 APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: android-debug-apk
+          path: build/app/outputs/flutter-apk/app-debug.apk
+          retention-days: 7
+
+  build-ios:
+    name: iOS 构建测试
+    runs-on: macos-latest
+    needs: test
+
+    steps:
+      - name: 检出代码
+        uses: actions/checkout@v4
+
+      - name: 设置 Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version: '3.24.0'
+          channel: 'stable'
+
+      - name: 安装依赖
+        run: flutter pub get
+
+      - name: 代码生成
+        run: flutter pub run build_runner build --delete-conflicting-outputs
+
+      - name: 构建 iOS (无签名)
+        run: flutter build ios --no-codesign --debug
+
+      - name: 构建结果
+        run: echo "✅ iOS 构建成功"
+
+  integration-test:
+    name: 集成测试
+    runs-on: macos-latest
+    needs: test
+
+    steps:
+      - name: 检出代码
+        uses: actions/checkout@v4
+
+      - name: 设置 Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version: '3.24.0'
+          channel: 'stable'
+
+      - name: 安装依赖
+        run: flutter pub get
+
+      - name: 代码生成
+        run: flutter pub run build_runner build --delete-conflicting-outputs
+
+      - name: 启动 iOS 模拟器
+        run: |
+          xcrun simctl boot "iPhone 15" || true
+
+      - name: 运行集成测试
+        run: flutter test integration_test
+        continue-on-error: true
+
+      - name: 测试结果
+        run: echo "集成测试完成"

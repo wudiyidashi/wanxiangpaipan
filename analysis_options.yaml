@@ -1,0 +1,75 @@
+# 万象排盘 Flutter 项目 - 代码分析配置
+# 基于 flutter_lints，启用额外的严格检查
+
+include: package:flutter_lints/flutter.yaml
+
+linter:
+  rules:
+    # 强类型检查
+    - always_declare_return_types
+    - always_specify_types
+    - avoid_dynamic_calls
+    - avoid_type_to_string
+    - implicit_call_tearoffs
+    - type_annotate_public_apis
+
+    # 代码质量
+    - prefer_final_locals
+    - prefer_final_in_for_each
+    - prefer_final_fields
+    - avoid_redundant_argument_values
+    - avoid_unused_constructor_parameters
+    - prefer_const_constructors
+    - prefer_const_constructors_in_immutables
+    - prefer_const_declarations
+    - prefer_const_literals_to_create_immutables
+
+    # 命名规范
+    - camel_case_types
+    - camel_case_extensions
+    - file_names
+    - non_constant_identifier_names
+    - constant_identifier_names
+
+    # 文档
+    - public_member_api_docs
+
+    # 错误处理
+    - avoid_catching_errors
+    - use_rethrow_when_possible
+
+    # 性能
+    - avoid_function_literals_in_foreach_calls
+    - prefer_for_elements_to_map_fromIterable
+    - prefer_if_elements_to_conditional_expressions
+    - prefer_spread_collections
+
+    # 安全
+    - close_sinks
+    - cancel_subscriptions
+    - test_types_in_equals
+    - hash_and_equals
+
+analyzer:
+  exclude:
+    - "**/*.g.dart"
+    - "**/*.freezed.dart"
+    - "lib/generated_plugin_registrant.dart"
+
+  language:
+    strict-casts: true
+    strict-inference: true
+    strict-raw-types: true
+
+  errors:
+    # 将警告提升为错误
+    invalid_annotation_target: ignore
+    missing_required_param: error
+    missing_return: error
+    must_be_immutable: error
+    todo: ignore
+
+  strong-mode:
+    implicit-casts: false
+    implicit-dynamic: false
+

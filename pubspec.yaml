@@ -1,0 +1,95 @@
+name: wanxiang_paipan
+description: "万象排盘 Flutter 应用 - 专业的排盘工具"
+publish_to: 'none'
+version: 1.0.0+1
+
+environment:
+  sdk: '>=3.5.0 <4.0.0'
+  flutter: '>=3.24.0'
+
+dependencies:
+  flutter:
+    sdk: flutter
+
+  # 状态管理
+  provider: ^6.1.2
+
+  # 不可变模型
+  freezed_annotation: ^2.4.4
+  json_annotation: ^4.9.0
+
+  # 路由
+  go_router: ^14.3.0
+
+  # 本地数据库
+  drift: ^2.20.3
+  sqlite3_flutter_libs: ^0.5.24
+  path_provider: ^2.1.4
+  path: ^1.9.0
+
+  # 加密存储
+  flutter_secure_storage: ^9.2.2
+
+  # 农历计算
+  lunar: ^1.7.8
+
+  # UUID 生成
+  uuid: ^4.5.1
+
+  # 国际化和日期格式化
+  intl: ^0.19.0
+
+  # HTTP 客户端
+  http: ^1.2.2
+
+  # Cupertino Icons (iOS 风格图标)
+  cupertino_icons: ^1.0.8
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+
+  # Lint 规则
+  flutter_lints: ^5.0.0
+
+  # 代码生成
+  build_runner: ^2.4.13
+  freezed: ^2.5.7
+  json_serializable: ^6.8.0
+  drift_dev: ^2.20.3
+
+  # 图标生成
+  flutter_launcher_icons: ^0.14.3
+  
+  # 测试
+  mocktail: ^1.0.4
+
+flutter:
+  uses-material-design: true
+
+  assets:
+    - assets/icon/app_icon.png
+    - assets/images/
+    - assets/images/screen_card/
+    - assets/images/jieqi/
+    - assets/images/time_engine/
+    - assets/images/systems/liuyao/
+    - assets/images/systems/daliuren/
+    - assets/images/systems/xiaoliuren/
+    - assets/images/systems/meihua/
+    - assets/illustrations/
+    - assets/lottie/
+    - assets/svgs/
+    - assets/audio/
+    - assets/video/
+    - assets/data/
+    - assets/fonts/
+
+flutter_launcher_icons:
+  remove_alpha_ios: true
+  android: "ic_launcher"
+  ios: true
+  image_path: "assets/icon/app_icon.png"
+  adaptive_icon_background: "#FFFFFF"
+  adaptive_icon_foreground: "assets/icon/app_icon.png"
+
