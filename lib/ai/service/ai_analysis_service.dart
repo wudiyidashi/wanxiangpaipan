@@ -8,7 +8,6 @@ import 'package:flutter/foundation.dart';
 import '../config/ai_config_manager.dart';
 import '../llm_provider.dart';
 import '../llm_provider_registry.dart';
-import '../output/structured_output_formatter.dart';
 import '../providers/gemini_provider.dart';
 import 'prompt_assembler.dart';
 import '../../domain/divination_system.dart';

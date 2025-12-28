@@ -76,13 +76,13 @@ void main() {
 
     group('resultFromJson', () {
       test('应该能够从 JSON 反序列化结果', () {
-        final json = {
+        final Map<String, dynamic> json = <String, dynamic>{
           'id': 'test-id',
           'systemType': 'meiHua',
           'castTime': '2025-01-16T12:00:00.000',
           'castMethod': 'time',
           'lunarInfo': testLunarInfo.toJson(),
-          'placeholderData': {},
+          'placeholderData': <String, dynamic>{},
         };
 
         final result = system.resultFromJson(json);
@@ -132,7 +132,7 @@ void main() {
       expect(json['id'], 'test-id');
       expect(json['systemType'], 'meiHua');
       expect(json['castMethod'], 'time');
-      expect(json['placeholderData'], isA<Map>());
+      expect(json['placeholderData'], isA<Map<String, dynamic>>());
     });
 
     test('应该能够从 JSON 反序列化', () {

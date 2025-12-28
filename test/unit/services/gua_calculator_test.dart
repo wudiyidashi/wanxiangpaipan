@@ -8,14 +8,14 @@ import 'package:wanxiang_paipan/domain/services/shared/liuqin_service.dart';
 void main() {
   group('GuaCalculator Tests', () {
     test('calculateGua should return 6 yaos', () {
-      final yaoNumbers = [7, 7, 7, 7, 7, 7];
-      final gua = GuaCalculator.calculateGua(yaoNumbers);
+      final List<int> yaoNumbers = <int>[7, 7, 7, 7, 7, 7];
+      final Gua gua = GuaCalculator.calculateGua(yaoNumbers);
       expect(gua.yaos.length, 6);
     });
 
     test('calculateGua for 乾为天 (all yang)', () {
-      final yaoNumbers = [7, 7, 7, 7, 7, 7];
-      final gua = GuaCalculator.calculateGua(yaoNumbers);
+      final List<int> yaoNumbers = <int>[7, 7, 7, 7, 7, 7];
+      final Gua gua = GuaCalculator.calculateGua(yaoNumbers);
 
       expect(gua.name, '乾为天');
       expect(gua.id, '111111');
@@ -25,8 +25,8 @@ void main() {
     });
 
     test('calculateGua for 坤为地 (all yin)', () {
-      final yaoNumbers = [8, 8, 8, 8, 8, 8];
-      final gua = GuaCalculator.calculateGua(yaoNumbers);
+      final List<int> yaoNumbers = <int>[8, 8, 8, 8, 8, 8];
+      final Gua gua = GuaCalculator.calculateGua(yaoNumbers);
 
       expect(gua.name, '坤为地');
       expect(gua.id, '000000');
@@ -36,8 +36,8 @@ void main() {
     });
 
     test('calculateGua for 震为雷', () {
-      final yaoNumbers = [7, 8, 8, 7, 8, 8];
-      final gua = GuaCalculator.calculateGua(yaoNumbers);
+      final List<int> yaoNumbers = <int>[7, 8, 8, 7, 8, 8];
+      final Gua gua = GuaCalculator.calculateGua(yaoNumbers);
 
       expect(gua.name, '震为雷');
       expect(gua.id, '100100');
@@ -45,8 +45,8 @@ void main() {
     });
 
     test('calculateGua should set correct yao positions', () {
-      final yaoNumbers = [7, 7, 7, 7, 7, 7];
-      final gua = GuaCalculator.calculateGua(yaoNumbers);
+      final List<int> yaoNumbers = <int>[7, 7, 7, 7, 7, 7];
+      final Gua gua = GuaCalculator.calculateGua(yaoNumbers);
 
       for (int i = 0; i < 6; i++) {
         expect(gua.yaos[i].position, i + 1);
@@ -54,8 +54,8 @@ void main() {
     });
 
     test('calculateGua should identify moving yaos', () {
-      final yaoNumbers = [6, 7, 9, 8, 7, 8];
-      final gua = GuaCalculator.calculateGua(yaoNumbers);
+      final List<int> yaoNumbers = <int>[6, 7, 9, 8, 7, 8];
+      final Gua gua = GuaCalculator.calculateGua(yaoNumbers);
 
       expect(gua.yaos[0].isMoving, true);
       expect(gua.yaos[1].isMoving, false);
@@ -64,8 +64,8 @@ void main() {
     });
 
     test('calculateGua should set seYao and yingYao correctly', () {
-      final yaoNumbers = [7, 7, 7, 7, 7, 7];
-      final gua = GuaCalculator.calculateGua(yaoNumbers);
+      final List<int> yaoNumbers = <int>[7, 7, 7, 7, 7, 7];
+      final Gua gua = GuaCalculator.calculateGua(yaoNumbers);
 
       expect(gua.yaos[5].isSeYao, true);
       expect(gua.yaos[2].isYingYao, true);
@@ -74,8 +74,8 @@ void main() {
     });
 
     test('calculateGua for 地天泰', () {
-      final yaoNumbers = [7, 7, 7, 8, 8, 8];
-      final gua = GuaCalculator.calculateGua(yaoNumbers);
+      final List<int> yaoNumbers = <int>[7, 7, 7, 8, 8, 8];
+      final Gua gua = GuaCalculator.calculateGua(yaoNumbers);
 
       expect(gua.name, '地天泰');
       expect(gua.id, '111000');
@@ -88,8 +88,8 @@ void main() {
     });
 
     test('calculateGua should assign correct branches for 乾卦', () {
-      final yaoNumbers = [7, 7, 7, 7, 7, 7];
-      final gua = GuaCalculator.calculateGua(yaoNumbers);
+      final List<int> yaoNumbers = <int>[7, 7, 7, 7, 7, 7];
+      final Gua gua = GuaCalculator.calculateGua(yaoNumbers);
 
       expect(gua.yaos[0].branch, '子');
       expect(gua.yaos[1].branch, '寅');
@@ -100,16 +100,16 @@ void main() {
     });
 
     test('calculateGua should assign correct stems for 乾卦', () {
-      final yaoNumbers = [7, 7, 7, 7, 7, 7];
-      final gua = GuaCalculator.calculateGua(yaoNumbers);
+      final List<int> yaoNumbers = <int>[7, 7, 7, 7, 7, 7];
+      final Gua gua = GuaCalculator.calculateGua(yaoNumbers);
 
       expect(gua.yaos[0].stem, '甲');
       expect(gua.yaos[3].stem, '壬');
     });
 
     test('calculateGua should assign correct wuxing', () {
-      final yaoNumbers = [7, 7, 7, 7, 7, 7];
-      final gua = GuaCalculator.calculateGua(yaoNumbers);
+      final List<int> yaoNumbers = <int>[7, 7, 7, 7, 7, 7];
+      final Gua gua = GuaCalculator.calculateGua(yaoNumbers);
 
       expect(gua.yaos[0].wuXing, WuXing.shui);
       expect(gua.yaos[1].wuXing, WuXing.mu);
@@ -118,25 +118,25 @@ void main() {
     });
 
     test('calculateGua should assign correct liuqin for 乾卦', () {
-      final yaoNumbers = [7, 7, 7, 7, 7, 7];
-      final gua = GuaCalculator.calculateGua(yaoNumbers);
+      final List<int> yaoNumbers = <int>[7, 7, 7, 7, 7, 7];
+      final Gua gua = GuaCalculator.calculateGua(yaoNumbers);
 
       expect(gua.yaos[0].liuQin, LiuQin.ziSun);
       expect(gua.yaos[4].liuQin, LiuQin.xiongDi);
     });
 
     test('generateChangingGua should return null when no moving yao', () {
-      final yaoNumbers = [7, 7, 7, 7, 7, 7];
-      final mainGua = GuaCalculator.calculateGua(yaoNumbers);
-      final changingGua = GuaCalculator.generateChangingGua(mainGua);
+      final List<int> yaoNumbers = <int>[7, 7, 7, 7, 7, 7];
+      final Gua mainGua = GuaCalculator.calculateGua(yaoNumbers);
+      final Gua? changingGua = GuaCalculator.generateChangingGua(mainGua);
 
       expect(changingGua, null);
     });
 
     test('generateChangingGua should generate correct changing gua', () {
-      final yaoNumbers = [6, 7, 7, 7, 7, 7];
-      final mainGua = GuaCalculator.calculateGua(yaoNumbers);
-      final changingGua = GuaCalculator.generateChangingGua(mainGua);
+      final List<int> yaoNumbers = <int>[6, 7, 7, 7, 7, 7];
+      final Gua mainGua = GuaCalculator.calculateGua(yaoNumbers);
+      final Gua? changingGua = GuaCalculator.generateChangingGua(mainGua);
 
       expect(changingGua, isNotNull);
       expect(changingGua!.yaos[0].number, YaoNumber.shaoYang);
@@ -144,30 +144,30 @@ void main() {
     });
 
     test('generateChangingGua should change laoYin to shaoYang', () {
-      final yaoNumbers = [6, 8, 8, 8, 8, 8];
-      final mainGua = GuaCalculator.calculateGua(yaoNumbers);
-      final changingGua = GuaCalculator.generateChangingGua(mainGua);
+      final List<int> yaoNumbers = <int>[6, 8, 8, 8, 8, 8];
+      final Gua mainGua = GuaCalculator.calculateGua(yaoNumbers);
+      final Gua? changingGua = GuaCalculator.generateChangingGua(mainGua);
 
       expect(changingGua!.yaos[0].number.value, 7);
     });
 
     test('generateChangingGua should change laoYang to shaoYin', () {
-      final yaoNumbers = [9, 7, 7, 7, 7, 7];
-      final mainGua = GuaCalculator.calculateGua(yaoNumbers);
-      final changingGua = GuaCalculator.generateChangingGua(mainGua);
+      final List<int> yaoNumbers = <int>[9, 7, 7, 7, 7, 7];
+      final Gua mainGua = GuaCalculator.calculateGua(yaoNumbers);
+      final Gua? changingGua = GuaCalculator.generateChangingGua(mainGua);
 
       expect(changingGua!.yaos[0].number.value, 8);
     });
 
     test('changing gua liuqin should reference main gua baGong', () {
-      final yaoNumbers = [9, 7, 7, 8, 8, 8];
-      final mainGua = GuaCalculator.calculateGua(yaoNumbers);
-      final changingGua = GuaCalculator.generateChangingGua(mainGua)!;
+      final List<int> yaoNumbers = <int>[9, 7, 7, 8, 8, 8];
+      final Gua mainGua = GuaCalculator.calculateGua(yaoNumbers);
+      final Gua changingGua = GuaCalculator.generateChangingGua(mainGua)!;
 
       expect(mainGua.baGong, BaGong.kun);
       expect(changingGua.baGong, isNot(mainGua.baGong));
 
-      final expected = LiuQinService.calculateLiuQinByGongName(
+      final LiuQin? expected = LiuQinService.calculateLiuQinByGongName(
         '坤',
         changingGua.yaos.first.wuXing,
       );
@@ -177,22 +177,22 @@ void main() {
     });
 
     test('hasMovingYao should return true when has moving yao', () {
-      final yaoNumbers = [6, 7, 7, 7, 7, 7];
-      final gua = GuaCalculator.calculateGua(yaoNumbers);
+      final List<int> yaoNumbers = <int>[6, 7, 7, 7, 7, 7];
+      final Gua gua = GuaCalculator.calculateGua(yaoNumbers);
 
       expect(gua.hasMovingYao, true);
     });
 
     test('hasMovingYao should return false when no moving yao', () {
-      final yaoNumbers = [7, 7, 7, 7, 7, 7];
-      final gua = GuaCalculator.calculateGua(yaoNumbers);
+      final List<int> yaoNumbers = <int>[7, 7, 7, 7, 7, 7];
+      final Gua gua = GuaCalculator.calculateGua(yaoNumbers);
 
       expect(gua.hasMovingYao, false);
     });
 
     test('movingYaos should return correct list', () {
-      final yaoNumbers = [6, 7, 9, 8, 7, 8];
-      final gua = GuaCalculator.calculateGua(yaoNumbers);
+      final List<int> yaoNumbers = <int>[6, 7, 9, 8, 7, 8];
+      final Gua gua = GuaCalculator.calculateGua(yaoNumbers);
 
       expect(gua.movingYaos.length, 2);
       expect(gua.movingYaos[0].position, 1);
@@ -200,7 +200,10 @@ void main() {
     });
 
     test('calculateGua should throw when input length invalid', () {
-      expect(() => GuaCalculator.calculateGua([7, 7, 7]), throwsArgumentError);
+      expect(
+        () => GuaCalculator.calculateGua(<int>[7, 7, 7]),
+        throwsArgumentError,
+      );
     });
   });
 }

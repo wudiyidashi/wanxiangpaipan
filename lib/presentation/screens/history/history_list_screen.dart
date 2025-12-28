@@ -314,7 +314,7 @@ class _HistoryListScreenState extends State<HistoryListScreen> {
 
     Navigator.push(
       context,
-      MaterialPageRoute(builder: (_) => resultScreen),
+      MaterialPageRoute<void>(builder: (_) => resultScreen),
     );
   }
 

@@ -222,7 +222,7 @@ class MethodSelectorScreen extends StatelessWidget {
 
       Navigator.push(
         context,
-        MaterialPageRoute(builder: (_) => castScreen),
+        MaterialPageRoute<void>(builder: (_) => castScreen),
       );
     } catch (e) {
       // 显示错误提示

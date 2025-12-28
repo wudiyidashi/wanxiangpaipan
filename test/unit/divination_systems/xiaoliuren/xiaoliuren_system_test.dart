@@ -18,7 +18,7 @@ void main() {
         riGanZhi: '戊寅',
         yearGanZhi: '甲辰',
         monthGanZhi: '丁丑',
-        kongWang: ['戌', '亥'],
+        kongWang: <String>['戌', '亥'],
       );
     });
 
@@ -75,13 +75,13 @@ void main() {
 
     group('resultFromJson', () {
       test('应该能够从 JSON 反序列化结果', () {
-        final json = {
+        final Map<String, dynamic> json = <String, dynamic>{
           'id': 'test-id',
           'systemType': 'xiaoLiuRen',
           'castTime': '2025-01-16T12:00:00.000',
           'castMethod': 'time',
           'lunarInfo': testLunarInfo.toJson(),
-          'placeholderData': {},
+          'placeholderData': <String, dynamic>{},
         };
 
         final result = system.resultFromJson(json);
@@ -106,7 +106,7 @@ void main() {
         riGanZhi: '戊寅',
         yearGanZhi: '甲辰',
         monthGanZhi: '丁丑',
-        kongWang: ['戌', '亥'],
+        kongWang: <String>['戌', '亥'],
       );
 
       result = XiaoLiuRenResult(
@@ -131,7 +131,7 @@ void main() {
       expect(json['id'], 'test-id');
       expect(json['systemType'], 'xiaoLiuRen');
       expect(json['castMethod'], 'time');
-      expect(json['placeholderData'], isA<Map>());
+      expect(json['placeholderData'], isA<Map<String, dynamic>>());
     });
 
     test('应该能够从 JSON 反序列化', () {

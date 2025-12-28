@@ -232,9 +232,11 @@ void main() {
 
     group('getWuXingListFromBranches', () {
       test('should return correct wuxing list', () {
-        final branches = ['子', '寅', '午', '申', '辰'];
-        final result = WuXingService.getWuXingListFromBranches(branches);
-        expect(result, [
+        final List<String> branches = <String>['子', '寅', '午', '申', '辰'];
+        final List<WuXing> result = WuXingService.getWuXingListFromBranches(
+          branches,
+        );
+        expect(result, <WuXing>[
           WuXing.shui,
           WuXing.mu,
           WuXing.huo,
@@ -244,17 +246,21 @@ void main() {
       });
 
       test('should skip invalid branches', () {
-        final branches = ['子', '无效', '午'];
-        final result = WuXingService.getWuXingListFromBranches(branches);
-        expect(result, [WuXing.shui, WuXing.huo]);
+        final List<String> branches = <String>['子', '无效', '午'];
+        final List<WuXing> result = WuXingService.getWuXingListFromBranches(
+          branches,
+        );
+        expect(result, <WuXing>[WuXing.shui, WuXing.huo]);
       });
     });
 
     group('getWuXingListFromStems', () {
       test('should return correct wuxing list', () {
-        final stems = ['甲', '丙', '庚', '壬', '戊'];
-        final result = WuXingService.getWuXingListFromStems(stems);
-        expect(result, [
+        final List<String> stems = <String>['甲', '丙', '庚', '壬', '戊'];
+        final List<WuXing> result = WuXingService.getWuXingListFromStems(
+          stems,
+        );
+        expect(result, <WuXing>[
           WuXing.mu,
           WuXing.huo,
           WuXing.jin,
@@ -264,9 +270,11 @@ void main() {
       });
 
       test('should skip invalid stems', () {
-        final stems = ['甲', '无效', '庚'];
-        final result = WuXingService.getWuXingListFromStems(stems);
-        expect(result, [WuXing.mu, WuXing.jin]);
+        final List<String> stems = <String>['甲', '无效', '庚'];
+        final List<WuXing> result = WuXingService.getWuXingListFromStems(
+          stems,
+        );
+        expect(result, <WuXing>[WuXing.mu, WuXing.jin]);
       });
     });
   });

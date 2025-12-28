@@ -220,8 +220,9 @@ class _DaLiuRenTimeCastScreenState extends State<_DaLiuRenTimeCastScreen> {
 
       // 导航到结果页面
       Navigator.of(context).pushReplacement(
-        MaterialPageRoute(
-          builder: (context) => _DaLiuRenResultScreen(result: result as DaLiuRenResult),
+        MaterialPageRoute<void>(
+          builder: (context) =>
+              _DaLiuRenResultScreen(result: result as DaLiuRenResult),
         ),
       );
     } catch (e) {
@@ -320,8 +321,9 @@ class _DaLiuRenManualCastScreenState extends State<_DaLiuRenManualCastScreen> {
       if (!mounted) return;
 
       Navigator.of(context).pushReplacement(
-        MaterialPageRoute(
-          builder: (context) => _DaLiuRenResultScreen(result: result as DaLiuRenResult),
+        MaterialPageRoute<void>(
+          builder: (context) =>
+              _DaLiuRenResultScreen(result: result as DaLiuRenResult),
         ),
       );
     } catch (e) {

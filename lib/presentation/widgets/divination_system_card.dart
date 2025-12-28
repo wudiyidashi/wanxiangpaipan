@@ -138,7 +138,6 @@ class _DivinationSystemCardState extends State<DivinationSystemCard>
     final gradientColors = _getGradientColors();
 
     // 根据卡片大小调整尺寸
-    final double iconSize = widget.isLarge ? 100.0 : 70.0;
     final double titleSize = widget.isLarge ? 18.0 : 16.0;
     final double subtitleSize = widget.isLarge ? 12.0 : 11.0;
     final double padding = widget.isLarge ? 16.0 : 14.0;

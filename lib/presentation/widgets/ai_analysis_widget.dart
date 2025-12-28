@@ -266,7 +266,7 @@ class AIAnalysisFAB extends StatelessWidget {
   }
 
   void _showAnalysisSheet(BuildContext context, AIAnalysisService aiService) {
-    showModalBottomSheet(
+    showModalBottomSheet<void>(
       context: context,
       isScrollControlled: true,
       useSafeArea: true,

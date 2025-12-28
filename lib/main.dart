@@ -12,7 +12,6 @@ import 'presentation/screens/home/home_screen.dart';
 import 'presentation/screens/home/method_selector_screen.dart';
 import 'presentation/screens/history/history_list_screen.dart';
 import 'presentation/screens/settings/settings_screen.dart';
-import 'presentation/screens/settings/ai_settings_screen.dart';
 import 'divination_systems/liuyao/liuyao_system.dart';
 import 'divination_systems/liuyao/viewmodels/liuyao_viewmodel.dart';
 import 'divination_systems/registry_bootstrap.dart';
@@ -51,7 +50,6 @@ class _WanxiangPaipanAppState extends State<WanxiangPaipanApp> {
   late final AppDatabase _database;
   late final SecureStorage _secureStorage;
   AIAnalysisService? _aiService;
-  bool _aiInitialized = false;
 
   @override
   void initState() {
@@ -70,7 +68,6 @@ class _WanxiangPaipanAppState extends State<WanxiangPaipanApp> {
       if (mounted) {
         setState(() {
           _aiService = service;
-          _aiInitialized = true;
         });
       }
     } catch (e) {
@@ -156,5 +153,4 @@ class _WanxiangPaipanAppState extends State<WanxiangPaipanApp> {
     );
   }
 }
-
 

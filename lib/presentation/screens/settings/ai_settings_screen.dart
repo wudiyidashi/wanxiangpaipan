@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../../ai/service/ai_analysis_service.dart';
-import '../../../ai/providers/gemini_provider.dart';
 import '../../../ai/llm_provider.dart';
 
 /// AI 设置页面

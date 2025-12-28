@@ -39,7 +39,6 @@ library;
 
 import 'package:flutter/foundation.dart';
 import '../domain/divination_registry.dart';
-import '../domain/divination_system.dart';
 import '../presentation/divination_ui_registry.dart';
 import 'liuyao/liuyao_system.dart';
 import 'liuyao/ui/liuyao_ui_factory.dart';
@@ -275,4 +274,3 @@ class DivinationSystemBootstrap {
     };
   }
 }
-
