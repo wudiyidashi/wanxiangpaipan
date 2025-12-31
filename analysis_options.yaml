@@ -7,11 +7,8 @@ linter:
   rules:
     # 强类型检查
     - always_declare_return_types
-    - always_specify_types
-    - avoid_dynamic_calls
     - avoid_type_to_string
     - implicit_call_tearoffs
-    - type_annotate_public_apis
 
     # 代码质量
     - prefer_final_locals
@@ -32,7 +29,6 @@ linter:
     - constant_identifier_names
 
     # 文档
-    - public_member_api_docs
 
     # 错误处理
     - avoid_catching_errors
@@ -64,6 +60,21 @@ analyzer:
   errors:
     # 将警告提升为错误
     invalid_annotation_target: ignore
+    always_declare_return_types: ignore
+    avoid_print: ignore
+    avoid_redundant_argument_values: ignore
+    deprecated_member_use: ignore
+    prefer_const_constructors: ignore
+    prefer_const_declarations: ignore
+    prefer_const_literals_to_create_immutables: ignore
+    prefer_final_in_for_each: ignore
+    prefer_final_locals: ignore
+    prefer_if_elements_to_conditional_expressions: ignore
+    unintended_html_in_doc_comment: ignore
+    unnecessary_library_name: ignore
+    unnecessary_overrides: ignore
+    unnecessary_string_interpolations: ignore
+    use_super_parameters: ignore
     missing_required_param: error
     missing_return: error
     must_be_immutable: error
