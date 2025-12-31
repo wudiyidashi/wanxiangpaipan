@@ -59,7 +59,7 @@ class AppTheme {
       ),
 
       // 卡片主题
-      cardTheme: CardTheme(
+      cardTheme: CardThemeData(
         color: AppColors.xiangseLight,
         elevation: 2,
         shadowColor: Colors.black.withOpacity(0.08),
@@ -172,7 +172,7 @@ class AppTheme {
       ),
 
       // 对话框主题
-      dialogTheme: DialogTheme(
+      dialogTheme: DialogThemeData(
         backgroundColor: AppColors.xiangseLight,
         elevation: 8,
         shape: RoundedRectangleBorder(

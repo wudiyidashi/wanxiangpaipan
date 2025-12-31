@@ -167,61 +167,51 @@ class _DivinationSystemCardState extends State<DivinationSystemCard>
             ],
           ),
           clipBehavior: Clip.antiAlias,
-          child: LayoutBuilder(
-            builder: (context, constraints) {
-              // 背景图尺寸为卡片的 85%
-              final bgSize = constraints.maxHeight * 0.95;
-
-              return Stack(
-                children: [
-                  // 背景水印图（右下角，覆盖大部分区域）
-                  if (backgroundImage != null)
-                    Positioned(
-                      right: -bgSize * 0.1,
-                      bottom: -bgSize * 0.1,
-                      child: Opacity(
-                        opacity: 0.2,
-                        child: Image.asset(
-                          backgroundImage,
-                          width: bgSize,
-                          height: bgSize,
-                          fit: BoxFit.contain,
-                          errorBuilder: (_, __, ___) => const SizedBox.shrink(),
-                        ),
-                      ),
-                    ),
-                  // 文字内容（左上角）
-                  Padding(
-                    padding: EdgeInsets.all(padding),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        // 系统名称
-                        Text(
-                          displayName,
-                          style: TextStyle(
-                            fontSize: titleSize,
-                            fontWeight: FontWeight.bold,
-                            color: _textDark,
-                            height: 1.2,
-                          ),
-                        ),
-                        const SizedBox(height: 4),
-                        // 副标题
-                        Text(
-                          subtitle,
-                          style: TextStyle(
-                            fontSize: subtitleSize,
-                            color: _textMuted.withOpacity(0.8),
-                            height: 1.2,
-                          ),
-                        ),
-                      ],
+          child: Stack(
+            children: [
+              // 背景水印图（覆盖整个区域）
+              if (backgroundImage != null)
+                Positioned.fill(
+                  child: Opacity(
+                    opacity: 0.6,
+                    child: Image.asset(
+                      backgroundImage,
+                      fit: BoxFit.cover,
+                      alignment: Alignment.bottomRight,
+                      errorBuilder: (_, __, ___) => const SizedBox.shrink(),
                     ),
                   ),
-                ],
-              );
-            },
+                ),
+              // 文字内容（左上角）
+              Padding(
+                padding: EdgeInsets.all(padding),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    // 系统名称
+                    Text(
+                      displayName,
+                      style: TextStyle(
+                        fontSize: titleSize,
+                        fontWeight: FontWeight.bold,
+                        color: _textDark,
+                        height: 1.2,
+                      ),
+                    ),
+                    const SizedBox(height: 4),
+                    // 副标题
+                    Text(
+                      subtitle,
+                      style: TextStyle(
+                        fontSize: subtitleSize,
+                        color: _textMuted.withOpacity(0.8),
+                        height: 1.2,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ],
           ),
         ),
       ),
