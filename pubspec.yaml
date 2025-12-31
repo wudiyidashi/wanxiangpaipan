@@ -68,23 +68,10 @@ flutter:
   uses-material-design: true
 
   assets:
-    - assets/icon/app_icon.png
     - assets/images/
     - assets/images/screen_card/
     - assets/images/jieqi/
-    - assets/images/time_engine/
-    - assets/images/systems/liuyao/
-    - assets/images/systems/daliuren/
-    - assets/images/systems/xiaoliuren/
-    - assets/images/systems/meihua/
-    - assets/illustrations/
-    - assets/lottie/
-    - assets/svgs/
-    - assets/audio/
-    - assets/video/
-    - assets/data/
-    - assets/fonts/
-
+    
 flutter_launcher_icons:
   remove_alpha_ios: true
   android: "ic_launcher"

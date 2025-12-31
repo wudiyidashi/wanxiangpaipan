@@ -56,6 +56,7 @@ android/key.properties
 ._*
 .Spotlight-V100
 .Trashes
+macos/
 
 # Windows
 Thumbs.db
@@ -68,6 +69,7 @@ $RECYCLE.BIN/
 .fuse_hidden*
 .directory
 .Trash-*
+linux/
 
 # Exceptions to above rules.
 !/packages/flutter_tools/test/data/dart_dependencies_test/**/.packages

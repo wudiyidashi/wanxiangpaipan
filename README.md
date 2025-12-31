@@ -2,10 +2,11 @@
 
 <div align="center">
 
-**专业的中国传统术数占卜应用 | 可扩展的多系统架构**
+**专业的中国传统术数占卜应用 | 可扩展的多系统架构 | AI分析**
 
 [![Flutter](https://img.shields.io/badge/Flutter-3.24+-blue.svg)](https://flutter.dev)
 [![Dart](https://img.shields.io/badge/Dart-3.0+-blue.svg)](https://dart.dev)
+[![codecov](https://codecov.io/gh/wudiyidashi/wanxiangpaipan/branch/main/graph/badge.svg)](https://codecov.io/gh/wudiyidashi/wanxiangpaipan)
 [![License](https://img.shields.io/badge/License-Apache%202.0-green.svg)](LICENSE)
 
 [简体中文](README.md) | [English](README_EN.md)

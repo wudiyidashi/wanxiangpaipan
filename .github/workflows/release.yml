@@ -4,77 +4,35 @@ on:
   push:
     tags:
       - 'v*.*.*'
+  workflow_dispatch:
+
+permissions:
+  contents: write
 
 jobs:
   build-and-release:
-    name: 构建并发布
     runs-on: macos-latest
-
     steps:
-      - name: 检出代码
-        uses: actions/checkout@v4
-
-      - name: 设置 Java
-        uses: actions/setup-java@v4
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
         with:
           distribution: 'zulu'
           java-version: '17'
-
-      - name: 设置 Flutter
-        uses: subosito/flutter-action@v2
+      - uses: subosito/flutter-action@v2
         with:
           flutter-version: '3.24.0'
           channel: 'stable'
-
-      - name: 安装依赖
-        run: flutter pub get
-
-      - name: 代码生成
-        run: flutter pub run build_runner build --delete-conflicting-outputs
-
-      - name: 运行测试
-        run: flutter test
-
-      - name: 构建 APK (Release)
-        run: flutter build apk --release
-
-      - name: 构建 App Bundle (Release)
-        run: flutter build appbundle --release
-
-      - name: 构建 iOS (Release)
-        run: flutter build ios --release --no-codesign
-
-      - name: 获取版本号
-        id: get_version
-        run: echo "VERSION=${GITHUB_REF#refs/tags/}" >> $GITHUB_OUTPUT
-
-      - name: 创建 Release
-        uses: softprops/action-gh-release@v1
+          cache: true
+      - run: flutter pub get
+      - run: flutter pub run build_runner build --delete-conflicting-outputs
+      - run: flutter test
+      - run: flutter build apk --release
+      - run: flutter build appbundle --release
+      - run: flutter build ios --release --no-codesign
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v2
         with:
+          generate_release_notes: true
           files: |
             build/app/outputs/flutter-apk/app-release.apk
             build/app/outputs/bundle/release/app-release.aab
-          body: |
-            ## 🎉 万象排盘 ${{ steps.get_version.outputs.VERSION }}
-
-            ### 📦 下载
-
-            - **Android APK**: 适用于 Android 5.0 及以上
-            - **Android App Bundle**: 用于 Google Play 发布
-
-            ### 📝 更新日志
-
-            请查看 [CHANGELOG.md](CHANGELOG.md) 了解详细更新内容。
-
-            ### 🔍 校验和
-
-            文件校验和将在构建完成后生成。
-          draft: false
-          prerelease: false
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: 发布成功通知
-        run: |
-          echo "✅ 发布 ${{ steps.get_version.outputs.VERSION }} 成功！"
-          echo "📦 发布页面: https://github.com/${{ github.repository }}/releases/tag/${{ steps.get_version.outputs.VERSION }}"
