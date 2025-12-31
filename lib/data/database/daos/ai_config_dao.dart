@@ -8,7 +8,8 @@ part 'ai_config_dao.g.dart';
 ///
 /// 管理 LLM 提供者配置、提示词模板和用户偏好设置的数据库操作。
 @DriftAccessor(tables: [ProviderConfigs, PromptTemplates, UserPreferences])
-class AIConfigDao extends DatabaseAccessor<AppDatabase> with _$AIConfigDaoMixin {
+class AIConfigDao extends DatabaseAccessor<AppDatabase>
+    with _$AIConfigDaoMixin {
   AIConfigDao(super.db);
 
   // ==================== Provider 配置操作 ====================
@@ -42,9 +43,9 @@ class AIConfigDao extends DatabaseAccessor<AppDatabase> with _$AIConfigDaoMixin 
     final result = await (update(providerConfigs)
           ..where((t) => t.providerId.equals(providerId)))
         .write(ProviderConfigsCompanion(
-          isEnabled: Value(enabled),
-          updatedAt: Value(DateTime.now()),
-        ));
+      isEnabled: Value(enabled),
+      updatedAt: Value(DateTime.now()),
+    ));
     return result > 0;
   }
 
@@ -127,9 +128,9 @@ class AIConfigDao extends DatabaseAccessor<AppDatabase> with _$AIConfigDaoMixin 
       // 激活指定模板
       await (update(promptTemplates)..where((t) => t.id.equals(templateId)))
           .write(PromptTemplatesCompanion(
-            isActive: const Value(true),
-            updatedAt: Value(DateTime.now()),
-          ));
+        isActive: const Value(true),
+        updatedAt: Value(DateTime.now()),
+      ));
     });
   }
 

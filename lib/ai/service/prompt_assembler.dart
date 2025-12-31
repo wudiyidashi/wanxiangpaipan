@@ -244,7 +244,8 @@ class PromptAssembler {
 
     final userPrompt = analysisTemplateContent != null
         ? _engine.render(analysisTemplateContent, context)
-        : _getDefaultUserPrompt(renderedOutput, question, AnalysisType.comprehensive);
+        : _getDefaultUserPrompt(
+            renderedOutput, question, AnalysisType.comprehensive);
 
     return AssembledPrompt(
       systemPrompt: systemPrompt,

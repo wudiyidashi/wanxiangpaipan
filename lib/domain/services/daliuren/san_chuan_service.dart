@@ -155,7 +155,8 @@ class SanChuanService {
   /// 反吟课取用规则：
   /// 取驿马为初传（寅申巳亥年驿马规则）
   /// 简化处理：取日支的冲位
-  static String _deriveFanYinChuChuan(SiKe siKe, Map<String, String> tianPanMap) {
+  static String _deriveFanYinChuChuan(
+      SiKe siKe, Map<String, String> tianPanMap) {
     // 简化处理：取四课中有克的作为初传，无克则取日支冲
     if (siKe.hasZeiKe) {
       return siKe.zeiKeList.first.xiaShen;
@@ -173,7 +174,8 @@ class SanChuanService {
     if (zeiKeList.length == 1) {
       return (
         diZhi: zeiKeList.first.xiaShen,
-        explanation: '下克上，第${zeiKeList.first.index}课${zeiKeList.first.xiaShen}贼${zeiKeList.first.shangShen}，取${zeiKeList.first.xiaShen}为用'
+        explanation:
+            '下克上，第${zeiKeList.first.index}课${zeiKeList.first.xiaShen}贼${zeiKeList.first.shangShen}，取${zeiKeList.first.xiaShen}为用'
       );
     }
 
@@ -196,7 +198,8 @@ class SanChuanService {
     if (biYongList.length == 1) {
       return (
         diZhi: biYongList.first.shangShen,
-        explanation: '上克下，第${biYongList.first.index}课${biYongList.first.shangShen}克${biYongList.first.xiaShen}，取${biYongList.first.shangShen}为用'
+        explanation:
+            '上克下，第${biYongList.first.index}课${biYongList.first.shangShen}克${biYongList.first.xiaShen}，取${biYongList.first.shangShen}为用'
       );
     }
 
@@ -225,7 +228,8 @@ class SanChuanService {
   ///
   /// 涉害课：四课俱比俱不比，取涉害深者为用
   /// 涉害深度：从所克地支数到被克地支的距离
-  static String _deriveSheHaiChuChuan(SiKe siKe, Map<String, String> tianPanMap) {
+  static String _deriveSheHaiChuChuan(
+      SiKe siKe, Map<String, String> tianPanMap) {
     // 涉害法较复杂，这里简化处理
     // 取日干寄宫上神为初传
     final jiGong = DaLiuRenConstants.getGanJiGong(siKe.riGan);

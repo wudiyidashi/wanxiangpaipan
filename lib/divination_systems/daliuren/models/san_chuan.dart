@@ -58,8 +58,7 @@ class SanChuan with _$SanChuan {
   String get moChuanDiZhi => moChuan.diZhi;
 
   /// 三传六亲列表
-  List<String> get liuQinList =>
-      allChuan.map((chuan) => chuan.liuQin).toList();
+  List<String> get liuQinList => allChuan.map((chuan) => chuan.liuQin).toList();
 
   /// 是否有空亡
   bool get hasKongWang => allChuan.any((chuan) => chuan.isKongWang);

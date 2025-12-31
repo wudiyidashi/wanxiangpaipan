@@ -23,11 +23,16 @@ class QiGuaService {
     final frontCount = [coin1, coin2, coin3].where((c) => c).length;
 
     switch (frontCount) {
-      case 3: return 9;  // 老阳
-      case 2: return 7;  // 少阳
-      case 1: return 8;  // 少阴
-      case 0: return 6;  // 老阴
-      default: return 7;
+      case 3:
+        return 9; // 老阳
+      case 2:
+        return 7; // 少阳
+      case 1:
+        return 8; // 少阴
+      case 0:
+        return 6; // 老阴
+      default:
+        return 7;
     }
   }
 
@@ -59,11 +64,16 @@ class QiGuaService {
     final frontCount = faces.where((f) => f == CoinFace.front).length;
 
     switch (frontCount) {
-      case 3: return 9;
-      case 2: return 7;
-      case 1: return 8;
-      case 0: return 6;
-      default: return 7;
+      case 3:
+        return 9;
+      case 2:
+        return 7;
+      case 1:
+        return 8;
+      case 0:
+        return 6;
+      default:
+        return 7;
     }
   }
 
@@ -82,7 +92,8 @@ class QiGuaService {
   }
 
   /// 根据上下卦和动爻生成爻数
-  static List<int> _generateYaoNumbersFromGua(int upper, int lower, int moving) {
+  static List<int> _generateYaoNumbersFromGua(
+      int upper, int lower, int moving) {
     final upperYaos = _guaNumberToYaos(upper);
     final lowerYaos = _guaNumberToYaos(lower);
     final allYaos = [...lowerYaos, ...upperYaos];
@@ -96,14 +107,14 @@ class QiGuaService {
   /// 八卦数转三个爻
   static List<int> _guaNumberToYaos(int guaNum) {
     const Map<int, List<int>> guaToYaos = {
-      1: [7, 7, 7],  // 乾
-      2: [8, 7, 7],  // 兑
-      3: [7, 8, 7],  // 离
-      4: [8, 8, 7],  // 震
-      5: [7, 7, 8],  // 巽
-      6: [8, 7, 8],  // 坎
-      7: [7, 8, 8],  // 艮
-      8: [8, 8, 8],  // 坤
+      1: [7, 7, 7], // 乾
+      2: [8, 7, 7], // 兑
+      3: [7, 8, 7], // 离
+      4: [8, 8, 7], // 震
+      5: [7, 7, 8], // 巽
+      6: [8, 7, 8], // 坎
+      7: [7, 8, 8], // 艮
+      8: [8, 8, 8], // 坤
     };
     return guaToYaos[guaNum] ?? [7, 7, 7];
   }

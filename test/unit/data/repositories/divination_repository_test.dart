@@ -531,4 +531,3 @@ Gua _createMockGua() {
     yingYaoPosition: 2,
   );
 }
-

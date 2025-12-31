@@ -165,4 +165,3 @@ class MockMeiHuaUIFactory extends MockDivinationUIFactory {
           systemColor: Colors.pink,
         );
 }
-

@@ -66,7 +66,8 @@ class AIConfigManager {
 
     if (apiKey == null) return null;
 
-    final configRecord = await _database.aIConfigDao.getProviderConfig(providerId);
+    final configRecord =
+        await _database.aIConfigDao.getProviderConfig(providerId);
     if (configRecord == null) return null;
 
     final config = jsonDecode(configRecord.config) as Map<String, dynamic>;
@@ -112,19 +113,21 @@ class AIConfigManager {
   Future<void> initializeBuiltInTemplates() async {
     final builtInTemplates = BuiltInTemplates.getAll();
 
-    final companions = builtInTemplates.map((t) => PromptTemplatesCompanion(
-          id: Value(t.id),
-          name: Value(t.name),
-          description: Value(t.description),
-          systemType: Value(t.systemType),
-          templateType: Value(t.templateType),
-          content: Value(t.content),
-          variablesJson: Value(t.variablesJson),
-          isBuiltIn: Value(t.isBuiltIn),
-          isActive: Value(t.isActive),
-          createdAt: Value(DateTime.now()),
-          updatedAt: Value(DateTime.now()),
-        )).toList();
+    final companions = builtInTemplates
+        .map((t) => PromptTemplatesCompanion(
+              id: Value(t.id),
+              name: Value(t.name),
+              description: Value(t.description),
+              systemType: Value(t.systemType),
+              templateType: Value(t.templateType),
+              content: Value(t.content),
+              variablesJson: Value(t.variablesJson),
+              isBuiltIn: Value(t.isBuiltIn),
+              isActive: Value(t.isActive),
+              createdAt: Value(DateTime.now()),
+              updatedAt: Value(DateTime.now()),
+            ))
+        .toList();
 
     await _database.aIConfigDao.insertTemplates(companions);
   }
@@ -155,8 +158,10 @@ class AIConfigManager {
   }
 
   /// 获取指定系统的模板
-  Future<List<model.PromptTemplate>> getTemplatesBySystem(String systemType) async {
-    final records = await _database.aIConfigDao.getTemplatesBySystem(systemType);
+  Future<List<model.PromptTemplate>> getTemplatesBySystem(
+      String systemType) async {
+    final records =
+        await _database.aIConfigDao.getTemplatesBySystem(systemType);
     return records.map(_recordToTemplate).toList();
   }
 
@@ -294,7 +299,8 @@ class AIConfigManager {
       setString(keyDefaultProviderId, providerId);
 
   /// 获取是否启用流式输出
-  Future<bool> isStreamingEnabled() => getBool(keyEnableStreaming, defaultValue: true);
+  Future<bool> isStreamingEnabled() =>
+      getBool(keyEnableStreaming, defaultValue: true);
 
   /// 设置是否启用流式输出
   Future<void> setStreamingEnabled(bool enabled) =>

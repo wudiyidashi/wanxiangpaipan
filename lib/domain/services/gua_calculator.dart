@@ -139,7 +139,8 @@ class GuaCalculator {
 
   /// 计算六亲
   static LiuQin _calculateLiuQin(String baGongName, WuXing yaoWuXing) {
-    return LiuQinService.calculateLiuQinByGongName(baGongName, yaoWuXing) ?? LiuQin.xiongDi;
+    return LiuQinService.calculateLiuQinByGongName(baGongName, yaoWuXing) ??
+        LiuQin.xiongDi;
   }
 
   /// 生成变卦

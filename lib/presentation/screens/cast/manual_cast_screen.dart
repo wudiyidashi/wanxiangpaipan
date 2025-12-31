@@ -144,7 +144,8 @@ class _ManualCastScreenState extends State<ManualCastScreen> {
 
             // 排盘按钮
             ElevatedButton(
-              onPressed: _allYaosSelected && !_isProcessing ? _finishCast : null,
+              onPressed:
+                  _allYaosSelected && !_isProcessing ? _finishCast : null,
               style: ElevatedButton.styleFrom(
                 padding: const EdgeInsets.symmetric(vertical: 16),
               ),

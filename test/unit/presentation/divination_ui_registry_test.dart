@@ -169,10 +169,12 @@ void main() {
         final types = registry.getRegisteredTypes();
 
         expect(types.length, 2);
-        expect(types, containsAll([
-          DivinationType.liuYao,
-          DivinationType.daLiuRen,
-        ]));
+        expect(
+            types,
+            containsAll([
+              DivinationType.liuYao,
+              DivinationType.daLiuRen,
+            ]));
       });
     });
 
@@ -228,8 +230,7 @@ void main() {
     });
 
     group('便捷方法', () {
-      testWidgets('buildCastScreen 应该动态构建起卦页面',
-          (WidgetTester tester) async {
+      testWidgets('buildCastScreen 应该动态构建起卦页面', (WidgetTester tester) async {
         registry.registerUI(MockLiuYaoUIFactory());
 
         final castScreen = registry.buildCastScreen(
@@ -277,8 +278,7 @@ void main() {
   });
 
   group('MockDivinationUIFactory', () {
-    testWidgets('buildCastScreen 应该返回有效的 Widget',
-        (WidgetTester tester) async {
+    testWidgets('buildCastScreen 应该返回有效的 Widget', (WidgetTester tester) async {
       final factory = MockLiuYaoUIFactory();
       final castScreen = factory.buildCastScreen(CastMethod.coin);
 
@@ -308,8 +308,7 @@ void main() {
       expect(find.text('系统: 六爻'), findsOneWidget);
     });
 
-    testWidgets('buildHistoryCard 应该返回有效的 Widget',
-        (WidgetTester tester) async {
+    testWidgets('buildHistoryCard 应该返回有效的 Widget', (WidgetTester tester) async {
       final factory = MockLiuYaoUIFactory();
 
       final result = _MockResult(
@@ -325,8 +324,7 @@ void main() {
       expect(find.byIcon(Icons.history), findsOneWidget);
     });
 
-    testWidgets('buildSystemCard 应该返回有效的 Widget',
-        (WidgetTester tester) async {
+    testWidgets('buildSystemCard 应该返回有效的 Widget', (WidgetTester tester) async {
       final factory = MockLiuYaoUIFactory();
       final systemCard = factory.buildSystemCard();
 
@@ -385,4 +383,3 @@ class _MockResult implements DivinationResult {
   @override
   String getSummary() => 'Mock Summary';
 }
-

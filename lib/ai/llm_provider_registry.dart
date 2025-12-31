@@ -67,8 +67,9 @@ class LLMProviderRegistry {
       _providers.values.where((p) => p.isConfigured).toList();
 
   /// 获取可用的提供者列表（已配置且验证通过）
-  List<LLMProvider> get availableProviders =>
-      _providers.values.where((p) => p.status == LLMProviderStatus.valid).toList();
+  List<LLMProvider> get availableProviders => _providers.values
+      .where((p) => p.status == LLMProviderStatus.valid)
+      .toList();
 
   /// 检查是否有可用的提供者
   bool get hasAvailableProvider => availableProviders.isNotEmpty;
@@ -78,15 +79,17 @@ class LLMProviderRegistry {
 
   /// 获取所有提供者的信息（用于 UI 展示）
   List<LLMProviderInfo> getProvidersInfo() {
-    return _providers.values.map((p) => LLMProviderInfo(
-      id: p.id,
-      displayName: p.displayName,
-      description: p.description,
-      isConfigured: p.isConfigured,
-      status: p.status,
-      supportedModels: p.supportedModels,
-      currentModel: p.getConfigInfo()?['model'] as String?,
-    )).toList();
+    return _providers.values
+        .map((p) => LLMProviderInfo(
+              id: p.id,
+              displayName: p.displayName,
+              description: p.description,
+              isConfigured: p.isConfigured,
+              status: p.status,
+              supportedModels: p.supportedModels,
+              currentModel: p.getConfigInfo()?['model'] as String?,
+            ))
+        .toList();
   }
 
   /// 获取指定类型的第一个可用提供者

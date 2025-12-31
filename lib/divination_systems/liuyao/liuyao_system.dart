@@ -61,8 +61,7 @@ class LiuYaoSystem implements DivinationSystem {
         if (input.containsKey('yaoNumbers')) {
           yaoNumbers = List<int>.from(input['yaoNumbers'] as List);
         } else if (input.containsKey('coinInputs')) {
-          final coinInputs =
-              input['coinInputs'] as List<List<CoinFace>>;
+          final coinInputs = input['coinInputs'] as List<List<CoinFace>>;
           yaoNumbers = QiGuaService.manualCast(coinInputs);
         } else {
           throw ArgumentError('手动输入需要提供 yaoNumbers 或 coinInputs 参数');
@@ -128,8 +127,8 @@ class LiuYaoSystem implements DivinationSystem {
             return false;
           }
           // 验证每次投掷是否有 3 枚硬币
-          return coinInputs.every((coins) =>
-              coins is List<CoinFace> && coins.length == 3);
+          return coinInputs
+              .every((coins) => coins is List<CoinFace> && coins.length == 3);
         }
         return false;
 

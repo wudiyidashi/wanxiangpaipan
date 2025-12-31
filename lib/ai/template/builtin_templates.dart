@@ -171,18 +171,22 @@ class BuiltInTemplates {
 
   /// 获取指定系统的默认系统提示词
   static PromptTemplate? getDefaultSystemPrompt(String systemType) {
-    return getAll().where((t) =>
-        t.systemType == systemType &&
-        t.templateType == 'system' &&
-        t.isActive).firstOrNull;
+    return getAll()
+        .where((t) =>
+            t.systemType == systemType &&
+            t.templateType == 'system' &&
+            t.isActive)
+        .firstOrNull;
   }
 
   /// 获取指定系统的默认分析模板
   static PromptTemplate? getDefaultAnalysisPrompt(String systemType) {
-    return getAll().where((t) =>
-        t.systemType == systemType &&
-        t.templateType == 'analysis' &&
-        t.isActive).firstOrNull;
+    return getAll()
+        .where((t) =>
+            t.systemType == systemType &&
+            t.templateType == 'analysis' &&
+            t.isActive)
+        .firstOrNull;
   }
 
   /// 创建用户自定义模板（基于内置模板）

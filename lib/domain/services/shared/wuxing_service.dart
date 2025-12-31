@@ -14,11 +14,11 @@ enum WuXing {
 
 /// 五行关系类型
 enum WuXingRelation {
-  biHe('比和'),      // 同类
-  woSheng('我生'),   // 我生者
-  shengWo('生我'),   // 生我者
-  woKe('我克'),      // 我克者
-  keWo('克我');      // 克我者
+  biHe('比和'), // 同类
+  woSheng('我生'), // 我生者
+  shengWo('生我'), // 生我者
+  woKe('我克'), // 我克者
+  keWo('克我'); // 克我者
 
   const WuXingRelation(this.name);
   final String name;
@@ -63,20 +63,20 @@ class WuXingService {
 
   /// 五行生关系（我生者）
   static const Map<WuXing, WuXing> shengRelation = {
-    WuXing.jin: WuXing.shui,   // 金生水
-    WuXing.shui: WuXing.mu,    // 水生木
-    WuXing.mu: WuXing.huo,     // 木生火
-    WuXing.huo: WuXing.tu,     // 火生土
-    WuXing.tu: WuXing.jin,     // 土生金
+    WuXing.jin: WuXing.shui, // 金生水
+    WuXing.shui: WuXing.mu, // 水生木
+    WuXing.mu: WuXing.huo, // 木生火
+    WuXing.huo: WuXing.tu, // 火生土
+    WuXing.tu: WuXing.jin, // 土生金
   };
 
   /// 五行克关系（我克者）
   static const Map<WuXing, WuXing> keRelation = {
-    WuXing.jin: WuXing.mu,     // 金克木
-    WuXing.mu: WuXing.tu,      // 木克土
-    WuXing.tu: WuXing.shui,    // 土克水
-    WuXing.shui: WuXing.huo,   // 水克火
-    WuXing.huo: WuXing.jin,    // 火克金
+    WuXing.jin: WuXing.mu, // 金克木
+    WuXing.mu: WuXing.tu, // 木克土
+    WuXing.tu: WuXing.shui, // 土克水
+    WuXing.shui: WuXing.huo, // 水克火
+    WuXing.huo: WuXing.jin, // 火克金
   };
 
   /// 根据地支获取五行
@@ -171,9 +171,7 @@ class WuXingService {
   /// [wuXing] 五行
   /// 返回克该五行的五行
   static WuXing getKeSource(WuXing wuXing) {
-    return keRelation.entries
-        .firstWhere((entry) => entry.value == wuXing)
-        .key;
+    return keRelation.entries.firstWhere((entry) => entry.value == wuXing).key;
   }
 
   /// 将五行转换为字符串（用于存储和比较）

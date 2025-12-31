@@ -316,7 +316,8 @@ class _AISettingsScreenState extends State<AISettingsScreen> {
 
       setState(() {
         _validationSuccess = isValid;
-        _validationMessage = isValid ? '配置保存成功，API 连接正常' : '配置已保存，但 API 连接失败，请检查 API Key';
+        _validationMessage =
+            isValid ? '配置保存成功，API 连接正常' : '配置已保存，但 API 连接失败，请检查 API Key';
       });
     } catch (e) {
       setState(() {

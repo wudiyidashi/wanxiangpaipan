@@ -28,7 +28,8 @@ class GuaDisplay extends StatelessWidget {
             const Divider(height: 24),
             // 六爻（从上到下显示，即从第6爻到第1爻）
             ...List.generate(6, (i) {
-              final yaoIndex = 5 - i; // 倒序显示：i=0→yaoIndex=5（上爻），i=5→yaoIndex=0（初爻）
+              final yaoIndex =
+                  5 - i; // 倒序显示：i=0→yaoIndex=5（上爻），i=5→yaoIndex=0（初爻）
               final yao = gua.yaos[yaoIndex];
               final liuShenName = liuShen != null && liuShen!.length > yaoIndex
                   ? liuShen![yaoIndex]
@@ -67,20 +68,24 @@ class GuaDisplay extends StatelessWidget {
             const Icon(Icons.arrow_forward, size: 16, color: Colors.red),
           const SizedBox(width: 8),
           // 地支
-          Text('${yao.branch}${yao.wuXing.name}', style: const TextStyle(fontSize: 14)),
+          Text('${yao.branch}${yao.wuXing.name}',
+              style: const TextStyle(fontSize: 14)),
           const SizedBox(width: 8),
           // 六亲
           Text(yao.liuQin.name, style: const TextStyle(fontSize: 14)),
           const SizedBox(width: 8),
           // 六神
           if (liuShenName.isNotEmpty)
-            Text('[$liuShenName]', style: const TextStyle(fontSize: 12, color: Colors.grey)),
+            Text('[$liuShenName]',
+                style: const TextStyle(fontSize: 12, color: Colors.grey)),
           const Spacer(),
           // 世应标记
           if (yao.isSeYao)
-            const Text('[世]', style: TextStyle(fontSize: 14, color: Colors.blue)),
+            const Text('[世]',
+                style: TextStyle(fontSize: 14, color: Colors.blue)),
           if (yao.isYingYao)
-            const Text('[应]', style: TextStyle(fontSize: 14, color: Colors.green)),
+            const Text('[应]',
+                style: TextStyle(fontSize: 14, color: Colors.green)),
         ],
       ),
     );

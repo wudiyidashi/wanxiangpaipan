@@ -101,7 +101,8 @@ class GeminiProvider implements LLMProvider {
   final http.Client _client;
 
   /// 默认 API 地址
-  static const _defaultBaseUrl = 'https://generativelanguage.googleapis.com/v1beta';
+  static const _defaultBaseUrl =
+      'https://generativelanguage.googleapis.com/v1beta';
 
   GeminiProvider({http.Client? client}) : _client = client ?? http.Client();
 
@@ -174,9 +175,9 @@ class GeminiProvider implements LLMProvider {
     try {
       final url = Uri.parse('$_baseUrl/models?key=${_config!.apiKey}');
       final response = await _client.get(url).timeout(
-        const Duration(seconds: 10),
-        onTimeout: () => throw TimeoutException('连接超时'),
-      );
+            const Duration(seconds: 10),
+            onTimeout: () => throw TimeoutException('连接超时'),
+          );
 
       if (response.statusCode == 200) {
         _status = LLMProviderStatus.valid;
@@ -318,14 +319,8 @@ class GeminiProvider implements LLMProvider {
         'topK': _config!.topK,
       },
       'safetySettings': [
-        {
-          'category': 'HARM_CATEGORY_HARASSMENT',
-          'threshold': 'BLOCK_NONE'
-        },
-        {
-          'category': 'HARM_CATEGORY_HATE_SPEECH',
-          'threshold': 'BLOCK_NONE'
-        },
+        {'category': 'HARM_CATEGORY_HARASSMENT', 'threshold': 'BLOCK_NONE'},
+        {'category': 'HARM_CATEGORY_HATE_SPEECH', 'threshold': 'BLOCK_NONE'},
         {
           'category': 'HARM_CATEGORY_SEXUALLY_EXPLICIT',
           'threshold': 'BLOCK_NONE'

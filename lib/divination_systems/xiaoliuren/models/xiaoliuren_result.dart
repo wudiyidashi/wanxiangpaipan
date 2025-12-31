@@ -62,7 +62,9 @@ class XiaoLiuRenResult implements DivinationResult {
         (m) => m.name == json['castMethod'],
       ),
       lunarInfo: LunarInfo.fromJson(json['lunarInfo'] as Map<String, dynamic>),
-      placeholderData: (json['placeholderData'] as Map<dynamic, dynamic>?)?.cast<String, dynamic>() ?? {},
+      placeholderData: (json['placeholderData'] as Map<dynamic, dynamic>?)
+              ?.cast<String, dynamic>() ??
+          {},
     );
   }
 

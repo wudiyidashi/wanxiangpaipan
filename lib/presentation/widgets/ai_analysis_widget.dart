@@ -55,9 +55,8 @@ class AIAnalysisWidget extends StatelessWidget {
           children: [
             Icon(
               Icons.smart_toy,
-              color: isConfigured
-                  ? Theme.of(context).primaryColor
-                  : Colors.grey,
+              color:
+                  isConfigured ? Theme.of(context).primaryColor : Colors.grey,
             ),
             const SizedBox(width: 12),
             Expanded(

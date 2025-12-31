@@ -39,13 +39,13 @@ class LiuQinService {
 
     switch (relation) {
       case WuXingRelation.woSheng:
-        return LiuQin.ziSun;   // 我生者为子孙
+        return LiuQin.ziSun; // 我生者为子孙
       case WuXingRelation.shengWo:
-        return LiuQin.fuMu;    // 生我者为父母
+        return LiuQin.fuMu; // 生我者为父母
       case WuXingRelation.keWo:
         return LiuQin.guanGui; // 克我者为官鬼
       case WuXingRelation.woKe:
-        return LiuQin.qiCai;   // 我克者为妻财
+        return LiuQin.qiCai; // 我克者为妻财
       case WuXingRelation.biHe:
         return LiuQin.xiongDi; // 比和者为兄弟
     }
@@ -56,7 +56,8 @@ class LiuQinService {
   /// [baGongName] 八宫名称，如 "乾"、"坤" 等
   /// [yaoWuXing] 爻的五行
   /// 返回对应的六亲，如果宫位名称无效返回 null
-  static LiuQin? calculateLiuQinByGongName(String baGongName, WuXing yaoWuXing) {
+  static LiuQin? calculateLiuQinByGongName(
+      String baGongName, WuXing yaoWuXing) {
     final gongWuXing = _getGongWuXing(baGongName);
     if (gongWuXing == null) return null;
     return calculateLiuQin(gongWuXing, yaoWuXing);

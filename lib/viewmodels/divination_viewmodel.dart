@@ -4,11 +4,11 @@ import '../domain/repositories/divination_repository.dart';
 
 /// 起卦状态
 enum CastState {
-  idle,        // 空闲
-  casting,     // 起卦中
+  idle, // 空闲
+  casting, // 起卦中
   calculating, // 计算中
-  success,     // 成功
-  error,       // 错误
+  success, // 成功
+  error, // 错误
 }
 
 /// 占卜 ViewModel 泛型基类

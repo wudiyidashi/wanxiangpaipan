@@ -139,7 +139,8 @@ class DaLiuRenStructuredFormatter
 
   String _formatTianPan(DaLiuRenResult result) {
     final buffer = StringBuffer();
-    buffer.writeln('月将: ${result.tianPan.yueJiang}（${result.tianPan.yueJiangName}）');
+    buffer.writeln(
+        '月将: ${result.tianPan.yueJiang}（${result.tianPan.yueJiangName}）');
     buffer.writeln('描述: ${result.tianPan.yueJiangDescription}');
     buffer.writeln();
     buffer.writeln('天盘排列（月将加时支）:');
@@ -167,10 +168,12 @@ class DaLiuRenStructuredFormatter
 
     buffer.writeln();
     if (result.siKe.hasZeiKe) {
-      buffer.writeln('贼克: ${result.siKe.zeiKeList.map((k) => k.keName).join("、")}');
+      buffer.writeln(
+          '贼克: ${result.siKe.zeiKeList.map((k) => k.keName).join("、")}');
     }
     if (result.siKe.hasBiYong) {
-      buffer.writeln('比用: ${result.siKe.biYongList.map((k) => k.keName).join("、")}');
+      buffer.writeln(
+          '比用: ${result.siKe.biYongList.map((k) => k.keName).join("、")}');
     }
 
     return buffer.toString();
@@ -213,7 +216,8 @@ class DaLiuRenStructuredFormatter
 
     buffer.writeln('十二神将配置:');
     for (final pos in result.shenJiangConfig.positions) {
-      buffer.writeln('  ${pos.diZhi}宫: ${pos.shenJiang.name}（天盘${pos.tianPanZhi}）');
+      buffer.writeln(
+          '  ${pos.diZhi}宫: ${pos.shenJiang.name}（天盘${pos.tianPanZhi}）');
     }
 
     return buffer.toString();

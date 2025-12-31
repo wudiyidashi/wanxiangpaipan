@@ -47,7 +47,8 @@ class CastMethodScreen extends StatelessWidget {
               icon: Icons.touch_app,
               onTap: () => Navigator.push<void>(
                 context,
-                MaterialPageRoute<void>(builder: (_) => const ManualCastScreen()),
+                MaterialPageRoute<void>(
+                    builder: (_) => const ManualCastScreen()),
               ),
             ),
           ],

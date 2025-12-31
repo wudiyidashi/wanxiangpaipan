@@ -13,7 +13,12 @@ part 'app_database.g.dart';
 ///
 /// 使用 DivinationRecords 表支持多术数系统。
 @DriftDatabase(
-  tables: [DivinationRecords, ProviderConfigs, PromptTemplates, UserPreferences],
+  tables: [
+    DivinationRecords,
+    ProviderConfigs,
+    PromptTemplates,
+    UserPreferences
+  ],
   daos: [DivinationRecordDao, AIConfigDao],
 )
 class AppDatabase extends _$AppDatabase {
@@ -92,4 +97,3 @@ LazyDatabase _openConnection() {
     return NativeDatabase(file);
   });
 }
-

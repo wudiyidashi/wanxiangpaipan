@@ -28,8 +28,7 @@ class DaLiuRenSystem implements DivinationSystem {
   String get name => '大六壬';
 
   @override
-  String get description =>
-      '大六壬：中国古代三式之一，以天干地支、十二神将为基础，通过四课三传进行占断';
+  String get description => '大六壬：中国古代三式之一，以天干地支、十二神将为基础，通过四课三传进行占断';
 
   @override
   bool get isEnabled => true; // 已启用
@@ -219,7 +218,20 @@ class DaLiuRenSystem implements DivinationSystem {
 
         // 验证天干地支的有效性
         const validGan = ['甲', '乙', '丙', '丁', '戊', '己', '庚', '辛', '壬', '癸'];
-        const validZhi = ['子', '丑', '寅', '卯', '辰', '巳', '午', '未', '申', '酉', '戌', '亥'];
+        const validZhi = [
+          '子',
+          '丑',
+          '寅',
+          '卯',
+          '辰',
+          '巳',
+          '午',
+          '未',
+          '申',
+          '酉',
+          '戌',
+          '亥'
+        ];
 
         if (!validGan.contains(riGan)) return false;
         if (!validZhi.contains(riZhi)) return false;

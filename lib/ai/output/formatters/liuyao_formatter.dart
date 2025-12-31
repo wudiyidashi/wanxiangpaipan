@@ -48,8 +48,7 @@ class LiuYaoStructuredFormatter
       'changingGuaName': result.changingGua?.name,
       'hasMovingYao': result.hasMovingYao,
       'movingYaoCount': result.movingYaos.length,
-      'movingYaoPositions':
-          result.movingYaos.map((y) => y.position).toList(),
+      'movingYaoPositions': result.movingYaos.map((y) => y.position).toList(),
       'specialType': result.mainGua.specialType.name,
       'seYaoPosition': result.mainGua.seYaoPosition,
       'yingYaoPosition': result.mainGua.yingYaoPosition,
@@ -133,7 +132,8 @@ class LiuYaoStructuredFormatter
     return buffer.toString();
   }
 
-  String _formatGua(Gua gua, List<String>? liuShen, {required bool showLiuShen}) {
+  String _formatGua(Gua gua, List<String>? liuShen,
+      {required bool showLiuShen}) {
     final buffer = StringBuffer();
     buffer.writeln('${gua.name} (${gua.baGong.name})');
     if (gua.specialType != GuaSpecialType.none) {

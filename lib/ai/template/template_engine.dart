@@ -188,7 +188,8 @@ class PromptTemplateEngine {
     final eachOpens = RegExp(r'\{\{#each\s+').allMatches(template).length;
     final eachCloses = RegExp(r'\{\{/each\}\}').allMatches(template).length;
     if (eachOpens != eachCloses) {
-      errors.add('循环块未正确闭合: {{#each}} 数量($eachOpens) != {{/each}} 数量($eachCloses)');
+      errors.add(
+          '循环块未正确闭合: {{#each}} 数量($eachOpens) != {{/each}} 数量($eachCloses)');
     }
 
     // 检查 else 是否在 if 块内

@@ -91,6 +91,5 @@ class ShenShaList with _$ShenShaList {
   }
 
   /// 是否有特定神煞
-  bool hasShenSha(String name) =>
-      allShenSha.any((s) => s.name == name);
+  bool hasShenSha(String name) => allShenSha.any((s) => s.name == name);
 }

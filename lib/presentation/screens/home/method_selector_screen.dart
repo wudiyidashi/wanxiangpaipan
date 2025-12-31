@@ -64,8 +64,8 @@ class MethodSelectorScreen extends StatelessWidget {
   Widget _buildSystemInfoCard(BuildContext context, DivinationSystem system) {
     final uiRegistry = DivinationUIRegistry();
     final uiFactory = uiRegistry.tryGetUIFactory(system.type);
-    final systemColor = uiFactory?.getSystemColor() ??
-        Theme.of(context).colorScheme.primary;
+    final systemColor =
+        uiFactory?.getSystemColor() ?? Theme.of(context).colorScheme.primary;
 
     return Container(
       margin: const EdgeInsets.all(16),

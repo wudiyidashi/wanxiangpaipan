@@ -37,7 +37,8 @@ class AIBootstrap {
   /// 获取配置管理器
   static AIConfigManager get configManager {
     if (_configManager == null) {
-      throw StateError('AI module not initialized. Call AIBootstrap.initialize() first.');
+      throw StateError(
+          'AI module not initialized. Call AIBootstrap.initialize() first.');
     }
     return _configManager!;
   }
@@ -45,7 +46,8 @@ class AIBootstrap {
   /// 获取分析服务
   static AIAnalysisService get analysisService {
     if (_analysisService == null) {
-      throw StateError('AI module not initialized. Call AIBootstrap.initialize() first.');
+      throw StateError(
+          'AI module not initialized. Call AIBootstrap.initialize() first.');
     }
     return _analysisService!;
   }
@@ -141,7 +143,8 @@ class AIBootstrap {
 
     // 加载默认提供者设置
     final defaultProviderId = await _configManager!.getDefaultProviderId();
-    if (defaultProviderId != null && registry.getProvider(defaultProviderId) != null) {
+    if (defaultProviderId != null &&
+        registry.getProvider(defaultProviderId) != null) {
       registry.setDefaultProvider(defaultProviderId);
     }
 

@@ -154,10 +154,12 @@ class DivinationRecordDao extends DatabaseAccessor<AppDatabase>
   }) async {
     await (update(divinationRecords)..where((t) => t.id.equals(id))).write(
       DivinationRecordsCompanion(
-        questionId: questionId != null ? Value(questionId) : const Value.absent(),
+        questionId:
+            questionId != null ? Value(questionId) : const Value.absent(),
         detailId: detailId != null ? Value(detailId) : const Value.absent(),
-        interpretationId:
-            interpretationId != null ? Value(interpretationId) : const Value.absent(),
+        interpretationId: interpretationId != null
+            ? Value(interpretationId)
+            : const Value.absent(),
         updatedAt: Value(DateTime.now()),
       ),
     );
@@ -234,9 +236,8 @@ class DivinationRecordDao extends DatabaseAccessor<AppDatabase>
       query.where((t) => t.castTime.isSmallerOrEqualValue(endTime));
     }
 
-    query.orderBy([
-      (t) => OrderingTerm(expression: t.castTime, mode: OrderingMode.desc)
-    ]);
+    query.orderBy(
+        [(t) => OrderingTerm(expression: t.castTime, mode: OrderingMode.desc)]);
 
     return query.get();
   }
@@ -306,8 +307,6 @@ class DivinationRecordDao extends DatabaseAccessor<AppDatabase>
   /// [ids] 要删除的记录 ID 列表
   /// 返回删除的记录数
   Future<int> deleteRecordsBatch(List<String> ids) async {
-    return await (delete(divinationRecords)
-          ..where((t) => t.id.isIn(ids)))
-        .go();
+    return await (delete(divinationRecords)..where((t) => t.id.isIn(ids))).go();
   }
 }

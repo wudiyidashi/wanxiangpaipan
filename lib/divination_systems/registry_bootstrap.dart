@@ -224,7 +224,8 @@ class DivinationSystemBootstrap {
 
         print('$statusIcon ${system.name} (${system.type.id})');
         print('   Description: ${system.description}');
-        print('   Supported methods: ${system.supportedMethods.map((m) => m.displayName).join(', ')}');
+        print(
+            '   Supported methods: ${system.supportedMethods.map((m) => m.displayName).join(', ')}');
         print('   UI Factory: ${hasUI ? 'Registered' : 'Not registered'}');
         print('');
       }

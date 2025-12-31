@@ -74,20 +74,16 @@ class ShenJiangConfig with _$ShenJiangConfig {
   }
 
   /// 获取贵人（天乙贵人）位置
-  ShenJiangPosition? get guiRen =>
-      getPositionByShenJiang(ShenJiang.guiRen);
+  ShenJiangPosition? get guiRen => getPositionByShenJiang(ShenJiang.guiRen);
 
   /// 获取青龙位置
-  ShenJiangPosition? get qingLong =>
-      getPositionByShenJiang(ShenJiang.qingLong);
+  ShenJiangPosition? get qingLong => getPositionByShenJiang(ShenJiang.qingLong);
 
   /// 获取白虎位置
-  ShenJiangPosition? get baiHu =>
-      getPositionByShenJiang(ShenJiang.baiHu);
+  ShenJiangPosition? get baiHu => getPositionByShenJiang(ShenJiang.baiHu);
 
   /// 获取玄武位置
-  ShenJiangPosition? get xuanWu =>
-      getPositionByShenJiang(ShenJiang.xuanWu);
+  ShenJiangPosition? get xuanWu => getPositionByShenJiang(ShenJiang.xuanWu);
 
   /// 贵人类型描述
   String get guiRenTypeDescription => isYangGui ? '阳贵（昼贵）' : '阴贵（夜贵）';

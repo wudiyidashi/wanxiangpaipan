@@ -70,14 +70,32 @@ class DaLiuRenConstants {
 
   /// 十二地支
   static const List<String> diZhi = [
-    '子', '丑', '寅', '卯', '辰', '巳',
-    '午', '未', '申', '酉', '戌', '亥'
+    '子',
+    '丑',
+    '寅',
+    '卯',
+    '辰',
+    '巳',
+    '午',
+    '未',
+    '申',
+    '酉',
+    '戌',
+    '亥'
   ];
 
   /// 十天干
   static const List<String> tianGan = [
-    '甲', '乙', '丙', '丁', '戊',
-    '己', '庚', '辛', '壬', '癸'
+    '甲',
+    '乙',
+    '丙',
+    '丁',
+    '戊',
+    '己',
+    '庚',
+    '辛',
+    '壬',
+    '癸'
   ];
 
   /// 天干寄宫表
@@ -158,12 +176,18 @@ class DaLiuRenConstants {
   ///
   /// 相隔六位的地支互冲
   static const Map<String, String> diZhiChong = {
-    '子': '午', '午': '子',
-    '丑': '未', '未': '丑',
-    '寅': '申', '申': '寅',
-    '卯': '酉', '酉': '卯',
-    '辰': '戌', '戌': '辰',
-    '巳': '亥', '亥': '巳',
+    '子': '午',
+    '午': '子',
+    '丑': '未',
+    '未': '丑',
+    '寅': '申',
+    '申': '寅',
+    '卯': '酉',
+    '酉': '卯',
+    '辰': '戌',
+    '戌': '辰',
+    '巳': '亥',
+    '亥': '巳',
   };
 
   /// 地支三合
@@ -254,5 +278,6 @@ class DaLiuRenConstants {
   static String getGanJiGong(String gan) => ganJiGong[gan] ?? '子';
 
   /// 获取贵人位置
-  static List<String> getGuiRenPosition(String gan) => ganGuiRen[gan] ?? ['丑', '未'];
+  static List<String> getGuiRenPosition(String gan) =>
+      ganGuiRen[gan] ?? ['丑', '未'];
 }

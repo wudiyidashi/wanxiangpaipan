@@ -320,4 +320,3 @@ class _MockDivinationSystem implements DivinationSystem {
     return true;
   }
 }
-

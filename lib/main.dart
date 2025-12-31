@@ -142,8 +142,8 @@ class _WanxiangPaipanAppState extends State<WanxiangPaipanApp> {
         home: const HomeScreen(),
         routes: {
           '/method-selector': (context) {
-            final systemType = ModalRoute.of(context)!.settings.arguments
-                as DivinationType;
+            final systemType =
+                ModalRoute.of(context)!.settings.arguments as DivinationType;
             return MethodSelectorScreen(systemType: systemType);
           },
           '/history': (context) => const HistoryListScreen(),
@@ -153,4 +153,3 @@ class _WanxiangPaipanAppState extends State<WanxiangPaipanApp> {
     );
   }
 }
-

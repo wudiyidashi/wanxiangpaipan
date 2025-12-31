@@ -35,7 +35,20 @@ class TianPan with _$TianPan {
   /// 获取天盘十二宫的完整显示
   /// 返回格式：[{地盘: '子', 天盘: '亥'}, ...]
   List<Map<String, String>> get fullDisplay {
-    const diZhiOrder = ['子', '丑', '寅', '卯', '辰', '巳', '午', '未', '申', '酉', '戌', '亥'];
+    const diZhiOrder = [
+      '子',
+      '丑',
+      '寅',
+      '卯',
+      '辰',
+      '巳',
+      '午',
+      '未',
+      '申',
+      '酉',
+      '戌',
+      '亥'
+    ];
     return diZhiOrder.map((diPan) {
       return {
         '地盘': diPan,

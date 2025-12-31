@@ -198,7 +198,8 @@ class _DaLiuRenTimeCastScreen extends StatefulWidget {
   const _DaLiuRenTimeCastScreen();
 
   @override
-  State<_DaLiuRenTimeCastScreen> createState() => _DaLiuRenTimeCastScreenState();
+  State<_DaLiuRenTimeCastScreen> createState() =>
+      _DaLiuRenTimeCastScreenState();
 }
 
 class _DaLiuRenTimeCastScreenState extends State<_DaLiuRenTimeCastScreen> {
@@ -275,7 +276,8 @@ class _DaLiuRenTimeCastScreenState extends State<_DaLiuRenTimeCastScreen> {
                     icon: const Icon(Icons.play_arrow),
                     label: const Text('开始起课'),
                     style: ElevatedButton.styleFrom(
-                      padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 16),
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 32, vertical: 16),
                     ),
                   ),
           ],
@@ -290,7 +292,8 @@ class _DaLiuRenManualCastScreen extends StatefulWidget {
   const _DaLiuRenManualCastScreen();
 
   @override
-  State<_DaLiuRenManualCastScreen> createState() => _DaLiuRenManualCastScreenState();
+  State<_DaLiuRenManualCastScreen> createState() =>
+      _DaLiuRenManualCastScreenState();
 }
 
 class _DaLiuRenManualCastScreenState extends State<_DaLiuRenManualCastScreen> {
@@ -356,7 +359,8 @@ class _DaLiuRenManualCastScreenState extends State<_DaLiuRenManualCastScreen> {
                   children: [
                     const Text(
                       '日干支',
-                      style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                      style:
+                          TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                     ),
                     const SizedBox(height: 12),
                     Row(
@@ -369,9 +373,11 @@ class _DaLiuRenManualCastScreenState extends State<_DaLiuRenManualCastScreen> {
                               border: OutlineInputBorder(),
                             ),
                             items: _tianGan.map((gan) {
-                              return DropdownMenuItem(value: gan, child: Text(gan));
+                              return DropdownMenuItem(
+                                  value: gan, child: Text(gan));
                             }).toList(),
-                            onChanged: (value) => setState(() => _riGan = value!),
+                            onChanged: (value) =>
+                                setState(() => _riGan = value!),
                           ),
                         ),
                         const SizedBox(width: 12),
@@ -383,9 +389,11 @@ class _DaLiuRenManualCastScreenState extends State<_DaLiuRenManualCastScreen> {
                               border: OutlineInputBorder(),
                             ),
                             items: _diZhi.map((zhi) {
-                              return DropdownMenuItem(value: zhi, child: Text(zhi));
+                              return DropdownMenuItem(
+                                  value: zhi, child: Text(zhi));
                             }).toList(),
-                            onChanged: (value) => setState(() => _riZhi = value!),
+                            onChanged: (value) =>
+                                setState(() => _riZhi = value!),
                           ),
                         ),
                       ],
@@ -403,7 +411,8 @@ class _DaLiuRenManualCastScreenState extends State<_DaLiuRenManualCastScreen> {
                   children: [
                     const Text(
                       '时支',
-                      style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                      style:
+                          TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                     ),
                     const SizedBox(height: 12),
                     DropdownButtonFormField<String>(
@@ -430,7 +439,8 @@ class _DaLiuRenManualCastScreenState extends State<_DaLiuRenManualCastScreen> {
                   children: [
                     const Text(
                       '月建',
-                      style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                      style:
+                          TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                     ),
                     const SizedBox(height: 12),
                     DropdownButtonFormField<String>(
@@ -508,7 +518,7 @@ class _DaLiuRenResultScreen extends StatelessWidget {
             _buildShenShaCard(context),
             const SizedBox(height: 16),
 
-              // AI 分析组件
+            // AI 分析组件
             AIAnalysisWidget(result: result),
           ],
         ),
@@ -555,7 +565,8 @@ class _DaLiuRenResultScreen extends StatelessWidget {
                   ),
             ),
             const Divider(),
-            _buildInfoRow('月将', '${result.tianPan.yueJiang}（${result.tianPan.yueJiangName}）'),
+            _buildInfoRow('月将',
+                '${result.tianPan.yueJiang}（${result.tianPan.yueJiangName}）'),
             _buildInfoRow('描述', result.tianPan.yueJiangDescription),
           ],
         ),
@@ -593,7 +604,8 @@ class _DaLiuRenResultScreen extends StatelessWidget {
                     const SizedBox(width: 8),
                     if (ke.wuXingRelation != null)
                       Container(
-                        padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 6, vertical: 2),
                         decoration: BoxDecoration(
                           color: ke.isZeiKe
                               ? Colors.red.withOpacity(0.1)
@@ -640,7 +652,8 @@ class _DaLiuRenResultScreen extends StatelessWidget {
                 ),
                 const Spacer(),
                 Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                   decoration: BoxDecoration(
                     color: Colors.purple.withOpacity(0.1),
                     borderRadius: BorderRadius.circular(4),
@@ -728,7 +741,8 @@ class _DaLiuRenResultScreen extends StatelessWidget {
                   ),
             ),
             const Divider(),
-            _buildInfoRow('贵人', '${result.shenJiangConfig.guiRenPosition}（${result.shenJiangConfig.guiRenTypeDescription}）'),
+            _buildInfoRow('贵人',
+                '${result.shenJiangConfig.guiRenPosition}（${result.shenJiangConfig.guiRenTypeDescription}）'),
             _buildInfoRow('布神', result.shenJiangConfig.directionDescription),
           ],
         ),
@@ -767,7 +781,8 @@ class _DaLiuRenResultScreen extends StatelessWidget {
                   return Chip(
                     label: Text(shenSha.displayText),
                     backgroundColor: Colors.green.withOpacity(0.1),
-                    labelStyle: const TextStyle(fontSize: 12, color: Colors.green),
+                    labelStyle:
+                        const TextStyle(fontSize: 12, color: Colors.green),
                   );
                 }).toList(),
               ),
@@ -790,7 +805,8 @@ class _DaLiuRenResultScreen extends StatelessWidget {
                   return Chip(
                     label: Text(shenSha.displayText),
                     backgroundColor: Colors.red.withOpacity(0.1),
-                    labelStyle: const TextStyle(fontSize: 12, color: Colors.red),
+                    labelStyle:
+                        const TextStyle(fontSize: 12, color: Colors.red),
                   );
                 }).toList(),
               ),

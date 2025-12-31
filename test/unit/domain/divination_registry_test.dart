@@ -311,10 +311,12 @@ void main() {
         final enabledSystems = registry.getEnabledSystems();
 
         expect(enabledSystems.length, 2);
-        expect(enabledSystems.map((s) => s.type), containsAll([
-          DivinationType.liuYao,
-          DivinationType.meiHua,
-        ]));
+        expect(
+            enabledSystems.map((s) => s.type),
+            containsAll([
+              DivinationType.liuYao,
+              DivinationType.meiHua,
+            ]));
       });
 
       test('应该在没有启用的系统时返回空列表', () {
@@ -511,10 +513,12 @@ void main() {
         final types = registry.getRegisteredTypes();
 
         expect(types.length, 2);
-        expect(types, containsAll([
-          DivinationType.liuYao,
-          DivinationType.daLiuRen,
-        ]));
+        expect(
+            types,
+            containsAll([
+              DivinationType.liuYao,
+              DivinationType.daLiuRen,
+            ]));
       });
     });
 
@@ -570,4 +574,3 @@ void main() {
     });
   });
 }
-

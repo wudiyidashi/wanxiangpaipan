@@ -273,11 +273,13 @@ class _HomeScreenState extends State<HomeScreen> {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Icon(Icons.calendar_today_outlined, size: 48, color: AppColors.huiseLight),
+          Icon(Icons.calendar_today_outlined,
+              size: 48, color: AppColors.huiseLight),
           const SizedBox(height: 12),
           Text('历法功能', style: TextStyle(fontSize: 16, color: AppColors.huise)),
           const SizedBox(height: 4),
-          Text('即将推出', style: TextStyle(fontSize: 13, color: AppColors.huiseLight)),
+          Text('即将推出',
+              style: TextStyle(fontSize: 13, color: AppColors.huiseLight)),
         ],
       ),
     );
@@ -292,7 +294,8 @@ class _HomeScreenState extends State<HomeScreen> {
           const SizedBox(height: 12),
           Text('个人中心', style: TextStyle(fontSize: 16, color: AppColors.huise)),
           const SizedBox(height: 4),
-          Text('即将推出', style: TextStyle(fontSize: 13, color: AppColors.huiseLight)),
+          Text('即将推出',
+              style: TextStyle(fontSize: 13, color: AppColors.huiseLight)),
         ],
       ),
     );

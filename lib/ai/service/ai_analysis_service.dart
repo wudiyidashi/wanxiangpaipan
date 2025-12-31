@@ -113,8 +113,8 @@ class AIAnalysisService extends ChangeNotifier {
       );
 
       // 4. 判断是否使用流式
-      final shouldStream = useStreaming ??
-          await _configManager.isStreamingEnabled();
+      final shouldStream =
+          useStreaming ?? await _configManager.isStreamingEnabled();
 
       if (shouldStream) {
         return await _analyzeWithStream(provider, request);

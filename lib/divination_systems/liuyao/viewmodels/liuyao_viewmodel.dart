@@ -169,7 +169,8 @@ class LiuYaoViewModel extends DivinationViewModel<LiuYaoResult> {
     }
 
     if (hasMovingYao) {
-      buffer.writeln('动爻：${movingYaos.map((y) => '第${y.position}爻').join('、')}');
+      buffer
+          .writeln('动爻：${movingYaos.map((y) => '第${y.position}爻').join('、')}');
     }
 
     return buffer.toString();
