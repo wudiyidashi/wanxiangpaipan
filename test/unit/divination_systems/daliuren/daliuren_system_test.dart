@@ -150,8 +150,8 @@ void main() {
         expect(system.description, contains('大六壬'));
       });
 
-      test('应该暂时禁用（isEnabled = false）', () {
-        expect(system.isEnabled, false);
+      test('应该已启用（isEnabled = true）', () {
+        expect(system.isEnabled, true);
       });
 
       test('应该支持时间起卦和手动输入', () {
@@ -161,29 +161,29 @@ void main() {
     });
 
     group('cast 方法', () {
-      test('应该抛出 UnimplementedError', () async {
-        expect(
-          () => system.cast(
-            method: CastMethod.time,
-            input: {},
-          ),
-          throwsA(isA<UnimplementedError>()),
+      test('应该返回时间起课结果', () async {
+        final result = await system.cast(
+          method: CastMethod.time,
+          input: {},
         );
+
+        expect(result, isA<DaLiuRenResult>());
+        expect(result.castMethod, CastMethod.time);
       });
 
-      test('抛出的错误应该包含实现提示', () async {
-        try {
-          await system.cast(
-            method: CastMethod.time,
-            input: {},
-          );
-          fail('应该抛出 UnimplementedError');
-        } catch (e) {
-          expect(e, isA<UnimplementedError>());
-          expect(e.toString(), contains('大六壬系统尚未实现'));
-          expect(e.toString(), contains('四课排列算法'));
-          expect(e.toString(), contains('三传推导算法'));
-        }
+      test('应该返回手动起课结果', () async {
+        final result = await system.cast(
+          method: CastMethod.manual,
+          input: {
+            'riGan': '甲',
+            'riZhi': '子',
+            'shiZhi': '子',
+            'yueJian': '子',
+          },
+        );
+
+        expect(result, isA<DaLiuRenResult>());
+        expect(result.castMethod, CastMethod.manual);
       });
     });
 

@@ -14,6 +14,7 @@ part 'si_ke.g.dart';
 /// - 四课：日支本位（日支本身）
 @freezed
 class SiKe with _$SiKe {
+  @JsonSerializable(explicitToJson: true)
   const factory SiKe({
     /// 第一课
     required Ke ke1,

@@ -23,6 +23,7 @@ part 'daliuren_result.g.dart';
 /// - [shenShaList]: 神煞列表
 @freezed
 class DaLiuRenResult with _$DaLiuRenResult implements DivinationResult {
+  @JsonSerializable(explicitToJson: true)
   const factory DaLiuRenResult({
     /// 唯一标识
     required String id,

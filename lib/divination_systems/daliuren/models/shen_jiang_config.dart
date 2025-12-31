@@ -39,6 +39,7 @@ class ShenJiangPosition with _$ShenJiangPosition {
 /// 神将从贵人起，阳日顺布，阴日逆布。
 @freezed
 class ShenJiangConfig with _$ShenJiangConfig {
+  @JsonSerializable(explicitToJson: true)
   const factory ShenJiangConfig({
     /// 贵人位置（阳贵或阴贵）
     required String guiRenPosition,

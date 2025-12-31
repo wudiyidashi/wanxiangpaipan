@@ -11,6 +11,7 @@ part 'san_chuan.g.dart';
 /// 三传由四课通过课体规则推导而来。
 @freezed
 class SanChuan with _$SanChuan {
+  @JsonSerializable(explicitToJson: true)
   const factory SanChuan({
     /// 初传（发用）
     required Chuan chuChuan,

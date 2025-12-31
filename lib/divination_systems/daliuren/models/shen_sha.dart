@@ -49,6 +49,7 @@ class ShenSha with _$ShenSha {
 /// 包含一次占断中所有的神煞信息。
 @freezed
 class ShenShaList with _$ShenShaList {
+  @JsonSerializable(explicitToJson: true)
   const factory ShenShaList({
     /// 所有神煞
     required List<ShenSha> allShenSha,
