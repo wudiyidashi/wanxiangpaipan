@@ -74,7 +74,7 @@ class _TimeEngineCardState extends State<TimeEngineCard> {
         border: Border.all(color: _dividerColor, width: 1),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withValues(alpha: 0.08),
+            color: Colors.black.withOpacity(0.08),
             blurRadius: 12,
             offset: const Offset(0, 4),
           ),
@@ -190,7 +190,7 @@ class _TimeEngineCardState extends State<TimeEngineCard> {
         ),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withValues(alpha: 0.12),
+            color: Colors.black.withOpacity(0.12),
             blurRadius: 6,
             offset: const Offset(2, 3), // 向右下的投影
           ),

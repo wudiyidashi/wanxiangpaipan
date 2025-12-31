@@ -367,7 +367,7 @@ class _MockResult implements DivinationResult {
   });
 
   @override
-  get lunarInfo => const LunarInfo(
+  LunarInfo get lunarInfo => const LunarInfo(
         yueJian: '寅',
         riGan: '甲',
         riZhi: '子',

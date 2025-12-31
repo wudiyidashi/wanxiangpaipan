@@ -59,10 +59,10 @@ class AppTheme {
       ),
 
       // 卡片主题
-      cardTheme: CardThemeData(
+      cardTheme: CardTheme(
         color: AppColors.xiangseLight,
         elevation: 2,
-        shadowColor: Colors.black.withValues(alpha: 0.08),
+        shadowColor: Colors.black.withOpacity(0.08),
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(12),
         ),
@@ -75,7 +75,7 @@ class AppTheme {
           backgroundColor: AppColors.dailan,
           foregroundColor: Colors.white,
           elevation: 2,
-          shadowColor: AppColors.dailan.withValues(alpha: 0.3),
+          shadowColor: AppColors.dailan.withOpacity(0.3),
           padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(8),
@@ -172,7 +172,7 @@ class AppTheme {
       ),
 
       // 对话框主题
-      dialogTheme: DialogThemeData(
+      dialogTheme: DialogTheme(
         backgroundColor: AppColors.xiangseLight,
         elevation: 8,
         shape: RoundedRectangleBorder(
@@ -202,7 +202,7 @@ class AppTheme {
       // Chip 主题
       chipTheme: ChipThemeData(
         backgroundColor: AppColors.xiangseLight,
-        selectedColor: AppColors.dailan.withValues(alpha: 0.15),
+        selectedColor: AppColors.dailan.withOpacity(0.15),
         disabledColor: AppColors.divider,
         labelStyle: AppTextStyles.bodySmall,
         padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
@@ -230,8 +230,8 @@ class AppTheme {
 
       // 涟漪效果
       splashFactory: InkRipple.splashFactory,
-      splashColor: AppColors.dailan.withValues(alpha: 0.1),
-      highlightColor: AppColors.dailan.withValues(alpha: 0.05),
+      splashColor: AppColors.dailan.withOpacity(0.1),
+      highlightColor: AppColors.dailan.withOpacity(0.05),
     );
   }
 

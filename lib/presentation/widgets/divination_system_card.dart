@@ -160,7 +160,7 @@ class _DivinationSystemCardState extends State<DivinationSystemCard>
             ),
             boxShadow: [
               BoxShadow(
-                color: Colors.brown.withValues(alpha: 0.08),
+                color: Colors.brown.withOpacity(0.08),
                 blurRadius: 10,
                 offset: const Offset(0, 4),
               ),
@@ -212,7 +212,7 @@ class _DivinationSystemCardState extends State<DivinationSystemCard>
                           subtitle,
                           style: TextStyle(
                             fontSize: subtitleSize,
-                            color: _textMuted.withValues(alpha: 0.8),
+                            color: _textMuted.withOpacity(0.8),
                             height: 1.2,
                           ),
                         ),
@@ -281,7 +281,7 @@ class AddDivinationCard extends StatelessWidget {
           color: const Color(0xFFF9F7F5),
           borderRadius: BorderRadius.circular(16),
           border: Border.all(
-            color: Colors.brown.withValues(alpha: 0.25),
+            color: Colors.brown.withOpacity(0.25),
             width: 1,
           ),
         ),
@@ -289,7 +289,7 @@ class AddDivinationCard extends StatelessWidget {
           child: Icon(
             Icons.add,
             size: 30,
-            color: Colors.brown.withValues(alpha: 0.35),
+            color: Colors.brown.withOpacity(0.35),
           ),
         ),
       ),
