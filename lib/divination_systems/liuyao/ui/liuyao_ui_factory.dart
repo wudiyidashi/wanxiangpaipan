@@ -2,9 +2,7 @@ import 'package:flutter/material.dart';
 import '../../../domain/divination_system.dart';
 import '../models/gua.dart';
 import '../../../presentation/divination_ui_registry.dart';
-import '../../../presentation/screens/cast/coin_cast_screen.dart';
-import '../../../presentation/screens/cast/time_cast_screen.dart';
-import '../../../presentation/screens/cast/manual_cast_screen.dart';
+import '../../../presentation/screens/cast/unified_cast_screen.dart';
 import '../../../presentation/widgets/ai_analysis_widget.dart';
 import '../../../presentation/widgets/diagram_comparison_row.dart';
 import '../../../presentation/widgets/question_section.dart';
@@ -22,22 +20,7 @@ class LiuYaoUIFactory implements DivinationUIFactory {
 
   @override
   Widget buildCastScreen(CastMethod method) {
-    switch (method) {
-      case CastMethod.coin:
-        // 复用现有的摇钱法起卦页面
-        return const CoinCastScreen();
-
-      case CastMethod.time:
-        // 复用现有的时间起卦页面
-        return const TimeCastScreen();
-
-      case CastMethod.manual:
-        // 复用现有的手动输入页面
-        return const ManualCastScreen();
-
-      default:
-        throw UnsupportedError('六爻不支持的起卦方式: ${method.displayName}');
-    }
+    return const UnifiedCastScreen();
   }
 
   @override

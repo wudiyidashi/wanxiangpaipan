@@ -232,6 +232,17 @@ class AppTheme {
       splashFactory: InkRipple.splashFactory,
       splashColor: AppColors.dailan.withOpacity(0.1),
       highlightColor: AppColors.dailan.withOpacity(0.05),
+
+      // 页面切换动效（缩放 + 淡入）
+      pageTransitionsTheme: const PageTransitionsTheme(
+        builders: {
+          TargetPlatform.android: _ScaleFadePageTransitionsBuilder(),
+          TargetPlatform.iOS: _ScaleFadePageTransitionsBuilder(),
+          TargetPlatform.macOS: _ScaleFadePageTransitionsBuilder(),
+          TargetPlatform.windows: _ScaleFadePageTransitionsBuilder(),
+          TargetPlatform.linux: _ScaleFadePageTransitionsBuilder(),
+        },
+      ),
     );
   }
 
@@ -239,5 +250,34 @@ class AppTheme {
   static ThemeData get darkTheme {
     // TODO: 实现深色主题
     return lightTheme;
+  }
+}
+
+class _ScaleFadePageTransitionsBuilder extends PageTransitionsBuilder {
+  const _ScaleFadePageTransitionsBuilder();
+
+  @override
+  Widget buildTransitions<T>(
+    PageRoute<T> route,
+    BuildContext context,
+    Animation<double> animation,
+    Animation<double> secondaryAnimation,
+    Widget child,
+  ) {
+    final curved = CurvedAnimation(
+      parent: animation,
+      curve: Curves.easeOutCubic,
+      reverseCurve: Curves.easeInCubic,
+    );
+    final fade = Tween<double>(begin: 0.0, end: 1.0).animate(curved);
+    final scale = Tween<double>(begin: 0.98, end: 1.0).animate(curved);
+
+    return FadeTransition(
+      opacity: fade,
+      child: ScaleTransition(
+        scale: scale,
+        child: child,
+      ),
+    );
   }
 }

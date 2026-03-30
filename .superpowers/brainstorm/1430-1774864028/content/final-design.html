@@ -1,0 +1,107 @@
+<h2>最终设计：合并起卦页</h2>
+<p class="subtitle">紧凑单页布局 — 三种起卦方式的操作区展示</p>
+
+<div style="display:flex;gap:16px;flex-wrap:wrap;justify-content:center;">
+
+  <!-- Coin Method -->
+  <div style="flex:0 0 260px;">
+    <div class="label" style="text-align:center;margin-bottom:8px;">摇钱法</div>
+    <div style="background:#1a1a2e;border-radius:12px;padding:16px;color:#e0e0e0;font-family:sans-serif;font-size:13px;">
+      <div style="text-align:center;font-size:15px;font-weight:bold;margin-bottom:14px;color:#d4a574;">← 六爻起卦</div>
+      <div style="margin-bottom:10px;">
+        <div style="color:#999;font-size:11px;margin-bottom:4px;">占问事项（可选）</div>
+        <div style="background:#2a2a3e;border:1px solid #444;border-radius:8px;padding:8px;color:#888;font-size:12px;">财运如何...</div>
+      </div>
+      <div style="margin-bottom:14px;">
+        <div style="color:#999;font-size:11px;margin-bottom:4px;">起卦方式</div>
+        <div style="background:#2a2a3e;border:1px solid #444;border-radius:8px;padding:8px;display:flex;justify-content:space-between;">
+          <span style="font-size:12px;">摇钱法</span><span style="color:#888;">▼</span>
+        </div>
+      </div>
+      <div style="border-top:1px solid #333;margin:10px 0;"></div>
+      <div style="text-align:center;padding:16px 0;">
+        <div style="color:#999;font-size:11px;margin-bottom:12px;">点击按钮自动摇卦</div>
+        <div style="background:#d4a574;color:#1a1a2e;border-radius:20px;padding:10px 28px;display:inline-block;font-weight:bold;font-size:13px;">开始摇卦</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Time Method -->
+  <div style="flex:0 0 260px;">
+    <div class="label" style="text-align:center;margin-bottom:8px;">时间起卦</div>
+    <div style="background:#1a1a2e;border-radius:12px;padding:16px;color:#e0e0e0;font-family:sans-serif;font-size:13px;">
+      <div style="text-align:center;font-size:15px;font-weight:bold;margin-bottom:14px;color:#d4a574;">← 六爻起卦</div>
+      <div style="margin-bottom:10px;">
+        <div style="color:#999;font-size:11px;margin-bottom:4px;">占问事项（可选）</div>
+        <div style="background:#2a2a3e;border:1px solid #444;border-radius:8px;padding:8px;color:#888;font-size:12px;">请输入您想占问的事项...</div>
+      </div>
+      <div style="margin-bottom:14px;">
+        <div style="color:#999;font-size:11px;margin-bottom:4px;">起卦方式</div>
+        <div style="background:#2a2a3e;border:1px solid #444;border-radius:8px;padding:8px;display:flex;justify-content:space-between;">
+          <span style="font-size:12px;">时间起卦</span><span style="color:#888;">▼</span>
+        </div>
+      </div>
+      <div style="border-top:1px solid #333;margin:10px 0;"></div>
+      <div style="text-align:center;padding:16px 0;">
+        <div style="color:#999;font-size:11px;margin-bottom:4px;">当前时间</div>
+        <div style="color:#d4a574;font-size:16px;font-weight:bold;margin-bottom:12px;">2026-03-30 15:32</div>
+        <div style="background:#d4a574;color:#1a1a2e;border-radius:20px;padding:10px 28px;display:inline-block;font-weight:bold;font-size:13px;">以此时间起卦</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Manual Method -->
+  <div style="flex:0 0 260px;">
+    <div class="label" style="text-align:center;margin-bottom:8px;">手动输入</div>
+    <div style="background:#1a1a2e;border-radius:12px;padding:16px;color:#e0e0e0;font-family:sans-serif;font-size:13px;">
+      <div style="text-align:center;font-size:15px;font-weight:bold;margin-bottom:14px;color:#d4a574;">← 六爻起卦</div>
+      <div style="margin-bottom:10px;">
+        <div style="color:#999;font-size:11px;margin-bottom:4px;">占问事项（可选）</div>
+        <div style="background:#2a2a3e;border:1px solid #444;border-radius:8px;padding:8px;color:#888;font-size:12px;">请输入您想占问的事项...</div>
+      </div>
+      <div style="margin-bottom:14px;">
+        <div style="color:#999;font-size:11px;margin-bottom:4px;">起卦方式</div>
+        <div style="background:#2a2a3e;border:1px solid #444;border-radius:8px;padding:8px;display:flex;justify-content:space-between;">
+          <span style="font-size:12px;">手动输入</span><span style="color:#888;">▼</span>
+        </div>
+      </div>
+      <div style="border-top:1px solid #333;margin:10px 0;"></div>
+      <!-- Date/Time picker -->
+      <div style="margin-bottom:8px;">
+        <div style="color:#999;font-size:11px;margin-bottom:4px;">起卦时间</div>
+        <div style="display:flex;gap:6px;">
+          <div style="background:#2a2a3e;border:1px solid #444;border-radius:6px;padding:6px 8px;flex:1;font-size:11px;">2026-03-30</div>
+          <div style="background:#2a2a3e;border:1px solid #444;border-radius:6px;padding:6px 8px;width:60px;font-size:11px;">15:32</div>
+        </div>
+      </div>
+      <!-- Yao inputs -->
+      <div style="margin-bottom:10px;">
+        <div style="color:#999;font-size:11px;margin-bottom:4px;">六爻输入</div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:4px;font-size:11px;">
+          <div style="background:#2a2a3e;border:1px solid #444;border-radius:4px;padding:5px 6px;display:flex;justify-content:space-between;"><span>初爻</span><span style="color:#888;">▼</span></div>
+          <div style="background:#2a2a3e;border:1px solid #444;border-radius:4px;padding:5px 6px;display:flex;justify-content:space-between;"><span>二爻</span><span style="color:#888;">▼</span></div>
+          <div style="background:#2a2a3e;border:1px solid #444;border-radius:4px;padding:5px 6px;display:flex;justify-content:space-between;"><span>三爻</span><span style="color:#888;">▼</span></div>
+          <div style="background:#2a2a3e;border:1px solid #444;border-radius:4px;padding:5px 6px;display:flex;justify-content:space-between;"><span>四爻</span><span style="color:#888;">▼</span></div>
+          <div style="background:#2a2a3e;border:1px solid #444;border-radius:4px;padding:5px 6px;display:flex;justify-content:space-between;"><span>五爻</span><span style="color:#888;">▼</span></div>
+          <div style="background:#2a2a3e;border:1px solid #444;border-radius:4px;padding:5px 6px;display:flex;justify-content:space-between;"><span>六爻</span><span style="color:#888;">▼</span></div>
+        </div>
+      </div>
+      <div style="text-align:center;">
+        <div style="background:#d4a574;color:#1a1a2e;border-radius:20px;padding:10px 28px;display:inline-block;font-weight:bold;font-size:13px;">确认起卦</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="section" style="margin-top:24px;">
+  <h3>设计要点</h3>
+  <ul>
+    <li><strong>导航流程</strong>：主页 → 起卦页 → 结果页（2次跳转）</li>
+    <li><strong>问题输入</strong>：顶部共享，所有起卦方式通用</li>
+    <li><strong>方式切换</strong>：DropdownButton，记住上次选择（SharedPreferences）</li>
+    <li><strong>无动画</strong>：点击按钮直接计算，立即跳转结果页</li>
+    <li><strong>操作区</strong>：分隔线以下，随下拉选择动态切换内容</li>
+    <li><strong>删除文件</strong>：method_selector_screen.dart 不再需要</li>
+    <li><strong>路由变更</strong>：主页直接 push 新的 CastScreen，移除 /method-selector 路由</li>
+  </ul>
+</div>

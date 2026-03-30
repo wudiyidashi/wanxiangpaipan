@@ -1,0 +1,150 @@
+<h2>最终设计 v3：紧凑上层 + 单列爻输入</h2>
+<p class="subtitle">优化间距，六爻改为垂直单列</p>
+
+<div style="display:flex;gap:24px;flex-wrap:wrap;justify-content:center;">
+
+  <!-- Coin Method -->
+  <div style="flex:0 0 280px;">
+    <div class="label" style="text-align:center;margin-bottom:8px;">摇钱法</div>
+    <div style="background:linear-gradient(135deg, #F7F7F5 0%, #F0EDE8 100%);border-radius:16px;padding:16px;color:#2C3E50;font-family:'Songti SC','SimSun',serif;font-size:13px;box-shadow:0 2px 12px rgba(0,0,0,0.08);position:relative;overflow:hidden;">
+      <div style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:220px;height:220px;border-radius:50%;border:1px solid rgba(183,148,82,0.15);"></div>
+      <div style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:180px;height:180px;border-radius:50%;border:1px solid rgba(183,148,82,0.1);"></div>
+
+      <div style="text-align:center;font-size:16px;font-weight:bold;margin-bottom:10px;color:#2B4570;letter-spacing:2px;position:relative;">六爻起卦</div>
+
+      <!-- Compact top: question + method in one row each, tight spacing -->
+      <div style="margin-bottom:8px;position:relative;">
+        <div style="color:#8B7355;font-size:10px;margin-bottom:3px;letter-spacing:1px;">占问事项</div>
+        <div style="background:rgba(255,255,255,0.6);border:1px solid rgba(183,148,82,0.3);border-radius:8px;padding:8px 10px;color:#A0937E;font-size:12px;">请输入您想占问的事项...</div>
+      </div>
+
+      <div style="margin-bottom:8px;position:relative;">
+        <div style="color:#8B7355;font-size:10px;margin-bottom:3px;letter-spacing:1px;">起卦方式</div>
+        <div style="background:rgba(255,255,255,0.6);border:1px solid rgba(183,148,82,0.3);border-radius:8px;padding:8px 10px;display:flex;justify-content:space-between;align-items:center;">
+          <span style="font-size:12px;color:#2B4570;">摇钱法</span>
+          <span style="color:#B79452;font-size:10px;">▼</span>
+        </div>
+      </div>
+
+      <div style="border-top:1px solid rgba(183,148,82,0.25);margin:8px 0;position:relative;"></div>
+
+      <!-- Coin visual -->
+      <div style="text-align:center;padding:14px 0;position:relative;">
+        <div style="display:flex;justify-content:center;gap:8px;margin-bottom:14px;">
+          <div style="width:44px;height:44px;border-radius:50%;background:radial-gradient(circle at 35% 35%, #C9A84C, #8B6914);border:2px solid #A08030;display:flex;align-items:center;justify-content:center;font-size:8px;color:#3D2B00;font-weight:bold;box-shadow:2px 3px 6px rgba(0,0,0,0.2);transform:rotate(-15deg);">通寶</div>
+          <div style="width:44px;height:44px;border-radius:50%;background:radial-gradient(circle at 35% 35%, #C9A84C, #8B6914);border:2px solid #A08030;display:flex;align-items:center;justify-content:center;font-size:8px;color:#3D2B00;font-weight:bold;box-shadow:2px 3px 6px rgba(0,0,0,0.2);transform:rotate(10deg);">通寶</div>
+          <div style="width:44px;height:44px;border-radius:50%;background:radial-gradient(circle at 35% 35%, #C9A84C, #8B6914);border:2px solid #A08030;display:flex;align-items:center;justify-content:center;font-size:8px;color:#3D2B00;font-weight:bold;box-shadow:2px 3px 6px rgba(0,0,0,0.2);transform:rotate(25deg);">通寶</div>
+        </div>
+        <div style="background:linear-gradient(135deg, #C84B31, #A63A24);color:#FFF;border-radius:24px;padding:11px 36px;display:inline-block;font-weight:bold;font-size:14px;letter-spacing:3px;box-shadow:0 3px 10px rgba(200,75,49,0.3);">起卦</div>
+      </div>
+
+      <!-- Ink-wash yao placeholders -->
+      <div style="padding:4px 20px 0;position:relative;">
+        <div style="display:flex;flex-direction:column;gap:5px;align-items:center;">
+          <div style="width:100%;height:3px;background:linear-gradient(90deg,transparent 0%,rgba(100,100,100,0.12) 20%,rgba(100,100,100,0.18) 50%,rgba(100,100,100,0.12) 80%,transparent 100%);border-radius:2px;"></div>
+          <div style="width:100%;height:3px;display:flex;gap:30%;"><div style="flex:1;background:linear-gradient(90deg,transparent,rgba(100,100,100,0.15),transparent);border-radius:2px;"></div><div style="flex:1;background:linear-gradient(90deg,transparent,rgba(100,100,100,0.15),transparent);border-radius:2px;"></div></div>
+          <div style="width:100%;height:3px;background:linear-gradient(90deg,transparent 0%,rgba(100,100,100,0.12) 20%,rgba(100,100,100,0.18) 50%,rgba(100,100,100,0.12) 80%,transparent 100%);border-radius:2px;"></div>
+          <div style="width:100%;height:3px;display:flex;gap:30%;"><div style="flex:1;background:linear-gradient(90deg,transparent,rgba(100,100,100,0.15),transparent);border-radius:2px;"></div><div style="flex:1;background:linear-gradient(90deg,transparent,rgba(100,100,100,0.15),transparent);border-radius:2px;"></div></div>
+          <div style="width:100%;height:3px;background:linear-gradient(90deg,transparent 0%,rgba(100,100,100,0.12) 20%,rgba(100,100,100,0.18) 50%,rgba(100,100,100,0.12) 80%,transparent 100%);border-radius:2px;"></div>
+          <div style="width:100%;height:3px;background:linear-gradient(90deg,transparent 0%,rgba(100,100,100,0.12) 20%,rgba(100,100,100,0.18) 50%,rgba(100,100,100,0.12) 80%,transparent 100%);border-radius:2px;"></div>
+        </div>
+        <div style="text-align:center;color:rgba(139,115,85,0.4);font-size:10px;margin-top:4px;letter-spacing:1px;">卦象</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Time Method -->
+  <div style="flex:0 0 280px;">
+    <div class="label" style="text-align:center;margin-bottom:8px;">时间起卦</div>
+    <div style="background:linear-gradient(135deg, #F7F7F5 0%, #F0EDE8 100%);border-radius:16px;padding:16px;color:#2C3E50;font-family:'Songti SC','SimSun',serif;font-size:13px;box-shadow:0 2px 12px rgba(0,0,0,0.08);position:relative;overflow:hidden;">
+      <div style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:220px;height:220px;border-radius:50%;border:1px solid rgba(183,148,82,0.15);"></div>
+
+      <div style="text-align:center;font-size:16px;font-weight:bold;margin-bottom:10px;color:#2B4570;letter-spacing:2px;position:relative;">六爻起卦</div>
+
+      <div style="margin-bottom:8px;position:relative;">
+        <div style="color:#8B7355;font-size:10px;margin-bottom:3px;letter-spacing:1px;">占问事项</div>
+        <div style="background:rgba(255,255,255,0.6);border:1px solid rgba(183,148,82,0.3);border-radius:8px;padding:8px 10px;color:#A0937E;font-size:12px;">请输入您想占问的事项...</div>
+      </div>
+
+      <div style="margin-bottom:8px;position:relative;">
+        <div style="color:#8B7355;font-size:10px;margin-bottom:3px;letter-spacing:1px;">起卦方式</div>
+        <div style="background:rgba(255,255,255,0.6);border:1px solid rgba(183,148,82,0.3);border-radius:8px;padding:8px 10px;display:flex;justify-content:space-between;align-items:center;">
+          <span style="font-size:12px;color:#2B4570;">时间起卦</span>
+          <span style="color:#B79452;font-size:10px;">▼</span>
+        </div>
+      </div>
+
+      <div style="border-top:1px solid rgba(183,148,82,0.25);margin:8px 0;position:relative;"></div>
+
+      <div style="text-align:center;padding:14px 0;position:relative;">
+        <div style="color:#8B7355;font-size:10px;margin-bottom:4px;letter-spacing:1px;">当前时辰</div>
+        <div style="color:#2B4570;font-size:18px;font-weight:bold;margin-bottom:2px;letter-spacing:2px;">丙午年 辛卯月 壬辰日</div>
+        <div style="color:#A0937E;font-size:12px;margin-bottom:14px;">2026年3月30日 申时</div>
+        <div style="background:linear-gradient(135deg, #C84B31, #A63A24);color:#FFF;border-radius:24px;padding:11px 36px;display:inline-block;font-weight:bold;font-size:14px;letter-spacing:3px;box-shadow:0 3px 10px rgba(200,75,49,0.3);">起卦</div>
+      </div>
+
+      <div style="padding:4px 20px 0;position:relative;">
+        <div style="display:flex;flex-direction:column;gap:5px;align-items:center;">
+          <div style="width:100%;height:3px;background:linear-gradient(90deg,transparent 0%,rgba(100,100,100,0.12) 20%,rgba(100,100,100,0.18) 50%,rgba(100,100,100,0.12) 80%,transparent 100%);border-radius:2px;"></div>
+          <div style="width:100%;height:3px;display:flex;gap:30%;"><div style="flex:1;background:linear-gradient(90deg,transparent,rgba(100,100,100,0.15),transparent);border-radius:2px;"></div><div style="flex:1;background:linear-gradient(90deg,transparent,rgba(100,100,100,0.15),transparent);border-radius:2px;"></div></div>
+          <div style="width:100%;height:3px;background:linear-gradient(90deg,transparent 0%,rgba(100,100,100,0.12) 20%,rgba(100,100,100,0.18) 50%,rgba(100,100,100,0.12) 80%,transparent 100%);border-radius:2px;"></div>
+          <div style="width:100%;height:3px;display:flex;gap:30%;"><div style="flex:1;background:linear-gradient(90deg,transparent,rgba(100,100,100,0.15),transparent);border-radius:2px;"></div><div style="flex:1;background:linear-gradient(90deg,transparent,rgba(100,100,100,0.15),transparent);border-radius:2px;"></div></div>
+          <div style="width:100%;height:3px;background:linear-gradient(90deg,transparent 0%,rgba(100,100,100,0.12) 20%,rgba(100,100,100,0.18) 50%,rgba(100,100,100,0.12) 80%,transparent 100%);border-radius:2px;"></div>
+          <div style="width:100%;height:3px;background:linear-gradient(90deg,transparent 0%,rgba(100,100,100,0.12) 20%,rgba(100,100,100,0.18) 50%,rgba(100,100,100,0.12) 80%,transparent 100%);border-radius:2px;"></div>
+        </div>
+        <div style="text-align:center;color:rgba(139,115,85,0.4);font-size:10px;margin-top:4px;letter-spacing:1px;">卦象</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Manual Method -->
+  <div style="flex:0 0 280px;">
+    <div class="label" style="text-align:center;margin-bottom:8px;">手动输入</div>
+    <div style="background:linear-gradient(135deg, #F7F7F5 0%, #F0EDE8 100%);border-radius:16px;padding:16px;color:#2C3E50;font-family:'Songti SC','SimSun',serif;font-size:13px;box-shadow:0 2px 12px rgba(0,0,0,0.08);position:relative;overflow:hidden;">
+      <div style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:220px;height:220px;border-radius:50%;border:1px solid rgba(183,148,82,0.15);"></div>
+
+      <div style="text-align:center;font-size:16px;font-weight:bold;margin-bottom:10px;color:#2B4570;letter-spacing:2px;position:relative;">六爻起卦</div>
+
+      <div style="margin-bottom:8px;position:relative;">
+        <div style="color:#8B7355;font-size:10px;margin-bottom:3px;letter-spacing:1px;">占问事项</div>
+        <div style="background:rgba(255,255,255,0.6);border:1px solid rgba(183,148,82,0.3);border-radius:8px;padding:8px 10px;color:#A0937E;font-size:12px;">请输入您想占问的事项...</div>
+      </div>
+
+      <div style="margin-bottom:8px;position:relative;">
+        <div style="color:#8B7355;font-size:10px;margin-bottom:3px;letter-spacing:1px;">起卦方式</div>
+        <div style="background:rgba(255,255,255,0.6);border:1px solid rgba(183,148,82,0.3);border-radius:8px;padding:8px 10px;display:flex;justify-content:space-between;align-items:center;">
+          <span style="font-size:12px;color:#2B4570;">手动输入</span>
+          <span style="color:#B79452;font-size:10px;">▼</span>
+        </div>
+      </div>
+
+      <div style="border-top:1px solid rgba(183,148,82,0.25);margin:8px 0;position:relative;"></div>
+
+      <!-- Date/Time compact -->
+      <div style="margin-bottom:8px;position:relative;">
+        <div style="color:#8B7355;font-size:10px;margin-bottom:3px;letter-spacing:1px;">起卦时间</div>
+        <div style="display:flex;gap:6px;">
+          <div style="background:rgba(255,255,255,0.6);border:1px solid rgba(183,148,82,0.3);border-radius:8px;padding:7px 10px;flex:1;font-size:11px;color:#2B4570;">2026-03-30</div>
+          <div style="background:rgba(255,255,255,0.6);border:1px solid rgba(183,148,82,0.3);border-radius:8px;padding:7px 10px;width:56px;font-size:11px;color:#2B4570;">15:32</div>
+        </div>
+      </div>
+
+      <!-- Yao inputs: single column, top to bottom -->
+      <div style="margin-bottom:10px;position:relative;">
+        <div style="color:#8B7355;font-size:10px;margin-bottom:3px;letter-spacing:1px;">六爻输入（初爻 → 六爻）</div>
+        <div style="display:flex;flex-direction:column;gap:4px;font-size:11px;">
+          <div style="background:rgba(255,255,255,0.6);border:1px solid rgba(183,148,82,0.3);border-radius:6px;padding:7px 10px;display:flex;justify-content:space-between;color:#2B4570;"><span>初爻（一爻）</span><span style="color:#B79452;">▼</span></div>
+          <div style="background:rgba(255,255,255,0.6);border:1px solid rgba(183,148,82,0.3);border-radius:6px;padding:7px 10px;display:flex;justify-content:space-between;color:#2B4570;"><span>二爻</span><span style="color:#B79452;">▼</span></div>
+          <div style="background:rgba(255,255,255,0.6);border:1px solid rgba(183,148,82,0.3);border-radius:6px;padding:7px 10px;display:flex;justify-content:space-between;color:#2B4570;"><span>三爻</span><span style="color:#B79452;">▼</span></div>
+          <div style="background:rgba(255,255,255,0.6);border:1px solid rgba(183,148,82,0.3);border-radius:6px;padding:7px 10px;display:flex;justify-content:space-between;color:#2B4570;"><span>四爻</span><span style="color:#B79452;">▼</span></div>
+          <div style="background:rgba(255,255,255,0.6);border:1px solid rgba(183,148,82,0.3);border-radius:6px;padding:7px 10px;display:flex;justify-content:space-between;color:#2B4570;"><span>五爻</span><span style="color:#B79452;">▼</span></div>
+          <div style="background:rgba(255,255,255,0.6);border:1px solid rgba(183,148,82,0.3);border-radius:6px;padding:7px 10px;display:flex;justify-content:space-between;color:#2B4570;"><span>六爻（上爻）</span><span style="color:#B79452;">▼</span></div>
+        </div>
+      </div>
+
+      <div style="text-align:center;position:relative;">
+        <div style="background:linear-gradient(135deg, #C84B31, #A63A24);color:#FFF;border-radius:24px;padding:11px 36px;display:inline-block;font-weight:bold;font-size:14px;letter-spacing:3px;box-shadow:0 3px 10px rgba(200,75,49,0.3);">起卦</div>
+      </div>
+    </div>
+  </div>
+</div>

@@ -10,6 +10,7 @@ import '../../widgets/home/time_engine_card.dart';
 import '../../widgets/home/quick_history_bar.dart';
 import '../../widgets/home/background_decor.dart';
 import '../../widgets/home/app_bottom_nav_bar.dart';
+import '../history/history_list_screen.dart';
 
 /// 应用主界面（严格匹配设计图）
 ///
@@ -94,20 +95,40 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppColors.xiangse,
-      body: Stack(
-        children: [
+      body: AnimatedSwitcher(
+        duration: const Duration(milliseconds: 160),
+        switchInCurve: const Interval(0.2, 1.0, curve: Curves.easeOutCubic),
+        switchOutCurve: const Interval(0.8, 1.0, curve: Curves.easeInCubic),
+        transitionBuilder: (child, animation) {
+          final fade = animation;
+          final scale = Tween<double>(begin: 0.98, end: 1.0).animate(animation);
+
+          return FadeTransition(
+            opacity: fade,
+            child: ScaleTransition(
+              scale: scale,
+              child: child,
+            ),
+          );
+        },
+        child: Stack(
+          key: ValueKey(_currentNavIndex),
+          children: [
           // 背景装饰大字
-          BackgroundDecor(text: _getCurrentDayZhi()),
+          if (_currentNavIndex == 0)
+            BackgroundDecor(text: _getCurrentDayZhi()),
           // 主内容
           SafeArea(
+            top: _currentNavIndex == 0,
             child: Column(
               children: [
-                _buildAppBar(),
+                if (_currentNavIndex == 0) _buildAppBar(),
                 Expanded(child: _buildBody()),
               ],
             ),
           ),
         ],
+      ),
       ),
       bottomNavigationBar: AppBottomNavBar(
         currentIndex: _currentNavIndex,
@@ -174,11 +195,17 @@ class _HomeScreenState extends State<HomeScreen> {
       case 0:
         return _buildHomeContent();
       case 1:
-        return _buildHistoryContent();
+        return const HistoryListScreen();
       case 2:
-        return _buildCalendarContent();
+        return _buildSimpleTab(
+          title: '历法',
+          child: _buildCalendarContent(),
+        );
       case 3:
-        return _buildProfileContent();
+        return _buildSimpleTab(
+          title: '我的',
+          child: _buildProfileContent(),
+        );
       default:
         return _buildHomeContent();
     }
@@ -259,13 +286,13 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  Widget _buildHistoryContent() {
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      Navigator.pushNamed(context, '/history').then((_) {
-        setState(() => _currentNavIndex = 0);
-      });
-    });
-    return const Center(child: CircularProgressIndicator());
+  Widget _buildSimpleTab({required String title, required Widget child}) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text(title),
+      ),
+      body: child,
+    );
   }
 
   Widget _buildCalendarContent() {
@@ -302,10 +329,6 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   void _onNavIndexChanged(int index) {
-    if (index == 1) {
-      Navigator.pushNamed(context, '/history');
-      return;
-    }
     setState(() => _currentNavIndex = index);
   }
 

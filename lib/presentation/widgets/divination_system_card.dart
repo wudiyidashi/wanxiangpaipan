@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import '../../domain/divination_system.dart';
+import '../screens/cast/unified_cast_screen.dart';
 
 /// 术数系统卡片组件（Bento Grid 新中式风格）
 ///
@@ -243,10 +244,11 @@ class _DivinationSystemCardState extends State<DivinationSystemCard>
       return;
     }
 
-    Navigator.pushNamed(
+    Navigator.push(
       context,
-      '/method-selector',
-      arguments: widget.system.type,
+      MaterialPageRoute<void>(
+        builder: (_) => const UnifiedCastScreen(),
+      ),
     );
   }
 }

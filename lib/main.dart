@@ -7,9 +7,7 @@ import 'data/repositories/divination_repository_impl.dart';
 import 'data/secure/secure_storage.dart';
 import 'domain/repositories/divination_repository.dart';
 import 'domain/divination_registry.dart';
-import 'domain/divination_system.dart';
 import 'presentation/screens/home/home_screen.dart';
-import 'presentation/screens/home/method_selector_screen.dart';
 import 'presentation/screens/history/history_list_screen.dart';
 import 'presentation/screens/settings/settings_screen.dart';
 import 'divination_systems/liuyao/liuyao_system.dart';
@@ -141,11 +139,6 @@ class _WanxiangPaipanAppState extends State<WanxiangPaipanApp> {
         themeMode: ThemeMode.light,
         home: const HomeScreen(),
         routes: {
-          '/method-selector': (context) {
-            final systemType =
-                ModalRoute.of(context)!.settings.arguments as DivinationType;
-            return MethodSelectorScreen(systemType: systemType);
-          },
           '/history': (context) => const HistoryListScreen(),
           '/settings': (context) => const SettingsScreen()
         },

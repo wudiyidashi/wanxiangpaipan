@@ -1,0 +1,86 @@
+<h2>六爻起卦页合并方案</h2>
+<p class="subtitle">将"起卦方式选择"和"起卦操作"合并为一页，对比两种布局方案</p>
+
+<div class="split">
+  <div class="card" data-choice="a" onclick="toggleSelect(this)" style="flex:1;cursor:pointer">
+    <div class="card-image">
+      <div style="background:#1a1a2e;border-radius:12px;padding:16px;color:#e0e0e0;font-family:sans-serif;font-size:13px;">
+        <!-- AppBar -->
+        <div style="text-align:center;font-size:16px;font-weight:bold;margin-bottom:16px;color:#d4a574;">← 六爻起卦</div>
+
+        <!-- Question Input -->
+        <div style="margin-bottom:12px;">
+          <div style="color:#999;font-size:11px;margin-bottom:4px;">占问事项（可选）</div>
+          <div style="background:#2a2a3e;border:1px solid #444;border-radius:8px;padding:10px;color:#888;">请输入您想占问的事项...</div>
+        </div>
+
+        <!-- Method Dropdown -->
+        <div style="margin-bottom:16px;">
+          <div style="color:#999;font-size:11px;margin-bottom:4px;">起卦方式</div>
+          <div style="background:#2a2a3e;border:1px solid #444;border-radius:8px;padding:10px;display:flex;justify-content:space-between;align-items:center;">
+            <span>摇钱法</span>
+            <span style="color:#888;">▼</span>
+          </div>
+        </div>
+
+        <!-- Divider -->
+        <div style="border-top:1px solid #333;margin:12px 0;"></div>
+
+        <!-- Cast Area - Coin Method -->
+        <div style="text-align:center;padding:20px 0;">
+          <div style="font-size:14px;color:#d4a574;margin-bottom:8px;">摇钱法</div>
+          <div style="color:#999;font-size:12px;margin-bottom:16px;">点击按钮自动摇卦</div>
+          <div style="background:#d4a574;color:#1a1a2e;border-radius:24px;padding:12px 32px;display:inline-block;font-weight:bold;">开始摇卦</div>
+        </div>
+      </div>
+    </div>
+    <div class="card-body">
+      <h3>方案 A：紧凑单页</h3>
+      <p>问题输入 → 方式下拉 → 操作区，垂直线性布局。点击按钮直接计算并跳转结果页。</p>
+      <div class="pros-cons">
+        <div class="pros"><h4>优点</h4><ul><li>最简洁，一目了然</li><li>改动量最小</li><li>操作区随方式切换</li></ul></div>
+        <div class="cons"><h4>缺点</h4><ul><li>手动输入时页面较长</li></ul></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card" data-choice="b" onclick="toggleSelect(this)" style="flex:1;cursor:pointer">
+    <div class="card-image">
+      <div style="background:#1a1a2e;border-radius:12px;padding:16px;color:#e0e0e0;font-family:sans-serif;font-size:13px;">
+        <!-- AppBar -->
+        <div style="text-align:center;font-size:16px;font-weight:bold;margin-bottom:16px;color:#d4a574;">← 六爻起卦</div>
+
+        <!-- Question Input - Card style -->
+        <div style="background:#2a2a3e;border-radius:12px;padding:14px;margin-bottom:12px;">
+          <div style="color:#d4a574;font-size:12px;font-weight:bold;margin-bottom:6px;">📋 占问事项</div>
+          <div style="background:#1a1a2e;border:1px solid #444;border-radius:8px;padding:10px;color:#888;">请输入您想占问的事项...</div>
+        </div>
+
+        <!-- Method + Cast - Card style -->
+        <div style="background:#2a2a3e;border-radius:12px;padding:14px;">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">
+            <div style="color:#d4a574;font-size:12px;font-weight:bold;">🎯 起卦方式</div>
+            <div style="background:#1a1a2e;border:1px solid #444;border-radius:8px;padding:6px 12px;font-size:12px;">
+              摇钱法 ▼
+            </div>
+          </div>
+
+          <div style="border-top:1px solid #333;margin:8px 0;"></div>
+
+          <div style="text-align:center;padding:16px 0;">
+            <div style="color:#999;font-size:12px;margin-bottom:12px;">点击按钮自动摇卦</div>
+            <div style="background:#d4a574;color:#1a1a2e;border-radius:24px;padding:12px 32px;display:inline-block;font-weight:bold;">开始摇卦</div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="card-body">
+      <h3>方案 B：卡片分组</h3>
+      <p>用卡片将"占问"和"起卦"分组，方式下拉和操作区在同一张卡片内。视觉层次更清晰。</p>
+      <div class="pros-cons">
+        <div class="pros"><h4>优点</h4><ul><li>视觉分区清晰</li><li>符合中式美学风格</li><li>手动输入时卡片内滚动</li></ul></div>
+        <div class="cons"><h4>缺点</h4><ul><li>嵌套层级多一层</li><li>改动量稍大</li></ul></div>
+      </div>
+    </div>
+  </div>
+</div>
