@@ -52,36 +52,40 @@ void main() {
 
   group('CastMethod', () {
     test('应该包含所有起卦方式', () {
-      expect(CastMethod.values.length, 5);
+      expect(CastMethod.values.length, 6);
       expect(CastMethod.values, contains(CastMethod.coin));
-      expect(CastMethod.values, contains(CastMethod.time));
       expect(CastMethod.values, contains(CastMethod.manual));
       expect(CastMethod.values, contains(CastMethod.number));
-      expect(CastMethod.values, contains(CastMethod.random));
+      expect(CastMethod.values, contains(CastMethod.reportNumber));
+      expect(CastMethod.values, contains(CastMethod.time));
+      expect(CastMethod.values, contains(CastMethod.computer));
     });
 
     test('displayName 应该返回正确的中文名称', () {
-      expect(CastMethod.coin.displayName, '摇钱法');
-      expect(CastMethod.time.displayName, '时间起卦');
-      expect(CastMethod.manual.displayName, '手动输入');
-      expect(CastMethod.number.displayName, '数字起卦');
-      expect(CastMethod.random.displayName, '随机起卦');
+      expect(CastMethod.coin.displayName, '钱币卦');
+      expect(CastMethod.manual.displayName, '爻名卦');
+      expect(CastMethod.number.displayName, '数字卦');
+      expect(CastMethod.reportNumber.displayName, '报数卦');
+      expect(CastMethod.time.displayName, '时间卦');
+      expect(CastMethod.computer.displayName, '电脑卦');
     });
 
     test('id 应该返回正确的唯一标识符', () {
       expect(CastMethod.coin.id, 'coin');
-      expect(CastMethod.time.id, 'time');
       expect(CastMethod.manual.id, 'manual');
       expect(CastMethod.number.id, 'number');
-      expect(CastMethod.random.id, 'random');
+      expect(CastMethod.reportNumber.id, 'reportNumber');
+      expect(CastMethod.time.id, 'time');
+      expect(CastMethod.computer.id, 'computer');
     });
 
     test('fromId 应该根据 ID 返回正确的枚举值', () {
       expect(CastMethod.fromId('coin'), CastMethod.coin);
-      expect(CastMethod.fromId('time'), CastMethod.time);
       expect(CastMethod.fromId('manual'), CastMethod.manual);
       expect(CastMethod.fromId('number'), CastMethod.number);
-      expect(CastMethod.fromId('random'), CastMethod.random);
+      expect(CastMethod.fromId('reportNumber'), CastMethod.reportNumber);
+      expect(CastMethod.fromId('time'), CastMethod.time);
+      expect(CastMethod.fromId('computer'), CastMethod.computer);
     });
 
     test('fromId 应该在 ID 不存在时抛出 ArgumentError', () {

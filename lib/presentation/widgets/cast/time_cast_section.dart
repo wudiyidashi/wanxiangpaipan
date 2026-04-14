@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:lunar/lunar.dart';
 import 'cast_button.dart';
-import 'yao_line_placeholder.dart';
 
 class TimeCastSection extends StatelessWidget {
   const TimeCastSection({
@@ -58,8 +57,6 @@ class TimeCastSection extends StatelessWidget {
           onPressed: onCast,
           isLoading: isLoading,
         ),
-        const SizedBox(height: 24),
-        const YaoLinePlaceholder(),
       ],
     );
   }

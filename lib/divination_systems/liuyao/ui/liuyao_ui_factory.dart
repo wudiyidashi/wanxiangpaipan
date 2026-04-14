@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import '../../../domain/divination_system.dart';
 import '../models/gua.dart';
 import '../../../presentation/divination_ui_registry.dart';
@@ -9,6 +10,7 @@ import '../../../presentation/widgets/question_section.dart';
 import '../../../presentation/widgets/extended_info_section.dart';
 import '../../../presentation/widgets/special_relation_section.dart';
 import '../liuyao_result.dart';
+import '../viewmodels/liuyao_viewmodel.dart';
 
 /// 六爻 UI 工厂
 ///
@@ -237,10 +239,17 @@ class _LiuYaoResultScreenWithAI extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
             // 占问信息区块
-            QuestionSection(
-              subject: null, // TODO: 从加密存储获取
-              question: null, // TODO: 从加密存储获取
-            ),
+            Builder(builder: (context) {
+              final question =
+                  context.select<LiuYaoViewModel, String?>((vm) => vm.question);
+              if (question == null || question.isEmpty) {
+                return const SizedBox.shrink();
+              }
+              return QuestionSection(
+                subject: null,
+                question: question,
+              );
+            }),
 
             // 扩展信息区块（农历、节气、神煞）
             ExtendedInfoSection(
@@ -264,10 +273,14 @@ class _LiuYaoResultScreenWithAI extends StatelessWidget {
             ),
 
             // AI 分析区块
-            AIAnalysisWidget(
-              result: result,
-              question: null, // TODO: 从加密存储获取
-            ),
+            Builder(builder: (context) {
+              final question =
+                  context.select<LiuYaoViewModel, String?>((vm) => vm.question);
+              return AIAnalysisWidget(
+                result: result,
+                question: question,
+              );
+            }),
 
             // 底部间距
             const SizedBox(height: 16),

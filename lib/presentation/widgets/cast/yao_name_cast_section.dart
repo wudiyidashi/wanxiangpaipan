@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
 import 'cast_button.dart';
 
-class ManualCastSection extends StatefulWidget {
-  const ManualCastSection({
+/// 爻名卦起卦区
+///
+/// 用户选择每一爻的类型（老阴×、少阳—、少阴--、老阳○），从下往上排列。
+class YaoNameCastSection extends StatefulWidget {
+  const YaoNameCastSection({
     super.key,
     this.onCast,
     this.isLoading = false,
@@ -12,19 +15,21 @@ class ManualCastSection extends StatefulWidget {
   final bool isLoading;
 
   @override
-  State<ManualCastSection> createState() => _ManualCastSectionState();
+  State<YaoNameCastSection> createState() => _YaoNameCastSectionState();
 }
 
-class _ManualCastSectionState extends State<ManualCastSection> {
+class _YaoNameCastSectionState extends State<YaoNameCastSection> {
   DateTime _castDate = DateTime.now();
   TimeOfDay _castTime = TimeOfDay.now();
   final List<int?> _yaoValues = List.filled(6, null);
 
+  /// 爻选项：符号 + 标签 + 数值
+  /// 少阳(7) —  少阴(8) --  老阳(9) ○  老阴(6) ×
   static const List<Map<String, dynamic>> _yaoOptions = [
-    {'label': '老阴', 'value': 6},
-    {'label': '少阳', 'value': 7},
-    {'label': '少阴', 'value': 8},
-    {'label': '老阳', 'value': 9},
+    {'symbol': '—', 'label': '少阳', 'value': 7},
+    {'symbol': '— —', 'label': '少阴', 'value': 8},
+    {'symbol': '○', 'label': '老阳', 'value': 9},
+    {'symbol': '×', 'label': '老阴', 'value': 6},
   ];
 
   static const List<String> _yaoLabels = [
@@ -218,20 +223,39 @@ class _ManualCastSectionState extends State<ManualCastSection> {
 
   Widget _buildYaoOptionRow(Map<String, dynamic> opt) {
     final value = opt['value'] as int;
+    final symbol = opt['symbol'] as String;
     final label = opt['label'] as String;
-    final isYang = value == 7 || value == 9;
+    final isMoving = value == 6 || value == 9;
 
     return Row(
       children: [
+        // 爻线图标
         CustomPaint(
-          size: const Size(32, 14),
-          painter: _YaoLinePainter(isYang: isYang),
+          size: const Size(32, 16),
+          painter: _YaoSymbolPainter(value: value),
         ),
-        const SizedBox(width: 10),
+        const SizedBox(width: 8),
+        // 符号文字
+        SizedBox(
+          width: 28,
+          child: Text(
+            symbol,
+            style: TextStyle(
+              color: const Color(0xFF2B4570),
+              fontSize: 14,
+              fontWeight: FontWeight.w600,
+              letterSpacing: value == 8 ? 2 : 0,
+            ),
+          ),
+        ),
+        const SizedBox(width: 6),
+        // 标签（浅色）
         Text(
           label,
-          style: const TextStyle(
-            color: Color(0xFFB0A08E),
+          style: TextStyle(
+            color: isMoving
+                ? const Color(0xFFC0A888)
+                : const Color(0xFFB0A08E),
             fontSize: 12,
           ),
         ),
@@ -240,33 +264,60 @@ class _ManualCastSectionState extends State<ManualCastSection> {
   }
 }
 
-class _YaoLinePainter extends CustomPainter {
-  const _YaoLinePainter({required this.isYang});
+/// 绘制爻符号
+///
+/// - 少阳(7)：实线 ———
+/// - 少阴(8)：断线 — —
+/// - 老阳(9)：实线 + 圆圈 ○
+/// - 老阴(6)：断线 + 叉号 ×
+class _YaoSymbolPainter extends CustomPainter {
+  const _YaoSymbolPainter({required this.value});
 
-  final bool isYang;
+  final int value;
 
   @override
   void paint(Canvas canvas, Size size) {
-    final paint = Paint()
+    final linePaint = Paint()
       ..color = const Color(0xFF2B4570)
       ..strokeWidth = 2.5
       ..strokeCap = StrokeCap.round;
 
     final y = size.height / 2;
+    final isYang = value == 7 || value == 9;
 
     if (isYang) {
-      // 阳爻：一条实线
-      canvas.drawLine(Offset(0, y), Offset(size.width, y), paint);
+      // 阳爻：实线
+      canvas.drawLine(Offset(0, y), Offset(size.width, y), linePaint);
     } else {
-      // 阴爻：中间断开的两段
+      // 阴爻：断线
       final gap = 4.0;
       final mid = size.width / 2;
-      canvas.drawLine(Offset(0, y), Offset(mid - gap, y), paint);
-      canvas.drawLine(Offset(mid + gap, y), Offset(size.width, y), paint);
+      canvas.drawLine(Offset(0, y), Offset(mid - gap, y), linePaint);
+      canvas.drawLine(Offset(mid + gap, y), Offset(size.width, y), linePaint);
+    }
+
+    // 动爻标记
+    if (value == 9) {
+      // 老阳：画圆圈 ○
+      final circlePaint = Paint()
+        ..color = const Color(0xFF2B4570)
+        ..strokeWidth = 1.5
+        ..style = PaintingStyle.stroke;
+      canvas.drawCircle(Offset(size.width / 2, y), 5, circlePaint);
+    } else if (value == 6) {
+      // 老阴：画叉号 ×
+      final xPaint = Paint()
+        ..color = const Color(0xFF2B4570)
+        ..strokeWidth = 1.5
+        ..strokeCap = StrokeCap.round;
+      const r = 4.0;
+      final cx = size.width / 2;
+      canvas.drawLine(Offset(cx - r, y - r), Offset(cx + r, y + r), xPaint);
+      canvas.drawLine(Offset(cx + r, y - r), Offset(cx - r, y + r), xPaint);
     }
   }
 
   @override
-  bool shouldRepaint(covariant _YaoLinePainter oldDelegate) =>
-      isYang != oldDelegate.isYang;
+  bool shouldRepaint(covariant _YaoSymbolPainter oldDelegate) =>
+      value != oldDelegate.value;
 }

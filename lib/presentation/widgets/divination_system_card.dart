@@ -238,7 +238,6 @@ class _DivinationSystemCardState extends State<DivinationSystemCard>
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Text('${widget.system.name}即将推出，敬请期待！'),
-          behavior: SnackBarBehavior.floating,
         ),
       );
       return;

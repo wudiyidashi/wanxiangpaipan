@@ -56,6 +56,10 @@ abstract class DivinationViewModel<T extends DivinationResult>
   T? _result;
   T? get result => _result;
 
+  /// 占问事项
+  String? _question;
+  String? get question => _question;
+
   /// 错误信息
   String? _errorMessage;
   String? get errorMessage => _errorMessage;
@@ -121,6 +125,11 @@ abstract class DivinationViewModel<T extends DivinationResult>
       throw StateError('没有可保存的占卜结果');
     }
 
+    // 记住占问事项
+    if (question != null && question.isNotEmpty) {
+      _question = question;
+    }
+
     try {
       // 1. 保存占卜结果到数据库
       await repository.saveRecord(_result!);
@@ -153,6 +162,7 @@ abstract class DivinationViewModel<T extends DivinationResult>
   /// 清除当前结果和错误状态，用于用户重新起卦时清理状态。
   void reset() {
     _result = null;
+    _question = null;
     _errorMessage = null;
     _setState(CastState.idle);
   }

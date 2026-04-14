@@ -10,6 +10,7 @@ import 'domain/divination_registry.dart';
 import 'presentation/screens/home/home_screen.dart';
 import 'presentation/screens/history/history_list_screen.dart';
 import 'presentation/screens/settings/settings_screen.dart';
+import 'presentation/screens/settings/ai_settings_screen.dart';
 import 'divination_systems/liuyao/liuyao_system.dart';
 import 'divination_systems/liuyao/viewmodels/liuyao_viewmodel.dart';
 import 'divination_systems/registry_bootstrap.dart';
@@ -140,7 +141,8 @@ class _WanxiangPaipanAppState extends State<WanxiangPaipanApp> {
         home: const HomeScreen(),
         routes: {
           '/history': (context) => const HistoryListScreen(),
-          '/settings': (context) => const SettingsScreen()
+          '/settings': (context) => const SettingsScreen(),
+          '/ai-settings': (context) => const AISettingsScreen(),
         },
       ),
     );

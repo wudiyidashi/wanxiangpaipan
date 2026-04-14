@@ -85,6 +85,36 @@ class QiGuaService {
     return allFaces.map((faces) => manualCastOnce(faces)).toList();
   }
 
+  /// 数字卦：用户输入一个多位数字，拆分为上卦、下卦、动爻
+  ///
+  /// 取数字除以 8 的余数为上卦和下卦，除以 6 的余数为动爻。
+  /// [number] 用户输入的数字
+  static List<int> numberCast(int number) {
+    final upper = ((number.abs() - 1) % 8) + 1;
+    final lower = ((number.abs() ~/ 10 > 0 ? number.abs() ~/ 10 : number.abs()) - 1) % 8 + 1;
+    final moving = ((number.abs() - 1) % 6) + 1;
+    return _generateYaoNumbersFromGua(upper, lower, moving);
+  }
+
+  /// 报数卦：用户报三个数（上卦数、下卦数、动爻数）
+  ///
+  /// [upperNum] 上卦数（除以 8 取余确定八卦）
+  /// [lowerNum] 下卦数（除以 8 取余确定八卦）
+  /// [movingNum] 动爻数（除以 6 取余确定动爻位置）
+  static List<int> reportNumberCast(int upperNum, int lowerNum, int movingNum) {
+    final upper = ((upperNum.abs() - 1) % 8) + 1;
+    final lower = ((lowerNum.abs() - 1) % 8) + 1;
+    final moving = ((movingNum.abs() - 1) % 6) + 1;
+    return _generateYaoNumbersFromGua(upper, lower, moving);
+  }
+
+  /// 电脑卦：系统随机生成完整卦象
+  ///
+  /// 与摇钱法相同算法，模拟 6 次三枚硬币投掷。
+  static List<int> computerCast() {
+    return List.generate(6, (_) => coinCastOnce());
+  }
+
   /// 获取时辰数（1-12）
   static int _getShiChen(int hour) {
     if (hour == 23 || hour == 0) return 1;

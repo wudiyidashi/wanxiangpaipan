@@ -276,7 +276,6 @@ class _HomeScreenState extends State<HomeScreen> {
               ScaffoldMessenger.of(context).showSnackBar(
                 const SnackBar(
                   content: Text('更多术数系统即将推出！'),
-                  behavior: SnackBarBehavior.floating,
                 ),
               );
             },

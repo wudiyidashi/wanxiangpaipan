@@ -66,25 +66,24 @@ enum DivinationType {
 ///
 /// 定义了各种术数系统支持的起卦方法。
 /// 不同的术数系统支持不同的起卦方式组合。
-///
-/// 例如：
-/// - 六爻支持：coin, time, manual
-/// - 梅花易数支持：time, number, random
 enum CastMethod {
-  /// 摇钱法（三枚铜钱摇六次）
-  coin('摇钱法', 'coin'),
+  /// 钱币卦（三枚铜钱摇六次）
+  coin('钱币卦', 'coin'),
 
-  /// 时间起卦（根据起卦时间计算）
-  time('时间起卦', 'time'),
+  /// 爻名卦（用户选择老阴/少阳/少阴/老阳）
+  manual('爻名卦', 'manual'),
 
-  /// 手动输入（用户直接输入卦象）
-  manual('手动输入', 'manual'),
+  /// 数字卦（用户输入数字计算卦象）
+  number('数字卦', 'number'),
 
-  /// 数字起卦（用户输入数字）
-  number('数字起卦', 'number'),
+  /// 报数卦（用户报三个数：上卦、下卦、动爻）
+  reportNumber('报数卦', 'reportNumber'),
 
-  /// 随机起卦（系统随机生成）
-  random('随机起卦', 'random');
+  /// 时间卦（根据起卦时间计算）
+  time('时间卦', 'time'),
+
+  /// 电脑卦（系统随机生成）
+  computer('电脑卦', 'computer');
 
   const CastMethod(this.displayName, this.id);
 
@@ -226,8 +225,8 @@ abstract class DivinationSystem {
   /// 返回此系统支持的所有起卦方法。
   ///
   /// 例如：
-  /// - 六爻支持：[CastMethod.coin, CastMethod.time, CastMethod.manual]
-  /// - 梅花易数支持：[CastMethod.time, CastMethod.number, CastMethod.random]
+  /// - 六爻支持：[CastMethod.coin, CastMethod.manual, CastMethod.number, CastMethod.reportNumber, CastMethod.time, CastMethod.computer]
+  /// - 梅花易数支持：[CastMethod.time, CastMethod.number, CastMethod.computer]
   List<CastMethod> get supportedMethods;
 
   /// 系统是否启用

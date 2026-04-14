@@ -5,10 +5,11 @@ library;
 
 import 'dart:async';
 import 'package:flutter/foundation.dart';
+import 'package:flutter/scheduler.dart';
 import '../config/ai_config_manager.dart';
 import '../llm_provider.dart';
 import '../llm_provider_registry.dart';
-import '../providers/gemini_provider.dart';
+import '../providers/openai_compatible_provider.dart';
 import 'prompt_assembler.dart';
 import '../../domain/divination_system.dart';
 
@@ -164,7 +165,7 @@ class AIAnalysisService extends ChangeNotifier {
       (chunk) {
         buffer.write(chunk);
         _currentContent = buffer.toString();
-        notifyListeners();
+        _safeNotify();
       },
       onDone: () {
         stopwatch.stop();
@@ -219,6 +220,19 @@ class AIAnalysisService extends ChangeNotifier {
 
   // ==================== Provider 管理 ====================
 
+  /// 安全地通知监听者，避免在 layout/paint 阶段触发 rebuild
+  void _safeNotify() {
+    final phase = SchedulerBinding.instance.schedulerPhase;
+    if (phase == SchedulerPhase.persistentCallbacks ||
+        phase == SchedulerPhase.midFrameMicrotasks) {
+      SchedulerBinding.instance.addPostFrameCallback((_) {
+        notifyListeners();
+      });
+    } else {
+      notifyListeners();
+    }
+  }
+
   LLMProvider? _getProvider(String? providerId) {
     if (providerId != null) {
       return _providerRegistry.getProvider(providerId);
@@ -256,10 +270,9 @@ class AIAnalysisService extends ChangeNotifier {
       final fullConfig = Map<String, dynamic>.from(config);
       fullConfig['apiKey'] = apiKey;
 
-      if (provider is GeminiProvider) {
-        provider.updateConfig(GeminiConfig.fromJson(fullConfig));
+      if (provider is OpenAICompatibleProvider) {
+        provider.updateConfig(OpenAICompatibleConfig.fromJson(fullConfig));
       }
-      // 未来添加其他提供者...
     }
 
     // 设置为默认提供者（如果是第一个配置的）

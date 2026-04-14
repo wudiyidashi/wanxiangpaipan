@@ -7,12 +7,15 @@ import '../../../domain/divination_system.dart';
 import '../../divination_ui_registry.dart';
 import '../../widgets/cast/coin_cast_section.dart';
 import '../../widgets/cast/compass_background.dart';
-import '../../widgets/cast/manual_cast_section.dart';
+import '../../widgets/cast/computer_cast_section.dart';
+import '../../widgets/cast/number_cast_section.dart';
+import '../../widgets/cast/report_number_cast_section.dart';
 import '../../widgets/cast/time_cast_section.dart';
+import '../../widgets/cast/yao_name_cast_section.dart';
 
 /// 统一起卦页面
 ///
-/// 将方式选择和起卦操作合并为一个页面，支持摇钱法、时间起卦和手动输入。
+/// 将方式选择和起卦操作合并为一个页面，支持六种起卦方式。
 class UnifiedCastScreen extends StatefulWidget {
   const UnifiedCastScreen({super.key});
 
@@ -29,8 +32,11 @@ class _UnifiedCastScreenState extends State<UnifiedCastScreen> {
 
   static const List<CastMethod> _availableMethods = [
     CastMethod.coin,
-    CastMethod.time,
     CastMethod.manual,
+    CastMethod.number,
+    CastMethod.reportNumber,
+    CastMethod.time,
+    CastMethod.computer,
   ];
 
   @override
@@ -74,6 +80,10 @@ class _UnifiedCastScreenState extends State<UnifiedCastScreen> {
   Future<void> _navigateToResult(
       BuildContext context, LiuYaoViewModel viewModel) async {
     if (!viewModel.hasResult) return;
+    // 确保占问事项在结果页可见
+    if (_question.isNotEmpty && (viewModel.question == null || viewModel.question!.isEmpty)) {
+      await viewModel.saveRecord(question: _question);
+    }
     final result = viewModel.result!;
     final resultScreen = DivinationUIRegistry().buildResultScreen(result);
     if (!context.mounted) return;
@@ -93,19 +103,21 @@ class _UnifiedCastScreenState extends State<UnifiedCastScreen> {
     );
   }
 
-  Future<void> _handleCoinCast() async {
+  String get _question => _questionController.text.trim();
+
+  Future<void> _handleCoinCast(List<int> yaoNumbers) async {
     if (_isProcessing) return;
     setState(() => _isProcessing = true);
     try {
       final viewModel = context.read<LiuYaoViewModel>();
-      await viewModel.castByCoin(castTime: DateTime.now());
+      await viewModel.castByManualYaoNumbers(
+        yaoNumbers,
+        castTime: DateTime.now(),
+        question: _question.isNotEmpty ? _question : null,
+      );
       if (viewModel.hasError) {
         _showError(viewModel.errorMessage ?? '起卦失败');
         return;
-      }
-      final question = _questionController.text.trim();
-      if (question.isNotEmpty) {
-        await viewModel.saveRecord(question: question);
       }
       if (mounted) await _navigateToResult(context, viewModel);
     } finally {
@@ -123,9 +135,8 @@ class _UnifiedCastScreenState extends State<UnifiedCastScreen> {
         _showError(viewModel.errorMessage ?? '起卦失败');
         return;
       }
-      final question = _questionController.text.trim();
-      if (question.isNotEmpty) {
-        await viewModel.saveRecord(question: question);
+      if (_question.isNotEmpty) {
+        await viewModel.saveRecord(question: _question);
       }
       if (mounted) await _navigateToResult(context, viewModel);
     } finally {
@@ -139,15 +150,73 @@ class _UnifiedCastScreenState extends State<UnifiedCastScreen> {
     setState(() => _isProcessing = true);
     try {
       final viewModel = context.read<LiuYaoViewModel>();
-      final question = _questionController.text.trim();
       await viewModel.castByManualYaoNumbers(
         yaoNumbers,
         castTime: castTime,
-        question: question.isNotEmpty ? question : null,
+        question: _question.isNotEmpty ? _question : null,
       );
       if (viewModel.hasError) {
         _showError(viewModel.errorMessage ?? '起卦失败');
         return;
+      }
+      if (mounted) await _navigateToResult(context, viewModel);
+    } finally {
+      if (mounted) setState(() => _isProcessing = false);
+    }
+  }
+
+  Future<void> _handleNumberCast(int number) async {
+    if (_isProcessing) return;
+    setState(() => _isProcessing = true);
+    try {
+      final viewModel = context.read<LiuYaoViewModel>();
+      await viewModel.castByNumber(number, castTime: DateTime.now());
+      if (viewModel.hasError) {
+        _showError(viewModel.errorMessage ?? '起卦失败');
+        return;
+      }
+      if (_question.isNotEmpty) {
+        await viewModel.saveRecord(question: _question);
+      }
+      if (mounted) await _navigateToResult(context, viewModel);
+    } finally {
+      if (mounted) setState(() => _isProcessing = false);
+    }
+  }
+
+  Future<void> _handleReportNumberCast(
+      int upperNum, int lowerNum, int movingNum) async {
+    if (_isProcessing) return;
+    setState(() => _isProcessing = true);
+    try {
+      final viewModel = context.read<LiuYaoViewModel>();
+      await viewModel.castByReportNumber(upperNum, lowerNum, movingNum,
+          castTime: DateTime.now());
+      if (viewModel.hasError) {
+        _showError(viewModel.errorMessage ?? '起卦失败');
+        return;
+      }
+      if (_question.isNotEmpty) {
+        await viewModel.saveRecord(question: _question);
+      }
+      if (mounted) await _navigateToResult(context, viewModel);
+    } finally {
+      if (mounted) setState(() => _isProcessing = false);
+    }
+  }
+
+  Future<void> _handleComputerCast() async {
+    if (_isProcessing) return;
+    setState(() => _isProcessing = true);
+    try {
+      final viewModel = context.read<LiuYaoViewModel>();
+      await viewModel.castByComputer(castTime: DateTime.now());
+      if (viewModel.hasError) {
+        _showError(viewModel.errorMessage ?? '起卦失败');
+        return;
+      }
+      if (_question.isNotEmpty) {
+        await viewModel.saveRecord(question: _question);
       }
       if (mounted) await _navigateToResult(context, viewModel);
     } finally {
@@ -301,19 +370,29 @@ class _UnifiedCastScreenState extends State<UnifiedCastScreen> {
           onCast: _isProcessing ? null : _handleCoinCast,
           isLoading: _isProcessing,
         );
+      case CastMethod.manual:
+        return YaoNameCastSection(
+          onCast: _isProcessing ? null : _handleManualCast,
+          isLoading: _isProcessing,
+        );
+      case CastMethod.number:
+        return NumberCastSection(
+          onCast: _isProcessing ? null : _handleNumberCast,
+          isLoading: _isProcessing,
+        );
+      case CastMethod.reportNumber:
+        return ReportNumberCastSection(
+          onCast: _isProcessing ? null : _handleReportNumberCast,
+          isLoading: _isProcessing,
+        );
       case CastMethod.time:
         return TimeCastSection(
           onCast: _isProcessing ? null : _handleTimeCast,
           isLoading: _isProcessing,
         );
-      case CastMethod.manual:
-        return ManualCastSection(
-          onCast: _isProcessing ? null : _handleManualCast,
-          isLoading: _isProcessing,
-        );
-      default:
-        return CoinCastSection(
-          onCast: _isProcessing ? null : _handleCoinCast,
+      case CastMethod.computer:
+        return ComputerCastSection(
+          onCast: _isProcessing ? null : _handleComputerCast,
           isLoading: _isProcessing,
         );
     }

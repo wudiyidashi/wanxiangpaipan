@@ -76,7 +76,7 @@ class LiuYaoViewModel extends DivinationViewModel<LiuYaoResult> {
     );
   }
 
-  /// 手动输入爻数起卦
+  /// 爻名卦：手动输入爻数起卦
   ///
   /// [yaoNumbers] 6 个爻数（从下到上），每个爻数必须在 6-9 之间
   /// [question] 占问事宜（可选）
@@ -100,8 +100,6 @@ class LiuYaoViewModel extends DivinationViewModel<LiuYaoResult> {
   }
 
   /// 手动输入硬币正反面起卦
-  ///
-  /// [coinInputs] 6 次投掷，每次 3 枚硬币的正反面
   Future<void> castByManualCoins(
     List<List<CoinFace>> coinInputs, {
     DateTime? castTime,
@@ -109,6 +107,42 @@ class LiuYaoViewModel extends DivinationViewModel<LiuYaoResult> {
     await cast(
       method: CastMethod.manual,
       input: {'coinInputs': coinInputs},
+      castTime: castTime,
+    );
+  }
+
+  /// 数字卦
+  Future<void> castByNumber(int number, {DateTime? castTime}) async {
+    await cast(
+      method: CastMethod.number,
+      input: {'number': number},
+      castTime: castTime,
+    );
+  }
+
+  /// 报数卦
+  Future<void> castByReportNumber(
+    int upperNum,
+    int lowerNum,
+    int movingNum, {
+    DateTime? castTime,
+  }) async {
+    await cast(
+      method: CastMethod.reportNumber,
+      input: {
+        'upperNum': upperNum,
+        'lowerNum': lowerNum,
+        'movingNum': movingNum,
+      },
+      castTime: castTime,
+    );
+  }
+
+  /// 电脑卦
+  Future<void> castByComputer({DateTime? castTime}) async {
+    await cast(
+      method: CastMethod.computer,
+      input: {},
       castTime: castTime,
     );
   }

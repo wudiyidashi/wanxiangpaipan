@@ -1,88 +1,190 @@
 import 'package:flutter/material.dart';
 import 'cast_button.dart';
-import 'yao_line_placeholder.dart';
 
-class CoinCastSection extends StatelessWidget {
+/// 钱币卦起卦区
+///
+/// 用户为每一爻选择三枚铜钱的正反面组合，从下往上排列。
+/// 背背背(老阴6)、背背正(少阴8)、背正正(少阳7)、正正正(老阳9)
+class CoinCastSection extends StatefulWidget {
   const CoinCastSection({
     super.key,
-    required this.onCast,
+    this.onCast,
     this.isLoading = false,
   });
 
-  final VoidCallback? onCast;
+  final void Function(List<int> yaoNumbers)? onCast;
   final bool isLoading;
+
+  @override
+  State<CoinCastSection> createState() => _CoinCastSectionState();
+}
+
+class _CoinCastSectionState extends State<CoinCastSection> {
+  final List<int?> _yaoValues = List.filled(6, null);
+
+  /// 铜钱组合选项
+  static const List<Map<String, dynamic>> _coinOptions = [
+    {'label': '背背正', 'value': 8, 'coins': [false, false, true]},
+    {'label': '背正正', 'value': 7, 'coins': [false, true, true]},
+    {'label': '正正正', 'value': 9, 'coins': [true, true, true]},
+    {'label': '背背背', 'value': 6, 'coins': [false, false, false]},
+  ];
+
+  static const List<String> _yaoLabels = [
+    '初爻（一爻）',
+    '二爻',
+    '三爻',
+    '四爻',
+    '五爻',
+    '六爻（上爻）',
+  ];
+
+  bool get _allSelected => _yaoValues.every((v) => v != null);
 
   @override
   Widget build(BuildContext context) {
     return Column(
       mainAxisSize: MainAxisSize.min,
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        _buildCoinsRow(),
-        const SizedBox(height: 32),
-        CastButton(
-          onPressed: onCast,
-          isLoading: isLoading,
-        ),
+        ..._buildYaoRows(),
         const SizedBox(height: 24),
-        const YaoLinePlaceholder(),
+        CastButton(
+          onPressed: _allSelected
+              ? () =>
+                  widget.onCast?.call(_yaoValues.map((v) => v!).toList())
+              : null,
+          isLoading: widget.isLoading,
+        ),
       ],
     );
   }
 
-  Widget _buildCoinsRow() {
-    const rotations = [-15.0, 10.0, 25.0];
+  List<Widget> _buildYaoRows() {
+    // 从下往上排列：上爻在最上面，初爻在最下面
+    return List.generate(6, (i) {
+      final index = 5 - i;
+      return Padding(
+        padding: const EdgeInsets.only(bottom: 10),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              _yaoLabels[index],
+              style: const TextStyle(
+                fontSize: 11,
+                color: Color(0xFF8B7355),
+                letterSpacing: 1,
+              ),
+            ),
+            const SizedBox(height: 4),
+            _buildInputContainer(
+              child: DropdownButtonHideUnderline(
+                child: DropdownButton<int>(
+                  value: _yaoValues[index],
+                  hint: const Text(
+                    '请选择铜钱组合',
+                    style: TextStyle(
+                      color: Color(0xFFA0937E),
+                      fontSize: 13,
+                    ),
+                  ),
+                  isExpanded: true,
+                  dropdownColor: Colors.white,
+                  selectedItemBuilder: (context) {
+                    return _coinOptions.map((opt) {
+                      return _buildCoinOptionRow(opt);
+                    }).toList();
+                  },
+                  items: _coinOptions.map((opt) {
+                    return DropdownMenuItem<int>(
+                      value: opt['value'] as int,
+                      child: _buildCoinOptionRow(opt),
+                    );
+                  }).toList(),
+                  onChanged: (val) {
+                    setState(() => _yaoValues[index] = val);
+                  },
+                ),
+              ),
+            ),
+          ],
+        ),
+      );
+    });
+  }
+
+  Widget _buildCoinOptionRow(Map<String, dynamic> opt) {
+    final coins = opt['coins'] as List<bool>;
+    final label = opt['label'] as String;
+
     return Row(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: List.generate(3, (index) {
-        return Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 8),
-          child: Transform.rotate(
-            angle: rotations[index] * 3.14159 / 180,
-            child: _buildCoin(),
+      children: [
+        // 三枚铜钱图标
+        ...List.generate(3, (i) {
+          return Padding(
+            padding: const EdgeInsets.only(right: 4),
+            child: _buildMiniCoin(isFront: coins[i]),
+          );
+        }),
+        const SizedBox(width: 8),
+        // 组合名称
+        Text(
+          label,
+          style: const TextStyle(
+            color: Color(0xFF2B4570),
+            fontSize: 13,
           ),
-        );
-      }),
+        ),
+      ],
     );
   }
 
-  Widget _buildCoin() {
+  Widget _buildMiniCoin({required bool isFront}) {
     return Container(
-      width: 48,
-      height: 48,
+      width: 20,
+      height: 20,
       decoration: BoxDecoration(
         shape: BoxShape.circle,
-        gradient: const RadialGradient(
-          colors: [Color(0xFFC9A84C), Color(0xFF8B6914)],
-          center: Alignment(-0.3, -0.3),
+        gradient: RadialGradient(
+          colors: isFront
+              ? [const Color(0xFFC9A84C), const Color(0xFF8B6914)]
+              : [const Color(0xFF9A9A9A), const Color(0xFF666666)],
+          center: const Alignment(-0.3, -0.3),
           radius: 0.9,
         ),
         border: Border.all(
-          color: const Color(0xFFA08030),
-          width: 1.5,
+          color: isFront
+              ? const Color(0xFFA08030)
+              : const Color(0xFF888888),
+          width: 1,
         ),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withOpacity(0.25),
-            blurRadius: 6,
-            offset: const Offset(2, 3),
-          ),
-          BoxShadow(
-            color: const Color(0xFFC9A84C).withOpacity(0.3),
-            blurRadius: 4,
-            offset: const Offset(-1, -1),
-          ),
-        ],
       ),
       alignment: Alignment.center,
-      child: const Text(
-        '通寶',
+      child: Text(
+        isFront ? '正' : '背',
         style: TextStyle(
-          color: Color(0xFF3D2800),
-          fontSize: 11,
+          color: isFront
+              ? const Color(0xFF3D2800)
+              : const Color(0xFFE0E0E0),
+          fontSize: 8,
           fontWeight: FontWeight.bold,
-          letterSpacing: 0,
         ),
       ),
+    );
+  }
+
+  Widget _buildInputContainer({required Widget child}) {
+    return Container(
+      height: 44,
+      padding: const EdgeInsets.symmetric(horizontal: 12),
+      decoration: BoxDecoration(
+        color: Colors.white.withOpacity(0.6),
+        border: Border.all(color: const Color(0x4DB79452)),
+        borderRadius: BorderRadius.circular(8),
+      ),
+      alignment: Alignment.centerLeft,
+      child: child,
     );
   }
 }

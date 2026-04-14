@@ -1,12 +1,15 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_markdown/flutter_markdown.dart';
 import 'package:provider/provider.dart';
 import '../../ai/service/ai_analysis_service.dart';
+import '../../ai/ai_bootstrap.dart';
+import '../../ai/service/prompt_assembler.dart';
+import '../../ai/output/structured_output_formatter.dart';
 import '../../domain/divination_system.dart';
 
 /// AI 分析组件
 ///
-/// 用于在结果页面显示 AI 分析入口和结果。
-/// 支持流式输出，实时显示分析内容。
+/// 内容直接展开，随外部页面一起滚动，无内部滚动。
 class AIAnalysisWidget extends StatelessWidget {
   final DivinationResult result;
   final String? question;
@@ -26,16 +29,13 @@ class AIAnalysisWidget extends StatelessWidget {
     }
 
     return Card(
-      margin: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+      margin: const EdgeInsets.symmetric(vertical: 8),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          // 标题栏
           _buildHeader(context, aiService),
-
-          // 分析内容区域
-          if (aiService.isAnalyzing || aiService.currentContent.isNotEmpty)
-            _buildContentArea(context, aiService),
+          if (aiService.isAnalyzing || aiService.currentContent.isNotEmpty || aiService.error != null)
+            _buildContent(context, aiService),
         ],
       ),
     );
@@ -44,161 +44,132 @@ class AIAnalysisWidget extends StatelessWidget {
   Widget _buildHeader(BuildContext context, AIAnalysisService aiService) {
     final isConfigured = aiService.hasAvailableProvider;
     final isAnalyzing = aiService.isAnalyzing;
+    final hasContent = aiService.currentContent.isNotEmpty;
 
-    return InkWell(
-      onTap: isConfigured && !isAnalyzing
-          ? () => _startAnalysis(context, aiService)
-          : null,
-      child: Padding(
-        padding: const EdgeInsets.all(16),
-        child: Row(
-          children: [
-            Icon(
-              Icons.smart_toy,
-              color:
-                  isConfigured ? Theme.of(context).primaryColor : Colors.grey,
-            ),
-            const SizedBox(width: 12),
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    'AI 智能分析',
-                    style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                          fontWeight: FontWeight.bold,
-                        ),
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+      child: Row(
+        children: [
+          Icon(
+            Icons.smart_toy,
+            size: 20,
+            color: isConfigured ? Theme.of(context).primaryColor : Colors.grey,
+          ),
+          const SizedBox(width: 8),
+          Expanded(
+            child: Text(
+              'AI 智能分析',
+              style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                    fontWeight: FontWeight.bold,
                   ),
-                  Text(
-                    isConfigured
-                        ? (isAnalyzing ? '分析中...' : '点击开始 AI 分析')
-                        : '请先在设置中配置 API Key',
-                    style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                          color: Colors.grey[600],
-                        ),
-                  ),
-                ],
-              ),
             ),
-            if (isAnalyzing)
-              const SizedBox(
-                width: 24,
-                height: 24,
-                child: CircularProgressIndicator(strokeWidth: 2),
-              )
-            else if (isConfigured)
-              Icon(
-                Icons.play_circle_outline,
-                color: Theme.of(context).primaryColor,
-              )
-            else
-              IconButton(
-                icon: const Icon(Icons.settings),
-                onPressed: () {
-                  Navigator.pushNamed(context, '/settings');
-                },
+          ),
+          // 预览按钮
+          if (isConfigured && !isAnalyzing)
+            IconButton(
+              icon: const Icon(Icons.visibility_outlined, size: 20),
+              tooltip: '预览发送内容',
+              onPressed: () => _showPreview(context),
+              visualDensity: VisualDensity.compact,
+            ),
+          // 重新分析 / 开始分析
+          if (isConfigured && !isAnalyzing)
+            IconButton(
+              icon: Icon(
+                hasContent ? Icons.refresh : Icons.play_circle_outline,
+                size: 20,
               ),
-          ],
-        ),
+              tooltip: hasContent ? '重新分析' : '开始分析',
+              onPressed: () => _startAnalysis(context, aiService),
+              visualDensity: VisualDensity.compact,
+            ),
+          // 加载指示器
+          if (isAnalyzing)
+            const SizedBox(
+              width: 20,
+              height: 20,
+              child: CircularProgressIndicator(strokeWidth: 2),
+            ),
+          // 未配置 → 设置
+          if (!isConfigured)
+            TextButton(
+              onPressed: () => Navigator.pushNamed(context, '/ai-settings'),
+              child: const Text('去配置', style: TextStyle(fontSize: 12)),
+            ),
+        ],
       ),
     );
   }
 
-  Widget _buildContentArea(BuildContext context, AIAnalysisService aiService) {
-    return Container(
+  Widget _buildContent(BuildContext context, AIAnalysisService aiService) {
+    return Padding(
       padding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          const Divider(),
-          const SizedBox(height: 8),
+          const Divider(height: 1),
+          const SizedBox(height: 12),
 
-          // 分析内容
           if (aiService.error != null)
-            _buildErrorContent(context, aiService)
+            _buildError(context, aiService)
+          else if (aiService.currentContent.isEmpty && aiService.isAnalyzing)
+            const Padding(
+              padding: EdgeInsets.symmetric(vertical: 24),
+              child: Center(child: Text('正在分析卦象...')),
+            )
           else
-            _buildAnalysisContent(context, aiService),
+            // Markdown 渲染，无内部滚动
+            MarkdownBody(
+              data: aiService.currentContent,
+              selectable: true,
+              styleSheet: MarkdownStyleSheet(
+                p: Theme.of(context).textTheme.bodyMedium?.copyWith(height: 1.8),
+                h1: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold, height: 2),
+                h2: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold, height: 2),
+                h3: const TextStyle(fontSize: 15, fontWeight: FontWeight.bold, height: 2),
+                listBullet: Theme.of(context).textTheme.bodyMedium?.copyWith(height: 1.8),
+                blockquoteDecoration: BoxDecoration(
+                  color: Colors.grey.withOpacity(0.08),
+                  border: Border(left: BorderSide(color: Colors.grey.shade400, width: 3)),
+                ),
+              ),
+            ),
 
-          // 操作按钮
-          if (aiService.state == AnalysisState.completed ||
-              aiService.error != null)
-            _buildActionButtons(context, aiService),
+          // 清除按钮
+          if (aiService.state == AnalysisState.completed)
+            Align(
+              alignment: Alignment.centerRight,
+              child: TextButton.icon(
+                onPressed: () => aiService.clearResult(),
+                icon: const Icon(Icons.clear, size: 16),
+                label: const Text('清除', style: TextStyle(fontSize: 12)),
+              ),
+            ),
         ],
       ),
     );
   }
 
-  Widget _buildAnalysisContent(
-      BuildContext context, AIAnalysisService aiService) {
-    final content = aiService.currentContent;
-
-    if (content.isEmpty && aiService.isAnalyzing) {
-      return const Center(
-        child: Padding(
-          padding: EdgeInsets.all(32),
-          child: Column(
-            children: [
-              CircularProgressIndicator(),
-              SizedBox(height: 16),
-              Text('正在分析卦象...'),
-            ],
-          ),
-        ),
-      );
-    }
+  Widget _buildError(BuildContext context, AIAnalysisService aiService) {
+    final error = aiService.error ?? '分析失败';
+    final message = error.replaceFirst(RegExp(r'^Exception:\s*'), '');
 
     return Container(
-      constraints: const BoxConstraints(maxHeight: 400),
-      child: SingleChildScrollView(
-        child: SelectableText(
-          content,
-          style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                height: 1.6,
-              ),
-        ),
-      ),
-    );
-  }
-
-  Widget _buildErrorContent(BuildContext context, AIAnalysisService aiService) {
-    return Container(
-      padding: const EdgeInsets.all(16),
+      padding: const EdgeInsets.all(12),
       decoration: BoxDecoration(
-        color: Colors.red.withOpacity(0.1),
+        color: Colors.orange.withOpacity(0.08),
         borderRadius: BorderRadius.circular(8),
+        border: Border.all(color: Colors.orange.withOpacity(0.3)),
       ),
       child: Row(
         children: [
-          const Icon(Icons.error_outline, color: Colors.red),
-          const SizedBox(width: 12),
+          const Icon(Icons.info_outline, color: Colors.orange, size: 18),
+          const SizedBox(width: 10),
           Expanded(
             child: Text(
-              aiService.error ?? '分析失败',
-              style: const TextStyle(color: Colors.red),
+              message,
+              style: TextStyle(color: Colors.grey[800], fontSize: 13),
             ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildActionButtons(
-      BuildContext context, AIAnalysisService aiService) {
-    return Padding(
-      padding: const EdgeInsets.only(top: 16),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.end,
-        children: [
-          TextButton.icon(
-            onPressed: () => aiService.clearResult(),
-            icon: const Icon(Icons.clear),
-            label: const Text('清除'),
-          ),
-          const SizedBox(width: 8),
-          TextButton.icon(
-            onPressed: () => _startAnalysis(context, aiService),
-            icon: const Icon(Icons.refresh),
-            label: const Text('重新分析'),
           ),
         ],
       ),
@@ -213,23 +184,89 @@ class AIAnalysisWidget extends StatelessWidget {
         question: question,
         useStreaming: true,
       );
-    } catch (e) {
-      if (context.mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text('分析失败: $e'),
-            backgroundColor: Colors.red,
-          ),
-        );
-      }
+    } catch (_) {
+      // 错误已在 service 中处理
     }
+  }
+
+  Future<void> _showPreview(BuildContext context) async {
+    String previewContent;
+    try {
+      final assembler = PromptAssembler(
+        configManager: AIBootstrap.configManager,
+        formatterRegistry: StructuredOutputFormatterRegistry.instance,
+      );
+      final prompt = await assembler.assemble(result, question: question);
+      previewContent =
+          '--- 系统提示词 ---\n${prompt.systemPrompt}\n\n--- 用户提示词 ---\n${prompt.userPrompt}';
+    } catch (e) {
+      previewContent = '无法生成预览: $e';
+    }
+
+    if (!context.mounted) return;
+    showModalBottomSheet<void>(
+      context: context,
+      isScrollControlled: true,
+      useSafeArea: true,
+      builder: (_) => DraggableScrollableSheet(
+        initialChildSize: 0.8,
+        minChildSize: 0.4,
+        maxChildSize: 0.95,
+        expand: false,
+        builder: (context, scrollController) => Column(
+          children: [
+            Container(
+              margin: const EdgeInsets.only(top: 12),
+              width: 40,
+              height: 4,
+              decoration: BoxDecoration(
+                color: Colors.grey[300],
+                borderRadius: BorderRadius.circular(2),
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.all(16),
+              child: Row(
+                children: [
+                  const Icon(Icons.visibility_outlined),
+                  const SizedBox(width: 8),
+                  const Expanded(
+                    child: Text(
+                      '发送内容预览',
+                      style:
+                          TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                    ),
+                  ),
+                  IconButton(
+                    icon: const Icon(Icons.close),
+                    onPressed: () => Navigator.pop(context),
+                  ),
+                ],
+              ),
+            ),
+            const Divider(height: 1),
+            Expanded(
+              child: SingleChildScrollView(
+                controller: scrollController,
+                padding: const EdgeInsets.all(16),
+                child: SelectableText(
+                  previewContent,
+                  style: const TextStyle(
+                    fontSize: 12,
+                    fontFamily: 'monospace',
+                    height: 1.6,
+                  ),
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
   }
 }
 
 /// AI 分析浮动按钮
-///
-/// 用于在结果页面右下角显示一个浮动按钮，
-/// 点击后弹出底部抽屉显示分析结果。
 class AIAnalysisFAB extends StatelessWidget {
   final DivinationResult result;
   final String? question;
@@ -300,7 +337,6 @@ class _AIAnalysisSheetState extends State<_AIAnalysisSheet> {
   @override
   void initState() {
     super.initState();
-    // 自动开始分析
     WidgetsBinding.instance.addPostFrameCallback((_) {
       _startAnalysisIfNeeded();
     });
@@ -329,7 +365,6 @@ class _AIAnalysisSheetState extends State<_AIAnalysisSheet> {
       builder: (context, scrollController) {
         return Column(
           children: [
-            // 拖动指示器
             Container(
               margin: const EdgeInsets.only(top: 12),
               width: 40,
@@ -339,16 +374,11 @@ class _AIAnalysisSheetState extends State<_AIAnalysisSheet> {
                 borderRadius: BorderRadius.circular(2),
               ),
             ),
-
-            // 标题栏
             Padding(
               padding: const EdgeInsets.all(16),
               child: Row(
                 children: [
-                  Icon(
-                    Icons.smart_toy,
-                    color: Theme.of(context).primaryColor,
-                  ),
+                  Icon(Icons.smart_toy, color: Theme.of(context).primaryColor),
                   const SizedBox(width: 12),
                   Expanded(
                     child: Text(
@@ -372,23 +402,17 @@ class _AIAnalysisSheetState extends State<_AIAnalysisSheet> {
                 ],
               ),
             ),
-
             const Divider(height: 1),
-
-            // 内容区域
             Expanded(
-              child: _buildContent(context, aiService, scrollController),
+              child: _buildSheetContent(context, aiService, scrollController),
             ),
-
-            // 底部操作栏
-            if (!aiService.isAnalyzing) _buildBottomBar(context, aiService),
           ],
         );
       },
     );
   }
 
-  Widget _buildContent(
+  Widget _buildSheetContent(
     BuildContext context,
     AIAnalysisService aiService,
     ScrollController scrollController,
@@ -400,16 +424,11 @@ class _AIAnalysisSheetState extends State<_AIAnalysisSheet> {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              const Icon(Icons.error_outline, size: 64, color: Colors.red),
+              const Icon(Icons.info_outline, size: 48, color: Colors.orange),
               const SizedBox(height: 16),
               Text(
-                '分析失败',
-                style: Theme.of(context).textTheme.titleMedium,
-              ),
-              const SizedBox(height: 8),
-              Text(
-                aiService.error!,
-                style: TextStyle(color: Colors.grey[600]),
+                aiService.error!.replaceFirst(RegExp(r'^Exception:\s*'), ''),
+                style: TextStyle(color: Colors.grey[700]),
                 textAlign: TextAlign.center,
               ),
             ],
@@ -431,50 +450,13 @@ class _AIAnalysisSheetState extends State<_AIAnalysisSheet> {
       );
     }
 
-    return SingleChildScrollView(
+    return Markdown(
+      data: aiService.currentContent,
       controller: scrollController,
-      padding: const EdgeInsets.all(16),
-      child: SelectableText(
-        aiService.currentContent,
-        style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-              height: 1.8,
-            ),
-      ),
-    );
-  }
-
-  Widget _buildBottomBar(BuildContext context, AIAnalysisService aiService) {
-    return Container(
-      padding: const EdgeInsets.all(16),
-      decoration: BoxDecoration(
-        color: Theme.of(context).scaffoldBackgroundColor,
-        border: Border(
-          top: BorderSide(color: Colors.grey[300]!),
-        ),
-      ),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-        children: [
-          TextButton.icon(
-            onPressed: () {
-              aiService.clearResult();
-              Navigator.pop(context);
-            },
-            icon: const Icon(Icons.close),
-            label: const Text('关闭'),
-          ),
-          ElevatedButton.icon(
-            onPressed: () {
-              aiService.analyze(
-                widget.result,
-                question: widget.question,
-                useStreaming: true,
-              );
-            },
-            icon: const Icon(Icons.refresh),
-            label: const Text('重新分析'),
-          ),
-        ],
+      selectable: true,
+      styleSheet: MarkdownStyleSheet(
+        p: Theme.of(context).textTheme.bodyMedium?.copyWith(height: 1.8),
+        h3: const TextStyle(fontSize: 15, fontWeight: FontWeight.bold, height: 2),
       ),
     );
   }

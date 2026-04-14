@@ -47,7 +47,7 @@ export 'template/template_engine.dart';
 export 'template/builtin_templates.dart';
 
 // 提供者实现
-export 'providers/gemini_provider.dart';
+export 'providers/openai_compatible_provider.dart';
 
 // 服务层
 export 'service/prompt_assembler.dart';

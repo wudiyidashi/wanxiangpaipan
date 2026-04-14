@@ -8,7 +8,7 @@ import 'llm_provider_registry.dart';
 import 'output/structured_output_formatter.dart';
 import 'output/formatters/liuyao_formatter.dart';
 import 'output/formatters/daliuren_formatter.dart';
-import 'providers/gemini_provider.dart';
+import 'providers/openai_compatible_provider.dart';
 import 'service/prompt_assembler.dart';
 import 'service/ai_analysis_service.dart';
 import '../data/database/app_database.dart';
@@ -119,25 +119,21 @@ class AIBootstrap {
   static Future<void> _registerProviders() async {
     final registry = LLMProviderRegistry.instance;
 
-    // Gemini 提供者
-    registry.register(GeminiProvider());
-
-    // 未来添加其他提供者...
-    // registry.register(OpenAIProvider());
-    // registry.register(ClaudeProvider());
-    // registry.register(DeepSeekProvider());
+    // OpenAI 兼容提供者（支持 OpenAI、DeepSeek、通义千问、Ollama 等）
+    registry.register(OpenAICompatibleProvider());
   }
 
   /// 加载已保存的提供者配置
   static Future<void> _loadSavedConfigs() async {
     final registry = LLMProviderRegistry.instance;
 
-    // 加载 Gemini 配置
-    final geminiConfig = await _configManager!.loadProviderConfig('gemini');
-    if (geminiConfig != null) {
-      final provider = registry.getProvider('gemini');
-      if (provider is GeminiProvider) {
-        provider.updateConfig(GeminiConfig.fromJson(geminiConfig));
+    // 加载 OpenAI 兼容配置
+    final openaiConfig =
+        await _configManager!.loadProviderConfig('openai_compatible');
+    if (openaiConfig != null) {
+      final provider = registry.getProvider('openai_compatible');
+      if (provider is OpenAICompatibleProvider) {
+        provider.updateConfig(OpenAICompatibleConfig.fromJson(openaiConfig));
       }
     }
 
@@ -147,8 +143,6 @@ class AIBootstrap {
         registry.getProvider(defaultProviderId) != null) {
       registry.setDefaultProvider(defaultProviderId);
     }
-
-    // 未来加载其他提供者配置...
   }
 
   /// 重置 AI 模块（用于测试）
