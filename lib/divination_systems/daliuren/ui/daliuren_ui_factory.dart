@@ -767,11 +767,17 @@ class _DaLiuRenCastScreenState extends State<_DaLiuRenCastScreen> {
   }
 }
 
-/// 大六壬结果展示界面
+/// 大六壬结果展示界面（仿古风）
 class _DaLiuRenResultScreen extends StatelessWidget {
   final DaLiuRenResult result;
 
   const _DaLiuRenResultScreen({required this.result});
+
+  // 仿古风配色常量
+  static const _zhuShaRed = Color(0xFFC94A4A);
+  static const _danJin = Color(0xFFD4B896);
+  static const _textDark = Color(0xFF2C2C2C);
+  static const _textMuted = Color(0xFF8B7355);
 
   @override
   Widget build(BuildContext context) {
@@ -780,351 +786,515 @@ class _DaLiuRenResultScreen extends StatelessWidget {
         title: const Text('大六壬排盘结果'),
         centerTitle: true,
       ),
-      body: SingleChildScrollView(
-        padding: const EdgeInsets.all(16),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            // 基本信息卡片
-            _buildInfoCard(context),
-            const SizedBox(height: 16),
+      body: Stack(
+        children: [
+          // 缃色渐变背景
+          Container(
+            decoration: const BoxDecoration(
+              gradient: LinearGradient(
+                begin: Alignment.topCenter,
+                end: Alignment.bottomCenter,
+                colors: [Color(0xFFF7F7F5), Color(0xFFF0EDE8)],
+              ),
+            ),
+          ),
+          // 主内容
+          SingleChildScrollView(
+            padding: const EdgeInsets.all(16),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                // 基本信息（精简两行）
+                _buildInfoSection(),
+                const SizedBox(height: 16),
 
-            // 天盘信息
-            _buildTianPanCard(context),
-            const SizedBox(height: 16),
+                // 四课（传统 2x2 格子）
+                _buildSiKeSection(),
+                const SizedBox(height: 16),
 
-            // 四课信息
-            _buildSiKeCard(context),
-            const SizedBox(height: 16),
+                // 三传（横排三圆）
+                _buildSanChuanSection(),
+                const SizedBox(height: 16),
 
-            // 三传信息
-            _buildSanChuanCard(context),
-            const SizedBox(height: 16),
+                // 天盘
+                _buildTianPanSection(),
+                const SizedBox(height: 16),
 
-            // 神将信息
-            _buildShenJiangCard(context),
-            const SizedBox(height: 16),
+                // 神将
+                _buildShenJiangSection(),
+                const SizedBox(height: 16),
 
-            // 神煞信息
-            _buildShenShaCard(context),
-            const SizedBox(height: 16),
+                // 神煞
+                _buildShenShaSection(),
+                const SizedBox(height: 16),
 
-            // AI 分析组件
-            AIAnalysisWidget(result: result),
-          ],
-        ),
+                // AI 分析组件
+                AIAnalysisWidget(result: result),
+              ],
+            ),
+          ),
+        ],
       ),
     );
   }
 
-  Widget _buildInfoCard(BuildContext context) {
-    return Card(
-      child: Padding(
-        padding: const EdgeInsets.all(16),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              '基本信息',
-              style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                    fontWeight: FontWeight.bold,
-                  ),
-            ),
-            const Divider(),
-            _buildInfoRow('课体', '${result.keTypeName}课'),
-            _buildInfoRow('日干支', result.lunarInfo.riGanZhi),
-            _buildInfoRow('月建', result.lunarInfo.yueJian),
-            _buildInfoRow('时支', result.shiZhi),
-            _buildInfoRow('空亡', result.lunarInfo.kongWang.join('、')),
-          ],
-        ),
+  /// 仿古风卡片容器
+  Widget _buildAntiqueCard({required Widget child}) {
+    return Container(
+      padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        color: Colors.white.withOpacity(0.6),
+        border: Border.all(color: _danJin.withOpacity(0.5)),
+        borderRadius: BorderRadius.circular(8),
+      ),
+      child: child,
+    );
+  }
+
+  /// 仿古风区块标题
+  Widget _buildSectionTitle(String title) {
+    return Text(
+      title,
+      style: const TextStyle(
+        fontSize: 15,
+        fontWeight: FontWeight.bold,
+        color: _zhuShaRed,
+        letterSpacing: 1,
       ),
     );
   }
 
-  Widget _buildTianPanCard(BuildContext context) {
-    return Card(
-      child: Padding(
-        padding: const EdgeInsets.all(16),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              '天盘',
-              style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                    fontWeight: FontWeight.bold,
-                  ),
-            ),
-            const Divider(),
-            _buildInfoRow('月将',
-                '${result.tianPan.yueJiang}（${result.tianPan.yueJiangName}）'),
-            _buildInfoRow('描述', result.tianPan.yueJiangDescription),
-          ],
-        ),
+  /// 仿古风分割线
+  Widget _buildAntiqueDivider() {
+    return Divider(color: _danJin.withOpacity(0.5));
+  }
+
+  // ==================== 1. 基本信息（精简两行） ====================
+
+  Widget _buildInfoSection() {
+    final castTime = result.castTime;
+    final lunar = Lunar.fromDate(castTime);
+    final lunarMonthDay = '${lunar.getMonthInChinese()}月${lunar.getDayInChinese()}';
+    final timeStr =
+        '${castTime.year}-${castTime.month.toString().padLeft(2, '0')}-${castTime.day.toString().padLeft(2, '0')} '
+        '${castTime.hour.toString().padLeft(2, '0')}:${castTime.minute.toString().padLeft(2, '0')}';
+
+    final yearGZ = result.lunarInfo.yearGanZhi;
+    final monthGZ = result.lunarInfo.monthGanZhi;
+    final dayGZ = result.lunarInfo.riGanZhi;
+    final timeGZ = '${lunar.getTimeGan()}${lunar.getTimeZhi()}';
+    final kongWang = result.lunarInfo.kongWang.join('');
+    final yueJiang = result.tianPan.yueJiang;
+    final yueJiangName = result.tianPan.yueJiangName;
+
+    return _buildAntiqueCard(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          _buildSectionTitle('基本信息'),
+          _buildAntiqueDivider(),
+          const SizedBox(height: 4),
+          // Line 1: 时间
+          Row(
+            children: [
+              const Text(
+                '时间',
+                style: TextStyle(fontSize: 13, color: _textMuted),
+              ),
+              const SizedBox(width: 12),
+              Expanded(
+                child: Text(
+                  '$timeStr  $lunarMonthDay',
+                  style: const TextStyle(fontSize: 13, color: _textDark),
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 6),
+          // Line 2: 干支
+          Row(
+            children: [
+              const Text(
+                '干支',
+                style: TextStyle(fontSize: 13, color: _textMuted),
+              ),
+              const SizedBox(width: 12),
+              Expanded(
+                child: Text(
+                  '$yearGZ $monthGZ $dayGZ $timeGZ  空亡:$kongWang  月将:$yueJiang($yueJiangName)',
+                  style: const TextStyle(fontSize: 13, color: _textDark),
+                ),
+              ),
+            ],
+          ),
+        ],
       ),
     );
   }
 
-  Widget _buildSiKeCard(BuildContext context) {
-    return Card(
-      child: Padding(
-        padding: const EdgeInsets.all(16),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              '四课',
-              style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                    fontWeight: FontWeight.bold,
-                  ),
+  // ==================== 2. 四课（传统 2x2 格子） ====================
+
+  Widget _buildSiKeSection() {
+    // 从右到左传统顺序：一课 → 二课 → 三课 → 四课
+    final keList = [
+      result.siKe.ke4,
+      result.siKe.ke3,
+      result.siKe.ke2,
+      result.siKe.ke1,
+    ];
+    final keLabels = ['四课', '三课', '二课', '一课'];
+
+    return _buildAntiqueCard(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          _buildSectionTitle('四课'),
+          _buildAntiqueDivider(),
+          const SizedBox(height: 8),
+          // 2x2 格子表格
+          Table(
+            border: TableBorder.all(
+              color: _danJin.withOpacity(0.5),
+              width: 1,
             ),
-            const Divider(),
-            for (final ke in result.siKe.allKe)
-              Padding(
-                padding: const EdgeInsets.symmetric(vertical: 4),
-                child: Row(
-                  children: [
-                    SizedBox(
-                      width: 60,
-                      child: Text(
-                        ke.keName,
-                        style: const TextStyle(fontWeight: FontWeight.bold),
-                      ),
-                    ),
-                    Text('${ke.shangShen}/${ke.xiaShen}'),
-                    const SizedBox(width: 8),
-                    if (ke.wuXingRelation != null)
-                      Container(
-                        padding: const EdgeInsets.symmetric(
-                            horizontal: 6, vertical: 2),
-                        decoration: BoxDecoration(
-                          color: ke.isZeiKe
-                              ? Colors.red.withOpacity(0.1)
-                              : ke.isBiYong
-                                  ? Colors.blue.withOpacity(0.1)
-                                  : Colors.grey.withOpacity(0.1),
-                          borderRadius: BorderRadius.circular(4),
-                        ),
+            children: [
+              // 标题行
+              TableRow(
+                decoration: BoxDecoration(
+                  color: _danJin.withOpacity(0.1),
+                ),
+                children: keLabels.map((label) {
+                  return TableCell(
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 6),
+                      child: Center(
                         child: Text(
-                          ke.wuXingRelation!,
-                          style: TextStyle(
-                            fontSize: 12,
-                            color: ke.isZeiKe
-                                ? Colors.red
-                                : ke.isBiYong
-                                    ? Colors.blue
-                                    : Colors.grey,
+                          label,
+                          style: const TextStyle(
+                            fontSize: 13,
+                            fontWeight: FontWeight.bold,
+                            color: _textMuted,
                           ),
                         ),
                       ),
-                  ],
-                ),
+                    ),
+                  );
+                }).toList(),
               ),
-          ],
-        ),
+              // 上神行
+              TableRow(
+                children: keList.map((ke) {
+                  return TableCell(
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 8),
+                      child: Center(
+                        child: Text(
+                          ke.shangShen,
+                          style: TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.bold,
+                            color: ke.hasKe ? _zhuShaRed : _textDark,
+                          ),
+                        ),
+                      ),
+                    ),
+                  );
+                }).toList(),
+              ),
+              // 下神行
+              TableRow(
+                children: keList.map((ke) {
+                  return TableCell(
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 8),
+                      child: Center(
+                        child: Text(
+                          ke.xiaShen,
+                          style: const TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.bold,
+                            color: _textDark,
+                          ),
+                        ),
+                      ),
+                    ),
+                  );
+                }).toList(),
+              ),
+            ],
+          ),
+          const SizedBox(height: 8),
+          // 五行关系
+          Row(
+            children: keList.map((ke) {
+              return Expanded(
+                child: Center(
+                  child: Text(
+                    ke.wuXingRelation ?? '',
+                    style: TextStyle(
+                      fontSize: 11,
+                      color: ke.isZeiKe
+                          ? _zhuShaRed
+                          : ke.isBiYong
+                              ? const Color(0xFF3A6EA5)
+                              : _textMuted,
+                    ),
+                  ),
+                ),
+              );
+            }).toList(),
+          ),
+        ],
       ),
     );
   }
 
-  Widget _buildSanChuanCard(BuildContext context) {
-    return Card(
-      child: Padding(
-        padding: const EdgeInsets.all(16),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Row(
-              children: [
-                Text(
-                  '三传',
-                  style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                        fontWeight: FontWeight.bold,
-                      ),
+  // ==================== 3. 三传（横排三圆） ====================
+
+  Widget _buildSanChuanSection() {
+    return _buildAntiqueCard(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          _buildSectionTitle('三传'),
+          _buildAntiqueDivider(),
+          const SizedBox(height: 12),
+          // 三个圆 + 箭头
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              _buildChuanCircle('初传', result.sanChuan.chuChuan),
+              const Padding(
+                padding: EdgeInsets.only(bottom: 20),
+                child: Icon(Icons.arrow_forward, size: 18, color: _textMuted),
+              ),
+              _buildChuanCircle('中传', result.sanChuan.zhongChuan),
+              const Padding(
+                padding: EdgeInsets.only(bottom: 20),
+                child: Icon(Icons.arrow_forward, size: 18, color: _textMuted),
+              ),
+              _buildChuanCircle('末传', result.sanChuan.moChuan),
+            ],
+          ),
+          const SizedBox(height: 12),
+          // 课体 badge
+          Center(
+            child: Container(
+              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
+              decoration: BoxDecoration(
+                color: _zhuShaRed.withOpacity(0.1),
+                borderRadius: BorderRadius.circular(12),
+                border: Border.all(color: _zhuShaRed.withOpacity(0.3)),
+              ),
+              child: Text(
+                '${result.keTypeName}课',
+                style: const TextStyle(
+                  fontSize: 13,
+                  color: _zhuShaRed,
+                  fontWeight: FontWeight.w500,
                 ),
-                const Spacer(),
-                Container(
+              ),
+            ),
+          ),
+          if (result.sanChuan.keTypeExplanation != null) ...[
+            const SizedBox(height: 8),
+            Center(
+              child: Text(
+                result.sanChuan.keTypeExplanation!,
+                style: const TextStyle(fontSize: 12, color: _textMuted),
+                textAlign: TextAlign.center,
+              ),
+            ),
+          ],
+        ],
+      ),
+    );
+  }
+
+  Widget _buildChuanCircle(String label, Chuan chuan) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 8),
+      child: Column(
+        children: [
+          Text(
+            label,
+            style: const TextStyle(fontSize: 12, color: _textMuted),
+          ),
+          const SizedBox(height: 6),
+          Container(
+            width: 44,
+            height: 44,
+            decoration: BoxDecoration(
+              shape: BoxShape.circle,
+              gradient: const LinearGradient(
+                begin: Alignment.topLeft,
+                end: Alignment.bottomRight,
+                colors: [_zhuShaRed, Color(0xFFE07070)],
+              ),
+              boxShadow: [
+                BoxShadow(
+                  color: _zhuShaRed.withOpacity(0.3),
+                  blurRadius: 6,
+                  offset: const Offset(0, 2),
+                ),
+              ],
+            ),
+            child: Center(
+              child: Text(
+                chuan.diZhi,
+                style: const TextStyle(
+                  fontSize: 18,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.white,
+                ),
+              ),
+            ),
+          ),
+          const SizedBox(height: 4),
+          Text(
+            chuan.liuQin,
+            style: const TextStyle(fontSize: 12, color: _textMuted),
+          ),
+        ],
+      ),
+    );
+  }
+
+  // ==================== 4. 天盘 ====================
+
+  Widget _buildTianPanSection() {
+    return _buildAntiqueCard(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          _buildSectionTitle('天盘'),
+          _buildAntiqueDivider(),
+          const SizedBox(height: 4),
+          _buildAntiqueInfoRow('月将',
+              '${result.tianPan.yueJiang}（${result.tianPan.yueJiangName}）'),
+          _buildAntiqueInfoRow('描述', result.tianPan.yueJiangDescription),
+        ],
+      ),
+    );
+  }
+
+  // ==================== 5. 神将 ====================
+
+  Widget _buildShenJiangSection() {
+    return _buildAntiqueCard(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          _buildSectionTitle('十二神将'),
+          _buildAntiqueDivider(),
+          const SizedBox(height: 4),
+          _buildAntiqueInfoRow('贵人',
+              '${result.shenJiangConfig.guiRenPosition}（${result.shenJiangConfig.guiRenTypeDescription}）'),
+          _buildAntiqueInfoRow('布神', result.shenJiangConfig.directionDescription),
+        ],
+      ),
+    );
+  }
+
+  // ==================== 6. 神煞 ====================
+
+  Widget _buildShenShaSection() {
+    return _buildAntiqueCard(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          _buildSectionTitle('神煞'),
+          _buildAntiqueDivider(),
+          if (result.shenShaList.jiShen.isNotEmpty) ...[
+            const SizedBox(height: 8),
+            const Text(
+              '吉神',
+              style: TextStyle(
+                fontSize: 13,
+                fontWeight: FontWeight.bold,
+                color: Color(0xFF4A7C59),
+              ),
+            ),
+            const SizedBox(height: 6),
+            Wrap(
+              spacing: 8,
+              runSpacing: 8,
+              children: result.shenShaList.jiShen.map((shenSha) {
+                return Container(
                   padding:
-                      const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                      const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
                   decoration: BoxDecoration(
-                    color: Colors.purple.withOpacity(0.1),
-                    borderRadius: BorderRadius.circular(4),
+                    color: const Color(0xFF4A7C59).withOpacity(0.1),
+                    borderRadius: BorderRadius.circular(12),
+                    border: Border.all(
+                        color: const Color(0xFF4A7C59).withOpacity(0.3)),
                   ),
                   child: Text(
-                    result.keTypeName,
-                    style: const TextStyle(color: Colors.purple, fontSize: 12),
+                    shenSha.displayText,
+                    style: const TextStyle(
+                        fontSize: 12, color: Color(0xFF4A7C59)),
                   ),
-                ),
-              ],
+                );
+              }).toList(),
             ),
-            const Divider(),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceAround,
-              children: [
-                _buildChuanItem('初传', result.sanChuan.chuChuan),
-                const Icon(Icons.arrow_forward, color: Colors.grey),
-                _buildChuanItem('中传', result.sanChuan.zhongChuan),
-                const Icon(Icons.arrow_forward, color: Colors.grey),
-                _buildChuanItem('末传', result.sanChuan.moChuan),
-              ],
-            ),
-            if (result.sanChuan.keTypeExplanation != null) ...[
-              const SizedBox(height: 12),
-              Text(
-                result.sanChuan.keTypeExplanation!,
-                style: TextStyle(
-                  fontSize: 12,
-                  color: Colors.grey[600],
-                ),
-              ),
-            ],
+            const SizedBox(height: 12),
           ],
-        ),
-      ),
-    );
-  }
-
-  Widget _buildChuanItem(String label, Chuan chuan) {
-    return Column(
-      children: [
-        Text(
-          label,
-          style: TextStyle(fontSize: 12, color: Colors.grey[600]),
-        ),
-        const SizedBox(height: 4),
-        Container(
-          width: 48,
-          height: 48,
-          decoration: BoxDecoration(
-            color: Colors.purple.withOpacity(0.1),
-            borderRadius: BorderRadius.circular(8),
-          ),
-          child: Center(
-            child: Text(
-              chuan.diZhi,
-              style: const TextStyle(
-                fontSize: 20,
+          if (result.shenShaList.xiongShen.isNotEmpty) ...[
+            const SizedBox(height: 8),
+            const Text(
+              '凶神',
+              style: TextStyle(
+                fontSize: 13,
                 fontWeight: FontWeight.bold,
-                color: Colors.purple,
+                color: _zhuShaRed,
               ),
             ),
-          ),
-        ),
-        const SizedBox(height: 4),
-        Text(
-          chuan.liuQin,
-          style: const TextStyle(fontSize: 12),
-        ),
-      ],
-    );
-  }
-
-  Widget _buildShenJiangCard(BuildContext context) {
-    return Card(
-      child: Padding(
-        padding: const EdgeInsets.all(16),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              '十二神将',
-              style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                    fontWeight: FontWeight.bold,
+            const SizedBox(height: 6),
+            Wrap(
+              spacing: 8,
+              runSpacing: 8,
+              children: result.shenShaList.xiongShen.map((shenSha) {
+                return Container(
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                  decoration: BoxDecoration(
+                    color: _zhuShaRed.withOpacity(0.1),
+                    borderRadius: BorderRadius.circular(12),
+                    border: Border.all(color: _zhuShaRed.withOpacity(0.3)),
                   ),
+                  child: Text(
+                    shenSha.displayText,
+                    style: const TextStyle(fontSize: 12, color: _zhuShaRed),
+                  ),
+                );
+              }).toList(),
             ),
-            const Divider(),
-            _buildInfoRow('贵人',
-                '${result.shenJiangConfig.guiRenPosition}（${result.shenJiangConfig.guiRenTypeDescription}）'),
-            _buildInfoRow('布神', result.shenJiangConfig.directionDescription),
           ],
-        ),
+        ],
       ),
     );
   }
 
-  Widget _buildShenShaCard(BuildContext context) {
-    return Card(
-      child: Padding(
-        padding: const EdgeInsets.all(16),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              '神煞',
-              style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                    fontWeight: FontWeight.bold,
-                  ),
-            ),
-            const Divider(),
-            if (result.shenShaList.jiShen.isNotEmpty) ...[
-              Text(
-                '吉神',
-                style: TextStyle(
-                  fontSize: 14,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.green[700],
-                ),
-              ),
-              const SizedBox(height: 4),
-              Wrap(
-                spacing: 8,
-                runSpacing: 8,
-                children: result.shenShaList.jiShen.map((shenSha) {
-                  return Chip(
-                    label: Text(shenSha.displayText),
-                    backgroundColor: Colors.green.withOpacity(0.1),
-                    labelStyle:
-                        const TextStyle(fontSize: 12, color: Colors.green),
-                  );
-                }).toList(),
-              ),
-              const SizedBox(height: 12),
-            ],
-            if (result.shenShaList.xiongShen.isNotEmpty) ...[
-              Text(
-                '凶神',
-                style: TextStyle(
-                  fontSize: 14,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.red[700],
-                ),
-              ),
-              const SizedBox(height: 4),
-              Wrap(
-                spacing: 8,
-                runSpacing: 8,
-                children: result.shenShaList.xiongShen.map((shenSha) {
-                  return Chip(
-                    label: Text(shenSha.displayText),
-                    backgroundColor: Colors.red.withOpacity(0.1),
-                    labelStyle:
-                        const TextStyle(fontSize: 12, color: Colors.red),
-                  );
-                }).toList(),
-              ),
-            ],
-          ],
-        ),
-      ),
-    );
-  }
+  // ==================== 辅助方法 ====================
 
-  Widget _buildInfoRow(String label, String value) {
+  Widget _buildAntiqueInfoRow(String label, String value) {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 4),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           SizedBox(
-            width: 80,
+            width: 48,
             child: Text(
               label,
-              style: TextStyle(
-                color: Colors.grey[600],
-              ),
+              style: const TextStyle(fontSize: 13, color: _textMuted),
             ),
           ),
           Expanded(
-            child: Text(value),
+            child: Text(
+              value,
+              style: const TextStyle(fontSize: 13, color: _textDark),
+            ),
           ),
         ],
       ),
