@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:lunar/lunar.dart';
 import '../../domain/divination_system.dart';
 import '../../domain/services/shared/lunar_service.dart';
@@ -36,7 +38,9 @@ class DaLiuRenSystem implements DivinationSystem {
   @override
   List<CastMethod> get supportedMethods => [
         CastMethod.time, // 时间起课
+        CastMethod.reportNumber, // 报数起课
         CastMethod.manual, // 手动输入
+        CastMethod.computer, // 随机起课
       ];
 
   @override
@@ -51,6 +55,10 @@ class DaLiuRenSystem implements DivinationSystem {
     switch (method) {
       case CastMethod.time:
         return _castByTime(time, input);
+      case CastMethod.reportNumber:
+        return _castByReportNumber(time, input);
+      case CastMethod.computer:
+        return _castByComputer(time);
       case CastMethod.manual:
         return _castByManual(time, input);
       default:
@@ -58,18 +66,31 @@ class DaLiuRenSystem implements DivinationSystem {
     }
   }
 
+  /// 地支列表，用于报数和随机起课映射
+  static const _diZhiList = ['子', '丑', '寅', '卯', '辰', '巳', '午', '未', '申', '酉', '戌', '亥'];
+
   /// 时间起课
+  ///
+  /// [shiZhiOverride] 可选的时支覆盖值，用于报数起课和随机起课
+  /// [castMethodOverride] 可选的起课方式覆盖，用于标记实际使用的方式
   Future<DaLiuRenResult> _castByTime(
     DateTime castTime,
-    Map<String, dynamic> input,
-  ) async {
+    Map<String, dynamic> input, {
+    String? shiZhiOverride,
+    CastMethod? castMethodOverride,
+  }) async {
     // 1. 获取农历信息
     final lunarInfo = LunarService.getLunarInfo(castTime);
 
-    // 2. 获取时支
-    final solar = Solar.fromDate(castTime);
-    final lunar = solar.getLunar();
-    final shiZhi = lunar.getTimeZhi();
+    // 2. 获取时支（如果有覆盖值则使用覆盖值）
+    final String shiZhi;
+    if (shiZhiOverride != null) {
+      shiZhi = shiZhiOverride;
+    } else {
+      final solar = Solar.fromDate(castTime);
+      final lunar = solar.getLunar();
+      shiZhi = lunar.getTimeZhi();
+    }
 
     // 3. 计算天盘
     final tianPan = TianPanService.createTianPan(
@@ -113,13 +134,48 @@ class DaLiuRenSystem implements DivinationSystem {
     return DaLiuRenResult(
       id: _generateId(),
       castTime: castTime,
-      castMethod: CastMethod.time,
+      castMethod: castMethodOverride ?? CastMethod.time,
       lunarInfo: lunarInfo,
       tianPan: tianPan,
       siKe: siKe,
       sanChuan: sanChuan,
       shenJiangConfig: shenJiangConfig,
       shenShaList: shenShaList,
+    );
+  }
+
+  /// 报数起课
+  ///
+  /// 用户提供一个数字，映射到地支作为时支，然后按时间起课流程计算
+  Future<DaLiuRenResult> _castByReportNumber(
+    DateTime castTime,
+    Map<String, dynamic> input,
+  ) async {
+    final number = input['number'] as int;
+    final index = (number.abs() - 1) % 12;
+    final shiZhi = _diZhiList[index];
+
+    return _castByTime(
+      castTime,
+      input,
+      shiZhiOverride: shiZhi,
+      castMethodOverride: CastMethod.reportNumber,
+    );
+  }
+
+  /// 随机起课
+  ///
+  /// 系统随机选择一个地支作为时支，然后按时间起课流程计算
+  Future<DaLiuRenResult> _castByComputer(DateTime castTime) async {
+    final random = Random();
+    final index = random.nextInt(12);
+    final shiZhi = _diZhiList[index];
+
+    return _castByTime(
+      castTime,
+      {},
+      shiZhiOverride: shiZhi,
+      castMethodOverride: CastMethod.computer,
     );
   }
 
@@ -203,6 +259,10 @@ class DaLiuRenSystem implements DivinationSystem {
     switch (method) {
       case CastMethod.time:
         // 时间起课不需要额外输入
+        return true;
+      case CastMethod.reportNumber:
+        return input.containsKey('number') && input['number'] is int;
+      case CastMethod.computer:
         return true;
       case CastMethod.manual:
         // 手动输入需要验证日干、日支、时支、月建
