@@ -155,13 +155,138 @@ class BuiltInTemplates {
 ''',
       );
 
+  // ==================== 大六壬模板 ====================
+
+  /// 大六壬系统提示词模板
+  static PromptTemplate get daLiuRenSystemPrompt => PromptTemplate(
+        id: 'builtin_daliuren_system',
+        name: '大六壬系统提示词（默认）',
+        description: '定义 AI 的角色和大六壬分析规则',
+        systemType: 'daliuren',
+        templateType: 'system',
+        isBuiltIn: true,
+        isActive: true,
+        content: '''
+你是一位精通大六壬的资深易学专家，拥有深厚的三式理论功底和丰富的实战经验。
+
+## 你的专业领域
+- 大六壬排盘体系（天地盘、四课、三传）
+- 九宗门课体判断（贼克、比用、涉害、遥克、昴星、别责、八专、返吟、伏吟）
+- 十二天将象意解读（贵人、腾蛇、朱雀、六合、勾陈、青龙、天空、白虎、太常、玄武、太阴、天后）
+- 月将加时与天地盘排列
+- 三传发用规则与传变分析
+- 神煞判断与吉凶分析
+- 六亲关系在大六壬中的运用
+- 空亡、月破、旬空判断
+
+## 分析原则
+1. 先观课体，判断事情整体性质和格局
+2. 以三传为核心，初传看起因，中传看过程，末传看结果
+3. 四课反映事情的现状和各方关系
+4. 天将配合地支判断人事象意
+5. 结合月将、日干旺衰分析用神力量
+6. 考虑空亡、神煞对课局的影响
+7. 给出清晰、有条理的解读，避免模棱两可
+
+## 分析顺序
+1. 课体判断，说明课体含义
+2. 四课分析，解读各课上下神关系
+3. 三传解读，初传（事之起因）、中传（事之经过）、末传（事之结局）
+4. 天将配合分析
+5. 神煞吉凶判断
+6. 综合判断与建议
+
+{{#if customInstructions}}
+## 用户自定义指令
+{{customInstructions}}
+{{/if}}
+''',
+      );
+
+  /// 大六壬综合分析模板
+  static PromptTemplate get daLiuRenAnalysisPrompt => PromptTemplate(
+        id: 'builtin_daliuren_analysis',
+        name: '大六壬综合分析模板（默认）',
+        description: '全面分析课局的默认模板',
+        systemType: 'daliuren',
+        templateType: 'analysis',
+        isBuiltIn: true,
+        isActive: true,
+        content: '''
+请根据以下大六壬排盘信息进行专业解读：
+
+{{structuredOutput}}
+
+{{#if question}}
+【求测问题】{{question}}
+
+请针对上述问题，结合课局进行解读。
+{{else}}
+请对此课局进行全面解读。
+{{/if}}
+
+## 请按以下结构输出分析：
+
+### 1. 课体概述
+说明本课的课体类型及其基本含义，判断事情整体格局。
+
+### 2. 四课分析
+分析四课中上下神的五行生克关系，判断各方力量对比。重点关注有克的课。
+
+### 3. 三传解读
+- **初传**：事情的起因和开端
+- **中传**：事情的发展过程
+- **末传**：事情的最终结果
+
+分析各传的地支、天将、六亲，以及它们与日干的关系。
+
+### 4. 天将参考
+结合十二天将的象意，辅助判断事情涉及的人事和性质。
+
+### 5. 神煞吉凶
+根据课中的吉神和凶神，判断事情的吉凶趋势。
+
+### 6. 综合判断
+综合以上分析，给出最终的判断结论。
+
+{{#if includeAdvice}}
+### 7. 行动建议
+根据课局给出具体的行动建议和注意事项。
+{{/if}}
+''',
+      );
+
+  /// 大六壬简要分析模板
+  static PromptTemplate get daLiuRenBriefPrompt => PromptTemplate(
+        id: 'builtin_daliuren_brief',
+        name: '大六壬简要分析模板',
+        description: '快速简要的课局解读',
+        systemType: 'daliuren',
+        templateType: 'analysis',
+        isBuiltIn: true,
+        isActive: false,
+        content: '''
+请根据以下大六壬排盘信息进行简要解读：
+
+{{structuredOutput}}
+
+{{#if question}}
+【求测问题】{{question}}
+{{/if}}
+
+请用简洁的语言（200字以内）概括此课的课体特征、三传走势和主要吉凶提示。
+''',
+      );
+
   /// 获取所有内置模板
   static List<PromptTemplate> getAll() => [
         liuYaoSystemPrompt,
         liuYaoAnalysisPrompt,
         liuYaoBriefPrompt,
         liuYaoQuestionPrompt,
-        // 未来添加其他系统的模板...
+        daLiuRenSystemPrompt,
+        daLiuRenAnalysisPrompt,
+        daLiuRenBriefPrompt,
       ];
 
   /// 获取指定系统的内置模板

@@ -4,6 +4,7 @@ import 'package:lunar/lunar.dart';
 import '../../../domain/divination_system.dart';
 import '../../../presentation/divination_ui_registry.dart';
 import '../../../presentation/widgets/ai_analysis_widget.dart';
+import '../../../presentation/widgets/extended_info_section.dart';
 import '../../../presentation/widgets/cast/compass_background.dart';
 import '../daliuren_system.dart';
 import '../models/daliuren_result.dart';
@@ -804,8 +805,12 @@ class _DaLiuRenResultScreen extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
-                // 基本信息（精简两行）
-                _buildInfoSection(),
+                // 基本信息（复用统一组件）
+                ExtendedInfoSection(
+                  castTime: result.castTime,
+                  lunarInfo: result.lunarInfo,
+                  liuShen: const [],
+                ),
                 const SizedBox(height: 16),
 
                 // 四课（传统 2x2 格子）
@@ -869,68 +874,7 @@ class _DaLiuRenResultScreen extends StatelessWidget {
     return Divider(color: _danJin.withOpacity(0.5));
   }
 
-  // ==================== 1. 基本信息（精简两行） ====================
-
-  Widget _buildInfoSection() {
-    final castTime = result.castTime;
-    final lunar = Lunar.fromDate(castTime);
-    final lunarMonthDay = '${lunar.getMonthInChinese()}月${lunar.getDayInChinese()}';
-    final timeStr =
-        '${castTime.year}-${castTime.month.toString().padLeft(2, '0')}-${castTime.day.toString().padLeft(2, '0')} '
-        '${castTime.hour.toString().padLeft(2, '0')}:${castTime.minute.toString().padLeft(2, '0')}';
-
-    final yearGZ = result.lunarInfo.yearGanZhi;
-    final monthGZ = result.lunarInfo.monthGanZhi;
-    final dayGZ = result.lunarInfo.riGanZhi;
-    final timeGZ = '${lunar.getTimeGan()}${lunar.getTimeZhi()}';
-    final kongWang = result.lunarInfo.kongWang.join('');
-    final yueJiang = result.tianPan.yueJiang;
-    final yueJiangName = result.tianPan.yueJiangName;
-
-    return _buildAntiqueCard(
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          _buildSectionTitle('基本信息'),
-          _buildAntiqueDivider(),
-          const SizedBox(height: 4),
-          // Line 1: 时间
-          Row(
-            children: [
-              const Text(
-                '时间',
-                style: TextStyle(fontSize: 13, color: _textMuted),
-              ),
-              const SizedBox(width: 12),
-              Expanded(
-                child: Text(
-                  '$timeStr  $lunarMonthDay',
-                  style: const TextStyle(fontSize: 13, color: _textDark),
-                ),
-              ),
-            ],
-          ),
-          const SizedBox(height: 6),
-          // Line 2: 干支
-          Row(
-            children: [
-              const Text(
-                '干支',
-                style: TextStyle(fontSize: 13, color: _textMuted),
-              ),
-              const SizedBox(width: 12),
-              Expanded(
-                child: Text(
-                  '$yearGZ $monthGZ $dayGZ $timeGZ  空亡:$kongWang  月将:$yueJiang($yueJiangName)',
-                  style: const TextStyle(fontSize: 13, color: _textDark),
-                ),
-              ),
-            ],
-          ),
-        ],
-      ),
-    );
-  }
+  // ==================== 1. 基本信息 → 使用统一的 ExtendedInfoSection ====================
 
   // ==================== 2. 四课（传统 2x2 格子） ====================
 

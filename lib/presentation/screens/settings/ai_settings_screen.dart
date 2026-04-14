@@ -403,6 +403,19 @@ class _AISettingsScreenState extends State<AISettingsScreen> {
   }
 
   Widget _buildTemplatesCard() {
+    // 按系统分组
+    final grouped = <String, List<tmpl.PromptTemplate>>{};
+    for (final t in _templates) {
+      grouped.putIfAbsent(t.systemType, () => []).add(t);
+    }
+
+    const systemNames = {
+      'liuyao': '六爻',
+      'daliuren': '大六壬',
+      'meihua': '梅花易数',
+      'xiaoliuren': '小六壬',
+    };
+
     return Card(
       child: Padding(
         padding: const EdgeInsets.all(16),
@@ -418,7 +431,7 @@ class _AISettingsScreenState extends State<AISettingsScreen> {
             ),
             const SizedBox(height: 4),
             const Text(
-              '管理 AI 分析使用的提示词模板',
+              '管理各术数系统的 AI 分析提示词',
               style: TextStyle(fontSize: 12, color: Colors.grey),
             ),
             const SizedBox(height: 12),
@@ -430,7 +443,27 @@ class _AISettingsScreenState extends State<AISettingsScreen> {
                 ),
               )
             else
-              ..._templates.map((t) => _buildTemplateTile(t)),
+              ...grouped.entries.map((entry) {
+                final name = systemNames[entry.key] ?? entry.key;
+                return Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.only(top: 8, bottom: 4),
+                      child: Text(
+                        name,
+                        style: TextStyle(
+                          fontSize: 13,
+                          fontWeight: FontWeight.w600,
+                          color: Colors.grey[700],
+                        ),
+                      ),
+                    ),
+                    ...entry.value.map((t) => _buildTemplateTile(t)),
+                    const Divider(height: 8),
+                  ],
+                );
+              }),
           ],
         ),
       ),
