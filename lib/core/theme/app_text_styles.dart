@@ -157,4 +157,52 @@ class AppTextStyles {
     letterSpacing: 0.5,
     height: 1.4,
   );
+
+  // ==================== 仿古风样式 ====================
+
+  /// 仿古风主标题
+  static const TextStyle antiqueTitle = TextStyle(
+    fontFamily: fontFamilySong,
+    fontSize: 18,
+    fontWeight: FontWeight.bold,
+    letterSpacing: 2,
+    color: AppColors.xuanse,
+    height: 1.4,
+  );
+
+  /// 仿古风节标题（朱砂色）
+  static const TextStyle antiqueSection = TextStyle(
+    fontFamily: fontFamilySong,
+    fontSize: 15,
+    fontWeight: FontWeight.bold,
+    letterSpacing: 1,
+    color: AppColors.zhusha,
+    height: 1.4,
+  );
+
+  /// 仿古风正文
+  static const TextStyle antiqueBody = TextStyle(
+    fontFamily: fontFamilySong,
+    fontSize: 13,
+    color: AppColors.xuanse,
+    height: 1.6,
+  );
+
+  /// 仿古风标签（古褐色）
+  static const TextStyle antiqueLabel = TextStyle(
+    fontFamily: fontFamilySong,
+    fontSize: 11,
+    letterSpacing: 1,
+    color: AppColors.guhe,
+    height: 1.4,
+  );
+
+  /// 仿古风按钮文字
+  static const TextStyle antiqueButton = TextStyle(
+    fontFamily: fontFamilySong,
+    fontSize: 16,
+    fontWeight: FontWeight.bold,
+    letterSpacing: 2,
+    color: Colors.white,
+  );
 }
