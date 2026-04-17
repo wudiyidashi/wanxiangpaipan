@@ -42,6 +42,18 @@ class AppColors {
   /// 古铜色 - 用于装饰
   static const Color gutong = Color(0xFF8B6914);
 
+  /// 深淡金 - 罗盘环、印章边、强调边框（仿古风）
+  static const Color danjinDeep = Color(0xFFB79452);
+
+  /// 古褐 - 次要文字、标签（仿古风）
+  static const Color guhe = Color(0xFF8B7355);
+
+  /// 浅褐 - placeholder、禁用态文字（仿古风）
+  static const Color qianhe = Color(0xFFA0937E);
+
+  /// 缃色深 - 背景渐变底端（仿古风）
+  static const Color xiangseDeep = Color(0xFFF0EDE8);
+
   /// 玄色（黑）- 主要文字
   static const Color xuanse = Color(0xFF2C2C2C);
 
