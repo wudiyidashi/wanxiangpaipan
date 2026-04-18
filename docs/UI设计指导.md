@@ -2,6 +2,12 @@
 > 原先"新中式极简"风格的设计决策已演进为"仿古风"，
 > 对应实现见 `lib/presentation/widgets/antique/` 与 `lib/core/theme/`。
 
+> **2026-04-18 更新**：完成 antique 体系落地 → 收敛方案修订。
+> 当前权威 spec 见 [docs/superpowers/specs/2026-04-17-unified-antique-ui-design.md](superpowers/specs/2026-04-17-unified-antique-ui-design.md)。
+>
+> 本文档只记录"设计意图层"，不再包含"待建设清单"——
+> 实际组件库状态以 `lib/presentation/widgets/antique/` 为准。
+
 如何在一个统一的框架下，优雅地展示由于逻辑、复杂度完全不同的排盘界面（例如简单的"小六壬"与极其复杂的"大六壬"），同时为未来增加新术数（如紫微斗数、奇门遁甲）预留空间。针对**首页（起卦大厅）**的设计，这是用户进入应用的第一印象，也是分发流量的核心枢纽。
 
 以下是关于首页的主题风格、元素构成、分布逻辑的详细设计方案：
@@ -74,6 +80,15 @@
 | `AntiqueWatermark` | 小印章水印 | 历史/设置等轻装饰 |
 
 通过 `import '../../widgets/antique/antique.dart';` 一次性引入全部。组件使用 `AntiqueTokens`（`lib/core/theme/antique_tokens.dart`）提供的圆角/间距/边框常量，以及 `AppColors` + `AppTextStyles` 提供的色板和字体。
+
+#### chromeless / body-only 能力（正式支持）
+
+`AntiqueScaffold` 只应出现在**顶层页面壳**。当一个页面需要被**嵌入**到另一个页面（如 `HistoryListScreen` 被嵌入到 `HomeScreen` 的历史 tab），该嵌入目标必须支持 chromeless 模式——即**返回 body-only 内容**，不包含自己的 `AntiqueScaffold` / `AntiqueAppBar` 外壳。
+
+已采用此模式的例子：
+- `HistoryListScreen(chromeless: true)`：当作为 home tab 1 的 body 使用时不带外壳
+
+规则：当一个页面组件可能在多种上下文（独立路由 / 嵌入 tab / 嵌入 dialog）中被使用时，默认应提供 `chromeless` 构造参数。
 
 2. 页面元素清单 (Elements)
 
@@ -228,3 +243,16 @@ Tab Bar： 不用系统默认的，自定义高度 60px。
 繁： 支持多术数（六爻、大六壬、小六壬、梅花易数及未来系统）。
 
 序： 通过 `AntiqueCard` 网格将不同复杂度的术数整齐排列，统一仿古调性。
+
+## Token 单一来源
+
+所有视觉 token 的权威位置：
+
+| 维度 | 权威文件 |
+|---|---|
+| 颜色 | `lib/core/theme/app_colors.dart` |
+| 字体样式 | `lib/core/theme/app_text_styles.dart` |
+| 形状 / 间距 / 阴影 / 渐变 | `lib/core/theme/antique_tokens.dart` |
+
+**禁止**在其他位置引入第二套别名（如 `zhushaHong` 之类），**禁止**在页面或 UI 工厂内硬编码通用色字面量。
+领域色（六亲 / 五行 / 铜钱面 / 阴阳爻线蓝等）允许保留 inline 但必须带 `//` 注释说明用途。
