@@ -206,41 +206,19 @@ class _HistoryListScreenState extends State<HistoryListScreen> {
   }
 
   Widget _buildBody() {
-    if (_isLoading) {
-      return const Center(
-        child: CircularProgressIndicator(),
-      );
-    }
+    // State 1: loading
+    if (_isLoading) return _buildLoadingState();
 
-    if (_errorMessage != null) {
-      return Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Icon(
-              Icons.error_outline,
-              size: 64,
-              color: AppColors.zhushaLight,
-            ),
-            const SizedBox(height: 16),
-            Text(
-              _errorMessage!,
-              style: AppTextStyles.antiqueBody,
-              textAlign: TextAlign.center,
-            ),
-            const SizedBox(height: 16),
-            AntiqueButton(
-              label: '重试',
-              icon: Icons.refresh,
-              onPressed: _loadRecords,
-              variant: AntiqueButtonVariant.ghost,
-            ),
-          ],
-        ),
-      );
-    }
+    // State 2: error
+    if (_errorMessage != null) return _buildErrorState();
 
+    // State 3: empty history (no records at all — regardless of filters)
+    if (_records.isEmpty) return _buildEmptyHistoryState();
+
+    // Has records — always render search/sort/status bar + content
     final statusBar = _buildFilterStatusBar();
+    final hasActiveFilter =
+        _selectedSystemType != null || _searchQuery.trim().isNotEmpty;
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -254,47 +232,133 @@ class _HistoryListScreenState extends State<HistoryListScreen> {
         // 统一筛选状态栏（显示系统 + 搜索 + 结果数）
         if (statusBar != null) statusBar,
 
-        // 内容区：空状态或记录列表
+        // 内容区：无搜索结果空态 或 记录列表
         Expanded(
-          child: _filteredRecords.isEmpty
-              ? Center(
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      const AntiqueWatermark(char: '空'),
-                      const SizedBox(height: 8),
-                      Icon(
-                        Icons.history,
-                        size: 64,
-                        color: AppColors.qianhe,
-                      ),
-                      const SizedBox(height: 16),
-                      Text(
-                        _searchQuery.isNotEmpty
-                            ? '未找到匹配记录'
-                            : _selectedSystemType == null
-                                ? '暂无历史记录'
-                                : '暂无 ${_selectedSystemType!.displayName} 记录',
-                        style: AppTextStyles.antiqueSection.copyWith(
-                          color: AppColors.guhe,
-                        ),
-                      ),
-                      if (_selectedSystemType != null) ...[
-                        const SizedBox(height: 16),
-                        TextButton(
-                          onPressed: () => _filterBySystemType(null),
-                          child: const Text('查看全部记录'),
-                        ),
-                      ],
-                    ],
-                  ),
-                )
+          child: _filteredRecords.isEmpty && hasActiveFilter
+              ? _buildNoSearchResultsState() // State 4
               : RefreshIndicator(
                   onRefresh: _loadRecords,
                   child: _buildGroupedList(),
                 ),
         ),
       ],
+    );
+  }
+
+  /// State 1: 加载中
+  Widget _buildLoadingState() {
+    return Center(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          const CircularProgressIndicator(),
+          const SizedBox(height: 12),
+          Text(
+            '加载中...',
+            style: AppTextStyles.antiqueLabel.copyWith(color: AppColors.guhe),
+          ),
+        ],
+      ),
+    );
+  }
+
+  /// State 2: 加载失败
+  Widget _buildErrorState() {
+    return Center(
+      child: Padding(
+        padding: const EdgeInsets.all(32),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(Icons.error_outline, size: 48, color: AppColors.zhushaLight),
+            const SizedBox(height: 12),
+            Text(
+              _errorMessage ?? '加载失败',
+              style: AppTextStyles.antiqueBody,
+              textAlign: TextAlign.center,
+            ),
+            const SizedBox(height: 24),
+            AntiqueButton(
+              label: '重试',
+              icon: Icons.refresh,
+              variant: AntiqueButtonVariant.ghost,
+              onPressed: _loadRecords,
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  /// State 3: 从未有过记录（_records 为空）
+  Widget _buildEmptyHistoryState() {
+    return Center(
+      child: Padding(
+        padding: const EdgeInsets.all(32),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            const AntiqueWatermark(char: '空'),
+            const SizedBox(height: 16),
+            Text('暂无历史记录', style: AppTextStyles.antiqueSection),
+            const SizedBox(height: 8),
+            Text(
+              '去首页选一种术数起卦吧',
+              style:
+                  AppTextStyles.antiqueLabel.copyWith(color: AppColors.guhe),
+            ),
+            const SizedBox(height: 24),
+            AntiqueButton(
+              label: '去起卦',
+              icon: Icons.auto_awesome,
+              onPressed: () {
+                // 独立页面模式：弹到首页
+                // chromeless 模式：canPop 为 false，此处 no-op（宿主应另行处理 tab 切换）
+                if (Navigator.canPop(context)) {
+                  Navigator.of(context).popUntil((route) => route.isFirst);
+                }
+              },
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  /// State 4: 有记录但当前筛选/搜索无匹配
+  Widget _buildNoSearchResultsState() {
+    return Center(
+      child: Padding(
+        padding: const EdgeInsets.all(32),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            const AntiqueWatermark(char: '无'),
+            const SizedBox(height: 16),
+            Text('没有找到相关记录', style: AppTextStyles.antiqueSection),
+            const SizedBox(height: 8),
+            Text(
+              '试试调整筛选或关键字',
+              style:
+                  AppTextStyles.antiqueLabel.copyWith(color: AppColors.guhe),
+            ),
+            const SizedBox(height: 24),
+            AntiqueButton(
+              label: '清除筛选',
+              icon: Icons.clear,
+              variant: AntiqueButtonVariant.ghost,
+              onPressed: () {
+                setState(() {
+                  _selectedSystemType = null;
+                  _searchQuery = '';
+                  _searchController.clear();
+                });
+                _applyFilters();
+              },
+            ),
+          ],
+        ),
+      ),
     );
   }
 
