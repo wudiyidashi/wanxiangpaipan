@@ -1,3 +1,6 @@
+import 'dart:convert';
+
+import 'package:drift/drift.dart' as drift;
 import 'package:drift/native.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:wanxiang_paipan/data/database/app_database.dart';
@@ -97,6 +100,19 @@ void main() {
         expect(retrieved.systemType, DivinationType.liuYao);
       });
 
+      test('应该按稳定 ID 持久化系统类型和起卦方式', () async {
+        final result = _createMockLiuYaoResult();
+
+        await repository.saveRecord(result);
+
+        final rawRecord =
+            await database.divinationRecordDao.getRecordById(result.id);
+
+        expect(rawRecord, isNotNull);
+        expect(rawRecord!.systemType, result.systemType.id);
+        expect(rawRecord.castMethod, result.castMethod.id);
+      });
+
       test('应该能够查询所有记录', () async {
         final result1 = _createMockLiuYaoResult(id: 'id1');
         final result2 = _createMockLiuYaoResult(id: 'id2');
@@ -142,6 +158,31 @@ void main() {
       test('应该在记录不存在时返回 null', () async {
         final retrieved = await repository.getRecordById('non-existent-id');
         expect(retrieved, isNull);
+      });
+
+      test('应该直接丢弃旧版 systemType 记录', () async {
+        final result = _createMockLiuYaoResult(id: 'legacy-id');
+
+        await database.divinationRecordDao.insertRecord(
+          DivinationRecordsCompanion(
+            id: const drift.Value('legacy-id'),
+            systemType: const drift.Value('liuYao'),
+            castTime: drift.Value(result.castTime),
+            castMethod: drift.Value(result.castMethod.id),
+            resultData: drift.Value(jsonEncode(result.toJson())),
+            lunarData: drift.Value(jsonEncode(result.lunarInfo.toJson())),
+            questionId: const drift.Value(''),
+            detailId: const drift.Value(''),
+            interpretationId: const drift.Value(''),
+            createdAt: drift.Value(DateTime(2025, 1, 15)),
+            updatedAt: drift.Value(DateTime(2025, 1, 15)),
+          ),
+        );
+
+        expect(await repository.getRecordById('legacy-id'), isNull);
+        expect(await repository.recordExists('legacy-id'), false);
+        expect(await repository.getRecordCount(), 0);
+        expect(await repository.getAllRecords(), isEmpty);
       });
     });
 

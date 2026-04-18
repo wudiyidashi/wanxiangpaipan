@@ -46,21 +46,24 @@ class XiaoLiuRenResult implements DivinationResult {
   Map<String, dynamic> toJson() {
     return {
       'id': id,
-      'systemType': systemType.name,
+      'systemType': systemType.id,
       'castTime': castTime.toIso8601String(),
-      'castMethod': castMethod.name,
+      'castMethod': castMethod.id,
       'lunarInfo': lunarInfo.toJson(),
       'placeholderData': placeholderData,
     };
   }
 
   factory XiaoLiuRenResult.fromJson(Map<String, dynamic> json) {
+    final systemType = DivinationType.fromId(json['systemType'] as String);
+    if (systemType != DivinationType.xiaoLiuRen) {
+      throw ArgumentError('小六壬结果的 systemType 无效: ${json['systemType']}');
+    }
+
     return XiaoLiuRenResult(
       id: json['id'] as String,
       castTime: DateTime.parse(json['castTime'] as String),
-      castMethod: CastMethod.values.firstWhere(
-        (m) => m.name == json['castMethod'],
-      ),
+      castMethod: CastMethod.fromId(json['castMethod'] as String),
       lunarInfo: LunarInfo.fromJson(json['lunarInfo'] as Map<String, dynamic>),
       placeholderData: (json['placeholderData'] as Map<dynamic, dynamic>?)
               ?.cast<String, dynamic>() ??

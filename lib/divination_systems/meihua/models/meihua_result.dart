@@ -48,21 +48,24 @@ class MeiHuaResult implements DivinationResult {
   Map<String, dynamic> toJson() {
     return {
       'id': id,
-      'systemType': systemType.name,
+      'systemType': systemType.id,
       'castTime': castTime.toIso8601String(),
-      'castMethod': castMethod.name,
+      'castMethod': castMethod.id,
       'lunarInfo': lunarInfo.toJson(),
       'placeholderData': placeholderData,
     };
   }
 
   factory MeiHuaResult.fromJson(Map<String, dynamic> json) {
+    final systemType = DivinationType.fromId(json['systemType'] as String);
+    if (systemType != DivinationType.meiHua) {
+      throw ArgumentError('梅花易数结果的 systemType 无效: ${json['systemType']}');
+    }
+
     return MeiHuaResult(
       id: json['id'] as String,
       castTime: DateTime.parse(json['castTime'] as String),
-      castMethod: CastMethod.values.firstWhere(
-        (m) => m.name == json['castMethod'],
-      ),
+      castMethod: CastMethod.fromId(json['castMethod'] as String),
       lunarInfo: LunarInfo.fromJson(json['lunarInfo'] as Map<String, dynamic>),
       placeholderData: (json['placeholderData'] as Map<dynamic, dynamic>?)
               ?.cast<String, dynamic>() ??

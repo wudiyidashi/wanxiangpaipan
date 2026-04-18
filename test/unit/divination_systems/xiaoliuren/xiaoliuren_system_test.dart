@@ -77,7 +77,7 @@ void main() {
       test('应该能够从 JSON 反序列化结果', () {
         final Map<String, dynamic> json = <String, dynamic>{
           'id': 'test-id',
-          'systemType': 'xiaoLiuRen',
+          'systemType': 'xiaoliuren',
           'castTime': '2025-01-16T12:00:00.000',
           'castMethod': 'time',
           'lunarInfo': testLunarInfo.toJson(),
@@ -129,7 +129,7 @@ void main() {
       final json = result.toJson();
 
       expect(json['id'], 'test-id');
-      expect(json['systemType'], 'xiaoLiuRen');
+      expect(json['systemType'], 'xiaoliuren');
       expect(json['castMethod'], 'time');
       expect(json['placeholderData'], isA<Map<String, dynamic>>());
     });

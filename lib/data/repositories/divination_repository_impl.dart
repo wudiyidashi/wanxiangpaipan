@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:math' as math;
 import 'package:drift/drift.dart' as drift;
 import '../../domain/divination_system.dart';
 import '../../domain/repositories/divination_repository.dart';
@@ -35,14 +36,14 @@ class DivinationRepositoryImpl implements DivinationRepository {
   Future<DivinationResult?> getRecordById(String id) async {
     final record = await _database.divinationRecordDao.getRecordById(id);
     if (record == null) return null;
-    return _convertRecordToResult(record);
+    return _tryConvertRecordToResult(record);
   }
 
   @override
   Future<List<DivinationResult>> getRecordsBySystemType(
       DivinationType systemType) async {
     final records = await _database.divinationRecordDao
-        .getRecordsBySystemType(systemType.name);
+        .getRecordsBySystemType(systemType.id);
     return _convertRecordsToResults(records);
   }
 
@@ -50,7 +51,7 @@ class DivinationRepositoryImpl implements DivinationRepository {
   Future<List<DivinationResult>> getRecordsByCastMethod(
       CastMethod castMethod) async {
     final records = await _database.divinationRecordDao
-        .getRecordsByCastMethod(castMethod.name);
+        .getRecordsByCastMethod(castMethod.id);
     return _convertRecordsToResults(records);
   }
 
@@ -69,33 +70,39 @@ class DivinationRepositoryImpl implements DivinationRepository {
     required int limit,
     required int offset,
   }) async {
-    final records = await _database.divinationRecordDao
-        .getRecordsPaginated(limit: limit, offset: offset);
-    return _convertRecordsToResults(records);
+    final records = await getAllRecords();
+    if (offset >= records.length) {
+      return [];
+    }
+
+    final end = math.min(offset + limit, records.length);
+    return records.sublist(offset, end);
   }
 
   @override
   Future<int> getRecordCount() async {
-    return await _database.divinationRecordDao.getRecordCount();
+    return (await getAllRecords()).length;
   }
 
   @override
   Future<int> getRecordCountBySystemType(DivinationType systemType) async {
     return await _database.divinationRecordDao
-        .getRecordCountBySystemType(systemType.name);
+        .getRecordCountBySystemType(systemType.id);
   }
 
   @override
   Future<List<DivinationResult>> getRecentRecords(int limit) async {
-    final records = await _database.divinationRecordDao.getRecentRecords(limit);
-    return _convertRecordsToResults(records);
+    final records = await getAllRecords();
+    if (records.length <= limit) {
+      return records;
+    }
+    return records.take(limit).toList();
   }
 
   @override
   Future<DivinationResult?> getLatestRecord() async {
-    final record = await _database.divinationRecordDao.getLatestRecord();
-    if (record == null) return null;
-    return _convertRecordToResult(record);
+    final records = await getRecentRecords(1);
+    return records.isEmpty ? null : records.first;
   }
 
   // ==================== 插入操作 ====================
@@ -150,7 +157,7 @@ class DivinationRepositoryImpl implements DivinationRepository {
 
     // 删除数据库记录
     final count = await _database.divinationRecordDao
-        .deleteRecordsBySystemType(systemType.name);
+        .deleteRecordsBySystemType(systemType.id);
 
     // 删除关联的加密字段
     final encryptedKeys = <String>[];
@@ -217,8 +224,8 @@ class DivinationRepositoryImpl implements DivinationRepository {
     DateTime? endTime,
   }) async {
     final records = await _database.divinationRecordDao.searchRecords(
-      systemType: systemType?.name,
-      castMethod: castMethod?.name,
+      systemType: systemType?.id,
+      castMethod: castMethod?.id,
       startTime: startTime,
       endTime: endTime,
     );
@@ -229,33 +236,44 @@ class DivinationRepositoryImpl implements DivinationRepository {
 
   @override
   Future<bool> recordExists(String id) async {
-    return await _database.divinationRecordDao.recordExists(id);
+    return await getRecordById(id) != null;
   }
 
   // ==================== 私有辅助方法 ====================
 
-  /// 将数据库记录转换为占卜结果
-  DivinationResult _convertRecordToResult(DivinationRecord record) {
-    // 解析系统类型
-    final systemType = DivinationType.values.firstWhere(
-      (t) => t.name == record.systemType,
-      orElse: () => throw StateError('未知的系统类型: ${record.systemType}'),
-    );
+  /// 尝试将数据库记录转换为占卜结果。
+  ///
+  /// 不符合当前存储契约的旧记录会被直接丢弃。
+  DivinationResult? _tryConvertRecordToResult(DivinationRecord record) {
+    try {
+      final systemType = DivinationType.fromId(record.systemType);
+      final system = _registry.tryGetSystem(systemType);
+      if (system == null) {
+        return null;
+      }
 
-    // 获取对应的排盘
-    final system = _registry.getSystem(systemType);
+      final decoded = jsonDecode(record.resultData);
+      if (decoded is! Map) {
+        return null;
+      }
 
-    // 解析结果数据
-    final resultData = jsonDecode(record.resultData) as Map<String, dynamic>;
-
-    // 使用系统的 resultFromJson 方法恢复结果
-    return system.resultFromJson(resultData);
+      return system.resultFromJson(Map<String, dynamic>.from(decoded));
+    } catch (_) {
+      return null;
+    }
   }
 
   /// 批量将数据库记录转换为占卜结果
   List<DivinationResult> _convertRecordsToResults(
       List<DivinationRecord> records) {
-    return records.map(_convertRecordToResult).toList();
+    final results = <DivinationResult>[];
+    for (final record in records) {
+      final result = _tryConvertRecordToResult(record);
+      if (result != null) {
+        results.add(result);
+      }
+    }
+    return results;
   }
 
   /// 将占卜结果转换为数据库 Companion
@@ -263,9 +281,9 @@ class DivinationRepositoryImpl implements DivinationRepository {
       DivinationResult result) {
     return DivinationRecordsCompanion(
       id: drift.Value(result.id),
-      systemType: drift.Value(result.systemType.name),
+      systemType: drift.Value(result.systemType.id),
       castTime: drift.Value(result.castTime),
-      castMethod: drift.Value(result.castMethod.name),
+      castMethod: drift.Value(result.castMethod.id),
       resultData: drift.Value(jsonEncode(result.toJson())),
       lunarData: drift.Value(jsonEncode(result.lunarInfo.toJson())),
       questionId: const drift.Value(''),
@@ -280,9 +298,9 @@ class DivinationRepositoryImpl implements DivinationRepository {
   DivinationRecord _convertResultToRecord(DivinationResult result) {
     return DivinationRecord(
       id: result.id,
-      systemType: result.systemType.name,
+      systemType: result.systemType.id,
       castTime: result.castTime,
-      castMethod: result.castMethod.name,
+      castMethod: result.castMethod.id,
       resultData: jsonEncode(result.toJson()),
       lunarData: jsonEncode(result.lunarInfo.toJson()),
       questionId: '',
