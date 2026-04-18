@@ -2,14 +2,12 @@
 
 <div align="center">
 
-**专业的中国传统术数占卜应用 | 可扩展的多系统架构 | AI分析**
+**专业的中国传统术数占卜应用 | 可扩展的多系统架构 | AI 解卦**
 
-[![Flutter](https://img.shields.io/badge/Flutter-3.24+-blue.svg)](https://flutter.dev)
+[![Flutter](https://img.shields.io/badge/Flutter-3.38+-blue.svg)](https://flutter.dev)
 [![Dart](https://img.shields.io/badge/Dart-3.0+-blue.svg)](https://dart.dev)
 [![codecov](https://codecov.io/gh/wudiyidashi/wanxiangpaipan/branch/main/graph/badge.svg)](https://codecov.io/gh/wudiyidashi/wanxiangpaipan)
 [![License](https://img.shields.io/badge/License-Apache%202.0-green.svg)](LICENSE)
-
-[简体中文](README.md) | [English](README_EN.md)
 
 </div>
 
@@ -25,30 +23,46 @@
 - **专业准确**: 严格遵循传统术数理论，提供准确的卦象计算和解析
 - **开放扩展**: 基于插件化架构，开发者可轻松添加新的术数系统
 - **隐私安全**: 所有数据本地加密存储，完全离线可用
+- **AI 增强**: 可选接入大模型进行卦象辅助解读
 
 ### ✨ 核心特性
 
 #### 🔮 已完整实现的系统
 
 **六爻系统** (Liu Yao)
-- ✅ 三种起卦方式（摇钱法、时间起卦、手动输入）
+- ✅ **六种起卦方式**：钱币卦、爻名卦、数字卦、报数卦、时间卦、电脑卦
 - ✅ 完整纳甲装卦（地支、天干、六亲、五行）
-- ✅ 世应定位、动爻变卦
+- ✅ 世应定位、动爻变卦、伏神
 - ✅ 六神配置（青龙、朱雀、勾陈、腾蛇、白虎、玄武）
-- ✅ 空亡计算、农历信息
+- ✅ 空亡计算、农历信息、特殊卦型（六冲/六合/游魂/归魂）
+
+**大六壬系统** (Da Liu Ren)
+- ✅ **四种起课方式**：时间起课、报数起课、手动输入、电脑随机
+- ✅ 四课三传完整推演
+- ✅ 十二天将配置
+- ✅ 天盘地盘、月将月建
+- ✅ 神煞系统
+- ✅ 比用、涉害、遥克等课体识别
 
 #### 🚧 预留骨架（待实现）
 
-- **大六壬系统** (Da Liu Ren): 四课三传、十二神将、神煞系统
 - **小六壬系统** (Xiao Liu Ren): 六神推算（大安、留连、速喜、赤口、小吉、空亡）
-- **梅花易数系统** (Mei Hua): 时间/数字/物象起卦、体用判断
+- **梅花易数系统** (Mei Hua): 时间/数字/物象起卦、体用判断、互卦变卦
+
+#### 🤖 AI 解卦
+
+- ✅ OpenAI 兼容接口（支持自建 API、代理和第三方模型服务）
+- ✅ 按术数系统分类的提示词模板管理（可编辑、可自定义）
+- ✅ 动态获取模型列表与连接测试
+- ✅ 结构化输出（Markdown 渲染）
 
 #### 🛠️ 平台功能
 
-- **统一历史记录**: 跨系统的统一记录管理和搜索
+- **统一起卦界面**: `UnifiedCastScreen` 单页面承载全部术数与起卦方式，通过 UI 工厂动态构建
+- **统一历史记录**: 跨系统的统一记录管理
 - **加密存储**: 用户问题和解读信息端到端加密
-- **离线优先**: 所有功能完全离线可用
-- **导出分享**: 支持记录导出和分享（待实现）
+- **离线优先**: 所有功能完全离线可用（AI 功能除外）
+- **无障碍支持**: 核心组件带 Semantics 标签，支持 VoiceOver / TalkBack
 
 ---
 
@@ -61,86 +75,89 @@
 ```
 ┌─────────────────────────────────────────────────────────────┐
 │  Presentation Layer (lib/presentation/)                     │
-│  └─ 动态 UI (通过 DivinationUIFactory 构建)                 │
+│  └─ 动态 UI（通过 DivinationUIFactory 构建）                │
 └─────────────────────────────────────────────────────────────┘
                           ↓ uses
 ┌─────────────────────────────────────────────────────────────┐
 │  ViewModel Layer (lib/viewmodels/)                          │
-│  └─ DivinationViewModel<T> (泛型基类)                       │
+│  └─ DivinationViewModel<T>（泛型基类）                      │
 └─────────────────────────────────────────────────────────────┘
                           ↓ uses
 ┌─────────────────────────────────────────────────────────────┐
 │  Divination System Layer (lib/divination_systems/)          │
-│  ├─ DivinationSystem (接口)                                 │
-│  ├─ DivinationRegistry (系统注册表)                         │
-│  ├─ LiuYaoSystem ✅ (六爻完整实现)                          │
-│  ├─ DaLiuRenSystem 🚧 (骨架)                                │
-│  ├─ XiaoLiuRenSystem 🚧 (骨架)                              │
-│  └─ MeiHuaSystem 🚧 (骨架)                                  │
+│  ├─ DivinationSystem（接口）                                │
+│  ├─ DivinationRegistry（系统注册表）                        │
+│  ├─ LiuYaoSystem ✅（六爻完整实现）                         │
+│  ├─ DaLiuRenSystem ✅（大六壬完整实现）                     │
+│  ├─ XiaoLiuRenSystem 🚧（骨架）                             │
+│  └─ MeiHuaSystem 🚧（骨架）                                 │
+└─────────────────────────────────────────────────────────────┘
+                          ↓ uses
+┌─────────────────────────────────────────────────────────────┐
+│  AI Layer (lib/ai/)                                         │
+│  ├─ LLMProviderRegistry（模型提供商注册表）                 │
+│  ├─ OpenAI 兼容 Provider                                    │
+│  ├─ AIAnalysisService（解卦调用入口）                       │
+│  └─ 提示词模板（按系统分类，可编辑）                        │
 └─────────────────────────────────────────────────────────────┘
                           ↓ uses
 ┌─────────────────────────────────────────────────────────────┐
 │  Repository Layer (lib/domain/repositories/)                │
-│  └─ 统一的 DivinationRepository (多态存储)                  │
+│  └─ 统一的 DivinationRepository（多态存储）                 │
 └─────────────────────────────────────────────────────────────┘
                           ↓ uses
 ┌─────────────────────────────────────────────────────────────┐
 │  Data Layer (lib/data/)                                     │
-│  ├─ DivinationRecords 表 (新架构，多态存储)                 │
-│  └─ GuaRecords 表 (旧架构，向后兼容)                        │
+│  ├─ DivinationRecords 表（新架构，多态存储）                │
+│  └─ GuaRecords 表（旧架构，向后兼容）                       │
 └─────────────────────────────────────────────────────────────┘
                           ↓ uses
 ┌─────────────────────────────────────────────────────────────┐
 │  Shared Services (lib/domain/services/shared/)              │
-│  ├─ TianGanDiZhiService (天干地支计算)                      │
-│  ├─ WuXingService (五行生克)                                │
-│  ├─ LiuQinService (六亲推算)                                │
-│  └─ LunarService (农历转换)                                 │
+│  ├─ TianGanDiZhiService（天干地支计算）                     │
+│  ├─ WuXingService（五行生克）                               │
+│  ├─ LiuQinService（六亲推算）                               │
+│  └─ LunarService（农历转换）                                │
 └─────────────────────────────────────────────────────────────┘
 ```
 
 ### 核心接口设计
 
-#### DivinationSystem (术数系统接口)
+#### DivinationSystem（术数系统接口）
 
 所有术数系统都必须实现此接口：
 
 ```dart
 abstract class DivinationSystem {
-  DivinationType get type;           // 系统类型枚举
-  String get name;                   // 系统名称
-  String get description;            // 系统描述
-  bool get isEnabled;                // 是否启用
+  DivinationType get type;                 // 系统类型枚举
+  String get name;                         // 系统名称
+  String get description;                  // 系统描述
+  bool get isEnabled;                      // 是否启用
+  List<CastMethod> get supportedMethods;   // 支持的起卦方式
 
-  // 执行占卜
   Future<DivinationResult> cast({
     required CastMethod method,
     required Map<String, dynamic> input,
     DateTime? castTime,
   });
 
-  // 从 JSON 反序列化结果
   DivinationResult resultFromJson(Map<String, dynamic> json);
-
-  // 验证输入参数
   bool validateInput(CastMethod method, Map<String, dynamic> input);
 }
 ```
 
-#### DivinationResult (占卜结果接口)
-
-所有占卜结果都必须实现此接口：
+#### DivinationResult（占卜结果接口）
 
 ```dart
 abstract class DivinationResult {
-  String get id;                     // 唯一标识
-  DivinationType get systemType;     // 所属系统
-  DateTime get castTime;             // 占卜时间
-  CastMethod get castMethod;         // 起卦方式
-  LunarInfo get lunarInfo;           // 农历信息
+  String get id;
+  DivinationType get systemType;
+  DateTime get castTime;
+  CastMethod get castMethod;
+  LunarInfo get lunarInfo;
 
-  String getSummary();               // 获取摘要（用于列表显示）
-  Map<String, dynamic> toJson();     // 序列化为 JSON
+  String getSummary();
+  Map<String, dynamic> toJson();
 }
 ```
 
@@ -160,6 +177,7 @@ User Action → ViewModel → Repository → Data Source
 - ✅ **类型安全**: 泛型设计保证编译期类型检查
 - ✅ **统一存储**: 多态 JSON 存储，统一查询接口
 - ✅ **UI 解耦**: 每个系统自定义 UI，通过工厂模式动态构建
+- ✅ **AI 分层**: 大模型调用独立在 `lib/ai/`，可按术数类型切换提示词模板
 - ✅ **测试友好**: 接口驱动设计，易于 Mock 和单元测试
 
 ---
@@ -168,7 +186,7 @@ User Action → ViewModel → Repository → Data Source
 
 ### 前置要求
 
-- Flutter SDK >= 3.24.0
+- Flutter SDK >= 3.38.0
 - Dart SDK >= 3.0.0
 - Android Studio / Xcode（用于运行模拟器）
 - Git
@@ -231,17 +249,28 @@ lib/
 │   ├── /router                        # 路由配置
 │   ├── /theme                         # 主题配置
 │   └── /utils                         # 工具函数
+├── /ai                                # 🔥 AI 解卦层
+│   ├── ai_bootstrap.dart              # 启动时注册 Provider / 加载模板
+│   ├── llm_provider.dart              # LLMProvider 接口
+│   ├── llm_provider_registry.dart     # Provider 注册表
+│   ├── /providers
+│   │   └── openai_compatible_provider.dart
+│   ├── /service
+│   │   └── ai_analysis_service.dart   # 解卦调用入口
+│   ├── /config                        # API 配置持久化
+│   ├── /template                      # 提示词模板（按系统分类）
+│   └── /output                        # 结构化输出解析
 ├── /divination_systems                # 🔥 多术数系统实现
 │   ├── registry_bootstrap.dart        # 自动注册所有系统
 │   ├── /liuyao                        # 六爻系统 ✅
-│   │   ├── liuyao_system.dart         # DivinationSystem 实现
+│   │   ├── liuyao_system.dart
 │   │   ├── /models
-│   │   │   └── liuyao_result.dart     # DivinationResult 实现
-│   │   ├── /ui
-│   │   │   └── liuyao_ui_factory.dart # UI 工厂
+│   │   ├── /ui                        # UI 工厂
 │   │   └── /viewmodels
-│   │       └── liuyao_viewmodel.dart  # ViewModel<LiuYaoResult>
-│   ├── /daliuren                      # 大六壬系统 🚧
+│   ├── /daliuren                      # 大六壬系统 ✅
+│   │   ├── daliuren_system.dart
+│   │   ├── /models                    # SiKe / Chuan / TianPan / ShenJiang / ShenSha
+│   │   └── /ui
 │   ├── /xiaoliuren                    # 小六壬系统 🚧
 │   └── /meihua                        # 梅花易数系统 🚧
 ├── /models                            # 共享数据模型
@@ -249,11 +278,11 @@ lib/
 │   ├── gua.dart                       # 卦模型（六爻专用）
 │   └── lunar_info.dart                # 农历信息（跨系统共享）
 ├── /domain                            # 领域层（纯函数）
-│   ├── divination_system.dart         # 🔥 核心接口
+│   ├── divination_system.dart         # 🔥 核心接口 + CastMethod 枚举
 │   ├── divination_registry.dart       # 🔥 系统注册表
-│   ├── /repositories                  # Repository 接口
+│   ├── /repositories
 │   │   └── divination_repository.dart # 统一占卜记录仓库
-│   └── /services                      # 业务服务
+│   └── /services
 │       ├── /shared                    # 🔥 跨系统共享服务
 │       │   ├── tiangan_dizhi_service.dart
 │       │   ├── wuxing_service.dart
@@ -265,21 +294,23 @@ lib/
 │   │   ├── app_database.dart
 │   │   └── tables.dart                # DivinationRecords + GuaRecords
 │   ├── /secure                        # 加密存储
-│   └── /repositories                  # Repository 实现
-│       └── divination_repository_impl.dart # 多态存储适配器
+│   └── /repositories
+│       └── divination_repository_impl.dart
 ├── /viewmodels                        # ViewModel 层
 │   └── divination_viewmodel.dart      # 🔥 泛型基类
 └── /presentation                      # UI 层
     ├── divination_ui_registry.dart    # 🔥 UI 工厂注册表
-    ├── /screens                       # 页面
-    │   ├── /home                      # 主界面（系统选择）
-    │   ├── /cast                      # 起卦界面（动态构建）
+    ├── /screens
+    │   ├── /home                      # 首页（系统选择 + 历史 + 日历 + 我的）
+    │   ├── /cast                      # 🔥 UnifiedCastScreen 统一起卦页
     │   ├── /result                    # 结果展示（动态构建）
-    │   └── /history                   # 历史记录（统一列表）
+    │   ├── /history                   # 历史记录（统一列表）
+    │   └── /settings                  # 设置 + AI 设置 + 模板编辑
     └── /widgets                       # 可复用组件
 
-test/                                  # 测试（99.6% 覆盖率）
+test/                                  # 测试（283 tests passing）
 docs/                                  # 文档
+└── /superpowers                       # 工程实施计划与 spec 归档
 ```
 
 ---
@@ -289,14 +320,16 @@ docs/                                  # 文档
 | 类别 | 技术 | 版本 | 用途 |
 |------|------|------|------|
 | **语言** | Dart | 3.0+ | 强类型系统 |
-| **框架** | Flutter | 3.24+ | 跨平台 UI 框架 |
+| **框架** | Flutter | 3.38+ | 跨平台 UI 框架 |
 | **状态管理** | Provider | 6.x | 依赖注入 + 响应式状态 |
 | **不可变模型** | freezed | 2.x | 代码生成（数据类） |
 | **JSON 序列化** | json_serializable | 6.x | JSON 序列化 |
 | **路由** | go_router | 14.x | 声明式路由 |
 | **本地数据库** | drift | 2.x | 类型安全 SQL |
 | **加密存储** | flutter_secure_storage | 9.x | Keychain/Keystore |
+| **轻量持久化** | shared_preferences | - | 主题、API 配置等偏好 |
 | **农历计算** | lunar | 1.7.8 | 天干地支、六十甲子 |
+| **Markdown** | flutter_markdown | - | AI 解卦结果渲染 |
 | **测试** | flutter_test + mocktail | - | 单元/Widget 测试 |
 
 ---
@@ -330,7 +363,13 @@ class YourSystem implements DivinationSystem {
   String get name => '你的系统名称';
 
   @override
-  bool get isEnabled => true; // 设为 true 启用
+  bool get isEnabled => true;
+
+  @override
+  List<CastMethod> get supportedMethods => [
+        CastMethod.time,
+        CastMethod.manual,
+      ];
 
   @override
   Future<DivinationResult> cast(...) async {
@@ -352,10 +391,8 @@ class YourSystem implements DivinationSystem {
 void registerDivinationSystems() {
   final registry = DivinationRegistry.instance;
 
-  // 注册系统
   registry.register(YourSystem());
 
-  // 注册 UI 工厂
   DivinationUIRegistry.instance.register(
     DivinationType.yourSystem,
     YourSystemUIFactory(),
@@ -363,9 +400,13 @@ void registerDivinationSystems() {
 }
 ```
 
-### 4. 完成！🎉
+### 4. （可选）为新系统配置 AI 解卦模板
 
-无需修改数据库、路由或任何现有代码。新系统会自动出现在主界面，所有功能（起卦、保存、历史记录）开箱即用。
+在 `lib/ai/template/` 下放置对应系统的提示词模板；用户可在"AI 设置"中查看/编辑。
+
+### 5. 完成！🎉
+
+无需修改数据库、路由或任何现有代码。新系统会自动出现在主界面，起卦/保存/历史/AI 解卦全部开箱即用。
 
 **详细指南**: 参见 [docs/architecture.md](docs/architecture.md)
 
@@ -373,13 +414,14 @@ void registerDivinationSystems() {
 
 ## 🧪 测试策略
 
-项目采用**测试驱动开发**，当前测试覆盖率 **99.6%** (227/228 tests passing)。
+项目采用**测试驱动开发**，当前 **283 tests 全部通过**。
 
-### 测试金字塔
+### 测试层次
 
-- **Domain Services**: 90%+ 覆盖率（纯函数，完全可测试）
-- **ViewModel Layer**: 80%+ 覆盖率
-- **Widget Layer**: 70%+ 覆盖率
+- **Domain Services**: 纯函数，完全可测试（天干地支 / 五行 / 六亲 / 农历）
+- **ViewModel Layer**: 泛型基类 + 具体实现
+- **Widget Layer**: antique 组件库 widget tests（29+ tests）+ 页面关键路径
+- **Golden Tests**: 大六壬起课页视觉回归基线
 
 ```bash
 # 运行所有测试
@@ -390,13 +432,16 @@ flutter test test/unit/domain/services/
 
 # 生成覆盖率报告
 flutter test --coverage
+
+# 更新 golden baseline（视觉回归）
+flutter test --update-goldens
 ```
 
 ---
 
 ## 🤝 贡献指南
 
-我们欢迎任何形式的贡献！无论是新功能、Bug 修复还是文档改进。
+欢迎任何形式的贡献——新功能、Bug 修复、文档改进都可以。
 
 ### 贡献流程
 
@@ -420,7 +465,7 @@ flutter test --coverage
 ### 代码风格
 
 - 使用 `flutter analyze` 检查代码质量
-- 使用 `flutter format` 格式化代码
+- 使用 `dart format` 格式化代码
 - 所有 PR 必须通过 CI 测试
 - 新功能需包含单元测试
 
@@ -428,27 +473,29 @@ flutter test --coverage
 
 ## 📋 开发路线图
 
-### ✅ Phase 1: 基础架构 (已完成)
+### ✅ Phase 1: 基础架构（已完成）
 
 - [x] 多术数系统架构设计
 - [x] 泛型 ViewModel 基类
 - [x] 零迁移数据层
-- [x] 六爻系统完整实现
-- [x] 测试覆盖率 99.6%
+- [x] 六爻系统完整实现（6 种起卦方式）
+- [x] 全量 283 测试通过
 
-### 🚧 Phase 2: 系统扩展 (进行中)
+### ✅ Phase 2: 核心系统扩展（进行中）
 
-- [ ] 大六壬系统实现
+- [x] 大六壬系统完整实现（4 种起课方式、四课三传、十二天将、神煞）
+- [x] AI 解卦（OpenAI 兼容接口 + 提示词模板）
+- [x] 统一起卦界面（UnifiedCastScreen）
 - [ ] 小六壬系统实现
 - [ ] 梅花易数系统实现
 - [ ] 导出/分享功能
 
-### 🔮 Phase 3: 增强功能 (计划中)
+### 🔮 Phase 3: 增强功能（计划中）
 
 - [ ] 云同步（可选）
-- [ ] 更多起卦方式
-- [ ] AI 辅助解卦（可选）
+- [ ] 暗黑模式
 - [ ] 多语言支持（英文）
+- [ ] 更丰富的起卦方式（摇卦动画、语音输入）
 
 ---
 
