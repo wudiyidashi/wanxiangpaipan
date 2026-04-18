@@ -362,9 +362,9 @@ class _LiuYaoCastScreenState extends State<_LiuYaoCastScreen> {
         _showError(viewModel.errorMessage ?? '起卦失败');
         return;
       }
-      if (_question.isNotEmpty) {
-        await viewModel.saveRecord(question: _question);
-      }
+      await viewModel.saveRecord(
+        question: _question.isNotEmpty ? _question : null,
+      );
       if (mounted) await _navigateToResult(context, viewModel);
     } finally {
       if (mounted) setState(() => _isProcessing = false);
@@ -402,9 +402,9 @@ class _LiuYaoCastScreenState extends State<_LiuYaoCastScreen> {
         _showError(viewModel.errorMessage ?? '起卦失败');
         return;
       }
-      if (_question.isNotEmpty) {
-        await viewModel.saveRecord(question: _question);
-      }
+      await viewModel.saveRecord(
+        question: _question.isNotEmpty ? _question : null,
+      );
       if (mounted) await _navigateToResult(context, viewModel);
     } finally {
       if (mounted) setState(() => _isProcessing = false);
@@ -423,9 +423,9 @@ class _LiuYaoCastScreenState extends State<_LiuYaoCastScreen> {
         _showError(viewModel.errorMessage ?? '起卦失败');
         return;
       }
-      if (_question.isNotEmpty) {
-        await viewModel.saveRecord(question: _question);
-      }
+      await viewModel.saveRecord(
+        question: _question.isNotEmpty ? _question : null,
+      );
       if (mounted) await _navigateToResult(context, viewModel);
     } finally {
       if (mounted) setState(() => _isProcessing = false);
@@ -442,9 +442,9 @@ class _LiuYaoCastScreenState extends State<_LiuYaoCastScreen> {
         _showError(viewModel.errorMessage ?? '起卦失败');
         return;
       }
-      if (_question.isNotEmpty) {
-        await viewModel.saveRecord(question: _question);
-      }
+      await viewModel.saveRecord(
+        question: _question.isNotEmpty ? _question : null,
+      );
       if (mounted) await _navigateToResult(context, viewModel);
     } finally {
       if (mounted) setState(() => _isProcessing = false);
