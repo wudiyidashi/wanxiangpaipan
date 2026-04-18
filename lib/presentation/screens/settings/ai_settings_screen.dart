@@ -180,7 +180,7 @@ class _AISettingsScreenState extends State<AISettingsScreen> {
     return AntiqueScaffold(
       appBar: const AntiqueAppBar(title: 'AI 设置'),
       body: SingleChildScrollView(
-        padding: const EdgeInsets.fromLTRB(16, kToolbarHeight + 16, 16, 16),
+        padding: const EdgeInsets.fromLTRB(16, 16, 16, 16),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
@@ -564,7 +564,7 @@ class _TemplateEditorScreenState extends State<_TemplateEditorScreen> {
         ],
       ),
       body: Padding(
-        padding: const EdgeInsets.fromLTRB(16, kToolbarHeight + 16, 16, 16),
+        padding: const EdgeInsets.fromLTRB(16, 16, 16, 16),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
