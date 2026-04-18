@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../../core/theme/app_text_styles.dart';
 import '../../divination_systems/liuyao/models/gua.dart';
 import '../../divination_systems/liuyao/models/yao.dart';
 
@@ -217,25 +218,22 @@ class LiuYaoTableWidget extends StatelessWidget {
               children: [
                 Text(
                   title,
-                  style: const TextStyle(
-                    fontSize: 12,
+                  // 表头分区标签（结构性）
+                  style: AppTextStyles.antiqueLabel.copyWith(
                     fontWeight: FontWeight.bold,
-                    color: Colors.grey,
                   ),
                 ),
                 const SizedBox(height: 4),
                 Text(
                   palace,
-                  style: const TextStyle(
-                    fontSize: 13,
-                    fontWeight: FontWeight.w500,
-                  ),
+                  // 八宫名称（结构性次标题）
+                  style: AppTextStyles.antiqueBody,
                 ),
                 const SizedBox(height: 2),
                 Text(
                   guaName,
-                  style: const TextStyle(
-                    fontSize: 14,
+                  // 卦名（结构性标题）
+                  style: AppTextStyles.antiqueBody.copyWith(
                     fontWeight: FontWeight.bold,
                   ),
                 ),
@@ -286,6 +284,7 @@ class LiuYaoTableWidget extends StatelessWidget {
             padding: const EdgeInsets.symmetric(vertical: 1),
             child: Text(
               _getYaoSymbol(yao),
+              // 爻象符号；red.shade700 = 动爻标记色（领域色，保留内联）
               style: TextStyle(
                 fontSize: 12,
                 height: 1,
@@ -371,6 +370,7 @@ class LiuYaoTableWidget extends StatelessWidget {
               padding: const EdgeInsets.only(left: 8, bottom: 4),
               child: Text(
                 '（$fuShenText）',
+                // 伏神注记（领域色：朱砂系，保留内联）
                 style: TextStyle(
                   fontSize: 9,
                   color: Colors.red.shade600,
@@ -404,7 +404,8 @@ class LiuYaoTableWidget extends StatelessWidget {
         _buildCell(
           liuShenName,
           flex: 2,
-          textStyle: const TextStyle(fontSize: 11),
+          // 六神名称（结构性标签）
+          textStyle: AppTextStyles.antiqueLabel,
         ),
       );
     }
@@ -414,8 +415,8 @@ class LiuYaoTableWidget extends StatelessWidget {
       _buildCell(
         '${yao.liuQin.name}${yao.branch}${yao.wuXing.name}',
         flex: 3,
-        textStyle: const TextStyle(
-          fontSize: 11,
+        // 六亲地支（结构性正文）
+        textStyle: AppTextStyles.antiqueLabel.copyWith(
           fontWeight: FontWeight.w500,
         ),
       ),
@@ -431,6 +432,7 @@ class LiuYaoTableWidget extends StatelessWidget {
                   ? '应'
                   : '',
           flex: 2,
+          // 世爻=红、应爻=蓝（领域色：世应指示色，保留内联）
           textStyle: TextStyle(
             fontSize: 12,
             fontWeight: FontWeight.bold,
@@ -462,12 +464,11 @@ class LiuYaoTableWidget extends StatelessWidget {
     return Container(
       width: 48,
       alignment: Alignment.center,
-      child: const Text(
+      child: Text(
         '动爻',
-        style: TextStyle(
-          fontSize: 11,
+        // 动爻列标头（结构性标签）
+        style: AppTextStyles.antiqueLabel.copyWith(
           fontWeight: FontWeight.bold,
-          color: Colors.black87,
         ),
       ),
     );
@@ -484,6 +485,7 @@ class LiuYaoTableWidget extends StatelessWidget {
               children: [
                 Text(
                   '╳',
+                  // 动爻标记符（领域色：动爻指示色，保留内联）
                   style: TextStyle(
                     fontSize: 10,
                     fontWeight: FontWeight.bold,
@@ -531,17 +533,12 @@ class LiuYaoTableWidget extends StatelessWidget {
         padding: const EdgeInsets.symmetric(vertical: 6, horizontal: 4),
         child: Text(
           text,
+          // 单元格样式：表头=结构性标签，正文=结构性正文
           style: isHeader
-              ? const TextStyle(
-                  fontSize: 11,
+              ? AppTextStyles.antiqueLabel.copyWith(
                   fontWeight: FontWeight.bold,
-                  color: Colors.black87,
                 )
-              : textStyle ??
-                  const TextStyle(
-                    fontSize: 12,
-                    color: Colors.black87,
-                  ),
+              : textStyle ?? AppTextStyles.antiqueBody,
           textAlign: TextAlign.center,
           overflow: noEllipsis ? TextOverflow.clip : TextOverflow.ellipsis,
         ),
