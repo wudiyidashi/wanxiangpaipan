@@ -28,7 +28,7 @@ import '../domain/divination_system.dart';
 ///
 ///   @override
 ///   Widget buildResultScreen(DivinationResult result) {
-///     return LiuYaoResultScreen(result: result as LiuYaoResult);
+///     return _LiuYaoResultScreenWithAI(result: result as LiuYaoResult);
 ///   }
 ///
 ///   @override
