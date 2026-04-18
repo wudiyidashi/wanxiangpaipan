@@ -1,163 +1,65 @@
-# 排盘抽象接口设计文档
+# 多术数系统输入输出契约
 
-**版本**: 1.0
-**创建日期**: 2025-01-15
-**最后更新**: 2025-01-15
-**状态**: 已完成
+**版本**：2.0  
+**修订日期**：2026-04-18  
+**状态**：Current Contract  
+**适用范围**：`DivinationSystem` / `DivinationResult` / `DivinationUIFactory` / 历史记录 / 仓储层
 
 ---
 
-## 概述
+## 1. 文档目的
 
-本文档描述了多术数系统架构的核心抽象层设计，包括 `DivinationSystem` 接口、`DivinationResult` 基类、以及 `DivinationRegistry` 注册表的设计原则和使用方法。
+这份文档不再只是解释“接口长什么样”，而是明确：
 
-## 设计目标
+1. 每个术数系统的 `cast()` 输入参数规范
+2. 每个术数系统结果对象的最小输出面
+3. 序列化、历史页摘要、UI factory 依赖的稳定契约
+4. 当前实现中的设计缺陷与后续收敛方向
 
-1. **统一接口**: 为所有术数系统（六爻、大六壬、小六壬、梅花易数）提供一致的 API
-2. **类型安全**: 使用强类型枚举和泛型确保编译时类型检查
-3. **可插拔架构**: 通过注册表动态管理系统，支持系统的启用/禁用
-4. **纯 Dart 实现**: Domain 层无 Flutter 依赖，可独立测试
-5. **易于扩展**: 新增术数系统只需实现接口并注册
+如果没有这份契约，系统会很快出现以下问题：
 
-## 架构层次
+- 同一个 `CastMethod` 在不同系统里含义漂移
+- `Map<String, dynamic>` 变成无约束黑盒
+- 历史页无法做统一卡片骨架
+- 仓储层和 UI 层需要靠猜字段名协作
+- 新增术数系统时只能复制已有实现，无法按规范接入
 
-```
-┌─────────────────────────────────────────────────────────┐
-│              Domain Layer (纯 Dart)                      │
-│  ┌──────────────────────────────────────────────────┐   │
-│  │  DivinationSystem (抽象接口)                      │   │
-│  │  + type: DivinationType                          │   │
-│  │  + name: String                                  │   │
-│  │  + supportedMethods: List<CastMethod>            │   │
-│  │  + cast(): Future<DivinationResult>              │   │
-│  │  + resultFromJson(): DivinationResult            │   │
-│  │  + validateInput(): bool                         │   │
-│  └──────────────────────────────────────────────────┘   │
-│                      ↑ implements                        │
-│  ┌──────────────┐  ┌──────────────┐  ┌──────────────┐   │
-│  │ LiuYaoSystem │  │ DaLiuRenSys  │  │ MeiHuaSys    │   │
-│  └──────────────┘  └──────────────┘  └──────────────┘   │
-│                                                          │
-│  ┌──────────────────────────────────────────────────┐   │
-│  │  DivinationRegistry (单例注册表)                  │   │
-│  │  + register(system)                              │   │
-│  │  + getSystem(type): DivinationSystem             │   │
-│  │  + getEnabledSystems(): List<DivinationSystem>   │   │
-│  └──────────────────────────────────────────────────┘   │
-└─────────────────────────────────────────────────────────┘
-```
+系统级的落地说明已经拆分到：
 
-## 核心组件
+- [`divination-systems/README.md`](divination-systems/README.md)
+- [`divination-systems/liuyao.md`](divination-systems/liuyao.md)
+- [`divination-systems/daliuren.md`](divination-systems/daliuren.md)
+- [`divination-systems/xiaoliuren.md`](divination-systems/xiaoliuren.md)
+- [`divination-systems/meihua.md`](divination-systems/meihua.md)
 
-### 1. DivinationType 枚举
+后续“某一个术数具体怎么起、怎么存、怎么显示”，以对应系统说明为准；本文件只保留跨系统统一契约。
 
-定义了应用支持的所有术数系统类型。
+---
 
-```dart
-enum DivinationType {
-  liuYao('六爻', 'liuyao'),
-  daLiuRen('大六壬', 'daliuren'),
-  xiaoLiuRen('小六壬', 'xiaoliuren'),
-  meiHua('梅花易数', 'meihua');
+## 2. 核心原则
 
-  const DivinationType(this.displayName, this.id);
-  final String displayName;  // UI 显示名称
-  final String id;           // 序列化标识符
-}
-```
+### 2.1 输入契约按 `(systemType, castMethod)` 定义
 
-**设计要点**:
-- `displayName`: 用于 UI 显示的中文名称
-- `id`: 用于数据库存储和序列化的唯一标识符
-- `fromId()`: 静态方法，从 ID 字符串反序列化枚举值
+`CastMethod` 只是一个能力标签，不代表全局统一 payload。
 
-### 2. CastMethod 枚举
+例如：
 
-定义了各种术数系统支持的起卦方法。
+- 六爻的 `reportNumber` 是“三个数：上卦、下卦、动爻”
+- 大六壬的 `reportNumber` 是“一个数映射地支”
 
-```dart
-enum CastMethod {
-  coin('摇钱法', 'coin'),
-  time('时间起卦', 'time'),
-  manual('手动输入', 'manual'),
-  number('数字起卦', 'number'),
-  random('随机起卦', 'random');
+因此，**输入规范永远由 `(DivinationType, CastMethod)` 共同决定**，不能只看 `castMethod`。
 
-  const CastMethod(this.displayName, this.id);
-  final String displayName;
-  final String id;
-}
-```
+### 2.2 结果对象必须至少满足三类消费方
 
-**不同系统支持的起卦方式**:
-- **六爻**: coin, time, manual
-- **大六壬**: time, manual
-- **小六壬**: time, random
-- **梅花易数**: time, number, random
+每个 `DivinationResult` 都必须同时满足：
 
-### 3. DivinationResult 抽象基类
+1. **仓储层**：可完整序列化 / 反序列化
+2. **历史页**：可生成稳定的一行结果摘要
+3. **结果页**：能支撑本系统 UI factory 进行完整展示
 
-所有术数系统的结果都必须继承此类。
+### 2.3 `Map<String, dynamic>` 是实现边界，不是规范豁免
 
-```dart
-abstract class DivinationResult {
-  String get id;                    // UUID
-  DateTime get castTime;            // 起卦时间
-  DivinationType get systemType;    // 系统类型
-  CastMethod get castMethod;        // 起卦方式
-  LunarInfo get lunarInfo;          // 农历信息
-
-  Map<String, dynamic> toJson();    // 序列化
-  String getSummary();              // 结果摘要
-}
-```
-
-**设计要点**:
-- 定义了所有术数系统共享的属性
-- `getSummary()` 用于历史记录列表显示
-- `toJson()` 用于数据库存储
-
-**子类实现示例**:
-```dart
-class LiuYaoResult extends DivinationResult {
-  final Gua mainGua;
-  final Gua? changingGua;
-  final List<String> liuShen;
-  // ... 其他六爻特有属性
-
-  @override
-  String getSummary() => changingGua != null
-      ? '「${mainGua.name}」变「${changingGua!.name}」'
-      : '「${mainGua.name}」';
-}
-```
-
-### 4. DivinationSystem 抽象接口
-
-所有术数系统都必须实现此接口。
-
-```dart
-abstract class DivinationSystem {
-  DivinationType get type;
-  String get name;
-  String get description;
-  List<CastMethod> get supportedMethods;
-  bool get isEnabled;
-
-  Future<DivinationResult> cast({
-    required CastMethod method,
-    required Map<String, dynamic> input,
-    DateTime? castTime,
-  });
-
-  DivinationResult resultFromJson(Map<String, dynamic> json);
-  bool validateInput(CastMethod method, Map<String, dynamic> input);
-}
-```
-
-**核心方法详解**:
-
-#### cast() - 执行起卦
+当前接口仍使用：
 
 ```dart
 Future<DivinationResult> cast({
@@ -167,442 +69,637 @@ Future<DivinationResult> cast({
 });
 ```
 
-**参数说明**:
-- `method`: 起卦方式，必须在 `supportedMethods` 列表中
-- `input`: 起卦输入参数，格式根据 `method` 不同而不同
-- `castTime`: 起卦时间，可选，默认为当前时间
+这只是代码形态，不代表调用方可以随意拼字段。
 
-**输入参数格式**:
-```dart
-// 摇钱法
-{'coins': [true, false, true, true, false, true]}  // 可选
+**所有字段名、类型、可选性，必须写清楚并稳定。**
 
-// 时间起卦
-{'time': DateTime.now()}  // 可选
+### 2.4 存储层使用稳定 ID，不使用 enum `name`
 
-// 手动输入（六爻）
-{'yaoNumbers': [6, 7, 8, 9, 8, 7]}
+外部存储、序列化、数据库持久化，应优先使用：
 
-// 数字起卦（梅花易数）
-{'number': 123}
+- `DivinationType.id`
+- `CastMethod.id`
 
-// 随机起卦
-{}  // 无需参数
-```
+而不是 `enum.name`。
 
-**异常处理**:
-- `ArgumentError`: 如果 `method` 不在 `supportedMethods` 中
-- `ArgumentError`: 如果 `input` 验证失败
-- `StateError`: 如果系统未启用
+原因：
 
-#### validateInput() - 验证输入
+- `id` 是外部契约
+- `name` 是实现细节
+- 枚举重命名会直接破坏历史数据兼容性
 
-```dart
-bool validateInput(CastMethod method, Map<String, dynamic> input);
-```
-
-**验证规则示例**:
-```dart
-@override
-bool validateInput(CastMethod method, Map<String, dynamic> input) {
-  switch (method) {
-    case CastMethod.coin:
-      return true;  // 无需参数
-    case CastMethod.time:
-      return input['time'] == null || input['time'] is DateTime;
-    case CastMethod.manual:
-      final yaoNumbers = input['yaoNumbers'];
-      return yaoNumbers is List &&
-             yaoNumbers.length == 6 &&
-             yaoNumbers.every((n) => n >= 6 && n <= 9);
-    default:
-      return false;
-  }
-}
-```
-
-#### resultFromJson() - 反序列化
-
-```dart
-DivinationResult resultFromJson(Map<String, dynamic> json);
-```
-
-用于从数据库加载历史记录，必须能够完整还原通过 `toJson()` 序列化的对象。
-
-### 5. DivinationRegistry 注册表
-
-单例模式的系统注册表，管理所有已注册的术数系统。
-
-```dart
-class DivinationRegistry {
-  static final DivinationRegistry _instance = DivinationRegistry._internal();
-  factory DivinationRegistry() => _instance;
-
-  void register(DivinationSystem system);
-  DivinationSystem getSystem(DivinationType type);
-  List<DivinationSystem> getEnabledSystems();
-  bool isRegistered(DivinationType type);
-  void clear();
-}
-```
-
-**核心方法**:
-
-#### register() - 注册系统
-
-```dart
-void register(DivinationSystem system) {
-  _systems[system.type] = system;
-}
-```
-
-如果系统已注册，会覆盖旧的实例。
-
-#### getSystem() - 获取系统
-
-```dart
-DivinationSystem getSystem(DivinationType type) {
-  final system = _systems[type];
-  if (system == null) {
-    throw StateError('术数系统未注册: ${type.displayName}');
-  }
-  if (!system.isEnabled) {
-    throw StateError('术数系统已禁用: ${type.displayName}');
-  }
-  return system;
-}
-```
-
-**异常处理**:
-- 系统未注册时抛出 `StateError`
-- 系统已禁用时抛出 `StateError`
-
-#### getEnabledSystems() - 获取启用的系统
-
-```dart
-List<DivinationSystem> getEnabledSystems() {
-  return _systems.values.where((s) => s.isEnabled).toList();
-}
-```
-
-用于主页显示可用的术数系统列表。
-
-## 使用示例
-
-### 1. 实现一个术数系统
-
-```dart
-class LiuYaoSystem implements DivinationSystem {
-  @override
-  DivinationType get type => DivinationType.liuYao;
-
-  @override
-  String get name => '六爻占卜';
-
-  @override
-  String get description => '传统六爻排盘，使用摇钱法、时间起卦或手动输入';
-
-  @override
-  List<CastMethod> get supportedMethods => [
-    CastMethod.coin,
-    CastMethod.time,
-    CastMethod.manual,
-  ];
-
-  @override
-  bool get isEnabled => true;
-
-  @override
-  Future<DivinationResult> cast({
-    required CastMethod method,
-    required Map<String, dynamic> input,
-    DateTime? castTime,
-  }) async {
-    // 1. 验证输入
-    if (!validateInput(method, input)) {
-      throw ArgumentError('无效的输入参数');
-    }
-
-    // 2. 获取起卦时间
-    final time = castTime ?? DateTime.now();
-
-    // 3. 计算农历信息
-    final lunarInfo = LunarService.getLunarInfo(time);
-
-    // 4. 根据起卦方式生成卦象
-    final yaoNumbers = _getYaoNumbers(method, input);
-
-    // 5. 计算卦象
-    final mainGua = GuaCalculator.calculate(yaoNumbers, lunarInfo);
-    final changingGua = GuaCalculator.calculateChangingGua(mainGua);
-
-    // 6. 返回结果
-    return LiuYaoResult(
-      id: const Uuid().v4(),
-      castTime: time,
-      systemType: type,
-      castMethod: method,
-      lunarInfo: lunarInfo,
-      mainGua: mainGua,
-      changingGua: changingGua,
-    );
-  }
-
-  @override
-  DivinationResult resultFromJson(Map<String, dynamic> json) {
-    return LiuYaoResult.fromJson(json);
-  }
-
-  @override
-  bool validateInput(CastMethod method, Map<String, dynamic> input) {
-    switch (method) {
-      case CastMethod.coin:
-        return true;
-      case CastMethod.time:
-        return input['time'] == null || input['time'] is DateTime;
-      case CastMethod.manual:
-        final yaoNumbers = input['yaoNumbers'];
-        return yaoNumbers is List &&
-               yaoNumbers.length == 6 &&
-               yaoNumbers.every((n) => n >= 6 && n <= 9);
-      default:
-        return false;
-    }
-  }
-
-  List<int> _getYaoNumbers(CastMethod method, Map<String, dynamic> input) {
-    switch (method) {
-      case CastMethod.coin:
-        return QiguaService.coinCast();
-      case CastMethod.time:
-        final time = input['time'] as DateTime? ?? DateTime.now();
-        return QiguaService.timeCast(time);
-      case CastMethod.manual:
-        return List<int>.from(input['yaoNumbers'] as List);
-      default:
-        throw UnsupportedError('不支持的起卦方式: ${method.displayName}');
-    }
-  }
-}
-```
-
-### 2. 注册和使用系统
-
-```dart
-// 在 main.dart 中注册系统
-void main() {
-  // 注册所有术数系统
-  final registry = DivinationRegistry();
-  registry.register(LiuYaoSystem());
-  registry.register(DaLiuRenSystem());
-  registry.register(MeiHuaSystem());
-
-  runApp(MyApp());
-}
-
-// 在 ViewModel 中使用
-class DivinationViewModel extends ChangeNotifier {
-  final DivinationRegistry _registry = DivinationRegistry();
-
-  Future<DivinationResult> performDivination({
-    required DivinationType systemType,
-    required CastMethod method,
-    required Map<String, dynamic> input,
-  }) async {
-    try {
-      // 获取系统
-      final system = _registry.getSystem(systemType);
-
-      // 执行起卦
-      final result = await system.cast(
-        method: method,
-        input: input,
-      );
-
-      return result;
-    } catch (e) {
-      // 错误处理
-      rethrow;
-    }
-  }
-
-  List<DivinationSystem> getAvailableSystems() {
-    return _registry.getEnabledSystems();
-  }
-}
-```
-
-### 3. 在 UI 中显示可用系统
-
-```dart
-class HomeScreen extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    final registry = DivinationRegistry();
-    final systems = registry.getEnabledSystems();
-
-    return ListView.builder(
-      itemCount: systems.length,
-      itemBuilder: (context, index) {
-        final system = systems[index];
-        return ListTile(
-          title: Text(system.name),
-          subtitle: Text(system.description),
-          onTap: () {
-            // 导航到起卦页面
-            Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (_) => CastScreen(system: system),
-              ),
-            );
-          },
-        );
-      },
-    );
-  }
-}
-```
-
-## 设计原则
-
-### 1. 单一职责原则 (SRP)
-
-- `DivinationSystem`: 负责起卦逻辑
-- `DivinationResult`: 负责结果数据
-- `DivinationRegistry`: 负责系统管理
-
-### 2. 开闭原则 (OCP)
-
-- 接口对扩展开放：新增术数系统只需实现接口
-- 接口对修改关闭：不需要修改现有代码
-
-### 3. 里氏替换原则 (LSP)
-
-- 所有 `DivinationSystem` 实现都可以互相替换
-- 所有 `DivinationResult` 子类都可以互相替换
-
-### 4. 接口隔离原则 (ISP)
-
-- 接口方法精简，只包含必要的方法
-- 不强制实现不需要的方法
-
-### 5. 依赖倒置原则 (DIP)
-
-- ViewModel 依赖 `DivinationSystem` 接口，而非具体实现
-- 通过注册表解耦系统实现和使用方
-
-## 扩展指南
-
-### 添加新的术数系统
-
-1. **定义结果类**:
-```dart
-class XiaoLiuRenResult extends DivinationResult {
-  final String course;  // 课式
-  final String prediction;  // 预测结果
-  // ... 其他属性
-}
-```
-
-2. **实现系统接口**:
-```dart
-class XiaoLiuRenSystem implements DivinationSystem {
-  @override
-  DivinationType get type => DivinationType.xiaoLiuRen;
-
-  // ... 实现所有接口方法
-}
-```
-
-3. **注册系统**:
-```dart
-DivinationRegistry().register(XiaoLiuRenSystem());
-```
-
-4. **编写测试**:
-```dart
-test('小六壬系统应该正确起卦', () async {
-  final system = XiaoLiuRenSystem();
-  final result = await system.cast(
-    method: CastMethod.time,
-    input: {},
-  );
-  expect(result, isA<XiaoLiuRenResult>());
-});
-```
-
-### 添加新的起卦方式
-
-1. **在 CastMethod 枚举中添加**:
-```dart
-enum CastMethod {
-  // ... 现有方式
-  voice('语音起卦', 'voice'),  // 新增
-}
-```
-
-2. **在系统中支持**:
-```dart
-@override
-List<CastMethod> get supportedMethods => [
-  CastMethod.coin,
-  CastMethod.time,
-  CastMethod.voice,  // 新增
-];
-```
-
-3. **实现验证和起卦逻辑**:
-```dart
-@override
-bool validateInput(CastMethod method, Map<String, dynamic> input) {
-  switch (method) {
-    // ... 现有方式
-    case CastMethod.voice:
-      return input['audioData'] != null;
-  }
-}
-```
-
-## 测试策略
-
-### 单元测试
-
-- **枚举测试**: 验证 `fromId()` 方法和唯一性
-- **注册表测试**: 验证注册、查询、启用/禁用逻辑
-- **系统实现测试**: 验证每个术数系统的起卦逻辑
-
-### 集成测试
-
-- **端到端流程**: 从 UI 到数据库的完整流程
-- **系统切换**: 验证不同系统之间的切换
-
-### 测试覆盖率目标
-
-- Domain 层: ≥ 90%
-- 系统实现: ≥ 85%
-- 注册表: 100%
-
-## 已知限制
-
-1. **线程安全**: 当前注册表实现非线程安全，但 Flutter 单线程模型下无问题
-2. **系统禁用**: `getSystem()` 会检查 `isEnabled`，禁用的系统会抛出异常
-3. **重复注册**: 后注册的系统会覆盖先注册的系统
-
-## 未来改进
-
-1. **插件化**: 支持动态加载术数系统插件
-2. **配置化**: 通过配置文件管理系统启用状态
-3. **版本管理**: 支持系统版本升级和数据迁移
-4. **性能优化**: 缓存计算结果，减少重复计算
-
-## 参考资料
-
-- [SOLID 原则](https://en.wikipedia.org/wiki/SOLID)
-- [Flutter 架构指南](https://docs.flutter.dev/development/data-and-backend/state-mgmt/options)
-- [Dart 语言规范](https://dart.dev/guides/language/language-tour)
+当前代码中部分实现仍使用 `name`，这是需要收敛的旧债，不应继续扩散。
 
 ---
 
-**文档维护者**: James (Dev Agent)
-**最后审核**: 2025-01-15
+## 3. 通用输入输出契约
+
+## 3.1 `DivinationSystem` 通用输入约束
+
+所有系统都必须满足：
+
+1. `method` 必须在 `supportedMethods` 中
+2. `validateInput()` 必须与真实接受的 payload 完全一致
+3. `cast()` 不得静默吞掉缺失的必填字段
+4. `castTime` 为空时可默认当前时间，但不得覆盖显式传入值
+5. `resultFromJson()` 必须能完整还原 `toJson()` 产物
+
+## 3.2 `DivinationResult` 通用输出约束
+
+所有结果对象至少必须具备以下基础字段：
+
+| 字段 | 说明 |
+|---|---|
+| `id` | 记录唯一标识 |
+| `castTime` | 起卦 / 起课时间 |
+| `systemType` | 系统类型 |
+| `castMethod` | 起卦方式 |
+| `lunarInfo` | 农历上下文 |
+
+除此之外，每个系统结果对象还必须满足：
+
+1. `toJson()` 输出足以完整反序列化
+2. `getSummary()` 返回历史页可用的一行摘要
+3. 若支持加密问事信息，应保留 `questionId` / `detailId` / `interpretationId` 引用位
+
+## 3.3 历史页最小输出面
+
+为了支持跨术数统一历史卡片，所有系统必须至少能提供：
+
+1. `systemType`
+2. `castMethod`
+3. `castTime`
+4. `getSummary()`
+
+推荐额外提供：
+
+- 一个更适合历史页标题的问事摘要
+- 一个更适合历史页副标题的系统特有摘要
+
+当前代码里这两个“更适合历史页”的字段尚未统一建模，因此短期仍由：
+
+- `getSummary()`
+- UI factory 自己的历史卡片逻辑
+
+共同承担。
+
+---
+
+## 4. 各系统输入规范
+
+本节定义的是**当前权威调用规范**。
+
+---
+
+## 4.1 六爻 `LiuYaoSystem`
+
+### 支持方式
+
+- `coin`
+- `manual`
+- `number`
+- `reportNumber`
+- `time`
+- `computer`
+
+### 输入规范
+
+#### `coin`
+
+```dart
+{}
+```
+
+说明：
+
+- 不需要额外输入
+- 爻数由系统随机生成
+
+#### `time`
+
+```dart
+{}
+```
+
+说明：
+
+- 不需要额外输入
+- 计算依赖 `castTime`
+
+#### `manual`
+
+当前接受两种 payload 形态。
+
+**形态 A：直接提供爻数**
+
+```dart
+{
+  'yaoNumbers': <int>[6, 7, 8, 9, 8, 7],
+}
+```
+
+约束：
+
+- 长度必须为 6
+- 每个值必须在 `6..9`
+
+**形态 B：提供六次投币结果**
+
+```dart
+{
+  'coinInputs': <List<CoinFace>>[
+    [CoinFace.xxx, CoinFace.xxx, CoinFace.xxx],
+    ... // 共 6 组
+  ],
+}
+```
+
+约束：
+
+- 外层长度必须为 6
+- 每组必须为 3 枚铜钱
+
+**当前缺陷**：
+
+- `manual` 同时承载两种完全不同输入形态
+
+**收敛建议**：
+
+- 后续为外部调用补 `manualMode`
+- 或拆出更明确的输入适配层，避免 UI 侧靠字段猜模式
+
+#### `number`
+
+```dart
+{
+  'number': 123,
+}
+```
+
+约束：
+
+- `number` 必须为 `int`
+
+#### `reportNumber`
+
+```dart
+{
+  'upperNum': 3,
+  'lowerNum': 7,
+  'movingNum': 5,
+}
+```
+
+约束：
+
+- 三个字段都必须为 `int`
+
+#### `computer`
+
+```dart
+{}
+```
+
+说明：
+
+- 不需要额外输入
+- 爻数由系统随机生成
+
+### 输出规范
+
+六爻结果对象必须包含：
+
+| 字段 | 类型 | 说明 |
+|---|---|---|
+| `id` | `String` | 记录 ID |
+| `castTime` | `DateTime` | 起卦时间 |
+| `castMethod` | `CastMethod` | 起卦方式 |
+| `systemType` | `DivinationType.liuYao` | 系统类型 |
+| `lunarInfo` | `LunarInfo` | 农历信息 |
+| `mainGua` | `Gua` | 本卦 |
+| `changingGua` | `Gua?` | 变卦 |
+| `liuShen` | `List<String>` | 六神 |
+| `questionId` | `String` | 加密问事引用 |
+| `detailId` | `String` | 加密详情引用 |
+| `interpretationId` | `String` | 加密解读引用 |
+
+### 摘要规范
+
+当前实现：
+
+- `getSummary() => mainGua.name`
+
+当前缺陷：
+
+- 对历史页来说信息不足
+- 丢失“变卦”这一高价值摘要
+
+推荐目标：
+
+- 无变卦：`天雷无妄`
+- 有变卦：`天雷无妄 → 天风姤`
+
+---
+
+## 4.2 大六壬 `DaLiuRenSystem`
+
+### 支持方式
+
+- `time`
+- `reportNumber`
+- `manual`
+- `computer`
+
+### 输入规范
+
+#### `time`
+
+```dart
+{}
+```
+
+说明：
+
+- 不需要额外输入
+- 计算依赖 `castTime`
+
+#### `reportNumber`
+
+```dart
+{
+  'number': 7,
+}
+```
+
+说明：
+
+- 输入一个整数
+- 系统把它映射为地支时支，再复用时间起课流程
+
+约束：
+
+- `number` 必须为 `int`
+
+#### `manual`
+
+```dart
+{
+  'riGan': '甲',
+  'riZhi': '子',
+  'shiZhi': '午',
+  'yueJian': '寅',
+}
+```
+
+约束：
+
+- `riGan` 必填，且必须是合法天干
+- `riZhi` 必填，且必须是合法地支
+- `shiZhi` 可选，若提供必须是合法地支
+- `yueJian` 可选，若提供必须是合法地支
+
+当前实现中的默认行为：
+
+- 缺省时会回退到：
+  - `riGan = '甲'`
+  - `riZhi = '子'`
+  - `shiZhi = '子'`
+  - `yueJian = '寅'`
+
+当前问题：
+
+- 这类默认值对调试友好，但对正式契约不够严谨
+
+收敛建议：
+
+- 未来 UI 层传入 `manual` 时应显式提供完整四项
+- 系统层可保留默认值，仅作为开发期兜底
+
+#### `computer`
+
+```dart
+{}
+```
+
+说明：
+
+- 不需要额外输入
+- 系统随机选择时支，再复用时间起课流程
+
+### 输出规范
+
+大六壬结果对象必须包含：
+
+| 字段 | 类型 | 说明 |
+|---|---|---|
+| `id` | `String` | 记录 ID |
+| `castTime` | `DateTime` | 起课时间 |
+| `castMethod` | `CastMethod` | 起课方式 |
+| `systemType` | `DivinationType.daLiuRen` | 系统类型 |
+| `lunarInfo` | `LunarInfo` | 农历信息 |
+| `tianPan` | `TianPan` | 天盘 |
+| `siKe` | `SiKe` | 四课 |
+| `sanChuan` | `SanChuan` | 三传 |
+| `shenJiangConfig` | `ShenJiangConfig` | 十二神将 |
+| `shenShaList` | `ShenShaList` | 神煞 |
+| `questionId` | `String` | 加密问事引用 |
+| `detailId` | `String` | 加密详情引用 |
+| `interpretationId` | `String` | 加密解读引用 |
+
+### 摘要规范
+
+当前实现：
+
+- `getSummary() => '$keTypeName课 · 初传$chuChuan'`
+
+这是合格的 P0 摘要，因为它至少表达了：
+
+- 课体
+- 核心三传起点
+
+推荐目标：
+
+- `涉害课 · 初传申`
+- 如果历史卡片空间允许，再扩展：
+  - `涉害课 · 初传申 中传子 末传辰`
+
+---
+
+## 4.3 小六壬 `XiaoLiuRenSystem`
+
+当前状态：
+
+- `isEnabled = false`
+- 结果对象为 placeholder
+
+即便未实现，也必须提前定义目标契约，避免启用时再临时发明字段。
+
+### 支持方式
+
+- `time`
+- `manual`
+
+### 目标输入规范
+
+#### `time`
+
+```dart
+{}
+```
+
+说明：
+
+- 基于 `castTime` 推算月、日、时
+
+#### `manual`
+
+```dart
+{
+  'month': 4,
+  'day': 18,
+  'hourZhi': '午',
+}
+```
+
+建议约束：
+
+- `month`: `1..12`
+- `day`: `1..31`
+- `hourZhi`: 合法地支
+
+说明：
+
+- 手动模式的本质，是手动指定月、日、时推算条件
+
+### 目标输出规范
+
+小六壬结果对象启用前，至少应具备：
+
+| 字段 | 类型 | 说明 |
+|---|---|---|
+| `id` | `String` | 记录 ID |
+| `castTime` | `DateTime` | 起卦时间 |
+| `castMethod` | `CastMethod` | 起卦方式 |
+| `systemType` | `DivinationType.xiaoLiuRen` | 系统类型 |
+| `lunarInfo` | `LunarInfo` | 农历信息 |
+| `monthPosition` | `String` | 月推算结果 |
+| `dayPosition` | `String` | 日推算结果 |
+| `hourPosition` | `String` | 时推算结果 |
+| `finalPosition` | `String` | 最终落宫 |
+| `judgement` | `String` | 占断结果 |
+
+### 摘要规范
+
+最低要求：
+
+- `大安 · 吉`
+- `赤口 · 口舌是非`
+
+历史页必须一眼看出“最终落宫是什么”。
+
+---
+
+## 4.4 梅花易数 `MeiHuaSystem`
+
+当前状态：
+
+- `isEnabled = false`
+- 结果对象为 placeholder
+
+同样需要提前定义目标契约。
+
+### 支持方式
+
+- `time`
+- `number`
+- `manual`
+
+### 目标输入规范
+
+#### `time`
+
+```dart
+{}
+```
+
+说明：
+
+- 基于 `castTime` 起卦
+
+#### `number`
+
+```dart
+{
+  'upperNumber': 12,
+  'lowerNumber': 8,
+}
+```
+
+建议约束：
+
+- 两个字段都必须为 `int`
+
+说明：
+
+- 不建议继续使用单一 `number` 字段，因为梅花易数数字起卦通常至少需要上下卦两个输入位
+
+#### `manual`
+
+```dart
+{
+  'upperTrigram': '乾',
+  'lowerTrigram': '巽',
+  'movingLine': 3,
+}
+```
+
+建议约束：
+
+- `upperTrigram`、`lowerTrigram` 必须为合法八卦
+- `movingLine` 必须在 `1..6`
+
+### 目标输出规范
+
+梅花易数结果对象启用前，至少应具备：
+
+| 字段 | 类型 | 说明 |
+|---|---|---|
+| `id` | `String` | 记录 ID |
+| `castTime` | `DateTime` | 起卦时间 |
+| `castMethod` | `CastMethod` | 起卦方式 |
+| `systemType` | `DivinationType.meiHua` | 系统类型 |
+| `lunarInfo` | `LunarInfo` | 农历信息 |
+| `benGua` | `String` or model | 本卦 |
+| `bianGua` | `String` or model | 变卦 |
+| `huGua` | `String` or model | 互卦 |
+| `tiGua` | `String` or model | 体卦 |
+| `yongGua` | `String` or model | 用卦 |
+| `movingLine` | `int` | 动爻 |
+| `wuXingRelation` | `String` | 体用五行关系 |
+| `judgement` | `String` | 占断结果 |
+
+### 摘要规范
+
+最低要求：
+
+- `山火贲 → 山天大畜`
+- 若有体用信息，可扩展为：
+  - `山火贲 → 山天大畜 · 体生用`
+
+---
+
+## 5. 输出摘要规范
+
+`getSummary()` 不是附属方法，它是跨系统统一历史页的最低契约。
+
+从今天起要求如下：
+
+### 5.1 必须是一行文本
+
+- 不换行
+- 不写长段解释
+- 不包含调试信息
+
+### 5.2 必须优先表达“结果核心”
+
+推荐顺序：
+
+1. 本次结果是什么
+2. 若有变化关系，体现变化
+3. 若有课体 / 体用 / 落宫，体现最关键一项
+
+### 5.3 不得只返回系统名称或“未实现”
+
+未实现系统在未启用前可以 placeholder。  
+一旦启用，`getSummary()` 必须具备真实业务信息。
+
+---
+
+## 6. 当前设计缺陷
+
+## 6.1 缺陷一：`CastMethod` 与 payload 没有被成文约束
+
+当前代码里 payload 靠实现自己约定，文档未同步。
+
+后果：
+
+- UI 层必须读源码才知道该传什么
+- 新人很容易把 `reportNumber` 当成全局同构输入
+
+## 6.2 缺陷二：`manual` 被滥用为“多形态桶”
+
+六爻 `manual` 既支持爻数，也支持铜钱输入。
+
+这是现实需求，但如果不成文，会让外部调用无从判断。
+
+## 6.3 缺陷三：摘要规范不一致
+
+- 六爻当前摘要偏弱
+- 大六壬摘要相对合格
+- 未实现系统仍是 placeholder
+
+这会直接影响历史页统一体验。
+
+## 6.4 缺陷四：序列化仍混用 enum `name`
+
+这对历史数据兼容性是不稳定的。
+
+未来收敛方向必须是：
+
+- 对外存储使用 `id`
+- `name` 只留给运行时实现
+
+---
+
+## 7. 新增系统接入要求
+
+以后任何新术数系统接入前，必须先补齐以下内容：
+
+1. 写清楚每个 `supportedMethods` 的输入 schema
+2. 写清楚结果对象的最小字段集
+3. 明确 `getSummary()` 的历史摘要格式
+4. 确保 `toJson()` / `fromJson()` 可逆
+5. 明确哪些字段属于加密外置引用，哪些字段属于数据库常规 JSON
+6. 若系统启用到 UI，必须有历史页可用的稳定摘要
+
+不满足以上条件，不应进入“已启用”状态。
+
+---
+
+## 8. 与历史页的关系
+
+历史页要做统一卡片骨架，前提不是页面层更复杂，而是各系统遵守稳定 I/O 契约。
+
+历史页依赖本文件的最小输出面：
+
+- `systemType`
+- `castMethod`
+- `castTime`
+- `getSummary()`
+
+未来如果历史页升级为：
+
+- 页面层统一卡片外壳
+- 系统层只提供摘要插槽
+
+那么本文件就是那次重构的前置契约。
+
+---
+
+## 9. 结论
+
+真正的“多术数统一架构”，不是只有一个抽象接口就够了。
+
+如果输入输出契约不明确：
+
+- `DivinationSystem` 只是表面统一
+- `Map<String, dynamic>` 会不断侵蚀边界
+- 历史页、仓储层、UI factory 都会被迫彼此猜测
+
+因此，从今天起：
+
+- 输入规范按 `(systemType, castMethod)` 成文
+- 输出规范按“可存储、可摘要、可展示”三重目标定义
+- 未实现系统也必须先定义目标契约，再启用
+
+这才是多术数系统继续扩展时不失控的前提。
