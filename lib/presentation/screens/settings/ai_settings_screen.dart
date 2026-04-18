@@ -221,7 +221,7 @@ class _AISettingsScreenState extends State<AISettingsScreen> {
             children: _presets.map((p) {
               return ActionChip(
                 avatar: Icon(p.icon, size: 16),
-                label: Text(p.name, style: const TextStyle(fontSize: 12)),
+                label: Text(p.name, style: AppTextStyles.antiqueLabel.copyWith(fontSize: 12)),
                 visualDensity: VisualDensity.compact,
                 onPressed: () {
                   setState(() {
@@ -292,7 +292,12 @@ class _AISettingsScreenState extends State<AISettingsScreen> {
               child: const Center(
                 child: Text(
                   '请填写 API 地址和 Key 后点击「获取模型」',
-                  style: TextStyle(color: Colors.grey, fontSize: 13),
+                  style: TextStyle(
+                    color: AppColors.guhe,
+                    fontSize: 13,
+                    fontFamily: AppTextStyles.fontFamilySong,
+                    fontFamilyFallback: AppTextStyles.fontFamilyFallback,
+                  ),
                 ),
               ),
             )
@@ -345,6 +350,7 @@ class _AISettingsScreenState extends State<AISettingsScreen> {
           Expanded(
             child: Text(
               _validationMessage!,
+              // 语义状态色：validation 成功/失败
               style: TextStyle(
                 color: isSuccess ? Colors.green : Colors.red,
               ),
@@ -448,7 +454,6 @@ class _AISettingsScreenState extends State<AISettingsScreen> {
         mainAxisSize: MainAxisSize.min,
         children: [
           if (template.isActive)
-            // Semantic "active" status badge — green retained inline.
             Container(
               padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
               decoration: BoxDecoration(
@@ -457,6 +462,7 @@ class _AISettingsScreenState extends State<AISettingsScreen> {
               ),
               child: const Text(
                 '使用中',
+                // 语义状态色：使用中/未使用指示
                 style: TextStyle(color: Colors.green, fontSize: 11),
               ),
             ),
@@ -600,6 +606,7 @@ class _TemplateEditorScreenState extends State<_TemplateEditorScreen> {
                 controller: _contentController,
                 expands: true,
                 textAlignVertical: TextAlignVertical.top,
+                // domain：模板代码 monospace 预览
                 style: const TextStyle(
                   fontSize: 13,
                   fontFamily: 'monospace',
