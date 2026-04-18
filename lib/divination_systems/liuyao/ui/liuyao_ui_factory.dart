@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import '../../../core/theme/app_text_styles.dart';
 import '../../../domain/divination_system.dart';
 import '../models/gua.dart';
 import '../../../presentation/divination_ui_registry.dart';
 import '../../../presentation/screens/cast/unified_cast_screen.dart';
 import '../../../presentation/widgets/ai_analysis_widget.dart';
+import '../../../presentation/widgets/antique/antique.dart';
 import '../../../presentation/widgets/diagram_comparison_row.dart';
 import '../../../presentation/widgets/question_section.dart';
 import '../../../presentation/widgets/extended_info_section.dart';
@@ -46,78 +48,71 @@ class LiuYaoUIFactory implements DivinationUIFactory {
     final liuyaoResult = result;
 
     // 创建六爻历史记录卡片
-    return Card(
-      margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-      child: InkWell(
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+      child: AntiqueCard(
         onTap: () {
           // TODO: 导航到详情页面
           // Navigator.push(context, MaterialPageRoute(
           //   builder: (_) => buildResultScreen(result),
           // ));
         },
-        child: Padding(
-          padding: const EdgeInsets.all(16),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              // 卦名和时间
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Text(
-                    liuyaoResult.mainGua.name,
-                    style: const TextStyle(
-                      fontSize: 18,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                  Text(
-                    _formatDateTime(liuyaoResult.castTime),
-                    style: TextStyle(
-                      fontSize: 12,
-                      color: Colors.grey[600],
-                    ),
-                  ),
-                ],
-              ),
-              const SizedBox(height: 8),
-
-              // 八宫和起卦方式
-              Row(
-                children: [
-                  _buildTag(liuyaoResult.mainGua.baGong.name),
-                  const SizedBox(width: 8),
-                  _buildTag(liuyaoResult.castMethod.displayName),
-                  if (liuyaoResult.hasChangingGua) ...[
-                    const SizedBox(width: 8),
-                    _buildTag('有变卦', color: Colors.orange),
-                  ],
-                ],
-              ),
-
-              // 如果有变卦，显示变卦信息
-              if (liuyaoResult.hasChangingGua) ...[
-                const SizedBox(height: 8),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            // 卦名和时间
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
                 Text(
-                  '变卦：${liuyaoResult.changingGua!.name}',
+                  liuyaoResult.mainGua.name,
+                  style: AppTextStyles.antiqueTitle,
+                ),
+                Text(
+                  _formatDateTime(liuyaoResult.castTime),
                   style: TextStyle(
-                    fontSize: 14,
-                    color: Colors.grey[700],
+                    fontSize: 12,
+                    color: Colors.grey[600],
                   ),
                 ),
               ],
+            ),
+            const SizedBox(height: 8),
 
-              // 农历信息
+            // 八宫和起卦方式
+            Wrap(
+              spacing: 8,
+              runSpacing: 4,
+              children: [
+                _buildTag(liuyaoResult.mainGua.baGong.name),
+                _buildTag(liuyaoResult.castMethod.displayName),
+                if (liuyaoResult.hasChangingGua)
+                  _buildTag('有变卦', color: Colors.orange),
+              ],
+            ),
+
+            // 如果有变卦，显示变卦信息
+            if (liuyaoResult.hasChangingGua) ...[
               const SizedBox(height: 8),
               Text(
-                '${liuyaoResult.lunarInfo.yearGanZhi}年 ${liuyaoResult.lunarInfo.monthGanZhi}月 ${liuyaoResult.lunarInfo.riGanZhi}日',
+                '变卦：${liuyaoResult.changingGua!.name}',
                 style: TextStyle(
-                  fontSize: 12,
-                  color: Colors.grey[600],
+                  fontSize: 14,
+                  color: Colors.grey[700],
                 ),
               ),
             ],
-          ),
+
+            // 农历信息
+            const SizedBox(height: 8),
+            Text(
+              '${liuyaoResult.lunarInfo.yearGanZhi}年 ${liuyaoResult.lunarInfo.monthGanZhi}月 ${liuyaoResult.lunarInfo.riGanZhi}日',
+              style: TextStyle(
+                fontSize: 12,
+                color: Colors.grey[600],
+              ),
+            ),
+          ],
         ),
       ),
     );
@@ -126,53 +121,45 @@ class LiuYaoUIFactory implements DivinationUIFactory {
   @override
   Widget? buildSystemCard() {
     // 返回六爻系统介绍卡片
-    return Card(
-      margin: const EdgeInsets.all(16),
-      child: InkWell(
+    return Padding(
+      padding: const EdgeInsets.all(16),
+      child: AntiqueCard(
         onTap: () {
           // TODO: 导航到六爻起卦方式选择页面
         },
-        child: Padding(
-          padding: const EdgeInsets.all(20),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Row(
-                children: [
-                  Icon(
-                    getSystemIcon(),
-                    size: 32,
-                    color: getSystemColor(),
-                  ),
-                  const SizedBox(width: 12),
-                  const Text(
-                    '六爻',
-                    style: TextStyle(
-                      fontSize: 24,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                ],
-              ),
-              const SizedBox(height: 12),
-              const Text(
-                '周易六爻占卜，通过摇钱法或时间起卦生成卦象，分析世应、六亲、动爻等要素进行占断。',
-                style: TextStyle(
-                  fontSize: 14,
-                  color: Colors.grey,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              children: [
+                Icon(
+                  getSystemIcon(),
+                  size: 32,
+                  color: getSystemColor(),
                 ),
-              ),
-              const SizedBox(height: 12),
-              Wrap(
-                spacing: 8,
-                children: [
-                  _buildTag('摇钱法'),
-                  _buildTag('时间起卦'),
-                  _buildTag('手动输入'),
-                ],
-              ),
-            ],
-          ),
+                const SizedBox(width: 12),
+                const Text(
+                  '六爻',
+                  style: AppTextStyles.antiqueTitle,
+                ),
+              ],
+            ),
+            const SizedBox(height: 12),
+            const Text(
+              '周易六爻占卜，通过摇钱法或时间起卦生成卦象，分析世应、六亲、动爻等要素进行占断。',
+              style: AppTextStyles.antiqueBody,
+            ),
+            const SizedBox(height: 12),
+            Wrap(
+              spacing: 8,
+              runSpacing: 4,
+              children: [
+                _buildTag('摇钱法'),
+                _buildTag('时间起卦'),
+                _buildTag('手动输入'),
+              ],
+            ),
+          ],
         ),
       ),
     );
@@ -187,7 +174,7 @@ class LiuYaoUIFactory implements DivinationUIFactory {
   @override
   Color? getSystemColor() {
     // 返回六爻系统的主题色（中国传统色：朱红）
-    return const Color(0xFFD32F2F);
+    return const Color(0xFFD32F2F); // 六爻系统专属主题色，非通用 token（deferred to semantic-color pass）
   }
 
   // ==================== 私有辅助方法 ====================
@@ -200,19 +187,11 @@ class LiuYaoUIFactory implements DivinationUIFactory {
 
   /// 构建标签 Widget
   Widget _buildTag(String text, {Color? color}) {
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-      decoration: BoxDecoration(
-        color: (color ?? Colors.blue).withOpacity(0.1),
-        borderRadius: BorderRadius.circular(4),
-      ),
-      child: Text(
-        text,
-        style: TextStyle(
-          fontSize: 12,
-          color: color ?? Colors.blue,
-        ),
-      ),
+    return AntiqueTag(
+      label: text,
+      // 域专属色（如 Colors.orange 表示变卦、Colors.blue 为默认标签色），
+      // 未纳入 AppColors token；deferred to semantic-color pass
+      color: color ?? Colors.blue,
     );
   }
 }
@@ -227,17 +206,14 @@ class _LiuYaoResultScreenWithAI extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('排盘结果'),
-        centerTitle: true,
-        elevation: 0,
-      ),
-      body: SingleChildScrollView(
-        padding: const EdgeInsets.all(12),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
+    return AntiqueScaffold(
+      appBar: const AntiqueAppBar(title: '排盘结果'),
+      body: SafeArea(
+        child: SingleChildScrollView(
+          padding: const EdgeInsets.all(12),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
             // 占问信息区块
             Builder(builder: (context) {
               final question =
@@ -287,8 +263,9 @@ class _LiuYaoResultScreenWithAI extends StatelessWidget {
           ],
         ),
       ),
-    );
-  }
+    ),
+  );
+}
 
   /// 获取特殊关系类型
   String? _getSpecialRelationType(Gua gua) {
