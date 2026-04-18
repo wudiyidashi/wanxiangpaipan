@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import '../../../core/theme/app_colors.dart';
+import '../../../core/theme/app_text_styles.dart';
 import 'cast_button.dart';
 
 /// 报数卦起卦区
@@ -48,11 +50,7 @@ class _ReportNumberCastSectionState extends State<ReportNumberCastSection> {
       children: [
         const Text(
           '请报三个数',
-          style: TextStyle(
-            color: Color(0xFF8B7355),
-            fontSize: 11,
-            letterSpacing: 1,
-          ),
+          style: AppTextStyles.antiqueLabel,
         ),
         const SizedBox(height: 12),
         _buildNumberField('上卦数', _upperController, '如：5'),
@@ -63,9 +61,8 @@ class _ReportNumberCastSectionState extends State<ReportNumberCastSection> {
         const SizedBox(height: 12),
         Text(
           '上下卦数除以 8 取余确定八卦，动爻数除以 6 取余确定动爻位置',
-          style: TextStyle(
-            color: const Color(0xFF8B7355).withOpacity(0.7),
-            fontSize: 11,
+          style: AppTextStyles.antiqueLabel.copyWith(
+            color: AppColors.guhe.withOpacity(0.7),
           ),
         ),
         const SizedBox(height: 32),
@@ -91,10 +88,7 @@ class _ReportNumberCastSectionState extends State<ReportNumberCastSection> {
           width: 56,
           child: Text(
             label,
-            style: const TextStyle(
-              color: Color(0xFF8B7355),
-              fontSize: 13,
-            ),
+            style: AppTextStyles.antiqueBody.copyWith(color: AppColors.guhe),
           ),
         ),
         const SizedBox(width: 8),
@@ -103,7 +97,7 @@ class _ReportNumberCastSectionState extends State<ReportNumberCastSection> {
             height: 44,
             decoration: BoxDecoration(
               color: Colors.white.withOpacity(0.6),
-              border: Border.all(color: const Color(0x4DB79452)),
+              border: Border.all(color: AppColors.danjinDeep.withOpacity(0x4D / 255)),
               borderRadius: BorderRadius.circular(8),
             ),
             padding: const EdgeInsets.symmetric(horizontal: 12),
@@ -111,6 +105,7 @@ class _ReportNumberCastSectionState extends State<ReportNumberCastSection> {
               controller: controller,
               keyboardType: TextInputType.number,
               inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+              // 0xFF2B4570: 阴阳爻线/卦文蓝，域色，保留内联
               style: const TextStyle(
                 color: Color(0xFF2B4570),
                 fontSize: 16,
@@ -120,8 +115,8 @@ class _ReportNumberCastSectionState extends State<ReportNumberCastSection> {
               decoration: InputDecoration(
                 border: InputBorder.none,
                 hintText: hint,
-                hintStyle: const TextStyle(
-                  color: Color(0xFFA0937E),
+                hintStyle: TextStyle(
+                  color: AppColors.qianhe,
                   fontSize: 14,
                   fontWeight: FontWeight.normal,
                 ),

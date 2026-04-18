@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import '../../../core/theme/app_colors.dart';
+import '../../../core/theme/app_text_styles.dart';
 import 'cast_button.dart';
 
 /// 钱币卦起卦区
@@ -71,23 +73,16 @@ class _CoinCastSectionState extends State<CoinCastSection> {
           children: [
             Text(
               _yaoLabels[index],
-              style: const TextStyle(
-                fontSize: 11,
-                color: Color(0xFF8B7355),
-                letterSpacing: 1,
-              ),
+              style: AppTextStyles.antiqueLabel,
             ),
             const SizedBox(height: 4),
             _buildInputContainer(
               child: DropdownButtonHideUnderline(
                 child: DropdownButton<int>(
                   value: _yaoValues[index],
-                  hint: const Text(
+                  hint: Text(
                     '请选择铜钱组合',
-                    style: TextStyle(
-                      color: Color(0xFFA0937E),
-                      fontSize: 13,
-                    ),
+                    style: AppTextStyles.antiqueBody.copyWith(color: AppColors.qianhe),
                   ),
                   isExpanded: true,
                   dropdownColor: Colors.white,
@@ -129,6 +124,7 @@ class _CoinCastSectionState extends State<CoinCastSection> {
         }),
         const SizedBox(width: 8),
         // 组合名称
+        // 0xFF2B4570: 阴阳爻线/卦文蓝，域色，保留内联
         Text(
           label,
           style: const TextStyle(
@@ -146,6 +142,7 @@ class _CoinCastSectionState extends State<CoinCastSection> {
       height: 20,
       decoration: BoxDecoration(
         shape: BoxShape.circle,
+        // 铜钱正面/背面渐变：域色（铜钱金/灰），保留内联
         gradient: RadialGradient(
           colors: isFront
               ? [const Color(0xFFC9A84C), const Color(0xFF8B6914)]
@@ -161,6 +158,7 @@ class _CoinCastSectionState extends State<CoinCastSection> {
         ),
       ),
       alignment: Alignment.center,
+      // 铜钱文字色：域色（铜钱深棕/高光白），保留内联
       child: Text(
         isFront ? '正' : '背',
         style: TextStyle(
@@ -180,7 +178,7 @@ class _CoinCastSectionState extends State<CoinCastSection> {
       padding: const EdgeInsets.symmetric(horizontal: 12),
       decoration: BoxDecoration(
         color: Colors.white.withOpacity(0.6),
-        border: Border.all(color: const Color(0x4DB79452)),
+        border: Border.all(color: AppColors.danjinDeep.withOpacity(0x4D / 255)),
         borderRadius: BorderRadius.circular(8),
       ),
       alignment: Alignment.centerLeft,

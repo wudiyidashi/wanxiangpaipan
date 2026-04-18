@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../../../core/theme/app_text_styles.dart';
 
 class CastButton extends StatelessWidget {
   const CastButton({
@@ -22,6 +23,8 @@ class CastButton extends StatelessWidget {
         width: double.infinity,
         height: 52,
         decoration: BoxDecoration(
+          // 按钮渐变：0xFFB0B0B0/0xFF909090=禁用灰，0xFFC84B31/0xFFA63A24=朱砂激活渐变
+          // 均为CastButton专属UI渐变色，非通用token，保留内联
           gradient: onPressed == null || isLoading
               ? const LinearGradient(
                   colors: [Color(0xFFB0B0B0), Color(0xFF909090)],
@@ -37,6 +40,7 @@ class CastButton extends StatelessWidget {
           boxShadow: (onPressed != null && !isLoading)
               ? [
                   BoxShadow(
+                    // 0xFFC84B31: 朱砂激活渐变起色，CastButton专属投影，保留内联
                     color: const Color(0xFFC84B31).withOpacity(0.3),
                     blurRadius: 12,
                     offset: const Offset(0, 4),
@@ -56,12 +60,7 @@ class CastButton extends StatelessWidget {
               )
             : Text(
                 buttonLabel,
-                style: const TextStyle(
-                  color: Colors.white,
-                  fontSize: 16,
-                  fontWeight: FontWeight.bold,
-                  letterSpacing: 3,
-                ),
+                style: AppTextStyles.antiqueButton.copyWith(letterSpacing: 3),
               ),
       ),
     );

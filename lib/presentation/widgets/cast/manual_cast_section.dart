@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import '../../../core/theme/app_colors.dart';
+import '../../../core/theme/app_text_styles.dart';
 import 'cast_button.dart';
 
 class ManualCastSection extends StatefulWidget {
@@ -108,10 +110,11 @@ class _ManualCastSectionState extends State<ManualCastSection> {
               child: Row(
                 children: [
                   const Icon(Icons.calendar_today,
-                      size: 14, color: Color(0xFF8B7355)),
+                      size: 14, color: AppColors.guhe),
                   const SizedBox(width: 6),
                   Text(
                     dateStr,
+                    // 0xFF2B4570: 阴阳爻线/卦文蓝，域色，保留内联
                     style: const TextStyle(
                       color: Color(0xFF2B4570),
                       fontSize: 13,
@@ -130,10 +133,11 @@ class _ManualCastSectionState extends State<ManualCastSection> {
               child: Row(
                 children: [
                   const Icon(Icons.access_time,
-                      size: 14, color: Color(0xFF8B7355)),
+                      size: 14, color: AppColors.guhe),
                   const SizedBox(width: 6),
                   Text(
                     timeStr,
+                    // 0xFF2B4570: 阴阳爻线/卦文蓝，域色，保留内联
                     style: const TextStyle(
                       color: Color(0xFF2B4570),
                       fontSize: 13,
@@ -154,7 +158,7 @@ class _ManualCastSectionState extends State<ManualCastSection> {
       padding: const EdgeInsets.symmetric(horizontal: 12),
       decoration: BoxDecoration(
         color: Colors.white.withOpacity(0.6),
-        border: Border.all(color: const Color(0x4DB79452)),
+        border: Border.all(color: AppColors.danjinDeep.withOpacity(0x4D / 255)),
         borderRadius: BorderRadius.circular(8),
       ),
       alignment: Alignment.centerLeft,
@@ -173,23 +177,16 @@ class _ManualCastSectionState extends State<ManualCastSection> {
           children: [
             Text(
               _yaoLabels[index],
-              style: const TextStyle(
-                fontSize: 11,
-                color: Color(0xFF8B7355),
-                letterSpacing: 1,
-              ),
+              style: AppTextStyles.antiqueLabel,
             ),
             const SizedBox(height: 4),
             _buildInputContainer(
               child: DropdownButtonHideUnderline(
                 child: DropdownButton<int>(
                   value: _yaoValues[index],
-                  hint: const Text(
+                  hint: Text(
                     '请选择',
-                    style: TextStyle(
-                      color: Color(0xFFA0937E),
-                      fontSize: 13,
-                    ),
+                    style: AppTextStyles.antiqueBody.copyWith(color: AppColors.qianhe),
                   ),
                   isExpanded: true,
                   dropdownColor: Colors.white,
@@ -228,6 +225,7 @@ class _ManualCastSectionState extends State<ManualCastSection> {
           painter: _YaoLinePainter(isYang: isYang),
         ),
         const SizedBox(width: 10),
+        // 0xFFB0A08E: 爻选项标签专用色，域色，保留内联
         Text(
           label,
           style: const TextStyle(
@@ -247,6 +245,7 @@ class _YaoLinePainter extends CustomPainter {
 
   @override
   void paint(Canvas canvas, Size size) {
+    // 0xFF2B4570: 阴阳爻线专用黛蓝，域色，保留内联
     final paint = Paint()
       ..color = const Color(0xFF2B4570)
       ..strokeWidth = 2.5

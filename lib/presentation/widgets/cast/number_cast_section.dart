@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import '../../../core/theme/app_colors.dart';
+import '../../../core/theme/app_text_styles.dart';
 import 'cast_button.dart';
 
 /// 数字卦起卦区
@@ -43,17 +45,13 @@ class _NumberCastSectionState extends State<NumberCastSection> {
       children: [
         const Text(
           '请输入一个数字',
-          style: TextStyle(
-            color: Color(0xFF8B7355),
-            fontSize: 11,
-            letterSpacing: 1,
-          ),
+          style: AppTextStyles.antiqueLabel,
         ),
         const SizedBox(height: 8),
         Container(
           decoration: BoxDecoration(
             color: Colors.white.withOpacity(0.6),
-            border: Border.all(color: const Color(0x4DB79452)),
+            border: Border.all(color: AppColors.danjinDeep.withOpacity(0x4D / 255)),
             borderRadius: BorderRadius.circular(8),
           ),
           padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
@@ -61,6 +59,7 @@ class _NumberCastSectionState extends State<NumberCastSection> {
             controller: _controller,
             keyboardType: TextInputType.number,
             inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+            // 0xFF2B4570: 阴阳爻线/卦文蓝，域色，保留内联
             style: const TextStyle(
               color: Color(0xFF2B4570),
               fontSize: 20,
@@ -72,7 +71,7 @@ class _NumberCastSectionState extends State<NumberCastSection> {
               border: InputBorder.none,
               hintText: '如：168',
               hintStyle: TextStyle(
-                color: Color(0xFFA0937E),
+                color: AppColors.qianhe,
                 fontSize: 16,
                 fontWeight: FontWeight.normal,
                 letterSpacing: 0,
@@ -85,9 +84,8 @@ class _NumberCastSectionState extends State<NumberCastSection> {
         const SizedBox(height: 12),
         Text(
           '系统将根据数字除以 8 取余确定上下卦，除以 6 取余确定动爻',
-          style: TextStyle(
-            color: const Color(0xFF8B7355).withOpacity(0.7),
-            fontSize: 11,
+          style: AppTextStyles.antiqueLabel.copyWith(
+            color: AppColors.guhe.withOpacity(0.7),
           ),
         ),
         const SizedBox(height: 32),

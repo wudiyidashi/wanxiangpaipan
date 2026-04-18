@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import '../../../core/theme/app_colors.dart';
+import '../../../core/theme/app_text_styles.dart';
 import 'cast_button.dart';
 
 /// 爻名卦起卦区
@@ -113,10 +115,11 @@ class _YaoNameCastSectionState extends State<YaoNameCastSection> {
               child: Row(
                 children: [
                   const Icon(Icons.calendar_today,
-                      size: 14, color: Color(0xFF8B7355)),
+                      size: 14, color: AppColors.guhe),
                   const SizedBox(width: 6),
                   Text(
                     dateStr,
+                    // 0xFF2B4570: 阴阳爻线/卦文蓝，非通用token，保留内联
                     style: const TextStyle(
                       color: Color(0xFF2B4570),
                       fontSize: 13,
@@ -135,10 +138,11 @@ class _YaoNameCastSectionState extends State<YaoNameCastSection> {
               child: Row(
                 children: [
                   const Icon(Icons.access_time,
-                      size: 14, color: Color(0xFF8B7355)),
+                      size: 14, color: AppColors.guhe),
                   const SizedBox(width: 6),
                   Text(
                     timeStr,
+                    // 0xFF2B4570: 阴阳爻线/卦文蓝，非通用token，保留内联
                     style: const TextStyle(
                       color: Color(0xFF2B4570),
                       fontSize: 13,
@@ -159,7 +163,7 @@ class _YaoNameCastSectionState extends State<YaoNameCastSection> {
       padding: const EdgeInsets.symmetric(horizontal: 12),
       decoration: BoxDecoration(
         color: Colors.white.withOpacity(0.6),
-        border: Border.all(color: const Color(0x4DB79452)),
+        border: Border.all(color: AppColors.danjinDeep.withOpacity(0x4D / 255)),
         borderRadius: BorderRadius.circular(8),
       ),
       alignment: Alignment.centerLeft,
@@ -178,23 +182,16 @@ class _YaoNameCastSectionState extends State<YaoNameCastSection> {
           children: [
             Text(
               _yaoLabels[index],
-              style: const TextStyle(
-                fontSize: 11,
-                color: Color(0xFF8B7355),
-                letterSpacing: 1,
-              ),
+              style: AppTextStyles.antiqueLabel,
             ),
             const SizedBox(height: 4),
             _buildInputContainer(
               child: DropdownButtonHideUnderline(
                 child: DropdownButton<int>(
                   value: _yaoValues[index],
-                  hint: const Text(
+                  hint: Text(
                     '请选择',
-                    style: TextStyle(
-                      color: Color(0xFFA0937E),
-                      fontSize: 13,
-                    ),
+                    style: AppTextStyles.antiqueBody.copyWith(color: AppColors.qianhe),
                   ),
                   isExpanded: true,
                   dropdownColor: Colors.white,
@@ -240,6 +237,7 @@ class _YaoNameCastSectionState extends State<YaoNameCastSection> {
           width: 28,
           child: Text(
             symbol,
+            // 0xFF2B4570: 阴阳爻线/卦文蓝，域色，保留内联
             style: TextStyle(
               color: const Color(0xFF2B4570),
               fontSize: 14,
@@ -252,6 +250,7 @@ class _YaoNameCastSectionState extends State<YaoNameCastSection> {
         // 标签（浅色）
         Text(
           label,
+          // 0xFFC0A888/0xFFB0A08E: 动爻/静爻选项标签专用渐变色，域色，保留内联
           style: TextStyle(
             color: isMoving
                 ? const Color(0xFFC0A888)
@@ -277,6 +276,7 @@ class _YaoSymbolPainter extends CustomPainter {
 
   @override
   void paint(Canvas canvas, Size size) {
+    // 0xFF2B4570: 阴阳爻线专用黛蓝，域色，保留内联
     final linePaint = Paint()
       ..color = const Color(0xFF2B4570)
       ..strokeWidth = 2.5
@@ -298,14 +298,14 @@ class _YaoSymbolPainter extends CustomPainter {
 
     // 动爻标记
     if (value == 9) {
-      // 老阳：画圆圈 ○
+      // 老阳：画圆圈 ○ (0xFF2B4570: 阴阳爻线专用黛蓝，域色，保留内联)
       final circlePaint = Paint()
         ..color = const Color(0xFF2B4570)
         ..strokeWidth = 1.5
         ..style = PaintingStyle.stroke;
       canvas.drawCircle(Offset(size.width / 2, y), 5, circlePaint);
     } else if (value == 6) {
-      // 老阴：画叉号 ×
+      // 老阴：画叉号 × (0xFF2B4570: 阴阳爻线专用黛蓝，域色，保留内联)
       final xPaint = Paint()
         ..color = const Color(0xFF2B4570)
         ..strokeWidth = 1.5

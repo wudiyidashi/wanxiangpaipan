@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:lunar/lunar.dart';
+import '../../../core/theme/app_colors.dart';
+import '../../../core/theme/app_text_styles.dart';
 import 'cast_button.dart';
 
 class TimeCastSection extends StatelessWidget {
@@ -28,13 +30,10 @@ class TimeCastSection extends StatelessWidget {
       children: [
         const Text(
           '当前时辰',
-          style: TextStyle(
-            color: Color(0xFF8B7355),
-            fontSize: 11,
-            letterSpacing: 1,
-          ),
+          style: AppTextStyles.antiqueLabel,
         ),
         const SizedBox(height: 12),
+        // 0xFF2B4570: 卦文蓝/干支文字专用色，域色，保留内联
         Text(
           ganZhiDate,
           style: const TextStyle(
@@ -47,10 +46,7 @@ class TimeCastSection extends StatelessWidget {
         const SizedBox(height: 8),
         Text(
           gregorianDate,
-          style: const TextStyle(
-            color: Color(0xFFA0937E),
-            fontSize: 13,
-          ),
+          style: AppTextStyles.antiqueBody.copyWith(color: AppColors.qianhe),
         ),
         const SizedBox(height: 32),
         CastButton(

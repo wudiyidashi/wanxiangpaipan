@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import '../../../core/theme/app_colors.dart';
+import '../../../core/theme/app_text_styles.dart';
 import 'cast_button.dart';
 
 /// 电脑卦起卦区
@@ -22,22 +24,18 @@ class ComputerCastSection extends StatelessWidget {
         const Icon(
           Icons.computer,
           size: 48,
-          color: Color(0xFF8B7355),
+          color: AppColors.guhe,
         ),
         const SizedBox(height: 16),
-        const Text(
+        Text(
           '由系统随机生成卦象',
-          style: TextStyle(
-            color: Color(0xFF8B7355),
-            fontSize: 13,
-          ),
+          style: AppTextStyles.antiqueBody.copyWith(color: AppColors.guhe),
         ),
         const SizedBox(height: 8),
         Text(
           '模拟六次三枚铜钱投掷',
-          style: TextStyle(
-            color: const Color(0xFF8B7355).withOpacity(0.7),
-            fontSize: 11,
+          style: AppTextStyles.antiqueLabel.copyWith(
+            color: AppColors.guhe.withOpacity(0.7),
           ),
         ),
         const SizedBox(height: 32),
