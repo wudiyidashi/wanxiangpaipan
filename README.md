@@ -324,7 +324,7 @@ docs/                                  # 文档
 | **状态管理** | Provider | 6.x | 依赖注入 + 响应式状态 |
 | **不可变模型** | freezed | 2.x | 代码生成（数据类） |
 | **JSON 序列化** | json_serializable | 6.x | JSON 序列化 |
-| **路由** | go_router | 14.x | 声明式路由 |
+| **路由** | Flutter Navigator + 命名路由 | — | 浅栈导航；云同步阶段再迁 go_router（[ADR-0001](docs/decisions/0001-routing-strategy.md)） |
 | **本地数据库** | drift | 2.x | 类型安全 SQL |
 | **加密存储** | flutter_secure_storage | 9.x | Keychain/Keystore |
 | **轻量持久化** | shared_preferences | - | 主题、API 配置等偏好 |

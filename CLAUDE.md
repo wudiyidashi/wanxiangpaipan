@@ -108,7 +108,7 @@ Shared Services (lib/domain/services/shared/) ← pure functions
 ├── main.dart                    # App entry point with DivinationSystemBootstrap
 ├── /core                        # Core infrastructure
 │   ├── /constants               # App constants
-│   ├── /router                  # go_router configuration
+│   ├── (router: 目前用 MaterialApp.routes 命名路由内联在 main.dart)
 │   ├── /theme                   # App themes (Chinese traditional style)
 │   └── /utils                   # Utilities (logger, error handler)
 ├── /divination_systems          # Multi-divination system implementations
@@ -333,7 +333,7 @@ abstract class DivinationResult {
 | **State Management** | Provider | 6.x | Official recommendation |
 | **Immutable Models** | freezed | 2.x | Code generation for data classes |
 | **JSON Serialization** | json_serializable | 6.x | Auto-generate serialization |
-| **Routing** | go_router | 14.x | Declarative routing |
+| **Routing** | Flutter Navigator + named routes | — | Shallow nav; migrate to go_router at cloud-sync phase (see docs/decisions/0001-routing-strategy.md) |
 | **Local Database** | drift | 2.x | Type-safe SQL with encryption |
 | **Secure Storage** | flutter_secure_storage | 9.x | Keychain/Keystore |
 | **Key-Value Prefs** | shared_preferences | 2.x | Theme / AI config |
