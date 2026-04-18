@@ -69,6 +69,12 @@ class _NumberCastSectionState extends State<NumberCastSection> {
             textAlign: TextAlign.center,
             decoration: const InputDecoration(
               border: InputBorder.none,
+              enabledBorder: InputBorder.none,
+              focusedBorder: InputBorder.none,
+              errorBorder: InputBorder.none,
+              disabledBorder: InputBorder.none,
+              focusedErrorBorder: InputBorder.none,
+              filled: false,
               hintText: '如：168',
               hintStyle: TextStyle(
                 color: AppColors.qianhe,

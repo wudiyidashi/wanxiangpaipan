@@ -114,6 +114,12 @@ class _ReportNumberCastSectionState extends State<ReportNumberCastSection> {
               textAlign: TextAlign.center,
               decoration: InputDecoration(
                 border: InputBorder.none,
+                enabledBorder: InputBorder.none,
+                focusedBorder: InputBorder.none,
+                errorBorder: InputBorder.none,
+                disabledBorder: InputBorder.none,
+                focusedErrorBorder: InputBorder.none,
+                filled: false,
                 hintText: hint,
                 hintStyle: TextStyle(
                   color: AppColors.qianhe,
