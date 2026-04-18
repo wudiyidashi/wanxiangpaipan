@@ -111,53 +111,6 @@ class LiuYaoUIFactory implements DivinationUIFactory {
   }
 
   @override
-  Widget? buildSystemCard() {
-    // 返回六爻系统介绍卡片
-    return Padding(
-      padding: const EdgeInsets.all(16),
-      child: AntiqueCard(
-        onTap: () {
-          // TODO: 导航到六爻起卦方式选择页面
-        },
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Row(
-              children: [
-                Icon(
-                  getSystemIcon(),
-                  size: 32,
-                  color: getSystemColor(),
-                ),
-                const SizedBox(width: 12),
-                const Text(
-                  '六爻',
-                  style: AppTextStyles.antiqueTitle,
-                ),
-              ],
-            ),
-            const SizedBox(height: 12),
-            const Text(
-              '周易六爻占卜，通过摇钱法或时间起卦生成卦象，分析世应、六亲、动爻等要素进行占断。',
-              style: AppTextStyles.antiqueBody,
-            ),
-            const SizedBox(height: 12),
-            Wrap(
-              spacing: 8,
-              runSpacing: 4,
-              children: [
-                _buildTag('摇钱法'),
-                _buildTag('时间起卦'),
-                _buildTag('手动输入'),
-              ],
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
-  @override
   IconData? getSystemIcon() {
     // 返回六爻系统的图标（使用六边形代表六爻）
     return Icons.hexagon;

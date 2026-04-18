@@ -90,14 +90,6 @@ abstract class DivinationUIFactory {
   /// ```
   Widget buildHistoryCard(DivinationResult result);
 
-  /// 构建系统介绍卡片（可选）
-  ///
-  /// 用于在主页显示该术数系统的介绍卡片。
-  /// 如果返回 null，将使用默认的卡片样式。
-  ///
-  /// 返回系统介绍卡片 Widget，或 null 使用默认样式
-  Widget? buildSystemCard() => null;
-
   /// 获取系统图标（可选）
   ///
   /// 返回该术数系统的图标，用于在 UI 中显示。

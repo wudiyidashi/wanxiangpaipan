@@ -100,59 +100,6 @@ class DaLiuRenUIFactory implements DivinationUIFactory {
   }
 
   @override
-  Widget? buildSystemCard() {
-    return Card(
-      margin: const EdgeInsets.all(16),
-      child: InkWell(
-        onTap: () {
-          // TODO: 导航到大六壬起课方式选择页面
-        },
-        child: Padding(
-          padding: const EdgeInsets.all(20),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Row(
-                children: [
-                  Icon(
-                    getSystemIcon(),
-                    size: 32,
-                    color: getSystemColor(),
-                  ),
-                  const SizedBox(width: 12),
-                  const Text(
-                    '大六壬',
-                    style: TextStyle(
-                      fontSize: 24,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                ],
-              ),
-              const SizedBox(height: 12),
-              const Text(
-                '大六壬是中国古代三式之一，以天干地支、十二神将为基础，通过四课三传进行占断。',
-                style: TextStyle(
-                  fontSize: 14,
-                  color: Colors.grey,
-                ),
-              ),
-              const SizedBox(height: 12),
-              Wrap(
-                spacing: 8,
-                children: [
-                  _buildTag('时间起课'),
-                  _buildTag('手动输入'),
-                ],
-              ),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-
-  @override
   IconData? getSystemIcon() {
     // 使用太阳图标代表大六壬（月将与太阳位置相关）
     return Icons.wb_sunny;
