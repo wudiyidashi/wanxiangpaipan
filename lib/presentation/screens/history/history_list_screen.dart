@@ -35,6 +35,9 @@ class _HistoryListScreenState extends State<HistoryListScreen> {
   String _searchQuery = '';
   final TextEditingController _searchController = TextEditingController();
 
+  // 排序状态
+  SortOrder _sortOrder = SortOrder.newestFirst;
+
   @override
   void initState() {
     super.initState();
@@ -77,7 +80,7 @@ class _HistoryListScreenState extends State<HistoryListScreen> {
     _applyFilters();
   }
 
-  /// 统一应用系统筛选 + 关键字搜索，更新 _filteredRecords。
+  /// 统一应用系统筛选 + 关键字搜索 + 排序，更新 _filteredRecords。
   void _applyFilters() {
     Iterable<DivinationResult> result = _records;
 
@@ -94,8 +97,15 @@ class _HistoryListScreenState extends State<HistoryListScreen> {
           '${r.systemType.displayName} ${r.getSummary()} ${r.castMethod.displayName}',
     );
 
+    // 排序
+    final sorted = applySort<DivinationResult>(
+      filtered,
+      order: _sortOrder,
+      timeExtractor: (r) => r.castTime,
+    );
+
     setState(() {
-      _filteredRecords = filtered;
+      _filteredRecords = sorted;
     });
   }
 
@@ -236,6 +246,9 @@ class _HistoryListScreenState extends State<HistoryListScreen> {
         // 搜索框（加载与错误之外始终显示，方便用户清除搜索）
         _buildSearchField(),
 
+        // 排序切换
+        _buildSortToggle(),
+
         // 筛选提示
         if (_selectedSystemType != null)
           Container(
@@ -328,6 +341,51 @@ class _HistoryListScreenState extends State<HistoryListScreen> {
           });
           _applyFilters();
         },
+      ),
+    );
+  }
+
+  Widget _buildSortToggle() {
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(16, 12, 16, 0),
+      child: Row(
+        children: [
+          Text('排序: ', style: AppTextStyles.antiqueLabel),
+          const SizedBox(width: 8),
+          GestureDetector(
+            onTap: () {
+              if (_sortOrder != SortOrder.newestFirst) {
+                setState(() {
+                  _sortOrder = SortOrder.newestFirst;
+                });
+                _applyFilters();
+              }
+            },
+            child: AntiqueTag(
+              label: '最新',
+              color: _sortOrder == SortOrder.newestFirst
+                  ? AppColors.zhusha
+                  : AppColors.guhe,
+            ),
+          ),
+          const SizedBox(width: 8),
+          GestureDetector(
+            onTap: () {
+              if (_sortOrder != SortOrder.oldestFirst) {
+                setState(() {
+                  _sortOrder = SortOrder.oldestFirst;
+                });
+                _applyFilters();
+              }
+            },
+            child: AntiqueTag(
+              label: '最早',
+              color: _sortOrder == SortOrder.oldestFirst
+                  ? AppColors.zhusha
+                  : AppColors.guhe,
+            ),
+          ),
+        ],
       ),
     );
   }
