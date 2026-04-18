@@ -315,14 +315,7 @@ class _HistoryListScreenState extends State<HistoryListScreen> {
                 )
               : RefreshIndicator(
                   onRefresh: _loadRecords,
-                  child: ListView.builder(
-                    padding: const EdgeInsets.symmetric(vertical: 8),
-                    itemCount: _filteredRecords.length,
-                    itemBuilder: (context, index) {
-                      final record = _filteredRecords[index];
-                      return _buildHistoryCard(record);
-                    },
-                  ),
+                  child: _buildGroupedList(),
                 ),
         ),
       ],
@@ -387,6 +380,59 @@ class _HistoryListScreenState extends State<HistoryListScreen> {
           ),
         ],
       ),
+    );
+  }
+
+  Widget _buildGroupedList() {
+    final groups = groupByTime<DivinationResult>(
+      _filteredRecords,
+      now: DateTime.now(),
+      timeExtractor: (r) => r.castTime,
+    );
+
+    final groupOrder = <TimeGroup>[
+      TimeGroup.today,
+      TimeGroup.lastSevenDays,
+      TimeGroup.earlier,
+    ];
+
+    final sections = <Widget>[];
+
+    for (var groupIdx = 0; groupIdx < groupOrder.length; groupIdx++) {
+      final group = groupOrder[groupIdx];
+      final items = groups[group]!;
+      if (items.isEmpty) continue;
+
+      // Section header
+      sections.add(
+        Padding(
+          padding: const EdgeInsets.fromLTRB(16, 20, 16, 8),
+          child: AntiqueSectionTitle(title: timeGroupLabel(group)),
+        ),
+      );
+
+      // Records in this group
+      for (final record in items) {
+        sections.add(_buildHistoryCard(record));
+      }
+
+      // Divider between groups (not after the last non-empty group)
+      final hasMoreGroups = groupOrder
+          .sublist(groupIdx + 1)
+          .any((g) => (groups[g] ?? []).isNotEmpty);
+      if (hasMoreGroups) {
+        sections.add(
+          const Padding(
+            padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+            child: AntiqueDivider(),
+          ),
+        );
+      }
+    }
+
+    return ListView(
+      padding: const EdgeInsets.only(bottom: 16),
+      children: sections,
     );
   }
 
