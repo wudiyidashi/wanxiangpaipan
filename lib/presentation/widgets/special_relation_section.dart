@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import '../../core/theme/app_colors.dart';
+import '../../core/theme/app_text_styles.dart';
+import 'antique/antique.dart';
 
 /// 特殊卦象关系解析组件
 ///
@@ -24,34 +27,15 @@ class SpecialRelationSection extends StatelessWidget {
       return const SizedBox.shrink();
     }
 
-    return Card(
-      margin: const EdgeInsets.symmetric(vertical: 8),
-      elevation: 1,
-      color: Colors.orange.shade50,
-      child: Padding(
-        padding: const EdgeInsets.all(16),
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 8),
+      child: AntiqueCard(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             // 区块标题
-            Row(
-              children: [
-                Icon(
-                  Icons.info_outline,
-                  size: 18,
-                  color: Colors.orange.shade700,
-                ),
-                const SizedBox(width: 8),
-                const Text(
-                  '卦象特性',
-                  style: TextStyle(
-                    fontSize: 16,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-              ],
-            ),
-            const Divider(height: 16),
+            AntiqueSectionTitle(title: '卦象特性'),
+            const SizedBox(height: 8),
 
             // 特殊关系类型
             if (relationType != null && relationType!.isNotEmpty) ...[
@@ -61,15 +45,14 @@ class SpecialRelationSection extends StatelessWidget {
                     padding:
                         const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                     decoration: BoxDecoration(
-                      color: Colors.orange.shade700,
+                      // 仿古金色徽章背景 — 通用卦象特性标签
+                      color: AppColors.danjinDeep,
                       borderRadius: BorderRadius.circular(4),
                     ),
                     child: Text(
                       relationType!,
-                      style: const TextStyle(
+                      style: AppTextStyles.antiqueButton.copyWith(
                         fontSize: 12,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.white,
                       ),
                     ),
                   ),
@@ -82,11 +65,7 @@ class SpecialRelationSection extends StatelessWidget {
             if (description != null && description!.isNotEmpty)
               Text(
                 description!,
-                style: const TextStyle(
-                  fontSize: 14,
-                  height: 1.6,
-                  color: Colors.black87,
-                ),
+                style: AppTextStyles.antiqueBody,
               ),
           ],
         ),

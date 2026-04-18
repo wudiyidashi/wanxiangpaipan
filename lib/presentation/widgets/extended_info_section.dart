@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:lunar/lunar.dart' as lunar_pkg;
 import '../../models/lunar_info.dart';
+import '../../core/theme/app_text_styles.dart';
+import 'antique/antique.dart';
 
 /// 扩展信息区块组件
 ///
@@ -26,10 +28,9 @@ class ExtendedInfoSection extends StatelessWidget {
         '${lunarDate.getMonthInChinese()}月${lunarDate.getDayInChinese()}';
     final shiGanZhi = lunarDate.getTimeInGanZhi();
 
-    return Card(
-      margin: const EdgeInsets.symmetric(vertical: 8),
-      elevation: 1,
-      child: Padding(
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 8),
+      child: AntiqueCard(
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -69,20 +70,15 @@ class ExtendedInfoSection extends StatelessWidget {
           width: 42,
           child: Text(
             '$label：',
-            style: const TextStyle(
-              fontSize: 13,
+            style: AppTextStyles.antiqueLabel.copyWith(
               fontWeight: FontWeight.w500,
-              color: Colors.black54,
             ),
           ),
         ),
         Expanded(
           child: Text(
             value,
-            style: const TextStyle(
-              fontSize: 13,
-              color: Colors.black87,
-            ),
+            style: AppTextStyles.antiqueBody,
           ),
         ),
       ],
