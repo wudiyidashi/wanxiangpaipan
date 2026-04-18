@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'app_colors.dart';
 import 'app_text_styles.dart';
+import 'antique_tokens.dart';
 
 /// 新中式主题配置
 ///
@@ -17,19 +18,20 @@ class AppTheme {
       brightness: Brightness.light,
 
       // 色彩方案
+      // A. ColorScheme: primary → zhusha (vermillion), outline → danjin (pale gold)
       colorScheme: const ColorScheme.light(
-        primary: AppColors.dailan,
+        primary: AppColors.zhusha,
         onPrimary: Colors.white,
-        primaryContainer: AppColors.dailanLight,
-        secondary: AppColors.zhusha,
+        primaryContainer: AppColors.zhushaLight,
+        secondary: AppColors.danjinDeep,
         onSecondary: Colors.white,
-        secondaryContainer: AppColors.zhushaLight,
+        secondaryContainer: AppColors.danjin,
         surface: AppColors.xiangse,
         onSurface: AppColors.xuanse,
         surfaceContainerHighest: AppColors.xiangseLight,
-        error: AppColors.error,
+        error: AppColors.errorDeep,
         onError: Colors.white,
-        outline: AppColors.divider,
+        outline: AppColors.danjin,
       ),
 
       // 脚手架背景
@@ -60,50 +62,44 @@ class AppTheme {
         ),
       ),
 
-      // 卡片主题
+      // B. 卡片主题: white@0.6 + danjin border + 0 elevation + radiusCard
       cardTheme: CardThemeData(
-        color: AppColors.xiangseLight,
-        elevation: 2,
-        shadowColor: Colors.black.withOpacity(0.08),
+        color: Colors.white.withOpacity(0.6),
+        elevation: 0,
         shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(12),
+          borderRadius: BorderRadius.circular(AntiqueTokens.radiusCard),
+          side: BorderSide(
+            color: AppColors.danjin.withOpacity(0.5),
+            width: AntiqueTokens.borderWidthBase,
+          ),
         ),
         margin: const EdgeInsets.all(8),
       ),
 
-      // 按钮主题
+      // C. 按钮主题: backgroundColor/shadowColor → zhusha, shape → radiusButton
       elevatedButtonTheme: ElevatedButtonThemeData(
         style: ElevatedButton.styleFrom(
-          backgroundColor: AppColors.dailan,
+          backgroundColor: AppColors.zhusha,
           foregroundColor: Colors.white,
           elevation: 2,
-          shadowColor: AppColors.dailan.withOpacity(0.3),
+          shadowColor: AppColors.zhusha.withOpacity(0.3),
           padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
           shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(8),
+            borderRadius: BorderRadius.circular(AntiqueTokens.radiusButton),
           ),
-          textStyle: TextStyle(
-            fontSize: 16,
-            fontWeight: FontWeight.w500,
-            letterSpacing: 1,
-            color: Colors.white,
-            fontFamily: AppTextStyles.fontFamilySong,
-            fontFamilyFallback: AppTextStyles.fontFamilyFallback,
-          ), // 基于 antiqueButton，字重改为 w500，字距改为 1
+          textStyle: AppTextStyles.antiqueButton.copyWith(letterSpacing: 1),
         ),
       ),
 
-      // 文本按钮主题
+      // D. 文本按钮主题: foregroundColor → zhusha, textStyle → antiqueLabel
       textButtonTheme: TextButtonThemeData(
         style: TextButton.styleFrom(
-          foregroundColor: AppColors.dailan,
+          foregroundColor: AppColors.zhusha,
           padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-          textStyle: TextStyle(
+          textStyle: AppTextStyles.antiqueLabel.copyWith(
             fontSize: 14,
             fontWeight: FontWeight.w500,
-            fontFamily: AppTextStyles.fontFamilySong,
-            fontFamilyFallback: AppTextStyles.fontFamilyFallback,
-          ), // 基于 antiqueLabel，但字号改为 14，字重改为 w500
+          ),
         ),
       ),
 
@@ -114,49 +110,46 @@ class AppTheme {
         ),
       ),
 
-      // 输入框主题
+      // E. 输入框主题: white@0.6 + danjin border + focused zhusha + radiusInput
       inputDecorationTheme: InputDecorationTheme(
         filled: true,
-        fillColor: Colors.white,
-        contentPadding:
-            const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+        fillColor: Colors.white.withOpacity(0.6),
+        contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
         border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(8),
-          borderSide: const BorderSide(color: AppColors.divider),
+          borderRadius: BorderRadius.circular(AntiqueTokens.radiusInput),
+          borderSide: const BorderSide(color: AppColors.danjin),
         ),
         enabledBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(8),
-          borderSide: const BorderSide(color: AppColors.divider),
+          borderRadius: BorderRadius.circular(AntiqueTokens.radiusInput),
+          borderSide: const BorderSide(color: AppColors.danjin),
         ),
         focusedBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(8),
-          borderSide: const BorderSide(color: AppColors.dailan, width: 2),
+          borderRadius: BorderRadius.circular(AntiqueTokens.radiusInput),
+          borderSide: const BorderSide(color: AppColors.zhusha, width: 2),
         ),
         errorBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(8),
-          borderSide: const BorderSide(color: AppColors.error),
+          borderRadius: BorderRadius.circular(AntiqueTokens.radiusInput),
+          borderSide: const BorderSide(color: AppColors.errorDeep),
         ),
-        hintStyle: AppTextStyles.bodyMedium.copyWith(
-          color: AppColors.huiseLight,
-        ),
+        hintStyle: AppTextStyles.antiqueBody.copyWith(color: AppColors.qianhe),
       ),
 
-      // 分割线主题
-      dividerTheme: const DividerThemeData(
-        color: AppColors.divider,
-        thickness: 1,
+      // F. 分割线主题: danjin@0.5 + thin width
+      dividerTheme: DividerThemeData(
+        color: AppColors.danjin.withOpacity(0.5),
+        thickness: AntiqueTokens.borderWidthThin,
         space: 1,
       ),
 
-      // 底部导航栏主题
-      bottomNavigationBarTheme: const BottomNavigationBarThemeData(
+      // G. 底部导航栏主题: selectedItemColor → zhusha, unselectedItemColor → guhe
+      bottomNavigationBarTheme: BottomNavigationBarThemeData(
         backgroundColor: AppColors.xiangseLight,
-        selectedItemColor: AppColors.dailan,
-        unselectedItemColor: AppColors.huiseLight,
+        selectedItemColor: AppColors.zhusha,
+        unselectedItemColor: AppColors.guhe,
         type: BottomNavigationBarType.fixed,
         elevation: 8,
-        selectedLabelStyle: AppTextStyles.navLabel,
-        unselectedLabelStyle: AppTextStyles.navLabel,
+        selectedLabelStyle: AppTextStyles.antiqueLabel,
+        unselectedLabelStyle: AppTextStyles.antiqueLabel,
       ),
 
       // 文字主题
@@ -178,18 +171,22 @@ class AppTheme {
         size: 24,
       ),
 
-      // 对话框主题
+      // H. 对话框主题: white@0.95 + danjin border + antiqueSection/Body textStyles
       dialogTheme: DialogThemeData(
-        backgroundColor: AppColors.xiangseLight,
-        elevation: 8,
+        backgroundColor: Colors.white.withOpacity(0.95),
+        elevation: 0,
         shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(16),
+          borderRadius: BorderRadius.circular(12),
+          side: BorderSide(
+            color: AppColors.danjin,
+            width: AntiqueTokens.borderWidthBase,
+          ),
         ),
-        titleTextStyle: AppTextStyles.titleLarge,
-        contentTextStyle: AppTextStyles.bodyMedium,
+        titleTextStyle: AppTextStyles.antiqueSection,
+        contentTextStyle: AppTextStyles.antiqueBody,
       ),
 
-      // Snackbar 主题
+      // I. Snackbar 主题: KEEP AS IS (xuanse dark bg + white text is antique-friendly)
       snackBarTheme: SnackBarThemeData(
         backgroundColor: AppColors.xuanse,
         contentTextStyle:
@@ -200,34 +197,34 @@ class AppTheme {
         behavior: SnackBarBehavior.fixed,
       ),
 
-      // 进度指示器主题
-      progressIndicatorTheme: const ProgressIndicatorThemeData(
-        color: AppColors.dailan,
-        circularTrackColor: AppColors.divider,
+      // J. 进度指示器主题: color → zhusha, circularTrackColor → danjin@0.3
+      progressIndicatorTheme: ProgressIndicatorThemeData(
+        color: AppColors.zhusha,
+        circularTrackColor: AppColors.danjin.withOpacity(0.3),
       ),
 
-      // Chip 主题
+      // K. Chip 主题: selectedColor → zhusha@0.15, danjin stroke, antiqueLabel, radiusTag
       chipTheme: ChipThemeData(
         backgroundColor: AppColors.xiangseLight,
-        selectedColor: AppColors.dailan.withOpacity(0.15),
+        selectedColor: AppColors.zhusha.withOpacity(0.15),
         disabledColor: AppColors.divider,
-        labelStyle: AppTextStyles.bodySmall,
+        labelStyle: AppTextStyles.antiqueLabel,
         padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
         shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(16),
-          side: const BorderSide(color: AppColors.divider),
+          borderRadius: BorderRadius.circular(AntiqueTokens.radiusTag),
+          side: BorderSide(color: AppColors.danjin.withOpacity(0.5)),
         ),
       ),
 
-      // 列表瓦片主题
+      // L. 列表瓦片主题: antique text styles, iconColor → guhe
       listTileTheme: const ListTileThemeData(
         contentPadding: EdgeInsets.symmetric(horizontal: 16, vertical: 4),
-        titleTextStyle: AppTextStyles.titleSmall,
-        subtitleTextStyle: AppTextStyles.bodySmall,
-        iconColor: AppColors.huise,
+        titleTextStyle: AppTextStyles.antiqueBody,
+        subtitleTextStyle: AppTextStyles.antiqueLabel,
+        iconColor: AppColors.guhe,
       ),
 
-      // 浮动按钮主题
+      // M. 浮动按钮主题: UNCHANGED (already uses zhusha)
       floatingActionButtonTheme: const FloatingActionButtonThemeData(
         backgroundColor: AppColors.zhusha,
         foregroundColor: Colors.white,
@@ -237,8 +234,9 @@ class AppTheme {
 
       // 涟漪效果
       splashFactory: InkRipple.splashFactory,
-      splashColor: AppColors.dailan.withOpacity(0.1),
-      highlightColor: AppColors.dailan.withOpacity(0.05),
+      // N. splashColor/highlightColor: dailan → zhusha
+      splashColor: AppColors.zhusha.withOpacity(0.1),
+      highlightColor: AppColors.zhusha.withOpacity(0.05),
 
       // 页面切换动效（缩放 + 淡入）
       pageTransitionsTheme: const PageTransitionsTheme(
