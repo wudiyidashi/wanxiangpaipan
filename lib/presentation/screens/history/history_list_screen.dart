@@ -192,10 +192,11 @@ class _HistoryListScreenState extends State<HistoryListScreen> {
               textAlign: TextAlign.center,
             ),
             const SizedBox(height: 16),
-            ElevatedButton.icon(
+            AntiqueButton(
+              label: '重试',
+              icon: Icons.refresh,
               onPressed: _loadRecords,
-              icon: const Icon(Icons.refresh),
-              label: const Text('重试'),
+              variant: AntiqueButtonVariant.ghost,
             ),
           ],
         ),

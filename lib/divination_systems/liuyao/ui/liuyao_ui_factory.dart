@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_text_styles.dart';
 import '../../../domain/divination_system.dart';
 import '../models/gua.dart';
@@ -70,10 +71,7 @@ class LiuYaoUIFactory implements DivinationUIFactory {
                 ),
                 Text(
                   _formatDateTime(liuyaoResult.castTime),
-                  style: TextStyle(
-                    fontSize: 12,
-                    color: Colors.grey[600],
-                  ),
+                  style: AppTextStyles.antiqueLabel,
                 ),
               ],
             ),
@@ -96,10 +94,7 @@ class LiuYaoUIFactory implements DivinationUIFactory {
               const SizedBox(height: 8),
               Text(
                 '变卦：${liuyaoResult.changingGua!.name}',
-                style: TextStyle(
-                  fontSize: 14,
-                  color: Colors.grey[700],
-                ),
+                style: AppTextStyles.antiqueBody.copyWith(color: AppColors.guhe),
               ),
             ],
 
@@ -107,10 +102,7 @@ class LiuYaoUIFactory implements DivinationUIFactory {
             const SizedBox(height: 8),
             Text(
               '${liuyaoResult.lunarInfo.yearGanZhi}年 ${liuyaoResult.lunarInfo.monthGanZhi}月 ${liuyaoResult.lunarInfo.riGanZhi}日',
-              style: TextStyle(
-                fontSize: 12,
-                color: Colors.grey[600],
-              ),
+              style: AppTextStyles.antiqueLabel,
             ),
           ],
         ),
@@ -187,12 +179,11 @@ class LiuYaoUIFactory implements DivinationUIFactory {
 
   /// 构建标签 Widget
   Widget _buildTag(String text, {Color? color}) {
-    return AntiqueTag(
-      label: text,
-      // 域专属色（如 Colors.orange 表示变卦、Colors.blue 为默认标签色），
-      // 未纳入 AppColors token；deferred to semantic-color pass
-      color: color ?? Colors.blue,
-    );
+    if (color != null) {
+      return AntiqueTag(label: text, color: color);
+    }
+    // 无色时使用 AntiqueTag 默认色（AppColors.zhusha），保持仿古风主题。
+    return AntiqueTag(label: text, color: AppColors.zhusha);
   }
 }
 
