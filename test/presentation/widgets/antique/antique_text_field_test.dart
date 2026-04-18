@@ -39,5 +39,50 @@ void main() {
       final tf = tester.widget<TextField>(find.byType(TextField));
       expect(tf.maxLines, 3);
     });
+
+    testWidgets('accepts null maxLines for unlimited growth', (tester) async {
+      await tester.pumpWidget(
+        const MaterialApp(
+          home: Scaffold(
+            body: AntiqueTextField(maxLines: null),
+          ),
+        ),
+      );
+      final tf = tester.widget<TextField>(find.byType(TextField));
+      expect(tf.maxLines, isNull);
+    });
+
+    testWidgets('obscureText hides input', (tester) async {
+      await tester.pumpWidget(
+        const MaterialApp(
+          home: Scaffold(
+            body: AntiqueTextField(obscureText: true),
+          ),
+        ),
+      );
+      final tf = tester.widget<TextField>(find.byType(TextField));
+      expect(tf.obscureText, isTrue);
+    });
+
+    testWidgets('expands fills parent when true', (tester) async {
+      await tester.pumpWidget(
+        MaterialApp(
+          home: Scaffold(
+            body: SizedBox(
+              height: 200,
+              child: Column(
+                children: const [
+                  Expanded(
+                    child: AntiqueTextField(expands: true),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ),
+      );
+      final tf = tester.widget<TextField>(find.byType(TextField));
+      expect(tf.expands, isTrue);
+    });
   });
 }
