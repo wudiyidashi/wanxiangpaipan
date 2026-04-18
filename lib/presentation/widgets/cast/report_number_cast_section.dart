@@ -107,7 +107,7 @@ class _ReportNumberCastSectionState extends State<ReportNumberCastSection> {
               inputFormatters: [FilteringTextInputFormatter.digitsOnly],
               // 0xFF2B4570: 阴阳爻线/卦文蓝，域色，保留内联
               style: const TextStyle(
-                color: Color(0xFF2B4570),
+                color: Color(0xFF2B4570), // 卦文蓝，域色
                 fontSize: 16,
                 fontWeight: FontWeight.bold,
               ),

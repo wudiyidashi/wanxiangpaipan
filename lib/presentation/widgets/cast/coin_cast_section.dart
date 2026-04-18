@@ -128,7 +128,7 @@ class _CoinCastSectionState extends State<CoinCastSection> {
         Text(
           label,
           style: const TextStyle(
-            color: Color(0xFF2B4570),
+            color: Color(0xFF2B4570), // 卦文蓝，域色，保留内联
             fontSize: 13,
           ),
         ),
@@ -145,15 +145,15 @@ class _CoinCastSectionState extends State<CoinCastSection> {
         // 铜钱正面/背面渐变：域色（铜钱金/灰），保留内联
         gradient: RadialGradient(
           colors: isFront
-              ? [const Color(0xFFC9A84C), const Color(0xFF8B6914)]
-              : [const Color(0xFF9A9A9A), const Color(0xFF666666)],
+              ? [const Color(0xFFC9A84C), const Color(0xFF8B6914)] // 铜钱正面金色渐变，域色
+              : [const Color(0xFF9A9A9A), const Color(0xFF666666)], // 铜钱背面灰色渐变，域色
           center: const Alignment(-0.3, -0.3),
           radius: 0.9,
         ),
         border: Border.all(
           color: isFront
-              ? const Color(0xFFA08030)
-              : const Color(0xFF888888),
+              ? const Color(0xFFA08030) // 铜钱正面边框金色，域色
+              : const Color(0xFF888888), // 铜钱背面边框灰色，域色
           width: 1,
         ),
       ),
@@ -163,8 +163,8 @@ class _CoinCastSectionState extends State<CoinCastSection> {
         isFront ? '正' : '背',
         style: TextStyle(
           color: isFront
-              ? const Color(0xFF3D2800)
-              : const Color(0xFFE0E0E0),
+              ? const Color(0xFF3D2800) // 铜钱正面文字深棕，域色
+              : const Color(0xFFE0E0E0), // 铜钱背面文字高光白，域色
           fontSize: 8,
           fontWeight: FontWeight.bold,
         ),

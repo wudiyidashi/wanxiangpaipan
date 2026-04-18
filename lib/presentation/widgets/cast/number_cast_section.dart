@@ -61,7 +61,7 @@ class _NumberCastSectionState extends State<NumberCastSection> {
             inputFormatters: [FilteringTextInputFormatter.digitsOnly],
             // 0xFF2B4570: 阴阳爻线/卦文蓝，域色，保留内联
             style: const TextStyle(
-              color: Color(0xFF2B4570),
+              color: Color(0xFF2B4570), // 卦文蓝，域色
               fontSize: 20,
               fontWeight: FontWeight.bold,
               letterSpacing: 4,

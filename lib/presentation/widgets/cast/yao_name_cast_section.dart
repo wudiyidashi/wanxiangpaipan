@@ -121,7 +121,7 @@ class _YaoNameCastSectionState extends State<YaoNameCastSection> {
                     dateStr,
                     // 0xFF2B4570: 阴阳爻线/卦文蓝，非通用token，保留内联
                     style: const TextStyle(
-                      color: Color(0xFF2B4570),
+                      color: Color(0xFF2B4570), // 卦文蓝，域色
                       fontSize: 13,
                     ),
                   ),
@@ -144,7 +144,7 @@ class _YaoNameCastSectionState extends State<YaoNameCastSection> {
                     timeStr,
                     // 0xFF2B4570: 阴阳爻线/卦文蓝，非通用token，保留内联
                     style: const TextStyle(
-                      color: Color(0xFF2B4570),
+                      color: Color(0xFF2B4570), // 卦文蓝，域色
                       fontSize: 13,
                     ),
                   ),
@@ -239,7 +239,7 @@ class _YaoNameCastSectionState extends State<YaoNameCastSection> {
             symbol,
             // 0xFF2B4570: 阴阳爻线/卦文蓝，域色，保留内联
             style: TextStyle(
-              color: const Color(0xFF2B4570),
+              color: const Color(0xFF2B4570), // 卦文蓝，域色
               fontSize: 14,
               fontWeight: FontWeight.w600,
               letterSpacing: value == 8 ? 2 : 0,
@@ -253,8 +253,8 @@ class _YaoNameCastSectionState extends State<YaoNameCastSection> {
           // 0xFFC0A888/0xFFB0A08E: 动爻/静爻选项标签专用渐变色，域色，保留内联
           style: TextStyle(
             color: isMoving
-                ? const Color(0xFFC0A888)
-                : const Color(0xFFB0A08E),
+                ? const Color(0xFFC0A888) // 动爻标签浅金色，域色
+                : const Color(0xFFB0A08E), // 静爻标签浅褐色，域色
             fontSize: 12,
           ),
         ),
@@ -278,7 +278,7 @@ class _YaoSymbolPainter extends CustomPainter {
   void paint(Canvas canvas, Size size) {
     // 0xFF2B4570: 阴阳爻线专用黛蓝，域色，保留内联
     final linePaint = Paint()
-      ..color = const Color(0xFF2B4570)
+      ..color = const Color(0xFF2B4570) // 阴阳爻线专用黛蓝，域色
       ..strokeWidth = 2.5
       ..strokeCap = StrokeCap.round;
 
@@ -300,14 +300,14 @@ class _YaoSymbolPainter extends CustomPainter {
     if (value == 9) {
       // 老阳：画圆圈 ○ (0xFF2B4570: 阴阳爻线专用黛蓝，域色，保留内联)
       final circlePaint = Paint()
-        ..color = const Color(0xFF2B4570)
+        ..color = const Color(0xFF2B4570) // 阴阳爻线专用黛蓝，域色
         ..strokeWidth = 1.5
         ..style = PaintingStyle.stroke;
       canvas.drawCircle(Offset(size.width / 2, y), 5, circlePaint);
     } else if (value == 6) {
       // 老阴：画叉号 × (0xFF2B4570: 阴阳爻线专用黛蓝，域色，保留内联)
       final xPaint = Paint()
-        ..color = const Color(0xFF2B4570)
+        ..color = const Color(0xFF2B4570) // 阴阳爻线专用黛蓝，域色
         ..strokeWidth = 1.5
         ..strokeCap = StrokeCap.round;
       const r = 4.0;

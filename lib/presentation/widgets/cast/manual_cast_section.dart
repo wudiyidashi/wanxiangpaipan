@@ -116,7 +116,7 @@ class _ManualCastSectionState extends State<ManualCastSection> {
                     dateStr,
                     // 0xFF2B4570: 阴阳爻线/卦文蓝，域色，保留内联
                     style: const TextStyle(
-                      color: Color(0xFF2B4570),
+                      color: Color(0xFF2B4570), // 卦文蓝，域色
                       fontSize: 13,
                     ),
                   ),
@@ -139,7 +139,7 @@ class _ManualCastSectionState extends State<ManualCastSection> {
                     timeStr,
                     // 0xFF2B4570: 阴阳爻线/卦文蓝，域色，保留内联
                     style: const TextStyle(
-                      color: Color(0xFF2B4570),
+                      color: Color(0xFF2B4570), // 卦文蓝，域色
                       fontSize: 13,
                     ),
                   ),
@@ -229,7 +229,7 @@ class _ManualCastSectionState extends State<ManualCastSection> {
         Text(
           label,
           style: const TextStyle(
-            color: Color(0xFFB0A08E),
+            color: Color(0xFFB0A08E), // 爻标签专用浅褐色，域色
             fontSize: 12,
           ),
         ),
@@ -247,7 +247,7 @@ class _YaoLinePainter extends CustomPainter {
   void paint(Canvas canvas, Size size) {
     // 0xFF2B4570: 阴阳爻线专用黛蓝，域色，保留内联
     final paint = Paint()
-      ..color = const Color(0xFF2B4570)
+      ..color = const Color(0xFF2B4570) // 阴阳爻线专用黛蓝，域色
       ..strokeWidth = 2.5
       ..strokeCap = StrokeCap.round;
 

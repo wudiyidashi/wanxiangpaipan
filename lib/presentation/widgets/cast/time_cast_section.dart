@@ -37,7 +37,7 @@ class TimeCastSection extends StatelessWidget {
         Text(
           ganZhiDate,
           style: const TextStyle(
-            color: Color(0xFF2B4570),
+            color: Color(0xFF2B4570), // 卦文蓝，域色
             fontSize: 20,
             fontWeight: FontWeight.bold,
             letterSpacing: 2,

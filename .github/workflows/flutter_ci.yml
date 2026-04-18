@@ -21,6 +21,8 @@ jobs:
       - run: flutter pub run build_runner build --delete-conflicting-outputs
       - run: dart format --set-exit-if-changed lib/ test/
       - run: flutter analyze
+      - name: Audit hardcoded colors
+        run: bash tool/audit_hardcoded_colors.sh
       - run: flutter test --coverage
       - uses: codecov/codecov-action@v6
         with:
