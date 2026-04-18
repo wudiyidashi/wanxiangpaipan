@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:lunar/lunar.dart';
+import 'package:provider/provider.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_text_styles.dart';
 import '../../../domain/divination_system.dart';
+import '../../../domain/repositories/divination_repository.dart';
 import '../../../presentation/divination_ui_registry.dart';
 import '../../../presentation/widgets/ai_analysis_widget.dart';
 import '../../../presentation/widgets/extended_info_section.dart';
@@ -236,6 +238,25 @@ class _DaLiuRenCastScreenState extends State<_DaLiuRenCastScreen> {
           );
         default:
           throw UnsupportedError('不支持的起课方式');
+      }
+
+      if (!mounted) return;
+
+      // Save to repository so the record appears in history
+      try {
+        final repository = context.read<DivinationRepository>();
+        await repository.saveRecord(result);
+
+        // Save question as encrypted field if provided
+        final question = _questionController.text.trim();
+        if (question.isNotEmpty) {
+          await repository.saveEncryptedFieldsBatch({
+            'question_${result.id}': question,
+          });
+        }
+      } catch (saveError) {
+        // Non-blocking: cast succeeded; just log the failure
+        debugPrint('DLR: failed to save record: $saveError');
       }
 
       if (!mounted) return;
