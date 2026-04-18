@@ -30,7 +30,7 @@ class AntiqueButton extends StatelessWidget {
         ? null
         : (variant == AntiqueButtonVariant.danger
             ? const LinearGradient(
-                colors: [Color(0xFFB23A3A), AppColors.zhusha],
+                colors: [AppColors.zhushaDeep, AppColors.zhusha],
               )
             : AntiqueTokens.buttonGradient);
 
