@@ -5,6 +5,7 @@ import '../../ai/service/ai_analysis_service.dart';
 import '../../ai/ai_bootstrap.dart';
 import '../../ai/service/prompt_assembler.dart';
 import '../../ai/output/structured_output_formatter.dart';
+import '../../core/theme/app_text_styles.dart';
 import '../../domain/divination_system.dart';
 
 /// AI 分析组件
@@ -53,7 +54,7 @@ class AIAnalysisWidget extends StatelessWidget {
           Icon(
             Icons.smart_toy,
             size: 20,
-            color: isConfigured ? Theme.of(context).primaryColor : Colors.grey,
+            color: isConfigured ? Theme.of(context).primaryColor : Colors.grey, // Material grey: unconfigured/disabled state
           ),
           const SizedBox(width: 8),
           Expanded(
@@ -94,7 +95,7 @@ class AIAnalysisWidget extends StatelessWidget {
           if (!isConfigured)
             TextButton(
               onPressed: () => Navigator.pushNamed(context, '/ai-settings'),
-              child: const Text('去配置', style: TextStyle(fontSize: 12)),
+              child: Text('去配置', style: AppTextStyles.antiqueLabel.copyWith(fontSize: 12)),
             ),
         ],
       ),
@@ -124,13 +125,13 @@ class AIAnalysisWidget extends StatelessWidget {
               selectable: true,
               styleSheet: MarkdownStyleSheet(
                 p: Theme.of(context).textTheme.bodyMedium?.copyWith(height: 1.8),
-                h1: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold, height: 2),
-                h2: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold, height: 2),
-                h3: const TextStyle(fontSize: 15, fontWeight: FontWeight.bold, height: 2),
+                h1: AppTextStyles.antiqueTitle.copyWith(height: 2),
+                h2: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold, height: 2), // 16pt bold heading: between antiqueTitle(18) and antiqueSection(15)
+                h3: AppTextStyles.antiqueSection.copyWith(height: 2),
                 listBullet: Theme.of(context).textTheme.bodyMedium?.copyWith(height: 1.8),
                 blockquoteDecoration: BoxDecoration(
-                  color: Colors.grey.withOpacity(0.08),
-                  border: Border(left: BorderSide(color: Colors.grey.shade400, width: 3)),
+                  color: Colors.grey.withOpacity(0.08), // Material grey: markdown blockquote bg tint
+                  border: Border(left: BorderSide(color: Colors.grey.shade400, width: 3)), // Material grey: markdown blockquote left border
                 ),
               ),
             ),
@@ -142,7 +143,7 @@ class AIAnalysisWidget extends StatelessWidget {
               child: TextButton.icon(
                 onPressed: () => aiService.clearResult(),
                 icon: const Icon(Icons.clear, size: 16),
-                label: const Text('清除', style: TextStyle(fontSize: 12)),
+                label: Text('清除', style: AppTextStyles.antiqueLabel.copyWith(fontSize: 12)),
               ),
             ),
         ],
@@ -157,18 +158,18 @@ class AIAnalysisWidget extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.all(12),
       decoration: BoxDecoration(
-        color: Colors.orange.withOpacity(0.08),
+        color: Colors.orange.withOpacity(0.08), // domain: error/warning tint (no token equivalent)
         borderRadius: BorderRadius.circular(8),
-        border: Border.all(color: Colors.orange.withOpacity(0.3)),
+        border: Border.all(color: Colors.orange.withOpacity(0.3)), // domain: error/warning border
       ),
       child: Row(
         children: [
-          const Icon(Icons.info_outline, color: Colors.orange, size: 18),
+          const Icon(Icons.info_outline, color: Colors.orange, size: 18), // domain: warning icon
           const SizedBox(width: 10),
           Expanded(
             child: Text(
               message,
-              style: TextStyle(color: Colors.grey[800], fontSize: 13),
+              style: AppTextStyles.antiqueBody.copyWith(color: Colors.grey[800]), // Material grey[800]: error body text
             ),
           ),
         ],
@@ -220,7 +221,7 @@ class AIAnalysisWidget extends StatelessWidget {
               width: 40,
               height: 4,
               decoration: BoxDecoration(
-                color: Colors.grey[300],
+                color: Colors.grey[300], // Material grey[300]: drag handle pill
                 borderRadius: BorderRadius.circular(2),
               ),
             ),
@@ -233,8 +234,7 @@ class AIAnalysisWidget extends StatelessWidget {
                   const Expanded(
                     child: Text(
                       '发送内容预览',
-                      style:
-                          TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                      style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold), // 16pt bold heading: between antiqueTitle(18) and antiqueSection(15)
                     ),
                   ),
                   IconButton(
@@ -253,7 +253,7 @@ class AIAnalysisWidget extends StatelessWidget {
                   previewContent,
                   style: const TextStyle(
                     fontSize: 12,
-                    fontFamily: 'monospace',
+                    fontFamily: 'monospace', // monospace: prompt preview code display
                     height: 1.6,
                   ),
                 ),
@@ -370,7 +370,7 @@ class _AIAnalysisSheetState extends State<_AIAnalysisSheet> {
               width: 40,
               height: 4,
               decoration: BoxDecoration(
-                color: Colors.grey[300],
+                color: Colors.grey[300], // Material grey[300]: drag handle pill
                 borderRadius: BorderRadius.circular(2),
               ),
             ),
@@ -424,11 +424,11 @@ class _AIAnalysisSheetState extends State<_AIAnalysisSheet> {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              const Icon(Icons.info_outline, size: 48, color: Colors.orange),
+              const Icon(Icons.info_outline, size: 48, color: Colors.orange), // domain: warning icon
               const SizedBox(height: 16),
               Text(
                 aiService.error!.replaceFirst(RegExp(r'^Exception:\s*'), ''),
-                style: TextStyle(color: Colors.grey[700]),
+                style: AppTextStyles.antiqueBody.copyWith(color: Colors.grey[700]), // Material grey[700]: muted error text
                 textAlign: TextAlign.center,
               ),
             ],
@@ -456,7 +456,7 @@ class _AIAnalysisSheetState extends State<_AIAnalysisSheet> {
       selectable: true,
       styleSheet: MarkdownStyleSheet(
         p: Theme.of(context).textTheme.bodyMedium?.copyWith(height: 1.8),
-        h3: const TextStyle(fontSize: 15, fontWeight: FontWeight.bold, height: 2),
+        h3: AppTextStyles.antiqueSection.copyWith(height: 2),
       ),
     );
   }
