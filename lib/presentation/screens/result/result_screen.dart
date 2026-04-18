@@ -6,6 +6,7 @@ import '../../widgets/diagram_comparison_row.dart';
 import '../../widgets/question_section.dart';
 import '../../widgets/extended_info_section.dart';
 import '../../widgets/special_relation_section.dart';
+import '../../widgets/antique/antique.dart';
 
 /// 卦象结果展示界面
 ///
@@ -60,12 +61,8 @@ class ResultScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('排盘结果'),
-        centerTitle: true,
-        elevation: 0,
-      ),
+    return AntiqueScaffold(
+      appBar: const AntiqueAppBar(title: '排盘结果'),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(12),
         child: Column(
