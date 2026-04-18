@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import '../../../core/theme/app_colors.dart';
+import '../../../core/theme/app_text_styles.dart';
 import '../../../domain/divination_system.dart';
 import '../../../domain/repositories/divination_repository.dart';
 import '../../../presentation/divination_ui_registry.dart';
+import '../../widgets/antique/antique.dart';
 
 /// 历史记录列表页面
 ///
@@ -119,9 +122,9 @@ class _HistoryListScreenState extends State<HistoryListScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('历史记录'),
+    return AntiqueScaffold(
+      appBar: AntiqueAppBar(
+        title: '历史记录',
         actions: [
           // 筛选按钮
           PopupMenuButton<DivinationType?>(
@@ -169,12 +172,12 @@ class _HistoryListScreenState extends State<HistoryListScreen> {
             Icon(
               Icons.error_outline,
               size: 64,
-              color: Colors.red[300],
+              color: AppColors.zhushaLight,
             ),
             const SizedBox(height: 16),
             Text(
               _errorMessage!,
-              style: const TextStyle(fontSize: 16),
+              style: AppTextStyles.antiqueBody,
               textAlign: TextAlign.center,
             ),
             const SizedBox(height: 16),
@@ -193,19 +196,20 @@ class _HistoryListScreenState extends State<HistoryListScreen> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
+            const AntiqueWatermark(char: '空'),
+            const SizedBox(height: 8),
             Icon(
               Icons.history,
               size: 64,
-              color: Colors.grey[400],
+              color: AppColors.qianhe,
             ),
             const SizedBox(height: 16),
             Text(
               _selectedSystemType == null
                   ? '暂无历史记录'
                   : '暂无 ${_selectedSystemType!.displayName} 记录',
-              style: TextStyle(
-                fontSize: 18,
-                color: Colors.grey[600],
+              style: AppTextStyles.antiqueSection.copyWith(
+                color: AppColors.guhe,
               ),
             ),
             if (_selectedSystemType != null) ...[
@@ -226,20 +230,20 @@ class _HistoryListScreenState extends State<HistoryListScreen> {
         if (_selectedSystemType != null)
           Container(
             padding: const EdgeInsets.all(12),
-            color: Theme.of(context).colorScheme.primaryContainer,
+            color: AppColors.xiangseDeep,
             child: Row(
               children: [
                 Icon(
                   Icons.filter_list,
                   size: 20,
-                  color: Theme.of(context).colorScheme.onPrimaryContainer,
+                  color: AppColors.guhe,
                 ),
                 const SizedBox(width: 8),
                 Expanded(
                   child: Text(
                     '筛选: ${_selectedSystemType!.displayName} (${_filteredRecords.length} 条)',
-                    style: TextStyle(
-                      color: Theme.of(context).colorScheme.onPrimaryContainer,
+                    style: AppTextStyles.antiqueLabel.copyWith(
+                      color: AppColors.guhe,
                     ),
                   ),
                 ),
@@ -290,19 +294,26 @@ class _HistoryListScreenState extends State<HistoryListScreen> {
   }
 
   Widget _buildDefaultCard(DivinationResult record) {
-    return Card(
-      margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-      child: ListTile(
-        leading: const Icon(Icons.auto_awesome),
-        title: Text(record.getSummary()),
-        subtitle: Text(
-          '${record.systemType.displayName} · ${_formatDateTime(record.castTime)}',
-        ),
-        trailing: IconButton(
-          icon: const Icon(Icons.delete_outline),
-          onPressed: () => _confirmDelete(record),
-        ),
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
+      child: AntiqueCard(
         onTap: () => _navigateToDetail(record),
+        padding: EdgeInsets.zero,
+        child: ListTile(
+          leading: const Icon(Icons.auto_awesome),
+          title: Text(
+            record.getSummary(),
+            style: AppTextStyles.antiqueBody,
+          ),
+          subtitle: Text(
+            '${record.systemType.displayName} · ${_formatDateTime(record.castTime)}',
+            style: AppTextStyles.antiqueLabel,
+          ),
+          trailing: IconButton(
+            icon: const Icon(Icons.delete_outline),
+            onPressed: () => _confirmDelete(record),
+          ),
+        ),
       ),
     );
   }
