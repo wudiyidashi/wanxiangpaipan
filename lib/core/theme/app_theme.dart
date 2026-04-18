@@ -110,27 +110,9 @@ class AppTheme {
         ),
       ),
 
-      // E. 输入框主题: white@0.6 + danjin border + focused zhusha + radiusInput
+      // E. 输入框主题：仅保留 hintStyle 默认；视觉由 AntiqueTextField 完整拥有，
+      // theme 不画 border/fill，避免与组件 Container 的 border 重叠（双框）。
       inputDecorationTheme: InputDecorationTheme(
-        filled: true,
-        fillColor: Colors.white.withOpacity(0.6),
-        contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-        border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(AntiqueTokens.radiusInput),
-          borderSide: const BorderSide(color: AppColors.danjin),
-        ),
-        enabledBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(AntiqueTokens.radiusInput),
-          borderSide: const BorderSide(color: AppColors.danjin),
-        ),
-        focusedBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(AntiqueTokens.radiusInput),
-          borderSide: const BorderSide(color: AppColors.zhusha, width: 2),
-        ),
-        errorBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(AntiqueTokens.radiusInput),
-          borderSide: const BorderSide(color: AppColors.errorDeep),
-        ),
         hintStyle: AppTextStyles.antiqueBody.copyWith(color: AppColors.qianhe),
       ),
 
