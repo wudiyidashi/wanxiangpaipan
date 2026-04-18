@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/antique_tokens.dart';
 
@@ -18,6 +19,9 @@ class AntiqueTextField extends StatelessWidget {
     this.textAlignVertical,
     this.style,
     this.semanticsLabel,
+    this.textAlign,
+    this.inputFormatters,
+    this.hintStyle,
   });
 
   final TextEditingController? controller;
@@ -35,6 +39,9 @@ class AntiqueTextField extends StatelessWidget {
   final TextStyle? style;
   /// Optional a11y label. When non-null, wraps the field with Semantics.
   final String? semanticsLabel;
+  final TextAlign? textAlign;
+  final List<TextInputFormatter>? inputFormatters;
+  final TextStyle? hintStyle;
 
   @override
   Widget build(BuildContext context) {
@@ -57,27 +64,21 @@ class AntiqueTextField extends StatelessWidget {
         obscureText: obscureText,
         expands: expands,
         textAlignVertical: textAlignVertical,
+        textAlign: textAlign ?? TextAlign.start,
+        inputFormatters: inputFormatters,
         style: style ??
             const TextStyle(
               color: AppColors.xuanse,
               fontSize: 13,
             ),
         decoration: InputDecoration(
-          // 显式清零所有 border 状态，避免 theme 的 inputDecorationTheme
-          // 给内部 TextField 再画一层 danjin 边（重复于外层 Container 的边）
           border: InputBorder.none,
-          enabledBorder: InputBorder.none,
-          focusedBorder: InputBorder.none,
-          errorBorder: InputBorder.none,
-          disabledBorder: InputBorder.none,
-          focusedErrorBorder: InputBorder.none,
-          // 外层 Container 已经有 white@0.6 底，不能让 theme 再填一次
-          filled: false,
           hintText: hint,
-          hintStyle: const TextStyle(
-            color: AppColors.qianhe,
-            fontSize: 13,
-          ),
+          hintStyle: hintStyle ??
+              const TextStyle(
+                color: AppColors.qianhe,
+                fontSize: 13,
+              ),
           isDense: true,
           suffixIcon: suffixIcon,
         ),
