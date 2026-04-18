@@ -80,8 +80,6 @@ class AntiqueTextField extends StatelessWidget {
           ),
           isDense: true,
           suffixIcon: suffixIcon,
-          // 重置 contentPadding，防止 theme 的 (12, 8) 叠加到外层 padding
-          contentPadding: EdgeInsets.zero,
         ),
       ),
     );
