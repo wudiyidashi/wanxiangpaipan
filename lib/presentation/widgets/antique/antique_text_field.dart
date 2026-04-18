@@ -63,7 +63,16 @@ class AntiqueTextField extends StatelessWidget {
               fontSize: 13,
             ),
         decoration: InputDecoration(
+          // 显式清零所有 border 状态，避免 theme 的 inputDecorationTheme
+          // 给内部 TextField 再画一层 danjin 边（重复于外层 Container 的边）
           border: InputBorder.none,
+          enabledBorder: InputBorder.none,
+          focusedBorder: InputBorder.none,
+          errorBorder: InputBorder.none,
+          disabledBorder: InputBorder.none,
+          focusedErrorBorder: InputBorder.none,
+          // 外层 Container 已经有 white@0.6 底，不能让 theme 再填一次
+          filled: false,
           hintText: hint,
           hintStyle: const TextStyle(
             color: AppColors.qianhe,
@@ -71,6 +80,8 @@ class AntiqueTextField extends StatelessWidget {
           ),
           isDense: true,
           suffixIcon: suffixIcon,
+          // 重置 contentPadding，防止 theme 的 (12, 8) 叠加到外层 padding
+          contentPadding: EdgeInsets.zero,
         ),
       ),
     );
