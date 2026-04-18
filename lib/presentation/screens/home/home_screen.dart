@@ -200,7 +200,7 @@ class _HomeScreenState extends State<HomeScreen> {
       case 0:
         return _buildHomeContent();
       case 1:
-        return const HistoryListScreen();
+        return const HistoryListScreen(chromeless: true);
       case 2:
         return _buildSimpleTab(
           title: '历法',

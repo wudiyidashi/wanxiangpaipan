@@ -10,8 +10,14 @@ import '../../widgets/antique/antique.dart';
 /// 历史记录列表页面
 ///
 /// 显示所有术数系统的历史记录，支持筛选和搜索。
+///
+/// 当 [chromeless] 为 true 时，直接返回内容区域（无 AntiqueScaffold /
+/// AntiqueAppBar），适合内嵌在已有页面骨架中（如 HomeScreen Tab）。
 class HistoryListScreen extends StatefulWidget {
-  const HistoryListScreen({super.key});
+  const HistoryListScreen({super.key, this.chromeless = false});
+
+  /// 无 Scaffold 模式：内嵌时设为 true，避免双重 Scaffold / AppBar。
+  final bool chromeless;
 
   @override
   State<HistoryListScreen> createState() => _HistoryListScreenState();
@@ -122,6 +128,11 @@ class _HistoryListScreenState extends State<HistoryListScreen> {
 
   @override
   Widget build(BuildContext context) {
+    if (widget.chromeless) {
+      // 内嵌模式：直接返回内容，不包裹 AntiqueScaffold / AntiqueAppBar。
+      return SafeArea(child: _buildBody());
+    }
+
     return AntiqueScaffold(
       appBar: AntiqueAppBar(
         title: '历史记录',
