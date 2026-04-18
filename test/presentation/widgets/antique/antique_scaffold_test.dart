@@ -45,18 +45,16 @@ void main() {
           home: AntiqueScaffold(body: Text('no-bar')),
         ),
       );
-      // Without an appBar the body Positioned should not be wrapped in Padding.
-      // We verify by checking the body text is still found.
+      // Without an appBar the body should not be wrapped in Padding.
+      // The body text should be found directly without a Padding ancestor.
       expect(find.text('no-bar'), findsOneWidget);
-      expect(
-        tester.widget<Padding>(
-          find.ancestor(
-            of: find.text('no-bar'),
-            matching: find.byType(Padding),
-          ).first,
-        ),
-        isA<Padding>(),
+      // Verify no Padding widget wraps the body when appBar is null
+      final paddingAncestors = find.ancestor(
+        of: find.text('no-bar'),
+        matching: find.byType(Padding),
       );
+      expect(paddingAncestors, findsNothing,
+          reason: 'Body should not be wrapped in Padding when appBar is null');
     });
 
     testWidgets('body gets top padding when appBar is set', (tester) async {
