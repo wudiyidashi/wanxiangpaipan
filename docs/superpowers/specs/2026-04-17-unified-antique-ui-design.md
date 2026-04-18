@@ -1,378 +1,515 @@
-# 全应用统一仿古风 UI 设计规范
+# 全应用仿古风 UI 收敛方案（修订版）
 
-**日期**：2026-04-17
-**作者**：Kai Yueh（与 Claude 协作）
-**状态**：Draft（待用户审阅）
-**Spec 类型**：UI 设计统一 + 组件库抽取
+**原始草案日期**：2026-04-17  
+**修订日期**：2026-04-18  
+**作者**：Kai Yueh / Codex 修订  
+**状态**：Revised Draft（作为当前事实校正后的收敛方案）  
+**Spec 类型**：Design System 收敛 + UI 运行时边界纠偏  
 **项目**：万象排盘 多术数系统平台（Flutter）
 
----
-
-## 1. 背景与目标
-
-### 1.1 现状
-
-项目当前 UI 风格分裂为三层：
-
-| 层 | 代表页面 | 风格 |
-|----|---------|------|
-| 仿古风（最新） | 大六壬起课页、结果页 | 罗盘底、朱砂 #C94A4A、淡金 #D4B896、衬线、半透明白卡 |
-| 过渡风 | 统一起卦页 `unified_cast_screen.dart` | 半透明卡 + 淡金边，部分仿古元素 |
-| Material 默认 | 首页、六爻结果页、历史、设置、AI 设置 | 几乎裸的 Material，无仿古特征 |
-
-最近三次提交（`d928f6e`, `2221610`, `73c03b6`）已为大六壬完整建立仿古风视觉，但**所有样式硬编码在 `daliuren_ui_factory.dart` 单文件内**，未抽出共享组件，无法复用到其他页面。
-
-### 1.2 目标
-
-1. **统一所有页面**到仿古风（朱砂 + 淡金 + 缃色 + 衬线 + 半透明白卡 + 罗盘/水印装饰）
-2. 把大六壬内联样式**下沉为共享组件库** `lib/presentation/widgets/antique/`（10 个原子组件），未来新增术数系统（紫微斗数、奇门遁甲）开箱即用
-3. 设计令牌全部**命名化**：颜色、字体、圆角、间距、边框宽度，消除魔法值
-4. 同步更新 `docs/UI设计指导.md`，承认项目从"新中式极简"演进到"仿古风"，作为单一权威设计文档
-
-### 1.3 非目标（明确排除）
-
-- 暗黑模式（"墨色夜间模式"，需另起 spec）
-- 卡片 staggered 载入动画、呼吸动效（指导文档 §5 提及，本次不实施）
-- 触感反馈接入（HapticFeedback）
-- 紫微斗数、奇门遁甲等未来术数系统的 UI 实现
-- 后端、数据层、领域逻辑改造（本次纯 UI/视觉）
+> 本文档已不再把 2026-04-17 的内容视为“待从零实施的设计草案”。
+>
+> 当前仓库中，`antique/` 组件库、核心 token、首页/历史/六爻起卦页/多套结果页已经部分或大幅落地。  
+> 因此本文档的职责变更为：
+>
+> 1. 校正旧方案与当前代码事实的偏差
+> 2. 明确过去架构中的设计缺陷与冗余设计
+> 3. 给出面向当前代码库的最优收敛方向
 
 ---
 
-## 2. 设计令牌（Design Tokens）
+## 1. 修订原因
 
-### 2.1 色板（扩展 `AppColors`）
+### 1.1 当前事实
 
-新增 9 个命名颜色 token，所有仿古风页面与组件**只能引用 token，不得硬编码**：
+当前仓库已经具备以下基础，不应再被描述为“未来目标”：
 
-| Token | Hex | 用途 |
+- `lib/presentation/widgets/antique/` 已存在完整组件集：
+  - `AntiqueScaffold`
+  - `AntiqueAppBar`
+  - `AntiqueCard`
+  - `AntiqueSectionTitle`
+  - `AntiqueDivider`
+  - `AntiqueButton`
+  - `AntiqueTextField`
+  - `AntiqueDropdown`
+  - `AntiqueTag`
+  - `AntiqueWatermark`
+  - `AntiqueDialog`
+- `AppColors`、`AppTextStyles`、`AntiqueTokens` 已存在并被实际引用
+- 首页、历史页、六爻起卦页、六爻结果页、大六壬结果页已经使用了 antique 体系
+- 运行时 UI 分发主干不是“页面列表逐个换皮”，而是：
+  - `DivinationUIFactory`
+  - `DivinationUIRegistry`
+  - 各术数系统自己的 cast/result/history card 渲染
+- 历史页已存在 `chromeless` 内嵌模式，说明页面壳与内容区已经分层，不应继续使用“所有页面一刀切替换 Scaffold”的粗粒度描述
+
+### 1.2 修订目标
+
+本次修订后的目标不再是“创建仿古风体系”，而是“收敛现有体系并清理错误抽象”：
+
+1. 让文档与当前代码事实一致，停止产生“文档说一套、代码跑另一套”的双轨描述
+2. 把设计系统的单一真相收敛到：
+   - `AppColors`
+   - `AppTextStyles`
+   - `AntiqueTokens`
+   - `lib/presentation/widgets/antique/`
+3. 把 UI 运行时边界收敛到：
+   - 跨系统壳层：`AntiqueScaffold`、主页、历史总表、设置页
+   - 系统专属界面：各系统 `DivinationUIFactory`
+4. 明确哪些历史设计属于伪统一、重复抽象或过度设计，并逐步废弃
+
+### 1.3 非目标
+
+本方案不覆盖以下内容：
+
+- 暗黑模式
+- 路由策略调整
+- 数据层 / Repository / Domain 逻辑重构
+- 新术数系统功能实现
+- 动效增强、触感反馈
+- 纯视觉审美推翻式重做
+
+---
+
+## 2. 过去方案中的设计缺陷与冗余设计
+
+本节不是追责，而是明确哪些旧决策已经证明不适合作为继续演进的基础。
+
+### 2.1 缺陷一：把“历史草案”继续当作“当前实施方案”
+
+旧版文档仍然把以下事项描述为未来工作：
+
+- antique 组件库待创建
+- 首页 / 历史 / 结果页待迁移
+- 大六壬样式待下沉
+
+这在当前代码库里已经不成立。继续沿用旧描述，会导致：
+
+- 重复迁移
+- 错误评估完成度
+- 产生无意义的二次设计讨论
+
+**修正决策**：
+
+- 本文件从今天起只描述“当前事实 + 收敛动作”
+- 不再用“从零建设 antique 体系”的口径描述现状
+
+### 2.2 缺陷二：页面中心化描述，脱离实际运行时边界
+
+旧方案把问题表述成“逐页改造页面样式”，但当前运行时主干并不是页面静态清单，而是：
+
+- 主页通过注册表展示系统入口
+- 结果页和历史卡片通过 `DivinationUIFactory` 分发
+- 不同术数系统天然拥有不同的输入方式和结果结构
+
+继续使用“页面中心化迁移”会误导后续设计，把平台级约束压到系统级页面中。
+
+**修正决策**：
+
+- 以后所有 UI 方案默认以“共享 Design System + 系统 UI 工厂边界”为主视角
+- 页面改造只是收敛动作，不再是架构中心
+
+### 2.3 缺陷三：伪统一命名，制造错误抽象
+
+当前最典型的问题有两个：
+
+1. `UnifiedCastScreen` 实际只服务六爻
+2. `presentation/screens/result/result_screen.dart` 并不是运行时唯一结果页，真实主路径已经分散在各系统 UI factory 中
+
+这类命名会造成一种错觉：好像平台已经拥有真正跨系统统一的 cast/result 页面。实际上并没有。
+
+**这属于典型的伪统一设计。**
+
+它的问题是：
+
+- 名字比抽象更大
+- 平台层承担了本应属于系统层的概念
+- 后续新增术数时，很容易被迫去“套”一个并不适配的伪统一页面
+
+**修正决策**：
+
+- 最优方向不是继续扩大“统一页面”
+- 最优方向是承认系统差异，把统一层收敛到：
+  - 壳层
+  - token
+  - primitive components
+  - 共享 section widgets
+
+### 2.4 缺陷四：并行存在的重复渲染入口
+
+当前存在数个重复或半重复入口：
+
+- 通用 `ResultScreen`
+- 六爻 UI factory 内部结果页
+- 大六壬 UI factory 内部结果页
+- `DivinationUIFactory.buildSystemCard()`
+- 首页自己使用的 `DivinationSystemCard`
+
+其中有些入口已经不是主路径，却仍然保留在接口或文件结构中，增加理解成本。
+
+**冗余设计判断**：
+
+- 如果一个入口不是运行时主干，就不能继续被描述为一等抽象
+- 如果系统卡片的运行时主路径是统一 `DivinationSystemCard`，则 `buildSystemCard()` 不应继续被当成主干能力宣传
+
+**修正决策**：
+
+- 通用 `ResultScreen` 降级为 legacy 适配层，最终可删除
+- `buildSystemCard()` 降级为非主线路扩展点；若长期不用，应从接口中移除
+
+### 2.5 缺陷五：Theme 与 antique 组件形成平行体系
+
+旧方案提出“antique 组件不依赖 Theme，Theme 保持现状”，这在早期是务实选择，但作为长期方案有明显问题：
+
+- 原生 `Card` / `TextField` / `PopupMenuButton` / `TextButton` 仍会出现
+- 如果 Theme 不承接 token，这些原生控件就会持续漂移
+- 设计系统会被拆成两套：
+  - antique 组件内部样式
+  - Theme 默认样式
+
+**这属于隐藏式冗余设计。**
+
+**修正决策**：
+
+- `ThemeData` 必须承接 token 作为兜底
+- antique 组件可以覆盖高保真视觉，但不能脱离 theme 语义体系独立生长
+
+### 2.6 缺陷六：token 命名与代码现实不一致
+
+旧方案中使用了 `zhushaHong` 等命名，但当前代码中的真实 token 命名是：
+
+- `zhusha`
+- `zhushaLight`
+- `zhushaDeep`
+- `danjin`
+- `danjinDeep`
+- `guhe`
+- `qianhe`
+- `xuanse`
+- `xiangse`
+- `xiangseDeep`
+
+文档继续发明第二套命名，只会造成：
+
+- 文档和代码互相翻译
+- 设计评审成本上升
+- 开发者在“该改哪一个 token”上反复确认
+
+**修正决策**：
+
+- 当前代码中的 token 名即为权威命名
+- 除非仓库真的统一重命名，否则文档不得使用另一套别名
+
+### 2.7 缺陷七：字体策略没有交付契约
+
+旧方案要求全量 `Noto Serif SC`，这是视觉方向，不是交付事实。
+
+当前问题在于：
+
+- 代码中引用了该字体名
+- 但 `pubspec.yaml` 没有对应 `fonts:` 声明
+- 文档却把它写成可验收事实
+
+这会导致：
+
+- 真机与 golden 基线不稳定
+- 不同平台回退到不同系统字体
+- “样式不一致”问题无法归因
+
+**修正决策**：
+
+- 字体策略必须有交付契约
+- 要么把字体资产真正纳入 `pubspec.yaml`
+- 要么把文档改成“优先 serif fallback，不作为严格验收项”
+
+### 2.8 缺陷八：测试门禁过度理想化
+
+旧方案把“大六壬迁移前后 pixel diff = 0”写成关键门禁，这在真实 UI 收敛中过于理想：
+
+- 字体抗锯齿会变
+- Flutter 小版本会影响绘制
+- 部分 Material 内部布局在平台间有细微差异
+
+**修正决策**：
+
+- Golden 测试继续保留
+- 但门禁应改为“代表性页面 + 关键视觉不回退”
+- 不把全局 `pixel diff = 0` 作为跨阶段通用规则
+
+### 2.9 缺陷九：对 `Scaffold` 替换策略表述过粗
+
+“替代所有 `Scaffold`”这类说法在今天已经不准确，因为当前存在：
+
+- 顶层页面壳
+- 被嵌入到主页 tab 内的内容页
+- 可复用的 body-only 内容区域
+
+历史页的 `chromeless` 已证明：不是所有场景都应该包一层完整页面骨架。
+
+**修正决策**：
+
+- `AntiqueScaffold` 只要求用于顶层页面壳
+- 内容复用场景必须允许 body-only / chromeless 变体
+
+---
+
+## 3. 最优收敛后的目标架构
+
+### 3.1 单一真相来源
+
+UI 设计系统的唯一权威来源应为：
+
+| 维度 | 权威位置 | 说明 |
 |---|---|---|
-| `zhushaHong`   | `#C94A4A` | 朱砂红：主按钮、强调、节标题、章印 |
-| `zhushaLight`  | `#E07070` | 浅朱砂：按钮渐变浅端、装饰渐变 |
-| `danjin`       | `#D4B896` | 淡金：边框、分割线、输入框边、Tag 边 |
-| `danjinDeep`   | `#B79452` | 深淡金：罗盘环、印章边、强调边框 |
-| `guhe`         | `#8B7355` | 古褐：次要文字、标签、说明文 |
-| `xuanse`       | `#2C2C2C` | 玄色：正文、主标题 |
-| `qianhe`       | `#A0937E` | 浅褐：placeholder、禁用态文字 |
-| `xiangseLight` | `#F7F7F5` | 缃色：背景渐变顶端 |
-| `xiangseDeep`  | `#F0EDE8` | 缃色深：背景渐变底端 |
+| 颜色 token | `lib/core/theme/app_colors.dart` | 所有通用色、语义色、系统色统一登记 |
+| 字体样式 | `lib/core/theme/app_text_styles.dart` | 标题、正文、标签、按钮、装饰文字 |
+| 形状/间距 token | `lib/core/theme/antique_tokens.dart` | 圆角、边框、间距、阴影、渐变 |
+| 原子组件 | `lib/presentation/widgets/antique/` | 仿古风 primitive components |
+| 共享区块 | `lib/presentation/widgets/` | 问题区、扩展信息区、卦象区等跨系统 section |
 
-**全局规则**：
-- 页面背景统一 `xiangseLight → xiangseDeep` 自上而下线性渐变
-- 卡片底色 `Colors.white.withOpacity(0.6)`
-- 边框/分割线 `danjin.withOpacity(0.5)`
-- 主按钮渐变 `zhushaHong → zhushaLight`
-- 错误/警告语义色复用 `zhushaHong` 的深变体，**禁止**引入栗色 `#8B2020`（破坏调性）
+以后不得再引入第三套来源，例如：
 
-### 2.2 字体（扩展 `AppTextStyles`）
+- 页面私有硬编码颜色系统
+- 某个 UI factory 自己维护的“半套 token”
+- 文档里再写一套别名 token
 
-仿古风全量使用衬线字体 `Noto Serif SC`。新增 5 个 antique text styles：
+### 3.2 UI 运行时边界
 
-```dart
-static const antiqueTitle    = TextStyle(fontFamily: 'Noto Serif SC', fontSize: 18, fontWeight: FontWeight.bold, letterSpacing: 2, color: AppColors.xuanse);
-static const antiqueSection  = TextStyle(fontFamily: 'Noto Serif SC', fontSize: 15, fontWeight: FontWeight.bold, letterSpacing: 1, color: AppColors.zhushaHong);
-static const antiqueBody     = TextStyle(fontFamily: 'Noto Serif SC', fontSize: 13, color: AppColors.xuanse);
-static const antiqueLabel    = TextStyle(fontFamily: 'Noto Serif SC', fontSize: 11, letterSpacing: 1, color: AppColors.guhe);
-static const antiqueButton   = TextStyle(fontFamily: 'Noto Serif SC', fontSize: 16, fontWeight: FontWeight.bold, letterSpacing: 2, color: Colors.white);
-```
+最优方案不是“所有系统共用一套统一页面”，而是“统一壳层 + 系统差异下沉”。
 
-### 2.3 形状与间距（新增 `AntiqueTokens`）
-
-新建 `lib/core/theme/antique_tokens.dart`，集中管理非颜色非字体的视觉常量：
-
-```dart
-class AntiqueTokens {
-  // 圆角
-  static const double radiusCard       = 8;
-  static const double radiusButton     = 26; // 胶囊
-  static const double radiusInput      = 8;
-  static const double radiusTag        = 12;
-
-  // 边框
-  static const double borderWidthThin  = 0.5;
-  static const double borderWidthBase  = 1.0;
-
-  // 间距
-  static const double gapTight         = 8;
-  static const double gapBase          = 12;
-  static const double gapSection       = 16;
-
-  // 阴影（按钮专用）
-  static const BoxShadow buttonShadow  = BoxShadow(
-    color: Color(0x4DC94A4A),
-    blurRadius: 12,
-    offset: Offset(0, 4),
-  );
-}
-```
-
-**关键规则**：
-- 卡片**无阴影**，靠 `danjin` 边框营造"案头纸张"质感
-- 按钮**有阴影**（`zhushaHong @ 0.3, blur 12, offset 0,4`）
-- 圆角统一 8px（卡片/输入），按钮唯一例外用 26px 胶囊
-
-### 2.4 装饰层
-
-| 装饰 | 复用现有/新建 | 适用场景 |
+| 边界 | 归属 | 规则 |
 |---|---|---|
-| `CompassBackground` | 现有 `widgets/cast/compass_background.dart` | 起卦页、结果页中心装饰 |
-| `BackgroundDecor`（大字水印） | 现有 `widgets/home/background_decor.dart` | 首页（年支字）、结果页（日干支） |
-| `AntiqueWatermark`（小印章） | **新建** | 历史页、设置页可选轻装饰 |
+| 页面骨架、背景、水印、统一导航 | 平台层 | 使用 `AntiqueScaffold` / `AntiqueAppBar` |
+| 按钮、卡片、输入框、分隔线等 primitive | Design System | 使用 antique 组件 |
+| 占问区、扩展信息区、AI 分析区等共享 section | 平台共享 widgets | 跨系统可复用，但不负责系统特定数据结构 |
+| 起卦页 / 结果页 / 历史卡片的系统特定结构 | 各系统 `DivinationUIFactory` | 系统自己负责 |
+| 具体系统的领域可视化部件 | 各系统本地 | 如三传圆徽、特殊表格、术数专属徽章 |
+
+### 3.3 命名与抽象收敛
+
+#### 3.3.1 `UnifiedCastScreen`
+
+当前应视为**六爻专用遗留命名**。
+
+最优方向：
+
+- 代码层重命名为 `LiuYaoCastScreen`
+- 如果短期不改文件名，则在文档与代码注释里明确标记为 legacy name
+- 不再把它宣传为平台级“统一起卦页”
+
+#### 3.3.2 `ResultScreen`
+
+当前通用 `presentation/screens/result/result_screen.dart` 不应继续被描述为唯一结果页。
+
+最优方向：
+
+- 各系统结果页归属各自 UI factory
+- 平台层只保留共享 section widgets
+- `ResultScreen` 若无主路径引用，转为 legacy adapter，最终删除
+
+#### 3.3.3 `buildSystemCard()`
+
+当前首页主路径使用的是统一 `DivinationSystemCard`，而不是 factory 返回的 system card。
+
+最优方向：
+
+- `DivinationSystemCard` 继续作为默认主路径
+- `buildSystemCard()` 只在确有必要时作为 escape hatch
+- 若长期无调用，应从 `DivinationUIFactory` 接口移除，减少冗余抽象
+
+### 3.4 Theme 策略
+
+修订后的原则如下：
+
+1. `ThemeData` 不是废弃层，而是**兜底层**
+2. antique 组件是**高保真封装层**
+3. 两者必须共享相同 token 语义
+
+具体要求：
+
+- `colorScheme`、`TextTheme`、`InputDecorationTheme`、`CardTheme`、`PopupMenuTheme` 至少承接 antique token 的基础色与字重
+- antique 组件允许覆盖细节视觉，但不得与 theme 语义反向偏离
+- 所有未封装原生控件应先从 theme 获得接近 antique 的默认表现
+
+### 3.5 字体策略
+
+修订后的字体方案分两步：
+
+#### P0：交付契约成立
+
+- 若继续坚持“全量 `Noto Serif SC`”：
+  - 必须把字体资产纳入仓库
+  - 必须在 `pubspec.yaml` 声明 `fonts:`
+
+#### P1：可读性回退规则
+
+- 标题、装饰、节标题优先 serif
+- 若 11px-13px 正文与数字实测可读性不足：
+  - 正文可回退系统 sans
+  - 标题与装饰保留 serif
+
+也就是说，字体策略必须区分：
+
+- 视觉方向
+- 交付事实
+- 回退条件
 
 ---
 
-## 3. 共享组件库
+## 4. 收敛实施方案
 
-新建 `lib/presentation/widgets/antique/`，抽取 10 个原子组件 + 1 个 barrel 导出。
+### 4.1 Phase A：文档与契约纠偏
 
-### 3.1 目录结构
+目标：先停止误导，再继续演进。
 
-```
-lib/presentation/widgets/antique/
-├── antique.dart                # barrel export
-├── antique_scaffold.dart       # 页面骨架
-├── antique_app_bar.dart        # 透明 AppBar
-├── antique_card.dart           # 半透明白卡
-├── antique_section_title.dart  # 朱砂节标题
-├── antique_divider.dart        # 淡金分割线
-├── antique_button.dart         # 朱砂渐变胶囊按钮
-├── antique_text_field.dart     # 半透明白底输入框
-├── antique_dropdown.dart       # 风格化下拉
-├── antique_tag.dart            # 色块标签
-└── antique_watermark.dart      # 小印章水印
-```
+工作内容：
 
-### 3.2 组件 API
+1. 把本文档改为当前事实版本
+2. 同步 `docs/UI设计指导.md`
+3. 在相关代码注释中标记 legacy 抽象：
+   - `UnifiedCastScreen`
+   - `ResultScreen`
+4. 明确 `chromeless` / body-only 页面复用属于正式支持能力
 
-#### `AntiqueScaffold`
+### 4.2 Phase B：边界清理
 
-替代所有 `Scaffold`，统一背景渐变与可选装饰。
+目标：去掉伪统一和重复入口。
 
-```dart
-class AntiqueScaffold extends StatelessWidget {
-  const AntiqueScaffold({
-    super.key,
-    this.appBar,
-    required this.body,
-    this.showCompass = false,
-    this.watermarkChar,
-    this.bottomNavigationBar,
-    this.floatingActionButton,
-  });
+工作内容：
 
-  final PreferredSizeWidget? appBar;
-  final Widget body;
-  final bool showCompass;       // 中心罗盘底
-  final String? watermarkChar;  // 大字水印（如"辰"）
-  final Widget? bottomNavigationBar;
-  final Widget? floatingActionButton;
-}
-```
+1. `UnifiedCastScreen` 更名为 `LiuYaoCastScreen`
+2. 清理或降级通用 `ResultScreen`
+3. 审核 `DivinationUIFactory` 接口，决定是否保留 `buildSystemCard()`
+4. 把“系统专属页面由 UI factory 负责”写成硬规则
 
-#### `AntiqueAppBar`
+### 4.3 Phase C：视觉债务清理
 
-```dart
-class AntiqueAppBar extends StatelessWidget implements PreferredSizeWidget {
-  const AntiqueAppBar({
-    super.key,
-    required this.title,
-    this.actions,
-    this.leading,
-    this.centerTitle = true,
-  });
-  // 透明底、衬线居中标题、底部 0.5px 淡金分隔线
-}
-```
+目标：把当前残留的样式漂移收敛到同一套系统。
 
-#### `AntiqueCard`
+重点清理对象：
 
-```dart
-class AntiqueCard extends StatelessWidget {
-  const AntiqueCard({
-    super.key,
-    required this.child,
-    this.padding = const EdgeInsets.all(16),
-    this.onTap,
-  });
-  // 白@0.6 + 1px 淡金边 + 8px 圆角；onTap 时内置 Scale 0.98 按压
-}
-```
+- `divination_systems/*/ui/` 内残留的原生 `Card`、`TextField`、`TextStyle`
+- 原生控件未走 token 的颜色字面量
+- 系统专属色未在 `AppColors` 声明而直接写死
+- 设置页 / AI 设置页 / 主页局部控件的半手工 antique 风格
 
-#### `AntiqueSectionTitle`
+规则：
 
-```dart
-class AntiqueSectionTitle extends StatelessWidget {
-  const AntiqueSectionTitle({
-    super.key,
-    required this.title,
-    this.subtitle,
-    this.trailing,
-  });
-  // 朱砂衬线、letterSpacing 1，可带古褐副标题与右侧 trailing
-}
-```
+- 能抽到 antique primitive 的，抽到 antique
+- 只在确有术数语义时，保留系统本地组件
+- 所有颜色必须来自 `AppColors`
 
-#### `AntiqueButton`
+### 4.4 Phase D：Theme 与字体稳定化
 
-```dart
-enum AntiqueButtonVariant { primary, ghost, danger }
+目标：把“看起来像 antique”变成“系统级稳定可交付”。
 
-class AntiqueButton extends StatelessWidget {
-  const AntiqueButton({
-    super.key,
-    required this.label,
-    required this.onPressed,
-    this.icon,
-    this.variant = AntiqueButtonVariant.primary,
-    this.fullWidth = false,
-  });
-  // primary：朱砂渐变 + 阴影
-  // ghost：透明底 + 朱砂边 + 朱砂文字
-  // danger：朱砂深变体（不引入栗色）
-}
-```
+工作内容：
 
-#### 其余组件
+1. 为原生控件补全 token 化 theme
+2. 补足字体资产与 `pubspec.yaml` 配置，或下调文档承诺
+3. 明确正文 serif fallback 规则
 
-`AntiqueDivider` / `AntiqueTextField` / `AntiqueDropdown` / `AntiqueTag` / `AntiqueWatermark` 均遵循相同范式：**封装样式、暴露内容**，签名见各自源文件，本 spec 不展开。
+### 4.5 Phase E：测试与门禁重构
 
-### 3.3 大六壬内联代码迁移
+目标：让测试真正服务于收敛，而不是制造伪失败。
 
-`daliuren_ui_factory.dart` 当前内联的私有 build 方法须全部替换：
+工作内容：
 
-| 内联方法 | 替换为 | 行号参考 |
-|---|---|---|
-| `_buildAntiqueCard` | `AntiqueCard` | L847–857 |
-| `_buildSectionTitle` | `AntiqueSectionTitle` | L860–870 |
-| `_buildAntiqueDivider` | `AntiqueDivider` | L872–875 |
-| `_buildCastButton` | `AntiqueButton(variant: primary)` | L727–767 |
-| 内联下拉/输入框样式 | `AntiqueDropdown` / `AntiqueTextField` | L383–688 散落 |
-| 硬编码颜色（`Color(0xFFC94A4A)` 等） | `AppColors.zhushaHong` 等 token | 全文 |
-
-**保留在大六壬本地**：`TransmissionCircle`（三传圆徽）—— 带明显领域语义（地支单字 + 朱砂渐变背景），不上浮到通用组件库。
-
-### 3.4 Theme 集成策略
-
-`app_theme.dart` 内的 `ElevatedButtonTheme`、`CardTheme`、`InputDecorationTheme`、`AppBarTheme` **保持现状**——antique 组件自带样式不依赖 theme，避免双重样式系统冲突。
-
-`colorScheme.primary` 改为 `AppColors.zhushaHong`，给少数未封装的原生控件（如 `Switch`、`Checkbox` 默认色）兜底。
+1. antique 组件维持 widget test
+2. golden 只覆盖代表性页面和关键路径：
+   - 首页
+   - 六爻起卦页
+   - 六爻结果页
+   - 大六壬结果页
+   - 历史页
+   - 设置页 / AI 设置页
+3. 取消“所有迁移都必须 pixel diff = 0”的表述
+4. 增加静态审计规则：
+   - `presentation/`
+   - `divination_systems/*/ui/`
+   中新增代码不得出现新的通用色字面量
 
 ---
 
-## 4. 页面改造路线
+## 5. 设计规则
 
-### 4.1 改造矩阵
+### 5.1 Token 规则
 
-| 文件 | 优先级 | 当前风格 | 改造关键点 |
-|---|---|---|---|
-| `home_screen.dart` | P0 | 接近仿古，未走 token | `AntiqueScaffold(watermarkChar: 年支字)` + Bento 卡用 `AntiqueCard` + 系统纹理半透明背景 |
-| `unified_cast_screen.dart` | P0 | 过渡风 | `AntiqueScaffold(showCompass: true)` + 起卦方式 `AntiqueDropdown`/`AntiqueTag` + `AntiqueButton(primary)` |
-| `result_screen.dart` | P0 | Material 默认 | `AntiqueScaffold(watermarkChar: 日干支)` + 全部 section 包 `AntiqueCard` + 六爻 UI 工厂同步改造 |
-| `history_list_screen.dart` | P1 | Material 默认 | 列表项改 `AntiqueCard(onTap)` + 系统标签 `AntiqueTag` + 空态印章插图 |
-| `settings_screen.dart` | P1 | Material 默认 | 分组标题 `AntiqueSectionTitle` + 每项 `AntiqueCard` 平铺 |
-| `ai_settings_screen.dart` | P1 | Material 默认 | 同上 + 表单用 `AntiqueTextField` / `AntiqueDropdown` |
-| `cast_method_screen.dart` | P2 | 已被 `unified_cast_screen` 替代？ | **先确认是否仍被路由引用**：未引用则删除；引用则同改造 |
-| `test_screen.dart` | P2 | dev 用 | 顺手换 `AntiqueScaffold` |
+- 使用当前代码中的真实命名：
+  - `zhusha`
+  - `zhushaLight`
+  - `zhushaDeep`
+  - `danjin`
+  - `danjinDeep`
+  - `guhe`
+  - `qianhe`
+  - `xuanse`
+  - `xiangse`
+  - `xiangseDeep`
+- 文档不得再引入 `zhushaHong` 之类别名
+- 新增颜色一律先进入 `AppColors`，再进入 UI
 
-### 4.2 六爻 UI 工厂联动改造
+### 5.2 组件规则
 
-`lib/divination_systems/liuyao/ui/liuyao_ui_factory.dart` 是结果页内容的提供者，必须同步仿古化：
+- 顶层页面默认使用 `AntiqueScaffold`
+- 嵌入式内容必须允许 chromeless / body-only 复用
+- 原生 `Card` / `TextField` / `ElevatedButton` 若出现在业务 UI 中，必须有明确理由
+- 新的共享视觉样式先考虑落入 antique 组件库，而不是页面私有 helper
 
-- 卦象表（六爻、纳甲、六亲、六神、空亡）：每张表包 `AntiqueCard`，节标题 `AntiqueSectionTitle`
-- `YaoDisplay`、`GuaCard` widget 内部硬编码颜色全部走 token
-- 变卦展示区与本卦区视觉对称，中间用 `AntiqueDivider` 分割
+### 5.3 系统本地组件规则
 
-### 4.3 实施分阶段
+以下类型允许保留在术数系统本地，不要求上浮：
 
-```
-Phase 1：基础设施（无视觉变化）
-  ├─ 扩展 AppColors / AppTextStyles
-  ├─ 新建 AntiqueTokens
-  ├─ 新建 antique/ 10 组件 + barrel
-  └─ widget test + golden test 基线
+- 直接映射术数语义的图形部件
+- 专属表格结构
+- 专属徽章、宫位、传递关系图
 
-Phase 2：大六壬内部迁移（无视觉变化，验证组件库）
-  ├─ daliuren_ui_factory.dart 替换内联样式为新组件
-  ├─ 替换硬编码色值为 token
-  └─ Golden 回归：迁移前后 pixel diff = 0
+判断标准：
 
-Phase 3：核心流（P0）
-  ├─ 首页
-  ├─ 统一起卦页
-  ├─ 结果页
-  └─ 六爻 UI 工厂
+- 如果一个组件脱离当前术数系统就失去意义，它就不应该硬塞进 antique 库
 
-Phase 4：外围页（P1/P2）
-  ├─ 历史
-  ├─ 设置 / AI 设置
-  ├─ 处理 cast_method_screen（删除或迁移）
-  └─ 测试页
-```
+### 5.4 文档规则
 
-**Phase 2 是安全锚点**：大六壬当前视觉已是目标，迁移后若 golden 不变，证明组件库设计正确。
+今后的 UI spec 必须遵守：
+
+1. 先写当前事实
+2. 再写问题
+3. 再写收敛动作
+4. 不得把已实现内容重复写成“待创建能力”
 
 ---
 
-## 5. 测试策略
+## 6. 验收标准
 
-### 5.1 单元 / Widget 测试
+以下条件同时满足，才算本方案收敛完成：
 
-- `antique/` 每个组件配套 widget test，覆盖率 ≥ 80%
-- 测试内容：属性传递、回调触发、变体渲染、边界态（空字符串、null trailing）
-
-### 5.2 Golden Test
-
-- 每个 antique 组件抓 golden 基线图
-- §4.1 矩阵中 8 个改造页面各抓首屏 golden
-- Phase 2 大六壬起课页、结果页 golden 对比作为**关键回归门禁**
-
-### 5.3 手工验证
-
-- 在用户预先开好的模拟器上跑完整流程：首页 → 选系统 → 起卦 → 查看结果 → 历史 → 设置
-- 主观确认风格一致性、字体回退、罗盘/水印是否影响可读性
-
----
-
-## 6. 文档同步
-
-`docs/UI设计指导.md` 须同步更新（用户已选择"保留仿古风、更新指导文档"路线）：
-
-| 章节 | 当前内容 | 更新后 |
-|---|---|---|
-| 设计主题 | 新中式极简 + 科技秩序感 | **仿古风（书房/案头隐喻）+ 现代秩序感** |
-| 色彩体系 | 缃色 + 黛蓝 + 朱砂 + 低饱和金 | 9 色 token 完整列出（§2.1） |
-| 字体 | 标题思源宋体，正文 Roboto/PingFang SC | **全量思源宋体**。决策原因：仿古风以视觉调性整体性优先于小号正文易读性；若实测 11–13px 衬线可读性显著下降，按 §7 风险预案降级正文为 PingFang SC（标题/装饰仍衬线） |
-| 新增章节 | — | "共享组件库引用"，链接到 `lib/presentation/widgets/antique/` |
+1. 本文档与当前代码事实一致，不再把 antique 基础设施描述为待建设能力
+2. `DivinationUIFactory` 被明确为系统专属 cast/result/history card 的唯一主干分发点
+3. `UnifiedCastScreen` 被重命名，或被正式标记为六爻专用 legacy name
+4. 通用 `ResultScreen` 不再作为主路径抽象宣传；若保留，必须明确为 legacy adapter
+5. `buildSystemCard()` 若无真实调用，已移除或被标记为非主线路扩展点
+6. 顶层页面使用 `AntiqueScaffold`，嵌入式页面保留 chromeless / body-only 支持
+7. 所有通用视觉 token 以 `AppColors`、`AppTextStyles`、`AntiqueTokens` 为单一真相来源
+8. `ThemeData` 已承接 antique token 的兜底语义，而不是与 antique 组件平行漂移
+9. 字体策略具备交付契约：
+   - 要么 `pubspec.yaml` 声明真实字体资产
+   - 要么文档不再把全量 serif 写成严格验收项
+10. 代表性页面 golden 与 widget tests 通过，且测试门禁不再依赖全局 `pixel diff = 0`
 
 ---
 
-## 7. 风险与回滚
+## 7. 结论
 
-| 风险 | 缓解 |
-|---|---|
-| 大六壬迁移引入回归 | Phase 2 golden 门禁，pixel diff = 0 才合并 |
-| 衬线字体在小号正文（11–13px）可读性下降 | golden + 真机肉眼审；若严重退回，正文降级 PingFang SC（仅正文/数字，标题与装饰仍衬线） |
-| 抽出的组件 API 不够灵活，后续新页面用不了 | Phase 2 大六壬迁移时即暴露问题；保留 escape hatch（每个组件支持 `child` 自由插入） |
-| 迁移期间分支长 | 按 Phase 切 PR，每 Phase 独立可合并 |
+最优方案不是继续追求“所有系统塞进统一页面”的表面统一，而是：
 
----
+- 统一 design system
+- 统一壳层语言
+- 统一 token 与 fallback theme
+- 保留系统差异
+- 删除伪统一命名
+- 清理重复入口
 
-## 8. 验收标准
+换句话说，平台层应该统一“怎么长得像万象排盘”，而不是统一“所有术数必须长成同一种页面结构”。
 
-1. `lib/presentation/widgets/antique/` 10 组件全部就位，单测覆盖 ≥ 80%
-2. `AppColors` / `AppTextStyles` / `AntiqueTokens` 含 §2 全部 token
-3. `daliuren_ui_factory.dart` 无硬编码颜色字面量、无内联 antique 样式
-4. §4.1 矩阵中 8 个目标页面所有 `Scaffold` / `AppBar` / `Card` / 主按钮均改为 antique 组件（`cast_method_screen` 若确认废弃则删除，不计入）
-5. 六爻 UI 工厂结果展示走 antique 风格
-6. `docs/UI设计指导.md` 与本 spec 一致
-7. 全量 golden test 绿
-8. 模拟器手工跑完整流程，主观风格一致
-
----
-
-## 9. 后续工作（不在本 spec 范围）
-
-- 暗黑模式（墨色 #1A1A1A 底 + token 色板暗色变体）
-- 卡片 staggered 载入动画、真太阳时图标心跳呼吸
-- HapticFeedback 接入卡片点击 / 起卦按钮
-- 紫微斗数、奇门遁甲 UI 工厂落地（直接复用 antique 组件库）
+这才是当前代码库最稳、最清晰、也最容易继续扩展的方向。
