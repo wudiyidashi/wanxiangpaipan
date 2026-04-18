@@ -5,6 +5,9 @@ import '../../../ai/providers/openai_compatible_provider.dart';
 import '../../../ai/llm_provider_registry.dart';
 import '../../../ai/ai_bootstrap.dart';
 import '../../../ai/template/prompt_template.dart' as tmpl;
+import '../../widgets/antique/antique.dart';
+import '../../../core/theme/app_colors.dart';
+import '../../../core/theme/app_text_styles.dart';
 
 /// AI 设置页面
 ///
@@ -24,7 +27,6 @@ class _AISettingsScreenState extends State<AISettingsScreen> {
     _Preset('Ollama', 'http://localhost:11434/v1', Icons.computer),
   ];
 
-  final _formKey = GlobalKey<FormState>();
   final _apiKeyController = TextEditingController();
   final _baseUrlController = TextEditingController();
 
@@ -121,7 +123,14 @@ class _AISettingsScreenState extends State<AISettingsScreen> {
   }
 
   Future<void> _saveConfig() async {
-    if (!_formKey.currentState!.validate()) return;
+    final apiKey = _apiKeyController.text.trim();
+    if (apiKey.isEmpty) {
+      setState(() {
+        _validationSuccess = false;
+        _validationMessage = '请输入 API Key';
+      });
+      return;
+    }
     if (_selectedModel == null || _selectedModel!.isEmpty) {
       setState(() {
         _validationSuccess = false;
@@ -143,7 +152,7 @@ class _AISettingsScreenState extends State<AISettingsScreen> {
 
       await aiService.configureProvider(
         providerId: 'openai_compatible',
-        apiKey: _apiKeyController.text.trim(),
+        apiKey: apiKey,
         config: {
           'model': _selectedModel,
           'baseUrl': baseUrl.isNotEmpty ? baseUrl : null,
@@ -168,237 +177,191 @@ class _AISettingsScreenState extends State<AISettingsScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('AI 设置'),
-        centerTitle: true,
-      ),
+    return AntiqueScaffold(
+      appBar: const AntiqueAppBar(title: 'AI 设置'),
       body: SingleChildScrollView(
-        padding: const EdgeInsets.all(16),
-        child: Form(
-          key: _formKey,
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              _buildConfigCard(),
+        padding: const EdgeInsets.fromLTRB(16, kToolbarHeight + 16, 16, 16),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            _buildConfigCard(),
+            const SizedBox(height: 16),
+            _buildModelCard(),
+            const SizedBox(height: 16),
+            if (_validationMessage != null) ...[
+              _buildValidationCard(),
               const SizedBox(height: 16),
-              _buildModelCard(),
-              const SizedBox(height: 16),
-              if (_validationMessage != null) ...[
-                _buildValidationCard(),
-                const SizedBox(height: 16),
-              ],
-              _buildSaveButton(),
-              const SizedBox(height: 24),
-              _buildTemplatesCard(),
             ],
-          ),
+            _buildSaveButton(),
+            const SizedBox(height: 24),
+            _buildTemplatesCard(),
+          ],
         ),
       ),
     );
   }
 
   Widget _buildConfigCard() {
-    return Card(
-      child: Padding(
-        padding: const EdgeInsets.all(16),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              '接口配置',
-              style: Theme.of(context)
-                  .textTheme
-                  .titleMedium
-                  ?.copyWith(fontWeight: FontWeight.bold),
-            ),
-            const SizedBox(height: 4),
-            const Text(
-              '支持 OpenAI、DeepSeek、通义千问、Ollama 等兼容接口',
-              style: TextStyle(fontSize: 12, color: Colors.grey),
-            ),
-            const SizedBox(height: 12),
+    return AntiqueCard(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text('接口配置', style: AppTextStyles.antiqueSection),
+          const SizedBox(height: 4),
+          Text(
+            '支持 OpenAI、DeepSeek、通义千问、Ollama 等兼容接口',
+            style: AppTextStyles.antiqueLabel,
+          ),
+          const SizedBox(height: 12),
 
-            // 预设模板
-            Wrap(
-              spacing: 8,
-              runSpacing: 8,
-              children: _presets.map((p) {
-                return ActionChip(
-                  avatar: Icon(p.icon, size: 16),
-                  label: Text(p.name, style: const TextStyle(fontSize: 12)),
-                  visualDensity: VisualDensity.compact,
-                  onPressed: () {
-                    setState(() {
-                      _baseUrlController.text = p.baseUrl;
-                    });
-                  },
-                );
-              }).toList(),
-            ),
-            const SizedBox(height: 16),
+          // 预设模板
+          Wrap(
+            spacing: 8,
+            runSpacing: 8,
+            children: _presets.map((p) {
+              return ActionChip(
+                avatar: Icon(p.icon, size: 16),
+                label: Text(p.name, style: const TextStyle(fontSize: 12)),
+                visualDensity: VisualDensity.compact,
+                onPressed: () {
+                  setState(() {
+                    _baseUrlController.text = p.baseUrl;
+                  });
+                },
+              );
+            }).toList(),
+          ),
+          const SizedBox(height: 16),
 
-            // API 地址
-            TextFormField(
-              controller: _baseUrlController,
-              decoration: const InputDecoration(
-                labelText: 'API 地址',
-                hintText: '如：https://api.deepseek.com/v1',
-                border: OutlineInputBorder(),
-                helperText: 'OpenAI 兼容的 API 地址',
+          // API 地址
+          Text('API 地址', style: AppTextStyles.antiqueLabel),
+          const SizedBox(height: 6),
+          AntiqueTextField(
+            controller: _baseUrlController,
+            hint: '如：https://api.deepseek.com/v1',
+          ),
+          const SizedBox(height: 16),
+
+          // API Key
+          Text('API Key', style: AppTextStyles.antiqueLabel),
+          const SizedBox(height: 6),
+          AntiqueTextField(
+            controller: _apiKeyController,
+            hint: '输入 API Key',
+            obscureText: _obscureApiKey,
+            suffixIcon: IconButton(
+              icon: Icon(
+                _obscureApiKey ? Icons.visibility : Icons.visibility_off,
               ),
-            ),
-            const SizedBox(height: 16),
-
-            // API Key
-            TextFormField(
-              controller: _apiKeyController,
-              obscureText: _obscureApiKey,
-              decoration: InputDecoration(
-                labelText: 'API Key',
-                hintText: '输入 API Key',
-                border: const OutlineInputBorder(),
-                suffixIcon: IconButton(
-                  icon: Icon(
-                    _obscureApiKey ? Icons.visibility : Icons.visibility_off,
-                  ),
-                  onPressed: () {
-                    setState(() => _obscureApiKey = !_obscureApiKey);
-                  },
-                ),
-              ),
-              validator: (value) {
-                if (value == null || value.isEmpty) {
-                  return '请输入 API Key';
-                }
-                return null;
+              onPressed: () {
+                setState(() => _obscureApiKey = !_obscureApiKey);
               },
             ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }
 
   Widget _buildModelCard() {
-    return Card(
-      child: Padding(
-        padding: const EdgeInsets.all(16),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Row(
-              children: [
-                Text(
-                  '模型选择',
-                  style: Theme.of(context)
-                      .textTheme
-                      .titleMedium
-                      ?.copyWith(fontWeight: FontWeight.bold),
-                ),
-                const Spacer(),
-                TextButton.icon(
-                  onPressed: _isFetchingModels ? null : _fetchModels,
-                  icon: _isFetchingModels
-                      ? const SizedBox(
-                          width: 16,
-                          height: 16,
-                          child: CircularProgressIndicator(strokeWidth: 2),
-                        )
-                      : const Icon(Icons.refresh, size: 18),
-                  label: Text(_isFetchingModels ? '获取中...' : '获取模型'),
-                ),
-              ],
-            ),
-            const SizedBox(height: 12),
-
-            if (_availableModels.isEmpty)
-              Container(
-                padding: const EdgeInsets.all(16),
-                decoration: BoxDecoration(
-                  color: Colors.grey.withOpacity(0.1),
-                  borderRadius: BorderRadius.circular(8),
-                ),
-                child: const Center(
-                  child: Text(
-                    '请填写 API 地址和 Key 后点击「获取模型」',
-                    style: TextStyle(color: Colors.grey, fontSize: 13),
-                  ),
-                ),
-              )
-            else
-              DropdownButtonFormField<String>(
-                value: _availableModels.contains(_selectedModel)
-                    ? _selectedModel
-                    : null,
-                decoration: const InputDecoration(
-                  labelText: '选择模型',
-                  border: OutlineInputBorder(),
-                ),
-                isExpanded: true,
-                items: _availableModels.map((model) {
-                  return DropdownMenuItem<String>(
-                    value: model,
-                    child: Text(
-                      model,
-                      style: const TextStyle(fontSize: 13),
-                      overflow: TextOverflow.ellipsis,
-                    ),
-                  );
-                }).toList(),
-                onChanged: (value) {
-                  setState(() => _selectedModel = value);
-                },
+    return AntiqueCard(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              Text('模型选择', style: AppTextStyles.antiqueSection),
+              const Spacer(),
+              AntiqueButton(
+                label: _isFetchingModels ? '获取中...' : '获取模型',
+                onPressed: _isFetchingModels ? null : _fetchModels,
+                icon: _isFetchingModels ? null : Icons.refresh,
+                variant: AntiqueButtonVariant.ghost,
               ),
+            ],
+          ),
+          const SizedBox(height: 12),
+
+          if (_availableModels.isEmpty)
+            Container(
+              padding: const EdgeInsets.all(16),
+              decoration: BoxDecoration(
+                color: Colors.grey.withOpacity(0.1),
+                borderRadius: BorderRadius.circular(8),
+              ),
+              child: const Center(
+                child: Text(
+                  '请填写 API 地址和 Key 后点击「获取模型」',
+                  style: TextStyle(color: Colors.grey, fontSize: 13),
+                ),
+              ),
+            )
+          else ...[
+            Text('选择模型', style: AppTextStyles.antiqueLabel),
+            const SizedBox(height: 6),
+            AntiqueDropdown<String>(
+              value: (_availableModels.contains(_selectedModel)
+                  ? _selectedModel
+                  : _availableModels.first)!,
+              items: _availableModels
+                  .map((model) => AntiqueDropdownItem<String>(
+                        value: model,
+                        label: model,
+                      ))
+                  .toList(),
+              onChanged: (value) {
+                setState(() => _selectedModel = value);
+              },
+            ),
           ],
-        ),
+        ],
       ),
     );
   }
 
   Widget _buildValidationCard() {
     final isSuccess = _validationSuccess == true;
-    return Card(
-      color: isSuccess
-          ? Colors.green.withOpacity(0.1)
-          : Colors.red.withOpacity(0.1),
-      child: Padding(
-        padding: const EdgeInsets.all(16),
-        child: Row(
-          children: [
-            Icon(
-              isSuccess ? Icons.check_circle : Icons.error,
-              color: isSuccess ? Colors.green : Colors.red,
-            ),
-            const SizedBox(width: 12),
-            Expanded(
-              child: Text(
-                _validationMessage!,
-                style: TextStyle(
-                  color: isSuccess ? Colors.green : Colors.red,
-                ),
+    // Semantic status colors retained inline (green = success, red = error).
+    return Container(
+      padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        color: isSuccess
+            ? Colors.green.withOpacity(0.1)
+            : Colors.red.withOpacity(0.1),
+        borderRadius: BorderRadius.circular(8),
+        border: Border.all(
+          color: isSuccess
+              ? Colors.green.withOpacity(0.3)
+              : Colors.red.withOpacity(0.3),
+        ),
+      ),
+      child: Row(
+        children: [
+          Icon(
+            isSuccess ? Icons.check_circle : Icons.error,
+            color: isSuccess ? Colors.green : Colors.red,
+          ),
+          const SizedBox(width: 12),
+          Expanded(
+            child: Text(
+              _validationMessage!,
+              style: TextStyle(
+                color: isSuccess ? Colors.green : Colors.red,
               ),
             ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }
 
   Widget _buildSaveButton() {
-    return ElevatedButton.icon(
+    return AntiqueButton(
+      label: _isValidating ? '保存中...' : '保存配置',
       onPressed: _isValidating ? null : _saveConfig,
-      icon: _isValidating
-          ? const SizedBox(
-              width: 20,
-              height: 20,
-              child: CircularProgressIndicator(strokeWidth: 2),
-            )
-          : const Icon(Icons.save),
-      label: Text(_isValidating ? '保存中...' : '保存配置'),
-      style: ElevatedButton.styleFrom(
-        padding: const EdgeInsets.symmetric(vertical: 16),
-      ),
+      icon: _isValidating ? null : Icons.save,
+      variant: AntiqueButtonVariant.primary,
+      fullWidth: true,
     );
   }
 
@@ -416,56 +379,51 @@ class _AISettingsScreenState extends State<AISettingsScreen> {
       'xiaoliuren': '小六壬',
     };
 
-    return Card(
-      child: Padding(
-        padding: const EdgeInsets.all(16),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              '提示词模板',
-              style: Theme.of(context)
-                  .textTheme
-                  .titleMedium
-                  ?.copyWith(fontWeight: FontWeight.bold),
-            ),
-            const SizedBox(height: 4),
-            const Text(
-              '管理各术数系统的 AI 分析提示词',
-              style: TextStyle(fontSize: 12, color: Colors.grey),
-            ),
-            const SizedBox(height: 12),
-            if (_templates.isEmpty)
-              const Padding(
-                padding: EdgeInsets.symmetric(vertical: 16),
-                child: Center(
-                  child: Text('暂无模板', style: TextStyle(color: Colors.grey)),
+    return AntiqueCard(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text('提示词模板', style: AppTextStyles.antiqueSection),
+          const SizedBox(height: 4),
+          Text(
+            '管理各术数系统的 AI 分析提示词',
+            style: AppTextStyles.antiqueLabel,
+          ),
+          const SizedBox(height: 12),
+          if (_templates.isEmpty)
+            Padding(
+              padding: const EdgeInsets.symmetric(vertical: 16),
+              child: Center(
+                child: Text(
+                  '暂无模板',
+                  style: AppTextStyles.antiqueBody.copyWith(
+                    color: AppColors.qianhe,
+                  ),
                 ),
-              )
-            else
-              ...grouped.entries.map((entry) {
-                final name = systemNames[entry.key] ?? entry.key;
-                return Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Padding(
-                      padding: const EdgeInsets.only(top: 8, bottom: 4),
-                      child: Text(
-                        name,
-                        style: TextStyle(
-                          fontSize: 13,
-                          fontWeight: FontWeight.w600,
-                          color: Colors.grey[700],
-                        ),
+              ),
+            )
+          else
+            ...grouped.entries.map((entry) {
+              final name = systemNames[entry.key] ?? entry.key;
+              return Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.only(top: 8, bottom: 4),
+                    child: Text(
+                      name,
+                      style: AppTextStyles.antiqueBody.copyWith(
+                        fontWeight: FontWeight.w600,
+                        color: AppColors.guhe,
                       ),
                     ),
-                    ...entry.value.map((t) => _buildTemplateTile(t)),
-                    const Divider(height: 8),
-                  ],
-                );
-              }),
-          ],
-        ),
+                  ),
+                  ...entry.value.map((t) => _buildTemplateTile(t)),
+                  const AntiqueDivider(),
+                ],
+              );
+            }),
+        ],
       ),
     );
   }
@@ -475,21 +433,22 @@ class _AISettingsScreenState extends State<AISettingsScreen> {
       contentPadding: EdgeInsets.zero,
       leading: Icon(
         template.isBuiltIn ? Icons.lock_outline : Icons.edit_note,
-        color: template.isActive ? Colors.blue : Colors.grey,
+        color: template.isActive ? AppColors.dailan : AppColors.qianhe,
         size: 20,
       ),
       title: Text(
         template.name,
-        style: const TextStyle(fontSize: 14),
+        style: AppTextStyles.antiqueBody,
       ),
       subtitle: Text(
         template.type.displayName,
-        style: const TextStyle(fontSize: 12),
+        style: AppTextStyles.antiqueLabel,
       ),
       trailing: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
           if (template.isActive)
+            // Semantic "active" status badge — green retained inline.
             Container(
               padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
               decoration: BoxDecoration(
@@ -590,78 +549,62 @@ class _TemplateEditorScreenState extends State<_TemplateEditorScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('编辑模板'),
-        centerTitle: true,
+    return AntiqueScaffold(
+      appBar: AntiqueAppBar(
+        title: '编辑模板',
         actions: [
-          TextButton(
-            onPressed: _hasChanges && !_isSaving ? _save : null,
-            child: _isSaving
-                ? const SizedBox(
-                    width: 16,
-                    height: 16,
-                    child: CircularProgressIndicator(strokeWidth: 2),
-                  )
-                : const Text('保存'),
+          Padding(
+            padding: const EdgeInsets.only(right: 8),
+            child: AntiqueButton(
+              label: _isSaving ? '保存中...' : '保存',
+              onPressed: _hasChanges && !_isSaving ? _save : null,
+              variant: AntiqueButtonVariant.ghost,
+            ),
           ),
         ],
       ),
       body: Padding(
-        padding: const EdgeInsets.all(16),
+        padding: const EdgeInsets.fromLTRB(16, kToolbarHeight + 16, 16, 16),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             // 模板名称
-            TextFormField(
+            Text('模板名称', style: AppTextStyles.antiqueLabel),
+            const SizedBox(height: 6),
+            AntiqueTextField(
               controller: _nameController,
-              decoration: const InputDecoration(
-                labelText: '模板名称',
-                border: OutlineInputBorder(),
-              ),
+              hint: '输入模板名称',
             ),
             const SizedBox(height: 8),
             // 类型标签
             Row(
               children: [
-                Chip(
-                  label: Text(widget.template.type.displayName),
-                  visualDensity: VisualDensity.compact,
-                ),
-                const SizedBox(width: 8),
-                if (widget.template.isBuiltIn)
-                  const Chip(
-                    label: Text('内置'),
-                    visualDensity: VisualDensity.compact,
-                  ),
+                AntiqueTag(label: widget.template.type.displayName),
+                if (widget.template.isBuiltIn) ...[
+                  const SizedBox(width: 8),
+                  const AntiqueTag(label: '内置'),
+                ],
               ],
             ),
             const SizedBox(height: 8),
-            const Text(
-              '模板内容',
-              style: TextStyle(fontSize: 13, fontWeight: FontWeight.w500),
-            ),
+            Text('模板内容', style: AppTextStyles.antiqueLabel),
             const SizedBox(height: 4),
-            const Text(
+            Text(
               '支持变量：{{variable}}，条件：{{#if}}...{{/if}}，循环：{{#each}}...{{/each}}',
-              style: TextStyle(fontSize: 11, color: Colors.grey),
+              style: AppTextStyles.antiqueLabel,
             ),
             const SizedBox(height: 8),
-            // 模板内容编辑器
+            // 模板内容编辑器（多行展开）
             Expanded(
-              child: TextFormField(
+              child: AntiqueTextField(
                 controller: _contentController,
-                maxLines: null,
                 expands: true,
                 textAlignVertical: TextAlignVertical.top,
                 style: const TextStyle(
                   fontSize: 13,
                   fontFamily: 'monospace',
                   height: 1.5,
-                ),
-                decoration: const InputDecoration(
-                  border: OutlineInputBorder(),
-                  contentPadding: EdgeInsets.all(12),
+                  color: AppColors.xuanse,
                 ),
               ),
             ),
