@@ -6,6 +6,7 @@ import '../../../domain/divination_system.dart';
 import '../../../domain/repositories/divination_repository.dart';
 import '../../../presentation/divination_ui_registry.dart';
 import '../../widgets/antique/antique.dart';
+import 'history_filter.dart';
 
 /// 历史记录列表页面
 ///
@@ -30,10 +31,20 @@ class _HistoryListScreenState extends State<HistoryListScreen> {
   String? _errorMessage;
   DivinationType? _selectedSystemType;
 
+  // 搜索状态
+  String _searchQuery = '';
+  final TextEditingController _searchController = TextEditingController();
+
   @override
   void initState() {
     super.initState();
     _loadRecords();
+  }
+
+  @override
+  void dispose() {
+    _searchController.dispose();
+    super.dispose();
   }
 
   /// 加载历史记录
@@ -60,17 +71,31 @@ class _HistoryListScreenState extends State<HistoryListScreen> {
     }
   }
 
-  /// 筛选记录
-  void _filterRecords(DivinationType? systemType) {
+  /// 系统类型筛选入口（薄包装，统一调用 _applyFilters）。
+  void _filterBySystemType(DivinationType? systemType) {
+    _selectedSystemType = systemType;
+    _applyFilters();
+  }
+
+  /// 统一应用系统筛选 + 关键字搜索，更新 _filteredRecords。
+  void _applyFilters() {
+    Iterable<DivinationResult> result = _records;
+
+    // 系统筛选
+    if (_selectedSystemType != null) {
+      result = result.where((r) => r.systemType == _selectedSystemType);
+    }
+
+    // 搜索
+    final filtered = applySearch<DivinationResult>(
+      result.toList(),
+      query: _searchQuery,
+      extractor: (r) =>
+          '${r.systemType.displayName} ${r.getSummary()} ${r.castMethod.displayName}',
+    );
+
     setState(() {
-      _selectedSystemType = systemType;
-      if (systemType == null) {
-        _filteredRecords = _records;
-      } else {
-        _filteredRecords = _records
-            .where((record) => record.systemType == systemType)
-            .toList();
-      }
+      _filteredRecords = filtered;
     });
   }
 
@@ -143,7 +168,7 @@ class _HistoryListScreenState extends State<HistoryListScreen> {
           PopupMenuButton<DivinationType?>(
             icon: const Icon(Icons.filter_list),
             tooltip: '筛选',
-            onSelected: _filterRecords,
+            onSelected: _filterBySystemType,
             itemBuilder: (context) => [
               const PopupMenuItem(
                 value: null,
@@ -205,41 +230,12 @@ class _HistoryListScreenState extends State<HistoryListScreen> {
       );
     }
 
-    if (_filteredRecords.isEmpty) {
-      return Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            const AntiqueWatermark(char: '空'),
-            const SizedBox(height: 8),
-            Icon(
-              Icons.history,
-              size: 64,
-              color: AppColors.qianhe,
-            ),
-            const SizedBox(height: 16),
-            Text(
-              _selectedSystemType == null
-                  ? '暂无历史记录'
-                  : '暂无 ${_selectedSystemType!.displayName} 记录',
-              style: AppTextStyles.antiqueSection.copyWith(
-                color: AppColors.guhe,
-              ),
-            ),
-            if (_selectedSystemType != null) ...[
-              const SizedBox(height: 16),
-              TextButton(
-                onPressed: () => _filterRecords(null),
-                child: const Text('查看全部记录'),
-              ),
-            ],
-          ],
-        ),
-      );
-    }
-
     return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
+        // 搜索框（加载与错误之外始终显示，方便用户清除搜索）
+        _buildSearchField(),
+
         // 筛选提示
         if (_selectedSystemType != null)
           Container(
@@ -262,28 +258,77 @@ class _HistoryListScreenState extends State<HistoryListScreen> {
                   ),
                 ),
                 TextButton(
-                  onPressed: () => _filterRecords(null),
+                  onPressed: () => _filterBySystemType(null),
                   child: const Text('清除'),
                 ),
               ],
             ),
           ),
 
-        // 记录列表
+        // 内容区：空状态或记录列表
         Expanded(
-          child: RefreshIndicator(
-            onRefresh: _loadRecords,
-            child: ListView.builder(
-              padding: const EdgeInsets.symmetric(vertical: 8),
-              itemCount: _filteredRecords.length,
-              itemBuilder: (context, index) {
-                final record = _filteredRecords[index];
-                return _buildHistoryCard(record);
-              },
-            ),
-          ),
+          child: _filteredRecords.isEmpty
+              ? Center(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      const AntiqueWatermark(char: '空'),
+                      const SizedBox(height: 8),
+                      Icon(
+                        Icons.history,
+                        size: 64,
+                        color: AppColors.qianhe,
+                      ),
+                      const SizedBox(height: 16),
+                      Text(
+                        _searchQuery.isNotEmpty
+                            ? '未找到匹配记录'
+                            : _selectedSystemType == null
+                                ? '暂无历史记录'
+                                : '暂无 ${_selectedSystemType!.displayName} 记录',
+                        style: AppTextStyles.antiqueSection.copyWith(
+                          color: AppColors.guhe,
+                        ),
+                      ),
+                      if (_selectedSystemType != null) ...[
+                        const SizedBox(height: 16),
+                        TextButton(
+                          onPressed: () => _filterBySystemType(null),
+                          child: const Text('查看全部记录'),
+                        ),
+                      ],
+                    ],
+                  ),
+                )
+              : RefreshIndicator(
+                  onRefresh: _loadRecords,
+                  child: ListView.builder(
+                    padding: const EdgeInsets.symmetric(vertical: 8),
+                    itemCount: _filteredRecords.length,
+                    itemBuilder: (context, index) {
+                      final record = _filteredRecords[index];
+                      return _buildHistoryCard(record);
+                    },
+                  ),
+                ),
         ),
       ],
+    );
+  }
+
+  Widget _buildSearchField() {
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(16, 12, 16, 0),
+      child: AntiqueTextField(
+        controller: _searchController,
+        hint: '搜索问事、卦名、术数...',
+        onChanged: (value) {
+          setState(() {
+            _searchQuery = value;
+          });
+          _applyFilters();
+        },
+      ),
     );
   }
 
