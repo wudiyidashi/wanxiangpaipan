@@ -27,22 +27,17 @@ class _AntiqueCardState extends State<AntiqueCard> {
 
   @override
   Widget build(BuildContext context) {
-    final card = AnimatedScale(
-      scale: _pressed ? 0.98 : 1.0,
-      duration: const Duration(milliseconds: 80),
-      curve: Curves.easeOut,
-      child: Container(
-        padding: widget.padding,
-        decoration: BoxDecoration(
-          color: Colors.white.withOpacity(0.6),
-          border: Border.all(
-            color: AppColors.danjin.withOpacity(0.5),
-            width: AntiqueTokens.borderWidthBase,
-          ),
-          borderRadius: BorderRadius.circular(AntiqueTokens.radiusCard),
+    final card = Container(
+      padding: widget.padding,
+      decoration: BoxDecoration(
+        color: Colors.white.withOpacity(0.6),
+        border: Border.all(
+          color: AppColors.danjin.withOpacity(0.5),
+          width: AntiqueTokens.borderWidthBase,
         ),
-        child: widget.child,
+        borderRadius: BorderRadius.circular(AntiqueTokens.radiusCard),
       ),
+      child: widget.child,
     );
 
     if (widget.onTap == null) return card;
@@ -52,7 +47,12 @@ class _AntiqueCardState extends State<AntiqueCard> {
       onTapUp: (_) => setState(() => _pressed = false),
       onTapCancel: () => setState(() => _pressed = false),
       onTap: widget.onTap,
-      child: card,
+      child: AnimatedScale(
+        scale: _pressed ? 0.98 : 1.0,
+        duration: const Duration(milliseconds: 80),
+        curve: Curves.easeOut,
+        child: card,
+      ),
     );
   }
 }
