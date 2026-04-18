@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:wanxiang_paipan/presentation/widgets/cast/compass_background.dart';
 import 'package:wanxiang_paipan/presentation/widgets/antique/antique_scaffold.dart';
+import 'package:wanxiang_paipan/presentation/widgets/antique/antique_app_bar.dart';
 
 void main() {
   group('AntiqueScaffold', () {
@@ -39,47 +40,45 @@ void main() {
       expect(find.text('辰'), findsOneWidget);
     });
 
-    testWidgets('body is not padded when appBar is null', (tester) async {
+    testWidgets('does not wrap body in SafeArea when appBar is null',
+        (tester) async {
       await tester.pumpWidget(
         const MaterialApp(
           home: AntiqueScaffold(body: Text('no-bar')),
         ),
       );
-      // Without an appBar the body should not be wrapped in Padding.
-      // The body text should be found directly without a Padding ancestor.
       expect(find.text('no-bar'), findsOneWidget);
-      // Verify no Padding widget wraps the body when appBar is null
-      final paddingAncestors = find.ancestor(
-        of: find.text('no-bar'),
-        matching: find.byType(Padding),
+      // No SafeArea should be an ancestor of the body text when appBar is null.
+      expect(
+        find.ancestor(
+          of: find.text('no-bar'),
+          matching: find.byType(SafeArea),
+        ),
+        findsNothing,
+        reason: 'Body should not be wrapped in SafeArea when appBar is null',
       );
-      expect(paddingAncestors, findsNothing,
-          reason: 'Body should not be wrapped in Padding when appBar is null');
     });
 
-    testWidgets('body gets top padding when appBar is set', (tester) async {
+    testWidgets('wraps body in SafeArea when appBar is set', (tester) async {
       await tester.pumpWidget(
-        MaterialApp(
+        const MaterialApp(
           home: AntiqueScaffold(
-            appBar: AppBar(title: const Text('Title')),
-            body: const Text('content'),
+            appBar: AntiqueAppBar(title: 'X'),
+            body: Text('content'),
           ),
         ),
       );
       await tester.pump();
 
-      // Body must be rendered inside a Padding widget with top >= kToolbarHeight.
-      final paddings = tester.widgetList<Padding>(
+      // Body must be rendered inside a SafeArea widget.
+      expect(
         find.ancestor(
           of: find.text('content'),
-          matching: find.byType(Padding),
+          matching: find.byType(SafeArea),
         ),
+        findsOneWidget,
+        reason: 'Body should be wrapped in SafeArea when appBar is set',
       );
-      final topPaddings = paddings
-          .map((p) => p.padding.resolve(TextDirection.ltr).top)
-          .where((t) => t >= kToolbarHeight);
-      expect(topPaddings, isNotEmpty,
-          reason: 'Expected at least one Padding with top >= kToolbarHeight');
     });
   });
 }

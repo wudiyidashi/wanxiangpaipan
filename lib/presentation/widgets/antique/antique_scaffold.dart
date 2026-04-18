@@ -59,18 +59,15 @@ class AntiqueScaffold extends StatelessWidget {
                 child: Center(child: CompassBackground()),
               ),
             ),
-          // 4. 主内容（appBar 存在时自动注入顶部 padding，补偿 extendBodyBehindAppBar）
+          // 4. 主内容（appBar 存在时用 SafeArea 避开 AppBar，依赖 Scaffold.extendBodyBehindAppBar 的 MediaQuery 调整）
           Positioned.fill(
             child: appBar != null
-                ? Builder(
-                    builder: (context) {
-                      final topPadding = kToolbarHeight +
-                          MediaQuery.of(context).padding.top;
-                      return Padding(
-                        padding: EdgeInsets.only(top: topPadding),
-                        child: body,
-                      );
-                    },
+                ? SafeArea(
+                    top: true,
+                    bottom: false,
+                    left: false,
+                    right: false,
+                    child: body,
                   )
                 : body,
           ),
