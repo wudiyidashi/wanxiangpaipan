@@ -5,6 +5,8 @@ import '../../../domain/divination_registry.dart';
 import '../../../domain/divination_system.dart';
 import '../../../domain/repositories/divination_repository.dart';
 import '../../../core/theme/app_colors.dart';
+import '../../../core/theme/app_text_styles.dart';
+import '../../widgets/antique/antique.dart';
 import '../../widgets/divination_system_card.dart';
 import '../../widgets/home/time_engine_card.dart';
 import '../../widgets/home/quick_history_bar.dart';
@@ -91,10 +93,20 @@ class _HomeScreenState extends State<HomeScreen> {
     return lunar.getDayZhi();
   }
 
+  String _getCurrentYearZhi() {
+    final solar = Solar.fromDate(DateTime.now());
+    final lunar = solar.getLunar();
+    return lunar.getYearZhi();
+  }
+
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: AppColors.xiangse,
+    return AntiqueScaffold(
+      watermarkChar: _currentNavIndex == 0 ? _getCurrentYearZhi() : null,
+      bottomNavigationBar: AppBottomNavBar(
+        currentIndex: _currentNavIndex,
+        onIndexChanged: _onNavIndexChanged,
+      ),
       body: AnimatedSwitcher(
         duration: const Duration(milliseconds: 160),
         switchInCurve: const Interval(0.2, 1.0, curve: Curves.easeOutCubic),
@@ -130,10 +142,6 @@ class _HomeScreenState extends State<HomeScreen> {
         ],
       ),
       ),
-      bottomNavigationBar: AppBottomNavBar(
-        currentIndex: _currentNavIndex,
-        onIndexChanged: _onNavIndexChanged,
-      ),
     );
   }
 
@@ -162,11 +170,8 @@ class _HomeScreenState extends State<HomeScreen> {
             child: Center(
               child: Text(
                 '起卦大厅',
-                style: const TextStyle(
-                  fontSize: 17,
-                  fontWeight: FontWeight.w600,
+                style: AppTextStyles.antiqueTitle.copyWith(
                   color: AppColors.xuanse,
-                  letterSpacing: 2,
                 ),
               ),
             ),
@@ -286,11 +291,20 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   Widget _buildSimpleTab({required String title, required Widget child}) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(title),
+    return SafeArea(
+      child: Column(
+        children: [
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+            child: Text(
+              title,
+              style: AppTextStyles.antiqueTitle.copyWith(color: AppColors.xuanse),
+            ),
+          ),
+          const AntiqueDivider(),
+          Expanded(child: child),
+        ],
       ),
-      body: child,
     );
   }
 
@@ -302,10 +316,10 @@ class _HomeScreenState extends State<HomeScreen> {
           Icon(Icons.calendar_today_outlined,
               size: 48, color: AppColors.huiseLight),
           const SizedBox(height: 12),
-          Text('历法功能', style: TextStyle(fontSize: 16, color: AppColors.huise)),
+          Text('历法功能', style: AppTextStyles.antiqueBody.copyWith(color: AppColors.huise)),
           const SizedBox(height: 4),
           Text('即将推出',
-              style: TextStyle(fontSize: 13, color: AppColors.huiseLight)),
+              style: AppTextStyles.antiqueLabel.copyWith(color: AppColors.huiseLight)),
         ],
       ),
     );
@@ -318,10 +332,10 @@ class _HomeScreenState extends State<HomeScreen> {
         children: [
           Icon(Icons.person_outline, size: 48, color: AppColors.huiseLight),
           const SizedBox(height: 12),
-          Text('个人中心', style: TextStyle(fontSize: 16, color: AppColors.huise)),
+          Text('个人中心', style: AppTextStyles.antiqueBody.copyWith(color: AppColors.huise)),
           const SizedBox(height: 4),
           Text('即将推出',
-              style: TextStyle(fontSize: 13, color: AppColors.huiseLight)),
+              style: AppTextStyles.antiqueLabel.copyWith(color: AppColors.huiseLight)),
         ],
       ),
     );
