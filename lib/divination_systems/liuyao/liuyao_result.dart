@@ -36,7 +36,9 @@ class LiuYaoResult with _$LiuYaoResult implements DivinationResult {
 
   /// 获取结果摘要（实现 DivinationResult 接口）
   @override
-  String getSummary() => mainGua.name;
+  String getSummary() => changingGua == null
+      ? mainGua.name
+      : '${mainGua.name} → ${changingGua!.name}';
 
   /// 是否有变卦
   bool get hasChangingGua => changingGua != null;

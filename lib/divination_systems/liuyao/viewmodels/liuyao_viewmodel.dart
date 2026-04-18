@@ -85,7 +85,10 @@ class LiuYaoViewModel extends DivinationViewModel<LiuYaoResult> {
     DateTime? castTime,
     String? question,
   }) async {
-    final input = <String, dynamic>{'yaoNumbers': yaoNumbers};
+    final input = <String, dynamic>{
+      'manualMode': LiuYaoManualInputMode.yaoNumbers.id,
+      'yaoNumbers': yaoNumbers,
+    };
 
     await cast(
       method: CastMethod.manual,
@@ -106,7 +109,10 @@ class LiuYaoViewModel extends DivinationViewModel<LiuYaoResult> {
   }) async {
     await cast(
       method: CastMethod.manual,
-      input: {'coinInputs': coinInputs},
+      input: {
+        'manualMode': LiuYaoManualInputMode.coinInputs.id,
+        'coinInputs': coinInputs,
+      },
       castTime: castTime,
     );
   }

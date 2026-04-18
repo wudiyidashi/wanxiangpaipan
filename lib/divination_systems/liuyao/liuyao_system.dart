@@ -6,6 +6,22 @@ import '../../domain/services/shared/lunar_service.dart';
 import '../../domain/services/liushen_service.dart';
 import 'liuyao_result.dart';
 
+enum LiuYaoManualInputMode {
+  yaoNumbers('yaoNumbers'),
+  coinInputs('coinInputs');
+
+  const LiuYaoManualInputMode(this.id);
+
+  final String id;
+
+  static LiuYaoManualInputMode fromId(String id) {
+    return LiuYaoManualInputMode.values.firstWhere(
+      (mode) => mode.id == id,
+      orElse: () => throw ArgumentError('未知的六爻手动输入模式: $id'),
+    );
+  }
+}
+
 /// 六爻排盘
 ///
 /// 实现 DivinationSystem 接口，提供六爻占卜的完整功能。
@@ -58,14 +74,16 @@ class LiuYaoSystem implements DivinationSystem {
         break;
 
       case CastMethod.manual:
-        // 爻名卦：直接提供爻数数组或硬币正反面
-        if (input.containsKey('yaoNumbers')) {
-          yaoNumbers = List<int>.from(input['yaoNumbers'] as List);
-        } else if (input.containsKey('coinInputs')) {
-          final coinInputs = input['coinInputs'] as List<List<CoinFace>>;
-          yaoNumbers = QiGuaService.manualCast(coinInputs);
-        } else {
-          throw ArgumentError('爻名卦需要提供 yaoNumbers 或 coinInputs 参数');
+        switch (_getManualInputMode(input)) {
+          case LiuYaoManualInputMode.yaoNumbers:
+            yaoNumbers = List<int>.from(input['yaoNumbers'] as List);
+            break;
+          case LiuYaoManualInputMode.coinInputs:
+            final coinInputs = (input['coinInputs'] as List)
+                .map((coins) => List<CoinFace>.from(coins as List))
+                .toList();
+            yaoNumbers = QiGuaService.manualCast(coinInputs);
+            break;
         }
         break;
 
@@ -125,21 +143,30 @@ class LiuYaoSystem implements DivinationSystem {
         return true;
 
       case CastMethod.manual:
-        if (input.containsKey('yaoNumbers')) {
-          final yaoNumbers = input['yaoNumbers'];
-          if (yaoNumbers is! List || yaoNumbers.length != 6) {
-            return false;
-          }
-          return yaoNumbers.every((n) => n is int && n >= 6 && n <= 9);
-        } else if (input.containsKey('coinInputs')) {
-          final coinInputs = input['coinInputs'];
-          if (coinInputs is! List || coinInputs.length != 6) {
-            return false;
-          }
-          return coinInputs
-              .every((coins) => coins is List<CoinFace> && coins.length == 3);
+        final manualMode = _tryGetManualInputMode(input);
+        if (manualMode == null) {
+          return false;
         }
-        return false;
+
+        switch (manualMode) {
+          case LiuYaoManualInputMode.yaoNumbers:
+            final yaoNumbers = input['yaoNumbers'];
+            if (yaoNumbers is! List || yaoNumbers.length != 6) {
+              return false;
+            }
+            return yaoNumbers.every((n) => n is int && n >= 6 && n <= 9);
+          case LiuYaoManualInputMode.coinInputs:
+            final coinInputs = input['coinInputs'];
+            if (coinInputs is! List || coinInputs.length != 6) {
+              return false;
+            }
+            return coinInputs.every(
+              (coins) =>
+                  coins is List &&
+                  coins.length == 3 &&
+                  coins.every((coin) => coin is CoinFace),
+            );
+        }
 
       case CastMethod.number:
         return input.containsKey('number') && input['number'] is int;
@@ -181,7 +208,10 @@ class LiuYaoSystem implements DivinationSystem {
   }) async {
     final result = await cast(
       method: CastMethod.manual,
-      input: {'yaoNumbers': yaoNumbers},
+      input: {
+        'manualMode': LiuYaoManualInputMode.yaoNumbers.id,
+        'yaoNumbers': yaoNumbers,
+      },
       castTime: castTime,
     );
     return result as LiuYaoResult;
@@ -194,7 +224,10 @@ class LiuYaoSystem implements DivinationSystem {
   }) async {
     final result = await cast(
       method: CastMethod.manual,
-      input: {'coinInputs': coinInputs},
+      input: {
+        'manualMode': LiuYaoManualInputMode.coinInputs.id,
+        'coinInputs': coinInputs,
+      },
       castTime: castTime,
     );
     return result as LiuYaoResult;
@@ -237,5 +270,22 @@ class LiuYaoSystem implements DivinationSystem {
       castTime: castTime,
     );
     return result as LiuYaoResult;
+  }
+
+  LiuYaoManualInputMode _getManualInputMode(Map<String, dynamic> input) {
+    final rawMode = input['manualMode'];
+    if (rawMode is! String) {
+      throw ArgumentError('爻名卦需要提供 manualMode 参数');
+    }
+
+    return LiuYaoManualInputMode.fromId(rawMode);
+  }
+
+  LiuYaoManualInputMode? _tryGetManualInputMode(Map<String, dynamic> input) {
+    try {
+      return _getManualInputMode(input);
+    } catch (_) {
+      return null;
+    }
   }
 }

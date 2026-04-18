@@ -247,7 +247,13 @@ abstract class DivinationSystem {
   /// - [input]: 起卦输入参数，格式根据 [method] 不同而不同：
   ///   - coin: {} (无需参数，系统随机生成)
   ///   - time: {'time': DateTime} (可选，默认当前时间)
-  ///   - manual: {'yaoNumbers': [6,7,8,9,8,7]} (六个爻的数字)
+  ///   - manual: {
+  ///       'manualMode': 'yaoNumbers',
+  ///       'yaoNumbers': [6,7,8,9,8,7]
+  ///     } 或 {
+  ///       'manualMode': 'coinInputs',
+  ///       'coinInputs': [[CoinFace.head, CoinFace.tail, CoinFace.tail], ...]
+  ///     }
   ///   - number: {'number': 123} (用户输入的数字)
   ///   - random: {} (无需参数)
   /// - [castTime]: 起卦时间，可选，默认为当前时间
@@ -302,7 +308,8 @@ abstract class DivinationSystem {
   /// 验证规则示例：
   /// - coin: 无需参数，始终返回 true
   /// - time: 检查 'time' 字段是否为有效的 DateTime
-  /// - manual: 检查 'yaoNumbers' 是否为长度为 6 的数组，且每个元素在 6-9 之间
+  /// - manual: 检查 'manualMode' 是否明确指定，
+  ///   并根据模式验证 'yaoNumbers' 或 'coinInputs'
   /// - number: 检查 'number' 字段是否为正整数
   /// - random: 无需参数，始终返回 true
   bool validateInput(CastMethod method, Map<String, dynamic> input);
