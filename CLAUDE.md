@@ -385,6 +385,7 @@ abstract class DivinationResult {
 - **Shared Services**: Extract common logic (TianGanDiZhi, WuXing, etc.) to `/domain/services/shared/`
 - **ViewModels**: Extend `ChangeNotifier` and call `notifyListeners()` after state updates
 - **UI Widgets**: Should be "dumb" - only rendering, no business logic
+- **Chromeless / body-only**: Any screen that might be embedded into another screen (tab body / dialog / bottom sheet) must provide a `chromeless` constructor parameter. When `chromeless: true`, the screen should return body-only content without wrapping itself in `AntiqueScaffold` / `AntiqueAppBar`. Reference implementation: `HistoryListScreen(chromeless: true)` used by `HomeScreen` tab 1.
 - **Provider**: Use `Provider.select` for precise state subscription to optimize rebuilds
 - **Calendar**: Use the `lunar` package which supports 天干地支, 六十甲子, 空亡
 - **Performance**: Use `const` constructors wherever possible
