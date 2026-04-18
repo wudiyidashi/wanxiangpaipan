@@ -102,23 +102,25 @@ class _HistoryListScreenState extends State<HistoryListScreen> {
 
   /// 确认删除对话框
   Future<void> _confirmDelete(DivinationResult record) async {
-    final confirmed = await showDialog<bool>(
+    final confirmed = await showAntiqueDialog<bool>(
       context: context,
-      builder: (context) => AlertDialog(
-        title: const Text('确认删除'),
-        content: Text('确定要删除这条记录吗？\n\n${record.getSummary()}'),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(context, false),
-            child: const Text('取消'),
-          ),
-          TextButton(
-            onPressed: () => Navigator.pop(context, true),
-            style: TextButton.styleFrom(foregroundColor: Colors.red),
-            child: const Text('删除'),
-          ),
-        ],
+      title: '确认删除',
+      content: Text(
+        '确定要删除这条记录吗？\n\n${record.getSummary()}',
+        style: AppTextStyles.antiqueBody,
       ),
+      actions: [
+        AntiqueButton(
+          label: '取消',
+          variant: AntiqueButtonVariant.ghost,
+          onPressed: () => Navigator.pop(context, false),
+        ),
+        AntiqueButton(
+          label: '删除',
+          variant: AntiqueButtonVariant.danger,
+          onPressed: () => Navigator.pop(context, true),
+        ),
+      ],
     );
 
     if (confirmed == true) {
