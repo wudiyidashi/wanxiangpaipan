@@ -10,6 +10,7 @@ import '../../../presentation/divination_ui_registry.dart';
 import '../../../presentation/widgets/ai_analysis_widget.dart';
 import '../../../presentation/widgets/extended_info_section.dart';
 import '../../../presentation/widgets/antique/antique.dart';
+import '../../../presentation/widgets/history_record_card.dart';
 import '../daliuren_system.dart';
 import '../models/daliuren_result.dart';
 import '../models/chuan.dart';
@@ -36,13 +37,7 @@ class DaLiuRenUIFactory implements DivinationUIFactory {
   }
 
   @override
-  Widget buildHistoryCard(DivinationResult result) {
-    if (result is! DaLiuRenResult) {
-      throw ArgumentError('结果类型必须是 DaLiuRenResult，实际类型: ${result.runtimeType}');
-    }
-
-    return _DaLiuRenHistoryCard(result: result);
-  }
+  Widget buildHistoryCard(DivinationResult result) => HistoryRecordCard(result: result);
 
   @override
   IconData? getSystemIcon() {
@@ -56,95 +51,6 @@ class DaLiuRenUIFactory implements DivinationUIFactory {
     return AppColors.daliurenColor;
   }
 
-}
-
-/// 大六壬历史记录卡片（统一 5 层信息层级）
-class _DaLiuRenHistoryCard extends StatelessWidget {
-  final DaLiuRenResult result;
-
-  const _DaLiuRenHistoryCard({required this.result});
-
-  String _formatDateTime(DateTime dt) {
-    return '${dt.year}-${dt.month.toString().padLeft(2, '0')}-${dt.day.toString().padLeft(2, '0')} '
-        '${dt.hour.toString().padLeft(2, '0')}:${dt.minute.toString().padLeft(2, '0')}';
-  }
-
-  String get _summary {
-    final keType = result.keTypeName;
-    final chu = result.chuChuan;
-    final zhong = result.zhongChuan;
-    final mo = result.moChuan;
-    return '$keType课 · 初传$chu 中传$zhong 末传$mo';
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    final repository = context.read<DivinationRepository>();
-    final questionKey = 'question_${result.id}';
-
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-      child: AntiqueCard(
-        onTap: () {
-          // TODO: 导航到详情页面
-        },
-        child: FutureBuilder<String?>(
-          future: repository.readEncryptedField(questionKey),
-          builder: (context, snapshot) {
-            final question = snapshot.data ?? '';
-            return Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                // 层 1: 占问事项（空时保留高度占位）
-                SizedBox(
-                  height: 24,
-                  child: Text(
-                    question.isNotEmpty ? question : ' ',
-                    style: AppTextStyles.antiqueTitle,
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
-                  ),
-                ),
-                const SizedBox(height: 8),
-
-                // 层 2: 时间
-                Text(
-                  _formatDateTime(result.castTime),
-                  style: AppTextStyles.antiqueLabel.copyWith(color: AppColors.guhe),
-                ),
-                const SizedBox(height: 8),
-
-                // 层 3: 结果摘要（课体 + 三传）
-                Text(
-                  _summary,
-                  style: AppTextStyles.antiqueBody,
-                  maxLines: 2,
-                  overflow: TextOverflow.ellipsis,
-                ),
-                const SizedBox(height: 12),
-
-                // 层 4/5: 排盘类型 + 排盘方式 badges
-                Wrap(
-                  spacing: 8,
-                  runSpacing: 4,
-                  children: [
-                    AntiqueTag(
-                      label: '大六壬',
-                      color: AppColors.daliurenColor,
-                    ),
-                    AntiqueTag(
-                      label: result.castMethod.displayName,
-                      color: AppColors.guhe,
-                    ),
-                  ],
-                ),
-              ],
-            );
-          },
-        ),
-      ),
-    );
-  }
 }
 
 // ==================== 统一起课界面 ====================
