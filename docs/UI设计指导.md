@@ -48,9 +48,17 @@
 
 图标风格： 线性图标 + 局部色块点缀，避免过于具象的拟物风格，保持现代感。
 
-### 1.5 字体
+### 1.5 字体策略
 
-**全量思源宋体 (Noto Serif SC)**。决策原因：仿古调性整体性优先。若实测小号正文/数字（11–13px）易读性显著下降，按 §7 风险预案降级正文为 PingFang SC（标题与装饰仍衬线）。
+#### 字体配置
+
+- **首选**：Noto Serif SC（思源宋体）
+- **交付契约**：项目**未打包字体资产**。`AppTextStyles.antique*` 通过 `fontFamilyFallback: ['Noto Serif SC', 'serif']` 声明回退链。实际渲染依平台已安装字体决定。
+- **接受细微跨平台差异**：iOS 苹方、macOS PingFang、Android Source Han Serif / Noto 中文系列均可正常承接视觉调性。不追求 pixel-level 一致。
+- **不打包原因**：Noto Serif SC 简中全量约 30-40MB、subset 约 6-10MB，对免费工具类 App 的安装包体积影响显著；收益（精确字体）不匹配本产品定位。
+- **未来触发打包**：若发版后收到明确的"字体缺失导致可读性问题"反馈，再评估打包 subset 方案。
+
+#### 仿古风文本样式
 
 新增 5 个 antique text styles，定义在 `lib/core/theme/app_text_styles.dart`：
 

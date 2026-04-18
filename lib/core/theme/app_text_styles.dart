@@ -12,8 +12,19 @@ class AppTextStyles {
 
   // ==================== 字体族 ====================
 
-  /// 宋体字体族（标题、干支）
+  /// 宋体字体族（偏好名称）
+  ///
+  /// **注意**：项目未打包字体资产。此处 'Noto Serif SC' 是首选，
+  /// 实际渲染见 [fontFamilyFallback]——回退到平台系统字体。
   static const String fontFamilySong = 'Noto Serif SC';
+
+  /// 仿古风 serif 回退链：首选 Noto Serif SC，未安装时回退到通用 serif 族
+  ///
+  /// **交付契约**：项目未打包字体资产。Flutter 按此顺序查找，
+  /// 最终回退到平台系统字体（iOS 苹方 / macOS PingFang /
+  /// Android Source Han Serif 等）。允许跨平台细微差异，
+  /// 不要求 pixel-level 一致。
+  static const List<String> fontFamilyFallback = ['Noto Serif SC', 'serif'];
 
   /// 楷体字体族（装饰文字）
   static const String fontFamilyKai = 'ZCOOL KuaiLe';
@@ -163,6 +174,7 @@ class AppTextStyles {
   /// 仿古风主标题
   static const TextStyle antiqueTitle = TextStyle(
     fontFamily: fontFamilySong,
+    fontFamilyFallback: fontFamilyFallback,
     fontSize: 18,
     fontWeight: FontWeight.bold,
     letterSpacing: 2,
@@ -173,6 +185,7 @@ class AppTextStyles {
   /// 仿古风节标题（朱砂色）
   static const TextStyle antiqueSection = TextStyle(
     fontFamily: fontFamilySong,
+    fontFamilyFallback: fontFamilyFallback,
     fontSize: 15,
     fontWeight: FontWeight.bold,
     letterSpacing: 1,
@@ -183,6 +196,7 @@ class AppTextStyles {
   /// 仿古风正文
   static const TextStyle antiqueBody = TextStyle(
     fontFamily: fontFamilySong,
+    fontFamilyFallback: fontFamilyFallback,
     fontSize: 13,
     color: AppColors.xuanse,
     height: 1.6,
@@ -191,6 +205,7 @@ class AppTextStyles {
   /// 仿古风标签（古褐色）
   static const TextStyle antiqueLabel = TextStyle(
     fontFamily: fontFamilySong,
+    fontFamilyFallback: fontFamilyFallback,
     fontSize: 11,
     letterSpacing: 1,
     color: AppColors.guhe,
@@ -200,6 +215,7 @@ class AppTextStyles {
   /// 仿古风按钮文字
   static const TextStyle antiqueButton = TextStyle(
     fontFamily: fontFamilySong,
+    fontFamilyFallback: fontFamilyFallback,
     fontSize: 16,
     fontWeight: FontWeight.bold,
     letterSpacing: 2,
