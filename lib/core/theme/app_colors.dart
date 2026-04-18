@@ -54,6 +54,18 @@ class AppColors {
   /// 缃色深 - 背景渐变底端（仿古风）
   static const Color xiangseDeep = Color(0xFFF0EDE8);
 
+  /// 深朱砂 - 危险按钮渐变起色（仿古风）
+  static const Color zhushaDeep = Color(0xFFB23A3A);
+
+  /// 栗色 - 错误/警告深色（仿古风 SnackBar 错误背景）
+  static const Color errorDeep = Color(0xFF8B2020);
+
+  /// 比用蓝 - 大六壬比用（比和助用）课型指示色
+  static const Color biyongBlue = Color(0xFF3A6EA5);
+
+  /// 吉神绿 - 神煞吉神标识色
+  static const Color jishenGreen = Color(0xFF4A7C59);
+
   /// 玄色（黑）- 主要文字
   static const Color xuanse = Color(0xFF2C2C2C);
 
