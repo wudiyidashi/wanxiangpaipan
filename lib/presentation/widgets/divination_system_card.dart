@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import '../../core/theme/app_colors.dart';
+import '../../core/theme/app_text_styles.dart';
 import '../../domain/divination_system.dart';
 import '../divination_ui_registry.dart';
 
@@ -39,10 +41,6 @@ class _DivinationSystemCardState extends State<DivinationSystemCard>
   late AnimationController _animationController;
   late Animation<double> _fadeAnimation;
   late Animation<Offset> _slideAnimation;
-
-  // 设计色彩常量
-  static const Color _textDark = Color(0xFF3D3025); // 深褐色文字
-  static const Color _textMuted = Color(0xFF6D6055); // 浅褐色副标题
 
   @override
   void initState() {
@@ -121,13 +119,13 @@ class _DivinationSystemCardState extends State<DivinationSystemCard>
   List<Color> _getGradientColors() {
     switch (widget.system.type) {
       case DivinationType.liuYao:
-        return const [Color(0xFFF7F2EA), Color(0xFFEADCC6)];
+        return const [AppColors.xiangse, AppColors.danjin];
       case DivinationType.meiHua:
-        return const [Color(0xFFF7F2EA), Color(0xFFEADCC6)];
+        return const [AppColors.xiangse, AppColors.danjin];
       case DivinationType.xiaoLiuRen:
-        return const [Color(0xFFF7F2EA), Color(0xFFE8DBC6)];
+        return const [AppColors.xiangse, AppColors.danjin];
       case DivinationType.daLiuRen:
-        return const [Color(0xFFDCCDB7), Color(0xFFC8B69E)]; // 大六壬颜色深一点
+        return const [AppColors.danjin, AppColors.qianhe]; // 大六壬颜色深一点
     }
   }
 
@@ -161,7 +159,7 @@ class _DivinationSystemCardState extends State<DivinationSystemCard>
             ),
             boxShadow: [
               BoxShadow(
-                color: Colors.brown.withOpacity(0.08),
+                color: AppColors.guhe.withOpacity(0.08),
                 blurRadius: 10,
                 offset: const Offset(0, 4),
               ),
@@ -192,21 +190,16 @@ class _DivinationSystemCardState extends State<DivinationSystemCard>
                     // 系统名称
                     Text(
                       displayName,
-                      style: TextStyle(
+                      style: AppTextStyles.antiqueTitle.copyWith(
                         fontSize: titleSize,
-                        fontWeight: FontWeight.bold,
-                        color: _textDark,
-                        height: 1.2,
                       ),
                     ),
                     const SizedBox(height: 4),
                     // 副标题
                     Text(
                       subtitle,
-                      style: TextStyle(
+                      style: AppTextStyles.antiqueLabel.copyWith(
                         fontSize: subtitleSize,
-                        color: _textMuted.withOpacity(0.8),
-                        height: 1.2,
                       ),
                     ),
                   ],
@@ -274,10 +267,10 @@ class AddDivinationCard extends StatelessWidget {
       onTap: onTap,
       child: Container(
         decoration: BoxDecoration(
-          color: const Color(0xFFF9F7F5),
+          color: AppColors.xiangse,
           borderRadius: BorderRadius.circular(16),
           border: Border.all(
-            color: Colors.brown.withOpacity(0.25),
+            color: AppColors.danjin.withOpacity(0.5),
             width: 1,
           ),
         ),
@@ -285,7 +278,7 @@ class AddDivinationCard extends StatelessWidget {
           child: Icon(
             Icons.add,
             size: 30,
-            color: Colors.brown.withOpacity(0.35),
+            color: AppColors.guhe.withOpacity(0.35),
           ),
         ),
       ),
