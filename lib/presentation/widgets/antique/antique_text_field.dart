@@ -17,6 +17,7 @@ class AntiqueTextField extends StatelessWidget {
     this.expands = false,
     this.textAlignVertical,
     this.style,
+    this.semanticsLabel,
   });
 
   final TextEditingController? controller;
@@ -32,10 +33,12 @@ class AntiqueTextField extends StatelessWidget {
   final bool expands;
   final TextAlignVertical? textAlignVertical;
   final TextStyle? style;
+  /// Optional a11y label. When non-null, wraps the field with Semantics.
+  final String? semanticsLabel;
 
   @override
   Widget build(BuildContext context) {
-    return Container(
+    final field = Container(
       decoration: BoxDecoration(
         color: Colors.white.withOpacity(0.6),
         border: Border.all(
@@ -70,6 +73,13 @@ class AntiqueTextField extends StatelessWidget {
           suffixIcon: suffixIcon,
         ),
       ),
+    );
+
+    if (semanticsLabel == null) return field;
+    return Semantics(
+      label: semanticsLabel,
+      textField: true,
+      child: field,
     );
   }
 }

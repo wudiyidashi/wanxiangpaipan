@@ -34,48 +34,55 @@ class AntiqueButton extends StatelessWidget {
               )
             : AntiqueTokens.buttonGradient);
 
-    return GestureDetector(
-      onTap: disabled ? null : onPressed,
-      child: Opacity(
-        opacity: disabled ? 0.5 : 1.0,
-        child: Container(
-          width: fullWidth ? double.infinity : null,
-          height: 52,
-          padding: const EdgeInsets.symmetric(horizontal: 32),
-          decoration: BoxDecoration(
-            gradient: fillGradient,
-            color: isGhost ? Colors.transparent : null,
-            border: isGhost
-                ? Border.all(
-                    color: AppColors.zhusha,
-                    width: AntiqueTokens.borderWidthBase,
-                  )
-                : null,
-            borderRadius: BorderRadius.circular(AntiqueTokens.radiusButton),
-            boxShadow: isGhost ? null : const [AntiqueTokens.buttonShadow],
-          ),
-          child: Row(
-            mainAxisSize: MainAxisSize.min,
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              if (icon != null) ...[
-                Icon(
-                  icon,
-                  size: 18,
-                  color: isGhost ? AppColors.zhusha : Colors.white,
+    return Semantics(
+      button: true,
+      enabled: !disabled,
+      label: label,
+      excludeSemantics: true,
+      child: GestureDetector(
+        onTap: disabled ? null : onPressed,
+        child: Opacity(
+          opacity: disabled ? 0.5 : 1.0,
+          child: Container(
+            width: fullWidth ? double.infinity : null,
+            height: 52,
+            padding: const EdgeInsets.symmetric(horizontal: 32),
+            decoration: BoxDecoration(
+              gradient: fillGradient,
+              color: isGhost ? Colors.transparent : null,
+              border: isGhost
+                  ? Border.all(
+                      color: AppColors.zhusha,
+                      width: AntiqueTokens.borderWidthBase,
+                    )
+                  : null,
+              borderRadius: BorderRadius.circular(AntiqueTokens.radiusButton),
+              boxShadow: isGhost ? null : const [AntiqueTokens.buttonShadow],
+            ),
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                if (icon != null) ...[
+                  Icon(
+                    icon,
+                    size: 18,
+                    color: isGhost ? AppColors.zhusha : Colors.white,
+                  ),
+                  const SizedBox(width: 8),
+                ],
+                Text(
+                  label,
+                  style: AppTextStyles.antiqueButton.copyWith(
+                    color: isGhost ? AppColors.zhusha : Colors.white,
+                  ),
                 ),
-                const SizedBox(width: 8),
               ],
-              Text(
-                label,
-                style: AppTextStyles.antiqueButton.copyWith(
-                  color: isGhost ? AppColors.zhusha : Colors.white,
-                ),
-              ),
-            ],
+            ),
           ),
         ),
       ),
     );
   }
 }
+

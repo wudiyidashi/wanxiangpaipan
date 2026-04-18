@@ -28,9 +28,12 @@ class AntiqueAppBar extends StatelessWidget implements PreferredSizeWidget {
       elevation: 0,
       centerTitle: centerTitle,
       leading: leading,
-      title: Text(
-        title,
-        style: AppTextStyles.antiqueTitle.copyWith(color: AppColors.xuanse),
+      title: Semantics(
+        header: true,
+        child: Text(
+          title,
+          style: AppTextStyles.antiqueTitle.copyWith(color: AppColors.xuanse),
+        ),
       ),
       actions: actions,
       bottom: const PreferredSize(

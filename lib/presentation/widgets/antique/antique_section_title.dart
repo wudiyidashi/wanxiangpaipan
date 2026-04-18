@@ -24,7 +24,10 @@ class AntiqueSectionTitle extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             mainAxisSize: MainAxisSize.min,
             children: [
-              Text(title, style: AppTextStyles.antiqueSection),
+              Semantics(
+                header: true,
+                child: Text(title, style: AppTextStyles.antiqueSection),
+              ),
               if (subtitle != null) ...[
                 const SizedBox(height: 2),
                 Text(subtitle!, style: AppTextStyles.antiqueLabel),

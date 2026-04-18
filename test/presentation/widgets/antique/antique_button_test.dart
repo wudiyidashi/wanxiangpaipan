@@ -64,5 +64,49 @@ void main() {
       final deco = container.decoration as BoxDecoration;
       expect(deco.gradient, isNull);
     });
+
+    testWidgets('a11y: enabled button has button semantics with label',
+        (tester) async {
+      final handle = tester.ensureSemantics();
+      await tester.pumpWidget(
+        MaterialApp(
+          home: Scaffold(
+            body: AntiqueButton(label: '起卦', onPressed: () {}),
+          ),
+        ),
+      );
+      expect(
+        tester.getSemantics(find.byType(AntiqueButton)),
+        matchesSemantics(
+          isButton: true,
+          isEnabled: true,
+          hasEnabledState: true,
+          label: '起卦',
+        ),
+      );
+      handle.dispose();
+    });
+
+    testWidgets('a11y: disabled button has button semantics, enabled=false',
+        (tester) async {
+      final handle = tester.ensureSemantics();
+      await tester.pumpWidget(
+        const MaterialApp(
+          home: Scaffold(
+            body: AntiqueButton(label: '起卦', onPressed: null),
+          ),
+        ),
+      );
+      expect(
+        tester.getSemantics(find.byType(AntiqueButton)),
+        matchesSemantics(
+          isButton: true,
+          isEnabled: false,
+          hasEnabledState: true,
+          label: '起卦',
+        ),
+      );
+      handle.dispose();
+    });
   });
 }

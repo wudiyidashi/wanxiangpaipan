@@ -18,15 +18,17 @@ class AntiqueWatermark extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return IgnorePointer(
-      child: Text(
-        char,
-        style: TextStyle(
-          fontFamily: AppTextStyles.fontFamilySong,
-          fontSize: size,
-          fontWeight: FontWeight.w100,
-          color: AppColors.danjin.withOpacity(0.15),
-          height: 1,
+    return ExcludeSemantics(
+      child: IgnorePointer(
+        child: Text(
+          char,
+          style: TextStyle(
+            fontFamily: AppTextStyles.fontFamilySong,
+            fontSize: size,
+            fontWeight: FontWeight.w100,
+            color: AppColors.danjin.withOpacity(0.15),
+            height: 1,
+          ),
         ),
       ),
     );

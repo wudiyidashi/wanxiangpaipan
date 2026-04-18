@@ -33,5 +33,18 @@ void main() {
       expect((deco.border as Border).top.color,
           const Color(0xFF3A6EA5).withOpacity(0.3));
     });
+
+    testWidgets('a11y: tag semantics label contains text', (tester) async {
+      final handle = tester.ensureSemantics();
+      await tester.pumpWidget(
+        const MaterialApp(
+          home: Scaffold(body: AntiqueTag(label: '六爻')),
+        ),
+      );
+      final semantics = tester.getSemantics(find.byType(AntiqueTag));
+      // The Semantics node label may include child text; assert it starts with the tag label
+      expect(semantics.label, startsWith('六爻'));
+      handle.dispose();
+    });
   });
 }

@@ -18,19 +18,22 @@ class AntiqueTag extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
-      decoration: BoxDecoration(
-        color: color.withOpacity(0.1),
-        borderRadius: BorderRadius.circular(AntiqueTokens.radiusTag),
-        border: Border.all(
-          color: color.withOpacity(0.3),
-          width: AntiqueTokens.borderWidthBase,
+    return Semantics(
+      label: label,
+      child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
+        decoration: BoxDecoration(
+          color: color.withOpacity(0.1),
+          borderRadius: BorderRadius.circular(AntiqueTokens.radiusTag),
+          border: Border.all(
+            color: color.withOpacity(0.3),
+            width: AntiqueTokens.borderWidthBase,
+          ),
         ),
-      ),
-      child: Text(
-        label,
-        style: AppTextStyles.antiqueLabel.copyWith(color: color),
+        child: Text(
+          label,
+          style: AppTextStyles.antiqueLabel.copyWith(color: color),
+        ),
       ),
     );
   }

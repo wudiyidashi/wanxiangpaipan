@@ -84,5 +84,26 @@ void main() {
       final tf = tester.widget<TextField>(find.byType(TextField));
       expect(tf.expands, isTrue);
     });
+
+    testWidgets('a11y: semanticsLabel wraps field with Semantics node',
+        (tester) async {
+      final handle = tester.ensureSemantics();
+      await tester.pumpWidget(
+        const MaterialApp(
+          home: Scaffold(
+            body: AntiqueTextField(
+              hint: '请输入问题',
+              semanticsLabel: '问题输入框',
+            ),
+          ),
+        ),
+      );
+      // The outer Semantics widget with label should exist in the tree
+      expect(find.byType(Semantics), findsWidgets);
+      // The Semantics node on the AntiqueTextField includes the custom label
+      final semantics = tester.getSemantics(find.byType(AntiqueTextField));
+      expect(semantics.label, contains('问题输入框'));
+      handle.dispose();
+    });
   });
 }

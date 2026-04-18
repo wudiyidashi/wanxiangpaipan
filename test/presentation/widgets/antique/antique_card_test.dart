@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/semantics.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:wanxiang_paipan/core/theme/antique_tokens.dart';
 import 'package:wanxiang_paipan/presentation/widgets/antique/antique_card.dart';
@@ -67,6 +68,39 @@ void main() {
       await tester.tap(find.byType(AntiqueCard));
       await tester.pumpAndSettle();
       expect(tapped, isTrue);
+    });
+
+    testWidgets('a11y: card with onTap has button semantics', (tester) async {
+      final handle = tester.ensureSemantics();
+      await tester.pumpWidget(
+        MaterialApp(
+          home: Scaffold(
+            body: AntiqueCard(
+              onTap: () {},
+              semanticsLabel: '系统卡片',
+              child: const Text('内容'),
+            ),
+          ),
+        ),
+      );
+      final semantics = tester.getSemantics(find.byType(AntiqueCard));
+      expect(semantics.hasFlag(SemanticsFlag.isButton), isTrue);
+      handle.dispose();
+    });
+
+    testWidgets('a11y: card without onTap has no button semantics',
+        (tester) async {
+      final handle = tester.ensureSemantics();
+      await tester.pumpWidget(
+        const MaterialApp(
+          home: Scaffold(
+            body: AntiqueCard(child: Text('内容')),
+          ),
+        ),
+      );
+      final semantics = tester.getSemantics(find.byType(AntiqueCard));
+      expect(semantics.hasFlag(SemanticsFlag.isButton), isFalse);
+      handle.dispose();
     });
   });
 }

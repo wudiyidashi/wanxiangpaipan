@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/semantics.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:wanxiang_paipan/presentation/widgets/antique/antique_dialog.dart';
 
@@ -82,6 +83,26 @@ void main() {
 
       final result = await future;
       expect(result, isTrue);
+    });
+
+    testWidgets('a11y: dialog has scopesRoute and namesRoute semantics',
+        (tester) async {
+      final handle = tester.ensureSemantics();
+      await tester.pumpWidget(
+        const MaterialApp(
+          home: Scaffold(
+            body: AntiqueDialog(
+              title: '确认删除',
+              content: Text('删除后无法恢复'),
+            ),
+          ),
+        ),
+      );
+      final semantics = tester.getSemantics(find.byType(AntiqueDialog));
+      expect(semantics.hasFlag(SemanticsFlag.scopesRoute), isTrue);
+      expect(semantics.hasFlag(SemanticsFlag.namesRoute), isTrue);
+      expect(semantics.label, '确认删除');
+      handle.dispose();
     });
   });
 }

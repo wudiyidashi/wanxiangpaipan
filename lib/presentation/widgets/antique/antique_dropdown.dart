@@ -22,35 +22,47 @@ class AntiqueDropdown<T> extends StatelessWidget {
   final List<AntiqueDropdownItem<T>> items;
   final ValueChanged<T?> onChanged;
 
+  String _currentLabel() {
+    for (final item in items) {
+      if (item.value == value) return item.label;
+    }
+    return items.isNotEmpty ? items.first.label : '';
+  }
+
   @override
   Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 12),
-      decoration: BoxDecoration(
-        color: Colors.white.withOpacity(0.6),
-        border: Border.all(
-          color: AppColors.danjin,
-          width: AntiqueTokens.borderWidthBase,
-        ),
-        borderRadius: BorderRadius.circular(AntiqueTokens.radiusInput),
-      ),
-      child: DropdownButtonHideUnderline(
-        child: DropdownButton<T>(
-          value: value,
-          isExpanded: true,
-          icon: const Icon(Icons.keyboard_arrow_down, color: AppColors.zhusha),
-          style: const TextStyle(
-            color: AppColors.xuanse,
-            fontSize: 13,
+    return Semantics(
+      button: true,
+      label: '下拉选择: ${_currentLabel()}',
+      excludeSemantics: true,
+      child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 12),
+        decoration: BoxDecoration(
+          color: Colors.white.withOpacity(0.6),
+          border: Border.all(
+            color: AppColors.danjin,
+            width: AntiqueTokens.borderWidthBase,
           ),
-          dropdownColor: AppColors.xiangseLight,
-          items: items
-              .map((item) => DropdownMenuItem<T>(
-                    value: item.value,
-                    child: Text(item.label),
-                  ))
-              .toList(),
-          onChanged: onChanged,
+          borderRadius: BorderRadius.circular(AntiqueTokens.radiusInput),
+        ),
+        child: DropdownButtonHideUnderline(
+          child: DropdownButton<T>(
+            value: value,
+            isExpanded: true,
+            icon: const Icon(Icons.keyboard_arrow_down, color: AppColors.zhusha),
+            style: const TextStyle(
+              color: AppColors.xuanse,
+              fontSize: 13,
+            ),
+            dropdownColor: AppColors.xiangseLight,
+            items: items
+                .map((item) => DropdownMenuItem<T>(
+                      value: item.value,
+                      child: Text(item.label),
+                    ))
+                .toList(),
+            onChanged: onChanged,
+          ),
         ),
       ),
     );

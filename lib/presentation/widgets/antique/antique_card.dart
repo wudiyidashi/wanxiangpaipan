@@ -12,11 +12,14 @@ class AntiqueCard extends StatefulWidget {
     required this.child,
     this.padding = const EdgeInsets.all(16),
     this.onTap,
+    this.semanticsLabel,
   });
 
   final Widget child;
   final EdgeInsetsGeometry padding;
   final VoidCallback? onTap;
+  /// Optional a11y label used when [onTap] is non-null.
+  final String? semanticsLabel;
 
   @override
   State<AntiqueCard> createState() => _AntiqueCardState();
@@ -42,16 +45,20 @@ class _AntiqueCardState extends State<AntiqueCard> {
 
     if (widget.onTap == null) return card;
 
-    return GestureDetector(
-      onTapDown: (_) => setState(() => _pressed = true),
-      onTapUp: (_) => setState(() => _pressed = false),
-      onTapCancel: () => setState(() => _pressed = false),
-      onTap: widget.onTap,
-      child: AnimatedScale(
-        scale: _pressed ? 0.98 : 1.0,
-        duration: const Duration(milliseconds: 80),
-        curve: Curves.easeOut,
-        child: card,
+    return Semantics(
+      button: true,
+      label: widget.semanticsLabel,
+      child: GestureDetector(
+        onTapDown: (_) => setState(() => _pressed = true),
+        onTapUp: (_) => setState(() => _pressed = false),
+        onTapCancel: () => setState(() => _pressed = false),
+        onTap: widget.onTap,
+        child: AnimatedScale(
+          scale: _pressed ? 0.98 : 1.0,
+          duration: const Duration(milliseconds: 80),
+          curve: Curves.easeOut,
+          child: card,
+        ),
       ),
     );
   }

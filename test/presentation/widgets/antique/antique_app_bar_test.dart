@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/semantics.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:wanxiang_paipan/presentation/widgets/antique/antique_app_bar.dart';
 
@@ -49,6 +50,25 @@ void main() {
         ),
       );
       expect(find.byKey(const Key('settings')), findsOneWidget);
+    });
+
+    testWidgets('a11y: title Text has header semantics', (tester) async {
+      final handle = tester.ensureSemantics();
+      await tester.pumpWidget(
+        const MaterialApp(
+          home: Scaffold(
+            appBar: AntiqueAppBar(title: '大六壬起课'),
+            body: SizedBox(),
+          ),
+        ),
+      );
+      final titleText = find.descendant(
+        of: find.byType(AntiqueAppBar),
+        matching: find.text('大六壬起课'),
+      );
+      final semantics = tester.getSemantics(titleText);
+      expect(semantics.hasFlag(SemanticsFlag.isHeader), isTrue);
+      handle.dispose();
     });
   });
 }

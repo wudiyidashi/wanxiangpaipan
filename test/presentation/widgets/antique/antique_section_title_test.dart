@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/semantics.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:wanxiang_paipan/core/theme/app_colors.dart';
 import 'package:wanxiang_paipan/presentation/widgets/antique/antique_section_title.dart';
@@ -47,6 +48,18 @@ void main() {
         ),
       );
       expect(find.byKey(const Key('trailing')), findsOneWidget);
+    });
+
+    testWidgets('a11y: title Text has header semantics', (tester) async {
+      final handle = tester.ensureSemantics();
+      await tester.pumpWidget(
+        const MaterialApp(
+          home: Scaffold(body: AntiqueSectionTitle(title: '四课')),
+        ),
+      );
+      final semantics = tester.getSemantics(find.text('四课'));
+      expect(semantics.hasFlag(SemanticsFlag.isHeader), isTrue);
+      handle.dispose();
     });
   });
 }
