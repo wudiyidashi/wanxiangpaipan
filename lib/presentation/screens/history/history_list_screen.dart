@@ -240,6 +240,8 @@ class _HistoryListScreenState extends State<HistoryListScreen> {
       );
     }
 
+    final statusBar = _buildFilterStatusBar();
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
@@ -249,34 +251,8 @@ class _HistoryListScreenState extends State<HistoryListScreen> {
         // 排序切换
         _buildSortToggle(),
 
-        // 筛选提示
-        if (_selectedSystemType != null)
-          Container(
-            padding: const EdgeInsets.all(12),
-            color: AppColors.xiangseDeep,
-            child: Row(
-              children: [
-                Icon(
-                  Icons.filter_list,
-                  size: 20,
-                  color: AppColors.guhe,
-                ),
-                const SizedBox(width: 8),
-                Expanded(
-                  child: Text(
-                    '筛选: ${_selectedSystemType!.displayName} (${_filteredRecords.length} 条)',
-                    style: AppTextStyles.antiqueLabel.copyWith(
-                      color: AppColors.guhe,
-                    ),
-                  ),
-                ),
-                TextButton(
-                  onPressed: () => _filterBySystemType(null),
-                  child: const Text('清除'),
-                ),
-              ],
-            ),
-          ),
+        // 统一筛选状态栏（显示系统 + 搜索 + 结果数）
+        if (statusBar != null) statusBar,
 
         // 内容区：空状态或记录列表
         Expanded(
@@ -376,6 +352,54 @@ class _HistoryListScreenState extends State<HistoryListScreen> {
               color: _sortOrder == SortOrder.oldestFirst
                   ? AppColors.zhusha
                   : AppColors.guhe,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  /// 构建统一筛选状态栏
+  ///
+  /// 显示当前活跃的系统筛选和搜索过滤，以及结果数量。
+  /// 如果没有任何筛选条件，返回 null，调用者可通过 `if (x != null) x` 跳过渲染。
+  Widget? _buildFilterStatusBar() {
+    final hasSystemFilter = _selectedSystemType != null;
+    final hasSearch = _searchQuery.trim().isNotEmpty;
+    if (!hasSystemFilter && !hasSearch) return null;
+
+    final fragments = <String>[];
+    if (hasSystemFilter) {
+      fragments.add('系统: ${_selectedSystemType!.displayName}');
+    }
+    if (hasSearch) {
+      fragments.add('关键字: "${_searchQuery.trim()}"');
+    }
+    fragments.add('共 ${_filteredRecords.length} 条');
+
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(16, 8, 16, 0),
+      child: Row(
+        children: [
+          Expanded(
+            child: Text(
+              fragments.join(' · '),
+              style: AppTextStyles.antiqueLabel.copyWith(color: AppColors.guhe),
+              overflow: TextOverflow.ellipsis,
+            ),
+          ),
+          TextButton(
+            onPressed: () {
+              setState(() {
+                _selectedSystemType = null;
+                _searchQuery = '';
+                _searchController.clear();
+              });
+              _applyFilters();
+            },
+            child: Text(
+              '清除',
+              style: AppTextStyles.antiqueLabel.copyWith(color: AppColors.zhusha),
             ),
           ),
         ],
