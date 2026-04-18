@@ -6,6 +6,7 @@
 export 'antique_app_bar.dart';
 export 'antique_button.dart';
 export 'antique_card.dart';
+export 'antique_dialog.dart';
 export 'antique_divider.dart';
 export 'antique_dropdown.dart';
 export 'antique_scaffold.dart';
