@@ -2,11 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import '../../../core/theme/app_colors.dart';
+import '../../../core/theme/app_text_styles.dart';
 import '../../../divination_systems/liuyao/viewmodels/liuyao_viewmodel.dart';
 import '../../../domain/divination_system.dart';
 import '../../divination_ui_registry.dart';
+import '../../widgets/antique/antique.dart';
 import '../../widgets/cast/coin_cast_section.dart';
-import '../../widgets/cast/compass_background.dart';
 import '../../widgets/cast/computer_cast_section.dart';
 import '../../widgets/cast/number_cast_section.dart';
 import '../../widgets/cast/report_number_cast_section.dart';
@@ -98,7 +100,7 @@ class _UnifiedCastScreenState extends State<UnifiedCastScreen> {
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         content: Text(message),
-        backgroundColor: const Color(0xFF8B2020),
+        backgroundColor: AppColors.errorDeep,
       ),
     );
   }
@@ -226,47 +228,25 @@ class _UnifiedCastScreenState extends State<UnifiedCastScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('六爻起卦'),
-      ),
-      body: Stack(
-        children: [
-          // Xuan paper gradient background
-          Container(
-            decoration: const BoxDecoration(
-              gradient: LinearGradient(
-                begin: Alignment.topCenter,
-                end: Alignment.bottomCenter,
-                colors: [Color(0xFFF7F7F5), Color(0xFFF0EDE8)],
-              ),
-            ),
+    return AntiqueScaffold(
+      showCompass: true,
+      appBar: const AntiqueAppBar(title: '六爻起卦'),
+      body: SafeArea(
+        child: SingleChildScrollView(
+          padding: const EdgeInsets.all(16),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              _buildQuestionSection(),
+              const SizedBox(height: 16),
+              _buildMethodSelector(),
+              const SizedBox(height: 16),
+              const AntiqueDivider(),
+              const SizedBox(height: 20),
+              _buildCastSection(),
+            ],
           ),
-          // Compass background overlay
-          const CompassBackground(),
-          // Main content
-          SafeArea(
-            child: SingleChildScrollView(
-              padding: const EdgeInsets.all(16),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  _buildQuestionSection(),
-                  const SizedBox(height: 16),
-                  _buildMethodSelector(),
-                  const SizedBox(height: 16),
-                  Divider(
-                    color: const Color(0x40B79452),
-                    thickness: 1,
-                    height: 1,
-                  ),
-                  const SizedBox(height: 20),
-                  _buildCastSection(),
-                ],
-              ),
-            ),
-          ),
-        ],
+        ),
       ),
     );
   }
@@ -275,40 +255,13 @@ class _UnifiedCastScreenState extends State<UnifiedCastScreen> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const Text(
-          '占问事项',
-          style: TextStyle(
-            fontSize: 11,
-            color: Color(0xFF8B7355),
-            letterSpacing: 1,
-          ),
-        ),
+        const Text('占问事项', style: AppTextStyles.antiqueLabel),
         const SizedBox(height: 6),
-        Container(
-          decoration: BoxDecoration(
-            color: Colors.white.withOpacity(0.6),
-            border: Border.all(color: const Color(0x4DB79452)),
-            borderRadius: BorderRadius.circular(8),
-          ),
-          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
-          child: TextField(
-            controller: _questionController,
-            style: const TextStyle(
-              color: Color(0xFF2B4570),
-              fontSize: 13,
-            ),
-            decoration: const InputDecoration(
-              border: InputBorder.none,
-              hintText: '请输入您想占问的事项...',
-              hintStyle: TextStyle(
-                color: Color(0xFFA0937E),
-                fontSize: 13,
-              ),
-              isDense: true,
-            ),
-            maxLines: 2,
-            minLines: 1,
-          ),
+        AntiqueTextField(
+          controller: _questionController,
+          hint: '请输入您想占问的事项...',
+          maxLines: 2,
+          minLines: 1,
         ),
       ],
     );
@@ -318,46 +271,17 @@ class _UnifiedCastScreenState extends State<UnifiedCastScreen> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const Text(
-          '起卦方式',
-          style: TextStyle(
-            fontSize: 11,
-            color: Color(0xFF8B7355),
-            letterSpacing: 1,
-          ),
-        ),
+        const Text('起卦方式', style: AppTextStyles.antiqueLabel),
         const SizedBox(height: 6),
-        Container(
-          decoration: BoxDecoration(
-            color: Colors.white.withOpacity(0.6),
-            border: Border.all(color: const Color(0x4DB79452)),
-            borderRadius: BorderRadius.circular(8),
-          ),
-          padding: const EdgeInsets.symmetric(horizontal: 12),
-          child: DropdownButtonHideUnderline(
-            child: DropdownButton<CastMethod>(
-              value: _selectedMethod,
-              isExpanded: true,
-              dropdownColor: Colors.white,
-              style: const TextStyle(
-                color: Color(0xFF2B4570),
-                fontSize: 13,
-              ),
-              items: _availableMethods.map((method) {
-                return DropdownMenuItem<CastMethod>(
-                  value: method,
-                  child: Text(
-                    method.displayName,
-                    style: const TextStyle(
-                      color: Color(0xFF2B4570),
-                      fontSize: 13,
-                    ),
-                  ),
-                );
-              }).toList(),
-              onChanged: _onMethodChanged,
-            ),
-          ),
+        AntiqueDropdown<CastMethod>(
+          value: _selectedMethod,
+          items: _availableMethods
+              .map((m) => AntiqueDropdownItem<CastMethod>(
+                    value: m,
+                    label: m.displayName,
+                  ))
+              .toList(),
+          onChanged: _onMethodChanged,
         ),
       ],
     );
