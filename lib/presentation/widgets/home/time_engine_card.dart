@@ -36,10 +36,14 @@ class _TimeEngineCardState extends State<TimeEngineCard> {
   late DateTime _currentTime;
   late Lunar _lunar;
 
-  // 设计色彩常量
+  // 设计色彩常量（以下均为 TimeEngineCard 专属色，与 antique token 不重叠，保留原值）
+  // ignore: domain-color — 羊皮纸底色，介于 xiangse/xiangseDeep 之间，组件专用
   static const Color _bgPaper = Color(0xFFF5F3EE); // 米白色/羊皮纸色
+  // ignore: domain-color — 深藏青色，非 antique palette，干支文字专属
   static const Color _textDark = Color(0xFF2B3A42); // 深藏青色文字
+  // ignore: domain-color — 便签近白，非 antique palette，时辰便签专属
   static const Color _noteWhite = Color(0xFFFCFCFA); // 便签白
+  // ignore: domain-color — 暖灰分隔线，非 antique palette，组件专用
   static const Color _dividerColor = Color(0xFFE0DDD6); // 分隔线
 
   @override

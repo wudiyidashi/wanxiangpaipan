@@ -16,10 +16,14 @@ class QuickHistoryBar extends StatelessWidget {
   final VoidCallback? onTap;
   final bool isLoading;
 
-  // 设计色彩常量
+  // 设计色彩常量（以下均为 QuickHistoryBar 专属色，与 antique token 不重叠，保留原值）
+  // ignore: domain-color — 暖米色胶囊背景，非 antique palette，组件专用
   static const Color _bgColor = Color(0xFFF4F1EB);
+  // ignore: domain-color — 中深灰正文，介于 huise/xuanse 之间，组件专用
   static const Color _textDark = Color(0xFF4A4A4A);
+  // ignore: domain-color — 中灰辅助文字，介于 huise/huiseLight 之间，组件专用
   static const Color _textMuted = Color(0xFF8A8A8A);
+  // ignore: domain-color — 暖灰边框，非 antique palette，组件专用
   static const Color _borderColor = Color(0xFFE0DDD6);
 
   const QuickHistoryBar({
