@@ -160,8 +160,8 @@ class DaLiuRenUIFactory implements DivinationUIFactory {
 
   @override
   Color? getSystemColor() {
-    // 使用紫色作为大六壬的主题色
-    return const Color(0xFF7B1FA2);
+    // 使用紫檀色作为大六壬的主题色
+    return AppColors.daliurenColor;
   }
 
   // ==================== 私有辅助方法 ====================
@@ -313,7 +313,7 @@ class _DaLiuRenCastScreenState extends State<_DaLiuRenCastScreen> {
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         content: Text(message),
-        backgroundColor: const Color(0xFF8B2020),
+        backgroundColor: AppColors.errorDeep,
       ),
     );
   }
@@ -367,50 +367,21 @@ class _DaLiuRenCastScreenState extends State<_DaLiuRenCastScreen> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const Text(
-          '起课方式',
-          style: TextStyle(
-            fontSize: 11,
-            color: AppColors.guhe,
-            letterSpacing: 1,
-          ),
-        ),
+        Text('起课方式', style: AppTextStyles.antiqueLabel),
         const SizedBox(height: 6),
-        Container(
-          decoration: BoxDecoration(
-            color: Colors.white.withOpacity(0.6),
-            border: Border.all(color: AppColors.danjin),
-            borderRadius: BorderRadius.circular(8),
-          ),
-          padding: const EdgeInsets.symmetric(horizontal: 12),
-          child: DropdownButtonHideUnderline(
-            child: DropdownButton<CastMethod>(
-              value: _selectedMethod,
-              isExpanded: true,
-              dropdownColor: Colors.white,
-              style: const TextStyle(
-                color: AppColors.xuanse,
-                fontSize: 13,
-              ),
-              items: _availableMethods.map((method) {
-                return DropdownMenuItem<CastMethod>(
-                  value: method,
-                  child: Text(
-                    _methodNames[method] ?? method.displayName,
-                    style: const TextStyle(
-                      color: AppColors.xuanse,
-                      fontSize: 13,
-                    ),
-                  ),
-                );
-              }).toList(),
-              onChanged: (method) {
-                if (method != null) {
-                  setState(() => _selectedMethod = method);
-                }
-              },
-            ),
-          ),
+        AntiqueDropdown<CastMethod>(
+          value: _selectedMethod,
+          items: _availableMethods
+              .map((method) => AntiqueDropdownItem<CastMethod>(
+                    value: method,
+                    label: _methodNames[method] ?? method.displayName,
+                  ))
+              .toList(),
+          onChanged: (method) {
+            if (method != null) {
+              setState(() => _selectedMethod = method);
+            }
+          },
         ),
       ],
     );
@@ -599,7 +570,7 @@ class _DaLiuRenCastScreenState extends State<_DaLiuRenCastScreen> {
     );
   }
 
-  /// 仿古风下拉选择器
+  /// 仿古风下拉选择器（字符串专用）
   Widget _buildDropdown(
     String label,
     String value,
@@ -609,46 +580,14 @@ class _DaLiuRenCastScreenState extends State<_DaLiuRenCastScreen> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(
-          label,
-          style: const TextStyle(
-            fontSize: 11,
-            color: AppColors.guhe,
-            letterSpacing: 1,
-          ),
-        ),
+        Text(label, style: AppTextStyles.antiqueLabel),
         const SizedBox(height: 4),
-        Container(
-          decoration: BoxDecoration(
-            color: Colors.white.withOpacity(0.6),
-            border: Border.all(color: AppColors.danjin),
-            borderRadius: BorderRadius.circular(8),
-          ),
-          padding: const EdgeInsets.symmetric(horizontal: 12),
-          child: DropdownButtonHideUnderline(
-            child: DropdownButton<String>(
-              value: value,
-              isExpanded: true,
-              dropdownColor: Colors.white,
-              style: const TextStyle(
-                color: AppColors.xuanse,
-                fontSize: 13,
-              ),
-              items: items.map((item) {
-                return DropdownMenuItem<String>(
-                  value: item,
-                  child: Text(
-                    item,
-                    style: const TextStyle(
-                      color: AppColors.xuanse,
-                      fontSize: 13,
-                    ),
-                  ),
-                );
-              }).toList(),
-              onChanged: onChanged,
-            ),
-          ),
+        AntiqueDropdown<String>(
+          value: value,
+          items: items
+              .map((item) => AntiqueDropdownItem<String>(value: item, label: item))
+              .toList(),
+          onChanged: onChanged,
         ),
       ],
     );
@@ -854,7 +793,7 @@ class _DaLiuRenResultScreen extends StatelessWidget {
                       color: ke.isZeiKe
                           ? AppColors.zhusha
                           : ke.isBiYong
-                              ? const Color(0xFF3A6EA5)
+                              ? AppColors.biyongBlue
                               : AppColors.guhe,
                     ),
                   ),
@@ -1030,7 +969,7 @@ class _DaLiuRenResultScreen extends StatelessWidget {
               style: TextStyle(
                 fontSize: 13,
                 fontWeight: FontWeight.bold,
-                color: Color(0xFF4A7C59),
+                color: AppColors.jishenGreen,
               ),
             ),
             const SizedBox(height: 6),
@@ -1042,15 +981,15 @@ class _DaLiuRenResultScreen extends StatelessWidget {
                   padding:
                       const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
                   decoration: BoxDecoration(
-                    color: const Color(0xFF4A7C59).withOpacity(0.1),
+                    color: AppColors.jishenGreen.withOpacity(0.1),
                     borderRadius: BorderRadius.circular(12),
                     border: Border.all(
-                        color: const Color(0xFF4A7C59).withOpacity(0.3)),
+                        color: AppColors.jishenGreen.withOpacity(0.3)),
                   ),
                   child: Text(
                     shenSha.displayText,
                     style: const TextStyle(
-                        fontSize: 12, color: Color(0xFF4A7C59)),
+                        fontSize: 12, color: AppColors.jishenGreen),
                   ),
                 );
               }).toList(),
