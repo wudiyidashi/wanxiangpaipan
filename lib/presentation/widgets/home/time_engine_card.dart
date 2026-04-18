@@ -107,6 +107,7 @@ class _TimeEngineCardState extends State<TimeEngineCard> {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
+        // 标题文字（域色：自定义深灰，近黑）
         const Text(
           '当前时间',
           style: TextStyle(
@@ -156,6 +157,7 @@ class _TimeEngineCardState extends State<TimeEngineCard> {
       children: text.split('').map((char) {
         return Padding(
           padding: const EdgeInsets.symmetric(vertical: 2),
+          // 干支竖排显示（域色：_textDark）
           child: Text(
             char,
             style: const TextStyle(
@@ -206,6 +208,7 @@ class _TimeEngineCardState extends State<TimeEngineCard> {
         children: text.split('').map((char) {
           return Padding(
             padding: const EdgeInsets.symmetric(vertical: 2),
+            // 时辰便签竖排显示（域色：_textDark，粗字重）
             child: Text(
               char,
               style: const TextStyle(
@@ -230,7 +233,7 @@ class _TimeEngineCardState extends State<TimeEngineCard> {
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       crossAxisAlignment: CrossAxisAlignment.end,
       children: [
-        // 大数字时钟
+        // 大数字时钟（域色：_textDark，超大字号）
         Text(
           '$hour:$minute',
           style: const TextStyle(
@@ -252,6 +255,7 @@ class _TimeEngineCardState extends State<TimeEngineCard> {
               color: AppColors.huiseLight,
             ),
             const SizedBox(height: 2),
+            // 真太阳时状态提示（域色：AppColors.huiseLight）
             Text(
               '真太阳时已校准',
               style: TextStyle(

@@ -292,6 +292,7 @@ class _AISettingsScreenState extends State<AISettingsScreen> {
               child: const Center(
                 child: Text(
                   '请填写 API 地址和 Key 后点击「获取模型」',
+                  // 提示文字（域色：AppColors.guhe + SongTi字体）
                   style: TextStyle(
                     color: AppColors.guhe,
                     fontSize: 13,

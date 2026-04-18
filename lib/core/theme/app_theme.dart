@@ -51,7 +51,9 @@ class AppTheme {
           fontWeight: FontWeight.w600,
           color: AppColors.xuanse,
           letterSpacing: 2,
-        ),
+          fontFamily: AppTextStyles.fontFamilySong,
+          fontFamilyFallback: AppTextStyles.fontFamilyFallback,
+        ), // 基于 antiqueTitle，字重改为 w600
         iconTheme: IconThemeData(
           color: AppColors.xuanse,
           size: 24,
@@ -80,11 +82,14 @@ class AppTheme {
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(8),
           ),
-          textStyle: const TextStyle(
+          textStyle: TextStyle(
             fontSize: 16,
             fontWeight: FontWeight.w500,
             letterSpacing: 1,
-          ),
+            color: Colors.white,
+            fontFamily: AppTextStyles.fontFamilySong,
+            fontFamilyFallback: AppTextStyles.fontFamilyFallback,
+          ), // 基于 antiqueButton，字重改为 w500，字距改为 1
         ),
       ),
 
@@ -93,10 +98,12 @@ class AppTheme {
         style: TextButton.styleFrom(
           foregroundColor: AppColors.dailan,
           padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-          textStyle: const TextStyle(
+          textStyle: TextStyle(
             fontSize: 14,
             fontWeight: FontWeight.w500,
-          ),
+            fontFamily: AppTextStyles.fontFamilySong,
+            fontFamilyFallback: AppTextStyles.fontFamilyFallback,
+          ), // 基于 antiqueLabel，但字号改为 14，字重改为 w500
         ),
       ),
 

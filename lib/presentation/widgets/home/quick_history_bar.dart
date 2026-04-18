@@ -78,6 +78,7 @@ class QuickHistoryBar extends StatelessWidget {
           ),
         ),
         const SizedBox(width: 8),
+        // 加载状态文字（域色：_textMuted）
         Text(
           '加载中...',
           style: TextStyle(fontSize: 13, color: _textMuted),
@@ -100,14 +101,17 @@ class QuickHistoryBar extends StatelessWidget {
             maxLines: 1,
             overflow: TextOverflow.ellipsis,
             text: TextSpan(
+              // 正文文字（域色：_textDark）
               style: const TextStyle(fontSize: 14, color: _textDark),
               children: [
+                // 强调标签（域色：_textDark + bold）
                 const TextSpan(
                   text: '上次排盘：',
                   style: TextStyle(fontWeight: FontWeight.w600),
                 ),
                 TextSpan(text: displayText),
                 if (systemName != null)
+                  // 辅助文字（域色：_textMuted）
                   TextSpan(
                     text: '（$systemName）',
                     style: const TextStyle(color: _textMuted),

@@ -70,6 +70,7 @@ class AppBottomNavBar extends StatelessWidget {
               color: isSelected ? AppColors.xuanse : AppColors.huiseLight,
             ),
             const SizedBox(height: 4),
+            // 导航标签文字（域色：AppColors 条件色，选中/未选中）
             Text(
               label,
               style: TextStyle(

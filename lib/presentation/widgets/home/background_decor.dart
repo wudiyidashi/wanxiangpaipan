@@ -38,6 +38,7 @@ class BackgroundDecor extends StatelessWidget {
       child: IgnorePointer(
         child: Text(
           text,
+          // 背景水印装饰文字（域色：AppColors.xuanse 半透明）
           style: TextStyle(
             fontSize: fontSize,
             fontWeight: FontWeight.w100,
@@ -117,6 +118,7 @@ class _AnimatedBackgroundDecorState extends State<AnimatedBackgroundDecor>
         child: AnimatedBuilder(
           animation: _fadeAnimation,
           builder: (context, child) {
+            // 动画背景水印装饰文字（域色：AppColors.xuanse 动态半透明）
             return Text(
               widget.text,
               style: TextStyle(
