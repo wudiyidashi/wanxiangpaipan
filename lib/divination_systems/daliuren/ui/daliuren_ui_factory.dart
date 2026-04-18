@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:lunar/lunar.dart';
+import '../../../core/theme/app_colors.dart';
+import '../../../core/theme/app_text_styles.dart';
 import '../../../domain/divination_system.dart';
 import '../../../presentation/divination_ui_registry.dart';
 import '../../../presentation/widgets/ai_analysis_widget.dart';
 import '../../../presentation/widgets/extended_info_section.dart';
-import '../../../presentation/widgets/cast/compass_background.dart';
+import '../../../presentation/widgets/antique/antique.dart';
 import '../daliuren_system.dart';
 import '../models/daliuren_result.dart';
 import '../models/chuan.dart';
@@ -320,48 +322,25 @@ class _DaLiuRenCastScreenState extends State<_DaLiuRenCastScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('大六壬起课'),
-        centerTitle: true,
-      ),
-      body: Stack(
-        children: [
-          // 缃色渐变背景
-          Container(
-            decoration: const BoxDecoration(
-              gradient: LinearGradient(
-                begin: Alignment.topCenter,
-                end: Alignment.bottomCenter,
-                colors: [Color(0xFFF7F7F5), Color(0xFFF0EDE8)],
-              ),
-            ),
+    return AntiqueScaffold(
+      showCompass: true,
+      appBar: const AntiqueAppBar(title: '大六壬起课'),
+      body: SafeArea(
+        child: SingleChildScrollView(
+          padding: const EdgeInsets.all(16),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              _buildQuestionSection(),
+              const SizedBox(height: 16),
+              _buildMethodSelector(),
+              const SizedBox(height: 16),
+              const AntiqueDivider(),
+              const SizedBox(height: 20),
+              _buildCastSection(),
+            ],
           ),
-          // 罗盘背景装饰（居中）
-          const Center(child: CompassBackground()),
-          // 主内容
-          SafeArea(
-            child: SingleChildScrollView(
-              padding: const EdgeInsets.all(16),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  _buildQuestionSection(),
-                  const SizedBox(height: 16),
-                  _buildMethodSelector(),
-                  const SizedBox(height: 16),
-                  const Divider(
-                    color: Color(0xFFD4B896),
-                    thickness: 0.5,
-                    height: 1,
-                  ),
-                  const SizedBox(height: 20),
-                  _buildCastSection(),
-                ],
-              ),
-            ),
-          ),
-        ],
+        ),
       ),
     );
   }
@@ -371,40 +350,13 @@ class _DaLiuRenCastScreenState extends State<_DaLiuRenCastScreen> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const Text(
-          '占问事项',
-          style: TextStyle(
-            fontSize: 11,
-            color: Color(0xFF8B7355),
-            letterSpacing: 1,
-          ),
-        ),
+        Text('占问事项', style: AppTextStyles.antiqueLabel),
         const SizedBox(height: 6),
-        Container(
-          decoration: BoxDecoration(
-            color: Colors.white.withOpacity(0.6),
-            border: Border.all(color: const Color(0xFFD4B896)),
-            borderRadius: BorderRadius.circular(8),
-          ),
-          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
-          child: TextField(
-            controller: _questionController,
-            style: const TextStyle(
-              color: Color(0xFF2C2C2C),
-              fontSize: 13,
-            ),
-            decoration: const InputDecoration(
-              border: InputBorder.none,
-              hintText: '请输入您想占问的事项...',
-              hintStyle: TextStyle(
-                color: Color(0xFFA0937E),
-                fontSize: 13,
-              ),
-              isDense: true,
-            ),
-            maxLines: 2,
-            minLines: 1,
-          ),
+        AntiqueTextField(
+          controller: _questionController,
+          hint: '请输入您想占问的事项...',
+          maxLines: 2,
+          minLines: 1,
         ),
       ],
     );
@@ -419,7 +371,7 @@ class _DaLiuRenCastScreenState extends State<_DaLiuRenCastScreen> {
           '起课方式',
           style: TextStyle(
             fontSize: 11,
-            color: Color(0xFF8B7355),
+            color: AppColors.guhe,
             letterSpacing: 1,
           ),
         ),
@@ -427,7 +379,7 @@ class _DaLiuRenCastScreenState extends State<_DaLiuRenCastScreen> {
         Container(
           decoration: BoxDecoration(
             color: Colors.white.withOpacity(0.6),
-            border: Border.all(color: const Color(0xFFD4B896)),
+            border: Border.all(color: AppColors.danjin),
             borderRadius: BorderRadius.circular(8),
           ),
           padding: const EdgeInsets.symmetric(horizontal: 12),
@@ -437,7 +389,7 @@ class _DaLiuRenCastScreenState extends State<_DaLiuRenCastScreen> {
               isExpanded: true,
               dropdownColor: Colors.white,
               style: const TextStyle(
-                color: Color(0xFF2C2C2C),
+                color: AppColors.xuanse,
                 fontSize: 13,
               ),
               items: _availableMethods.map((method) {
@@ -446,7 +398,7 @@ class _DaLiuRenCastScreenState extends State<_DaLiuRenCastScreen> {
                   child: Text(
                     _methodNames[method] ?? method.displayName,
                     style: const TextStyle(
-                      color: Color(0xFF2C2C2C),
+                      color: AppColors.xuanse,
                       fontSize: 13,
                     ),
                   ),
@@ -497,7 +449,7 @@ class _DaLiuRenCastScreenState extends State<_DaLiuRenCastScreen> {
           padding: const EdgeInsets.all(16),
           decoration: BoxDecoration(
             color: Colors.white.withOpacity(0.5),
-            border: Border.all(color: const Color(0xFFD4B896).withOpacity(0.5)),
+            border: Border.all(color: AppColors.danjin.withOpacity(0.5)),
             borderRadius: BorderRadius.circular(8),
           ),
           child: Column(
@@ -506,7 +458,7 @@ class _DaLiuRenCastScreenState extends State<_DaLiuRenCastScreen> {
                 '当前干支',
                 style: TextStyle(
                   fontSize: 12,
-                  color: Color(0xFF8B7355),
+                  color: AppColors.guhe,
                   letterSpacing: 1,
                 ),
               ),
@@ -524,7 +476,12 @@ class _DaLiuRenCastScreenState extends State<_DaLiuRenCastScreen> {
           ),
         ),
         const SizedBox(height: 24),
-        _buildCastButton(),
+        AntiqueButton(
+          label: _isLoading ? '起课中...' : '起课',
+          onPressed: _isLoading ? null : _handleCast,
+          variant: AntiqueButtonVariant.primary,
+          fullWidth: true,
+        ),
       ],
     );
   }
@@ -537,7 +494,7 @@ class _DaLiuRenCastScreenState extends State<_DaLiuRenCastScreen> {
           label,
           style: const TextStyle(
             fontSize: 11,
-            color: Color(0xFF8B7355),
+            color: AppColors.guhe,
           ),
         ),
         const SizedBox(height: 4),
@@ -546,7 +503,7 @@ class _DaLiuRenCastScreenState extends State<_DaLiuRenCastScreen> {
           style: const TextStyle(
             fontSize: 18,
             fontWeight: FontWeight.bold,
-            color: Color(0xFF2C2C2C),
+            color: AppColors.xuanse,
           ),
         ),
       ],
@@ -560,7 +517,7 @@ class _DaLiuRenCastScreenState extends State<_DaLiuRenCastScreen> {
         Container(
           decoration: BoxDecoration(
             color: Colors.white.withOpacity(0.6),
-            border: Border.all(color: const Color(0xFFD4B896)),
+            border: Border.all(color: AppColors.danjin),
             borderRadius: BorderRadius.circular(8),
           ),
           padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
@@ -569,14 +526,14 @@ class _DaLiuRenCastScreenState extends State<_DaLiuRenCastScreen> {
             keyboardType: TextInputType.number,
             inputFormatters: [FilteringTextInputFormatter.digitsOnly],
             style: const TextStyle(
-              color: Color(0xFF2C2C2C),
+              color: AppColors.xuanse,
               fontSize: 13,
             ),
             decoration: const InputDecoration(
               border: InputBorder.none,
               hintText: '请输入任意数字',
               hintStyle: TextStyle(
-                color: Color(0xFFA0937E),
+                color: AppColors.qianhe,
                 fontSize: 13,
               ),
               isDense: true,
@@ -588,11 +545,16 @@ class _DaLiuRenCastScreenState extends State<_DaLiuRenCastScreen> {
           '输入任意数字，除12取余映射地支',
           style: TextStyle(
             fontSize: 11,
-            color: Color(0xFF8B7355),
+            color: AppColors.guhe,
           ),
         ),
         const SizedBox(height: 24),
-        _buildCastButton(),
+        AntiqueButton(
+          label: _isLoading ? '起课中...' : '起课',
+          onPressed: _isLoading ? null : _handleCast,
+          variant: AntiqueButtonVariant.primary,
+          fullWidth: true,
+        ),
       ],
     );
   }
@@ -627,7 +589,12 @@ class _DaLiuRenCastScreenState extends State<_DaLiuRenCastScreen> {
           ],
         ),
         const SizedBox(height: 24),
-        _buildCastButton(),
+        AntiqueButton(
+          label: _isLoading ? '起课中...' : '起课',
+          onPressed: _isLoading ? null : _handleCast,
+          variant: AntiqueButtonVariant.primary,
+          fullWidth: true,
+        ),
       ],
     );
   }
@@ -646,7 +613,7 @@ class _DaLiuRenCastScreenState extends State<_DaLiuRenCastScreen> {
           label,
           style: const TextStyle(
             fontSize: 11,
-            color: Color(0xFF8B7355),
+            color: AppColors.guhe,
             letterSpacing: 1,
           ),
         ),
@@ -654,7 +621,7 @@ class _DaLiuRenCastScreenState extends State<_DaLiuRenCastScreen> {
         Container(
           decoration: BoxDecoration(
             color: Colors.white.withOpacity(0.6),
-            border: Border.all(color: const Color(0xFFD4B896)),
+            border: Border.all(color: AppColors.danjin),
             borderRadius: BorderRadius.circular(8),
           ),
           padding: const EdgeInsets.symmetric(horizontal: 12),
@@ -664,7 +631,7 @@ class _DaLiuRenCastScreenState extends State<_DaLiuRenCastScreen> {
               isExpanded: true,
               dropdownColor: Colors.white,
               style: const TextStyle(
-                color: Color(0xFF2C2C2C),
+                color: AppColors.xuanse,
                 fontSize: 13,
               ),
               items: items.map((item) {
@@ -673,7 +640,7 @@ class _DaLiuRenCastScreenState extends State<_DaLiuRenCastScreen> {
                   child: Text(
                     item,
                     style: const TextStyle(
-                      color: Color(0xFF2C2C2C),
+                      color: AppColors.xuanse,
                       fontSize: 13,
                     ),
                   ),
@@ -696,7 +663,7 @@ class _DaLiuRenCastScreenState extends State<_DaLiuRenCastScreen> {
           padding: const EdgeInsets.all(20),
           decoration: BoxDecoration(
             color: Colors.white.withOpacity(0.5),
-            border: Border.all(color: const Color(0xFFD4B896).withOpacity(0.5)),
+            border: Border.all(color: AppColors.danjin.withOpacity(0.5)),
             borderRadius: BorderRadius.circular(8),
           ),
           child: Column(
@@ -704,66 +671,27 @@ class _DaLiuRenCastScreenState extends State<_DaLiuRenCastScreen> {
               Icon(
                 Icons.casino_outlined,
                 size: 48,
-                color: const Color(0xFFC94A4A).withOpacity(0.7),
+                color: AppColors.zhusha.withOpacity(0.7),
               ),
               const SizedBox(height: 12),
               const Text(
                 '系统随机取地支作为占时',
                 style: TextStyle(
                   fontSize: 13,
-                  color: Color(0xFF8B7355),
+                  color: AppColors.guhe,
                 ),
               ),
             ],
           ),
         ),
         const SizedBox(height: 24),
-        _buildCastButton(),
+        AntiqueButton(
+          label: _isLoading ? '起课中...' : '起课',
+          onPressed: _isLoading ? null : _handleCast,
+          variant: AntiqueButtonVariant.primary,
+          fullWidth: true,
+        ),
       ],
-    );
-  }
-
-  /// 朱砂红起课按钮
-  Widget _buildCastButton() {
-    return GestureDetector(
-      onTap: _isLoading ? null : _handleCast,
-      child: Container(
-        width: double.infinity,
-        height: 52,
-        decoration: BoxDecoration(
-          gradient: const LinearGradient(
-            colors: [Color(0xFFC94A4A), Color(0xFFE07070)],
-          ),
-          borderRadius: BorderRadius.circular(26),
-          boxShadow: [
-            BoxShadow(
-              color: const Color(0xFFC94A4A).withOpacity(0.3),
-              blurRadius: 12,
-              offset: const Offset(0, 4),
-            ),
-          ],
-        ),
-        child: Center(
-          child: _isLoading
-              ? const SizedBox(
-                  width: 24,
-                  height: 24,
-                  child: CircularProgressIndicator(
-                    strokeWidth: 2,
-                    valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
-                  ),
-                )
-              : const Text(
-                  '起课',
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 16,
-                    fontWeight: FontWeight.bold,
-                    letterSpacing: 2,
-                  ),
-                ),
-        ),
-      ),
     );
   }
 }
@@ -774,104 +702,50 @@ class _DaLiuRenResultScreen extends StatelessWidget {
 
   const _DaLiuRenResultScreen({required this.result});
 
-  // 仿古风配色常量
-  static const _zhuShaRed = Color(0xFFC94A4A);
-  static const _danJin = Color(0xFFD4B896);
-  static const _textDark = Color(0xFF2C2C2C);
-  static const _textMuted = Color(0xFF8B7355);
-
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('大六壬排盘结果'),
-        centerTitle: true,
-      ),
-      body: Stack(
-        children: [
-          // 缃色渐变背景
-          Container(
-            decoration: const BoxDecoration(
-              gradient: LinearGradient(
-                begin: Alignment.topCenter,
-                end: Alignment.bottomCenter,
-                colors: [Color(0xFFF7F7F5), Color(0xFFF0EDE8)],
+    return AntiqueScaffold(
+      appBar: const AntiqueAppBar(title: '大六壬排盘结果'),
+      body: SafeArea(
+        child: SingleChildScrollView(
+          padding: const EdgeInsets.all(16),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              ExtendedInfoSection(
+                castTime: result.castTime,
+                lunarInfo: result.lunarInfo,
+                liuShen: const [],
               ),
-            ),
+              const SizedBox(height: 16),
+
+              // 四课（传统 2x2 格子）
+              _buildSiKeSection(),
+              const SizedBox(height: 16),
+
+              // 三传（横排三圆）
+              _buildSanChuanSection(),
+              const SizedBox(height: 16),
+
+              // 天盘
+              _buildTianPanSection(),
+              const SizedBox(height: 16),
+
+              // 神将
+              _buildShenJiangSection(),
+              const SizedBox(height: 16),
+
+              // 神煞
+              _buildShenShaSection(),
+              const SizedBox(height: 16),
+
+              // AI 分析组件
+              AIAnalysisWidget(result: result),
+            ],
           ),
-          // 主内容
-          SingleChildScrollView(
-            padding: const EdgeInsets.all(16),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: [
-                // 基本信息（复用统一组件）
-                ExtendedInfoSection(
-                  castTime: result.castTime,
-                  lunarInfo: result.lunarInfo,
-                  liuShen: const [],
-                ),
-                const SizedBox(height: 16),
-
-                // 四课（传统 2x2 格子）
-                _buildSiKeSection(),
-                const SizedBox(height: 16),
-
-                // 三传（横排三圆）
-                _buildSanChuanSection(),
-                const SizedBox(height: 16),
-
-                // 天盘
-                _buildTianPanSection(),
-                const SizedBox(height: 16),
-
-                // 神将
-                _buildShenJiangSection(),
-                const SizedBox(height: 16),
-
-                // 神煞
-                _buildShenShaSection(),
-                const SizedBox(height: 16),
-
-                // AI 分析组件
-                AIAnalysisWidget(result: result),
-              ],
-            ),
-          ),
-        ],
+        ),
       ),
     );
-  }
-
-  /// 仿古风卡片容器
-  Widget _buildAntiqueCard({required Widget child}) {
-    return Container(
-      padding: const EdgeInsets.all(16),
-      decoration: BoxDecoration(
-        color: Colors.white.withOpacity(0.6),
-        border: Border.all(color: _danJin.withOpacity(0.5)),
-        borderRadius: BorderRadius.circular(8),
-      ),
-      child: child,
-    );
-  }
-
-  /// 仿古风区块标题
-  Widget _buildSectionTitle(String title) {
-    return Text(
-      title,
-      style: const TextStyle(
-        fontSize: 15,
-        fontWeight: FontWeight.bold,
-        color: _zhuShaRed,
-        letterSpacing: 1,
-      ),
-    );
-  }
-
-  /// 仿古风分割线
-  Widget _buildAntiqueDivider() {
-    return Divider(color: _danJin.withOpacity(0.5));
   }
 
   // ==================== 1. 基本信息 → 使用统一的 ExtendedInfoSection ====================
@@ -888,24 +762,24 @@ class _DaLiuRenResultScreen extends StatelessWidget {
     ];
     final keLabels = ['四课', '三课', '二课', '一课'];
 
-    return _buildAntiqueCard(
+    return AntiqueCard(
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          _buildSectionTitle('四课'),
-          _buildAntiqueDivider(),
+          AntiqueSectionTitle(title: '四课'),
+          const AntiqueDivider(),
           const SizedBox(height: 8),
           // 2x2 格子表格
           Table(
             border: TableBorder.all(
-              color: _danJin.withOpacity(0.5),
+              color: AppColors.danjin.withOpacity(0.5),
               width: 1,
             ),
             children: [
               // 标题行
               TableRow(
                 decoration: BoxDecoration(
-                  color: _danJin.withOpacity(0.1),
+                  color: AppColors.danjin.withOpacity(0.1),
                 ),
                 children: keLabels.map((label) {
                   return TableCell(
@@ -917,7 +791,7 @@ class _DaLiuRenResultScreen extends StatelessWidget {
                           style: const TextStyle(
                             fontSize: 13,
                             fontWeight: FontWeight.bold,
-                            color: _textMuted,
+                            color: AppColors.guhe,
                           ),
                         ),
                       ),
@@ -937,7 +811,7 @@ class _DaLiuRenResultScreen extends StatelessWidget {
                           style: TextStyle(
                             fontSize: 16,
                             fontWeight: FontWeight.bold,
-                            color: ke.hasKe ? _zhuShaRed : _textDark,
+                            color: ke.hasKe ? AppColors.zhusha : AppColors.xuanse,
                           ),
                         ),
                       ),
@@ -957,7 +831,7 @@ class _DaLiuRenResultScreen extends StatelessWidget {
                           style: const TextStyle(
                             fontSize: 16,
                             fontWeight: FontWeight.bold,
-                            color: _textDark,
+                            color: AppColors.xuanse,
                           ),
                         ),
                       ),
@@ -978,10 +852,10 @@ class _DaLiuRenResultScreen extends StatelessWidget {
                     style: TextStyle(
                       fontSize: 11,
                       color: ke.isZeiKe
-                          ? _zhuShaRed
+                          ? AppColors.zhusha
                           : ke.isBiYong
                               ? const Color(0xFF3A6EA5)
-                              : _textMuted,
+                              : AppColors.guhe,
                     ),
                   ),
                 ),
@@ -996,12 +870,12 @@ class _DaLiuRenResultScreen extends StatelessWidget {
   // ==================== 3. 三传（横排三圆） ====================
 
   Widget _buildSanChuanSection() {
-    return _buildAntiqueCard(
+    return AntiqueCard(
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          _buildSectionTitle('三传'),
-          _buildAntiqueDivider(),
+          AntiqueSectionTitle(title: '三传'),
+          const AntiqueDivider(),
           const SizedBox(height: 12),
           // 三个圆 + 箭头
           Row(
@@ -1010,12 +884,12 @@ class _DaLiuRenResultScreen extends StatelessWidget {
               _buildChuanCircle('初传', result.sanChuan.chuChuan),
               const Padding(
                 padding: EdgeInsets.only(bottom: 20),
-                child: Icon(Icons.arrow_forward, size: 18, color: _textMuted),
+                child: Icon(Icons.arrow_forward, size: 18, color: AppColors.guhe),
               ),
               _buildChuanCircle('中传', result.sanChuan.zhongChuan),
               const Padding(
                 padding: EdgeInsets.only(bottom: 20),
-                child: Icon(Icons.arrow_forward, size: 18, color: _textMuted),
+                child: Icon(Icons.arrow_forward, size: 18, color: AppColors.guhe),
               ),
               _buildChuanCircle('末传', result.sanChuan.moChuan),
             ],
@@ -1026,15 +900,15 @@ class _DaLiuRenResultScreen extends StatelessWidget {
             child: Container(
               padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
               decoration: BoxDecoration(
-                color: _zhuShaRed.withOpacity(0.1),
+                color: AppColors.zhusha.withOpacity(0.1),
                 borderRadius: BorderRadius.circular(12),
-                border: Border.all(color: _zhuShaRed.withOpacity(0.3)),
+                border: Border.all(color: AppColors.zhusha.withOpacity(0.3)),
               ),
               child: Text(
                 '${result.keTypeName}课',
                 style: const TextStyle(
                   fontSize: 13,
-                  color: _zhuShaRed,
+                  color: AppColors.zhusha,
                   fontWeight: FontWeight.w500,
                 ),
               ),
@@ -1045,7 +919,7 @@ class _DaLiuRenResultScreen extends StatelessWidget {
             Center(
               child: Text(
                 result.sanChuan.keTypeExplanation!,
-                style: const TextStyle(fontSize: 12, color: _textMuted),
+                style: const TextStyle(fontSize: 12, color: AppColors.guhe),
                 textAlign: TextAlign.center,
               ),
             ),
@@ -1062,7 +936,7 @@ class _DaLiuRenResultScreen extends StatelessWidget {
         children: [
           Text(
             label,
-            style: const TextStyle(fontSize: 12, color: _textMuted),
+            style: const TextStyle(fontSize: 12, color: AppColors.guhe),
           ),
           const SizedBox(height: 6),
           Container(
@@ -1073,11 +947,11 @@ class _DaLiuRenResultScreen extends StatelessWidget {
               gradient: const LinearGradient(
                 begin: Alignment.topLeft,
                 end: Alignment.bottomRight,
-                colors: [_zhuShaRed, Color(0xFFE07070)],
+                colors: [AppColors.zhusha, AppColors.zhushaLight],
               ),
               boxShadow: [
                 BoxShadow(
-                  color: _zhuShaRed.withOpacity(0.3),
+                  color: AppColors.zhusha.withOpacity(0.3),
                   blurRadius: 6,
                   offset: const Offset(0, 2),
                 ),
@@ -1097,7 +971,7 @@ class _DaLiuRenResultScreen extends StatelessWidget {
           const SizedBox(height: 4),
           Text(
             chuan.liuQin,
-            style: const TextStyle(fontSize: 12, color: _textMuted),
+            style: const TextStyle(fontSize: 12, color: AppColors.guhe),
           ),
         ],
       ),
@@ -1107,12 +981,12 @@ class _DaLiuRenResultScreen extends StatelessWidget {
   // ==================== 4. 天盘 ====================
 
   Widget _buildTianPanSection() {
-    return _buildAntiqueCard(
+    return AntiqueCard(
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          _buildSectionTitle('天盘'),
-          _buildAntiqueDivider(),
+          AntiqueSectionTitle(title: '天盘'),
+          const AntiqueDivider(),
           const SizedBox(height: 4),
           _buildAntiqueInfoRow('月将',
               '${result.tianPan.yueJiang}（${result.tianPan.yueJiangName}）'),
@@ -1125,12 +999,12 @@ class _DaLiuRenResultScreen extends StatelessWidget {
   // ==================== 5. 神将 ====================
 
   Widget _buildShenJiangSection() {
-    return _buildAntiqueCard(
+    return AntiqueCard(
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          _buildSectionTitle('十二神将'),
-          _buildAntiqueDivider(),
+          AntiqueSectionTitle(title: '十二神将'),
+          const AntiqueDivider(),
           const SizedBox(height: 4),
           _buildAntiqueInfoRow('贵人',
               '${result.shenJiangConfig.guiRenPosition}（${result.shenJiangConfig.guiRenTypeDescription}）'),
@@ -1143,12 +1017,12 @@ class _DaLiuRenResultScreen extends StatelessWidget {
   // ==================== 6. 神煞 ====================
 
   Widget _buildShenShaSection() {
-    return _buildAntiqueCard(
+    return AntiqueCard(
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          _buildSectionTitle('神煞'),
-          _buildAntiqueDivider(),
+          AntiqueSectionTitle(title: '神煞'),
+          const AntiqueDivider(),
           if (result.shenShaList.jiShen.isNotEmpty) ...[
             const SizedBox(height: 8),
             const Text(
@@ -1190,7 +1064,7 @@ class _DaLiuRenResultScreen extends StatelessWidget {
               style: TextStyle(
                 fontSize: 13,
                 fontWeight: FontWeight.bold,
-                color: _zhuShaRed,
+                color: AppColors.zhusha,
               ),
             ),
             const SizedBox(height: 6),
@@ -1202,13 +1076,13 @@ class _DaLiuRenResultScreen extends StatelessWidget {
                   padding:
                       const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
                   decoration: BoxDecoration(
-                    color: _zhuShaRed.withOpacity(0.1),
+                    color: AppColors.zhusha.withOpacity(0.1),
                     borderRadius: BorderRadius.circular(12),
-                    border: Border.all(color: _zhuShaRed.withOpacity(0.3)),
+                    border: Border.all(color: AppColors.zhusha.withOpacity(0.3)),
                   ),
                   child: Text(
                     shenSha.displayText,
-                    style: const TextStyle(fontSize: 12, color: _zhuShaRed),
+                    style: const TextStyle(fontSize: 12, color: AppColors.zhusha),
                   ),
                 );
               }).toList(),
@@ -1231,13 +1105,13 @@ class _DaLiuRenResultScreen extends StatelessWidget {
             width: 48,
             child: Text(
               label,
-              style: const TextStyle(fontSize: 13, color: _textMuted),
+              style: const TextStyle(fontSize: 13, color: AppColors.guhe),
             ),
           ),
           Expanded(
             child: Text(
               value,
-              style: const TextStyle(fontSize: 13, color: _textDark),
+              style: const TextStyle(fontSize: 13, color: AppColors.xuanse),
             ),
           ),
         ],
