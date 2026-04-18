@@ -56,14 +56,11 @@ class DaLiuRenUIFactory implements DivinationUIFactory {
                 children: [
                   Text(
                     '${result.keTypeName}课',
-                    style: const TextStyle(
-                      fontSize: 18,
-                      fontWeight: FontWeight.bold,
-                    ),
+                    style: AppTextStyles.antiqueTitle,
                   ),
                   Text(
                     _formatDateTime(result.castTime),
-                    style: TextStyle(
+                    style: AppTextStyles.antiqueLabel.copyWith(
                       fontSize: 12,
                       color: Colors.grey[600],
                     ),
@@ -87,7 +84,7 @@ class DaLiuRenUIFactory implements DivinationUIFactory {
               const SizedBox(height: 8),
               Text(
                 '${result.lunarInfo.yearGanZhi}年 ${result.lunarInfo.monthGanZhi}月 ${result.lunarInfo.riGanZhi}日',
-                style: TextStyle(
+                style: AppTextStyles.antiqueLabel.copyWith(
                   fontSize: 12,
                   color: Colors.grey[600],
                 ),
@@ -127,6 +124,7 @@ class DaLiuRenUIFactory implements DivinationUIFactory {
       ),
       child: Text(
         text,
+        // 域色：_buildTag 动态颜色参数，保留 inline
         style: TextStyle(
           fontSize: 12,
           color: color ?? Colors.purple,
@@ -372,13 +370,9 @@ class _DaLiuRenCastScreenState extends State<_DaLiuRenCastScreen> {
           ),
           child: Column(
             children: [
-              const Text(
+              Text(
                 '当前干支',
-                style: TextStyle(
-                  fontSize: 12,
-                  color: AppColors.guhe,
-                  letterSpacing: 1,
-                ),
+                style: AppTextStyles.antiqueLabel.copyWith(fontSize: 12),
               ),
               const SizedBox(height: 12),
               Row(
@@ -410,19 +404,12 @@ class _DaLiuRenCastScreenState extends State<_DaLiuRenCastScreen> {
       children: [
         Text(
           label,
-          style: const TextStyle(
-            fontSize: 11,
-            color: AppColors.guhe,
-          ),
+          style: AppTextStyles.antiqueLabel,
         ),
         const SizedBox(height: 4),
         Text(
           ganZhi,
-          style: const TextStyle(
-            fontSize: 18,
-            fontWeight: FontWeight.bold,
-            color: AppColors.xuanse,
-          ),
+          style: AppTextStyles.antiqueTitle,
         ),
       ],
     );
@@ -443,28 +430,21 @@ class _DaLiuRenCastScreenState extends State<_DaLiuRenCastScreen> {
             controller: _numberController,
             keyboardType: TextInputType.number,
             inputFormatters: [FilteringTextInputFormatter.digitsOnly],
-            style: const TextStyle(
-              color: AppColors.xuanse,
-              fontSize: 13,
-            ),
-            decoration: const InputDecoration(
+            style: AppTextStyles.antiqueBody,
+            decoration: InputDecoration(
               border: InputBorder.none,
               hintText: '请输入任意数字',
-              hintStyle: TextStyle(
+              hintStyle: AppTextStyles.antiqueBody.copyWith(
                 color: AppColors.qianhe,
-                fontSize: 13,
               ),
               isDense: true,
             ),
           ),
         ),
         const SizedBox(height: 8),
-        const Text(
+        Text(
           '输入任意数字，除12取余映射地支',
-          style: TextStyle(
-            fontSize: 11,
-            color: AppColors.guhe,
-          ),
+          style: AppTextStyles.antiqueLabel,
         ),
         const SizedBox(height: 24),
         AntiqueButton(
@@ -560,10 +540,9 @@ class _DaLiuRenCastScreenState extends State<_DaLiuRenCastScreen> {
                 color: AppColors.zhusha.withOpacity(0.7),
               ),
               const SizedBox(height: 12),
-              const Text(
+              Text(
                 '系统随机取地支作为占时',
-                style: TextStyle(
-                  fontSize: 13,
+                style: AppTextStyles.antiqueBody.copyWith(
                   color: AppColors.guhe,
                 ),
               ),
@@ -674,8 +653,7 @@ class _DaLiuRenResultScreen extends StatelessWidget {
                       child: Center(
                         child: Text(
                           label,
-                          style: const TextStyle(
-                            fontSize: 13,
+                          style: AppTextStyles.antiqueBody.copyWith(
                             fontWeight: FontWeight.bold,
                             color: AppColors.guhe,
                           ),
@@ -694,6 +672,7 @@ class _DaLiuRenResultScreen extends StatelessWidget {
                       child: Center(
                         child: Text(
                           ke.shangShen,
+                          // 域色：贼课(zhusha)/正常(xuanse) 动态区分
                           style: TextStyle(
                             fontSize: 16,
                             fontWeight: FontWeight.bold,
@@ -714,10 +693,8 @@ class _DaLiuRenResultScreen extends StatelessWidget {
                       child: Center(
                         child: Text(
                           ke.xiaShen,
-                          style: const TextStyle(
+                          style: AppTextStyles.antiqueTitle.copyWith(
                             fontSize: 16,
-                            fontWeight: FontWeight.bold,
-                            color: AppColors.xuanse,
                           ),
                         ),
                       ),
@@ -735,6 +712,7 @@ class _DaLiuRenResultScreen extends StatelessWidget {
                 child: Center(
                   child: Text(
                     ke.wuXingRelation ?? '',
+                    // 域色：贼课(zhusha)/比用(biyongBlue)/普通(guhe) 三态语义色
                     style: TextStyle(
                       fontSize: 11,
                       color: ke.isZeiKe
@@ -792,6 +770,7 @@ class _DaLiuRenResultScreen extends StatelessWidget {
               ),
               child: Text(
                 '${result.keTypeName}课',
+                // 域色：课体标识，朱砂语义色
                 style: const TextStyle(
                   fontSize: 13,
                   color: AppColors.zhusha,
@@ -805,7 +784,7 @@ class _DaLiuRenResultScreen extends StatelessWidget {
             Center(
               child: Text(
                 result.sanChuan.keTypeExplanation!,
-                style: const TextStyle(fontSize: 12, color: AppColors.guhe),
+                style: AppTextStyles.antiqueLabel.copyWith(fontSize: 12),
                 textAlign: TextAlign.center,
               ),
             ),
@@ -822,7 +801,7 @@ class _DaLiuRenResultScreen extends StatelessWidget {
         children: [
           Text(
             label,
-            style: const TextStyle(fontSize: 12, color: AppColors.guhe),
+            style: AppTextStyles.antiqueLabel.copyWith(fontSize: 12),
           ),
           const SizedBox(height: 6),
           Container(
@@ -846,6 +825,7 @@ class _DaLiuRenResultScreen extends StatelessWidget {
             child: Center(
               child: Text(
                 chuan.diZhi,
+                // 域色：三传圆圈白字，渐变背景下保持对比
                 style: const TextStyle(
                   fontSize: 18,
                   fontWeight: FontWeight.bold,
@@ -857,7 +837,7 @@ class _DaLiuRenResultScreen extends StatelessWidget {
           const SizedBox(height: 4),
           Text(
             chuan.liuQin,
-            style: const TextStyle(fontSize: 12, color: AppColors.guhe),
+            style: AppTextStyles.antiqueLabel.copyWith(fontSize: 12),
           ),
         ],
       ),
@@ -913,6 +893,7 @@ class _DaLiuRenResultScreen extends StatelessWidget {
             const SizedBox(height: 8),
             const Text(
               '吉神',
+              // 域色：吉神绿语义色
               style: TextStyle(
                 fontSize: 13,
                 fontWeight: FontWeight.bold,
@@ -935,6 +916,7 @@ class _DaLiuRenResultScreen extends StatelessWidget {
                   ),
                   child: Text(
                     shenSha.displayText,
+                    // 域色：吉神绿语义色
                     style: const TextStyle(
                         fontSize: 12, color: AppColors.jishenGreen),
                   ),
@@ -947,6 +929,7 @@ class _DaLiuRenResultScreen extends StatelessWidget {
             const SizedBox(height: 8),
             const Text(
               '凶神',
+              // 域色：凶神朱砂语义色
               style: TextStyle(
                 fontSize: 13,
                 fontWeight: FontWeight.bold,
@@ -968,6 +951,7 @@ class _DaLiuRenResultScreen extends StatelessWidget {
                   ),
                   child: Text(
                     shenSha.displayText,
+                    // 域色：凶神朱砂语义色
                     style: const TextStyle(fontSize: 12, color: AppColors.zhusha),
                   ),
                 );
@@ -991,13 +975,15 @@ class _DaLiuRenResultScreen extends StatelessWidget {
             width: 48,
             child: Text(
               label,
-              style: const TextStyle(fontSize: 13, color: AppColors.guhe),
+              style: AppTextStyles.antiqueBody.copyWith(
+                color: AppColors.guhe,
+              ),
             ),
           ),
           Expanded(
             child: Text(
               value,
-              style: const TextStyle(fontSize: 13, color: AppColors.xuanse),
+              style: AppTextStyles.antiqueBody,
             ),
           ),
         ],
