@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_text_styles.dart';
+import '../antique/antique_text_field.dart';
 import 'cast_button.dart';
 
 /// 数字卦起卦区
@@ -48,44 +49,26 @@ class _NumberCastSectionState extends State<NumberCastSection> {
           style: AppTextStyles.antiqueLabel,
         ),
         const SizedBox(height: 8),
-        Container(
-          decoration: BoxDecoration(
-            color: Colors.white.withOpacity(0.6),
-            border: Border.all(color: AppColors.danjinDeep.withOpacity(0x4D / 255)),
-            borderRadius: BorderRadius.circular(8),
+        AntiqueTextField(
+          controller: _controller,
+          hint: '如：168',
+          keyboardType: TextInputType.number,
+          inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+          textAlign: TextAlign.center,
+          // 0xFF2B4570: 阴阳爻线/卦文蓝，域色，保留内联
+          style: const TextStyle(
+            color: Color(0xFF2B4570), // 卦文蓝，域色
+            fontSize: 20,
+            fontWeight: FontWeight.bold,
+            letterSpacing: 4,
           ),
-          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
-          child: TextField(
-            controller: _controller,
-            keyboardType: TextInputType.number,
-            inputFormatters: [FilteringTextInputFormatter.digitsOnly],
-            // 0xFF2B4570: 阴阳爻线/卦文蓝，域色，保留内联
-            style: const TextStyle(
-              color: Color(0xFF2B4570), // 卦文蓝，域色
-              fontSize: 20,
-              fontWeight: FontWeight.bold,
-              letterSpacing: 4,
-            ),
-            textAlign: TextAlign.center,
-            decoration: const InputDecoration(
-              border: InputBorder.none,
-              enabledBorder: InputBorder.none,
-              focusedBorder: InputBorder.none,
-              errorBorder: InputBorder.none,
-              disabledBorder: InputBorder.none,
-              focusedErrorBorder: InputBorder.none,
-              filled: false,
-              hintText: '如：168',
-              hintStyle: TextStyle(
-                color: AppColors.qianhe,
-                fontSize: 16,
-                fontWeight: FontWeight.normal,
-                letterSpacing: 0,
-              ),
-              isDense: true,
-            ),
-            onChanged: (_) => setState(() {}),
+          hintStyle: const TextStyle(
+            color: AppColors.qianhe,
+            fontSize: 16,
+            fontWeight: FontWeight.normal,
+            letterSpacing: 0,
           ),
+          onChanged: (_) => setState(() {}),
         ),
         const SizedBox(height: 12),
         Text(

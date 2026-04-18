@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_text_styles.dart';
+import '../antique/antique_text_field.dart';
 import 'cast_button.dart';
 
 /// 报数卦起卦区
@@ -93,40 +94,24 @@ class _ReportNumberCastSectionState extends State<ReportNumberCastSection> {
         ),
         const SizedBox(width: 8),
         Expanded(
-          child: Container(
+          child: SizedBox(
             height: 44,
-            decoration: BoxDecoration(
-              color: Colors.white.withOpacity(0.6),
-              border: Border.all(color: AppColors.danjinDeep.withOpacity(0x4D / 255)),
-              borderRadius: BorderRadius.circular(8),
-            ),
-            padding: const EdgeInsets.symmetric(horizontal: 12),
-            child: TextField(
+            child: AntiqueTextField(
               controller: controller,
+              hint: hint,
               keyboardType: TextInputType.number,
               inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+              textAlign: TextAlign.center,
               // 0xFF2B4570: 阴阳爻线/卦文蓝，域色，保留内联
               style: const TextStyle(
                 color: Color(0xFF2B4570), // 卦文蓝，域色
                 fontSize: 16,
                 fontWeight: FontWeight.bold,
               ),
-              textAlign: TextAlign.center,
-              decoration: InputDecoration(
-                border: InputBorder.none,
-                enabledBorder: InputBorder.none,
-                focusedBorder: InputBorder.none,
-                errorBorder: InputBorder.none,
-                disabledBorder: InputBorder.none,
-                focusedErrorBorder: InputBorder.none,
-                filled: false,
-                hintText: hint,
-                hintStyle: TextStyle(
-                  color: AppColors.qianhe,
-                  fontSize: 14,
-                  fontWeight: FontWeight.normal,
-                ),
-                isDense: true,
+              hintStyle: const TextStyle(
+                color: AppColors.qianhe,
+                fontSize: 14,
+                fontWeight: FontWeight.normal,
               ),
               onChanged: (_) => setState(() {}),
             ),
