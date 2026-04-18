@@ -3,6 +3,8 @@ import '../../../domain/services/gua_calculator.dart';
 import '../../../domain/services/liushen_service.dart';
 import '../../../domain/services/shared/lunar_service.dart';
 import '../../../domain/services/qigua_service.dart';
+import '../../widgets/antique/antique.dart';
+import '../../../core/theme/app_text_styles.dart';
 
 /// 功能测试界面
 class TestScreen extends StatefulWidget {
@@ -102,46 +104,41 @@ ${gua.yaos.asMap().entries.map((e) {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('功能测试'),
-      ),
+    return AntiqueScaffold(
+      appBar: const AntiqueAppBar(title: '功能测试'),
       body: Padding(
         padding: const EdgeInsets.all(16),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            ElevatedButton(
+            AntiqueButton(
+              label: '测试农历计算',
               onPressed: _testLunar,
-              child: const Text('测试农历计算'),
             ),
             const SizedBox(height: 8),
-            ElevatedButton(
+            AntiqueButton(
+              label: '测试六神计算',
               onPressed: _testLiuShen,
-              child: const Text('测试六神计算'),
             ),
             const SizedBox(height: 8),
-            ElevatedButton(
+            AntiqueButton(
+              label: '测试起卦功能',
               onPressed: _testQiGua,
-              child: const Text('测试起卦功能'),
             ),
             const SizedBox(height: 8),
-            ElevatedButton(
+            AntiqueButton(
+              label: '测试卦象计算',
               onPressed: _testGuaCalculator,
-              child: const Text('测试卦象计算'),
             ),
             const SizedBox(height: 24),
             Expanded(
-              child: Container(
-                padding: const EdgeInsets.all(16),
-                decoration: BoxDecoration(
-                  border: Border.all(color: Colors.grey),
-                  borderRadius: BorderRadius.circular(8),
-                ),
+              child: AntiqueCard(
                 child: SingleChildScrollView(
                   child: Text(
                     _result,
-                    style: const TextStyle(fontFamily: 'monospace'),
+                    style: AppTextStyles.antiqueBody.copyWith(
+                      fontFamily: 'monospace',
+                    ),
                   ),
                 ),
               ),
