@@ -6,6 +6,24 @@
 
 ---
 
+## 2026-04 历史记录页体验优化
+
+### Specs
+
+- [`specs/2026-04-18-history-screen-design.md`](specs/2026-04-18-history-screen-design.md) — 历史记录页整体信息架构、状态页、检索能力与 `chromeless` 约束（框架）
+- [`specs/2026-04-18-history-card-visual-design.md`](specs/2026-04-18-history-card-visual-design.md) — 历史记录卡片视觉规格（美学方向、背景图水印、5 层 typography、共享组件骨架）
+
+### Plans
+
+- **Plan E1 — 历史页升级 Phase 1**（[`plans/2026-04-18-history-screen-phase-1.md`](plans/2026-04-18-history-screen-phase-1.md)）
+  - 搜索 / 排序 / 时间分组 / 统一筛选状态条 / 四类状态页
+  - 状态：✅ 已落地（commit `df62c9d`）
+  - Bug fix 联动：DLR 不保存记录 → 统一 5 层卡片骨架（commits `29c5687` / `a92fd95`）
+
+主题：从"记录列表工具"升级为"跨术数历史检索与回顾中心"。视觉设计 spec 的实现 plan 待后续拆。
+
+---
+
 ## 2026-04 仿古风设计体系（Antique UI System）
 
 - **Spec**: [`specs/2026-04-17-unified-antique-ui-design.md`](specs/2026-04-17-unified-antique-ui-design.md) — 全应用统一仿古风的设计规范（色板/字体/组件/装饰/迁移路径）
