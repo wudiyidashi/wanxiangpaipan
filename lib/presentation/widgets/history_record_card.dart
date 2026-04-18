@@ -12,8 +12,10 @@ import 'antique/antique.dart';
 
 /// 历史记录卡片（跨术数统一骨架）。
 ///
-/// 5 层信息：占问 / 时间 / 结果摘要 / 系统 tag / 方式 tag。
-/// 背景为系统对应的 antique 底图 @ 28% opacity。
+/// 5 层信息分布于左右两列：
+/// - 左列：占问（顶）/ 系统 tag + 方式 tag（底）
+/// - 右列：时间（顶）/ 结果摘要（底）
+/// 两列 spaceBetween 形成水平双重心；背景为系统 antique 底图 @ 28% opacity。
 /// 见 `docs/superpowers/specs/2026-04-18-history-card-visual-design.md`。
 class HistoryRecordCard extends StatelessWidget {
   const HistoryRecordCard({
@@ -66,57 +68,80 @@ class HistoryRecordCard extends StatelessWidget {
               ),
             Padding(
               padding: const EdgeInsets.all(16),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  // Layer 1: 占问
-                  ConstrainedBox(
-                    constraints: const BoxConstraints(minHeight: 24),
-                    child: Text(
-                      question,
-                      style: AppTextStyles.antiqueTitle.copyWith(
-                        fontSize: 17,
-                        letterSpacing: 1,
-                        height: 1.4,
+              child: IntrinsicHeight(
+                child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    // 左列：占问（顶）+ tags（底）
+                    Expanded(
+                      flex: 5,
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          // Layer 1: 占问
+                          ConstrainedBox(
+                            constraints: const BoxConstraints(minHeight: 24),
+                            child: Text(
+                              question,
+                              style: AppTextStyles.antiqueTitle.copyWith(
+                                fontSize: 17,
+                                letterSpacing: 1,
+                                height: 1.4,
+                              ),
+                              maxLines: 2,
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                          ),
+                          const SizedBox(height: 14),
+                          // Layer 4+5: tags
+                          Wrap(
+                            spacing: 8,
+                            runSpacing: 4,
+                            children: [
+                              _buildSystemTag(),
+                              _buildMethodTag(),
+                            ],
+                          ),
+                        ],
                       ),
-                      maxLines: 2,
-                      overflow: TextOverflow.ellipsis,
                     ),
-                  ),
-                  const SizedBox(height: 6),
-                  // Layer 2: 时间
-                  Text(
-                    _formatDateTime(result.castTime),
-                    style: AppTextStyles.antiqueLabel.copyWith(
-                      color: AppColors.guhe,
-                      letterSpacing: 0.5,
+                    const SizedBox(width: 12),
+                    // 右列：时间（顶）+ 结果摘要（底）
+                    Expanded(
+                      flex: 4,
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.end,
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          // Layer 2: 时间
+                          Text(
+                            _formatDateTime(result.castTime),
+                            style: AppTextStyles.antiqueLabel.copyWith(
+                              color: AppColors.guhe,
+                              letterSpacing: 0.5,
+                            ),
+                            textAlign: TextAlign.right,
+                          ),
+                          const SizedBox(height: 8),
+                          // Layer 3: 结果摘要
+                          Text(
+                            _summary(result),
+                            style: AppTextStyles.antiqueBody.copyWith(
+                              fontSize: 15,
+                              fontWeight: FontWeight.bold,
+                              color: AppColors.zhusha,
+                              letterSpacing: 0.5,
+                            ),
+                            textAlign: TextAlign.right,
+                            maxLines: 2,
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                        ],
+                      ),
                     ),
-                  ),
-                  const SizedBox(height: 4),
-                  // Layer 3: 结果摘要
-                  Text(
-                    _summary(result),
-                    style: AppTextStyles.antiqueBody.copyWith(
-                      fontSize: 15,
-                      fontWeight: FontWeight.bold,
-                      color: AppColors.zhusha,
-                      letterSpacing: 0.5,
-                    ),
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
-                  ),
-                  const SizedBox(height: 14),
-                  // Layer 4+5: tags
-                  Wrap(
-                    spacing: 8,
-                    runSpacing: 4,
-                    children: [
-                      _buildSystemTag(),
-                      _buildMethodTag(),
-                    ],
-                  ),
-                ],
+                  ],
+                ),
               ),
             ),
           ],

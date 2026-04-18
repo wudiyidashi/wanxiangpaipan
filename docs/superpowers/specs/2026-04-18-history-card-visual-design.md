@@ -40,23 +40,34 @@
 
 ## 3. 总体结构
 
+水平双重心：左列承载占问 + tag，右列承载时间 + 结果摘要。
+
 ```
-┌──────────────────────────────────────────┐
-│ 占问事项（17pt bold 玄色 ls:1）            │
-│ 若空：同高空行                             │
-│                                           │
-│ 2026-04-18 14:32（11pt guhe）              │
-│                                           │
-│ 乾为天 → 天风姤（15pt bold 朱砂 ls:0.5）   │
-│                                           │
-│ [六爻]  [时间卦]   …铜钱背景 @28%…         │
-└──────────────────────────────────────────┘
+┌──────────────────────────────────────────────┐
+│                                              │
+│ 占问事项（左, 17pt bold 玄色）  2026-04-18   │
+│ 两行 + ellipsis                  14:32（右） │
+│                                              │
+│                            乾为天 → 天风姤   │
+│                            （右对齐 15pt     │
+│                              bold 朱砂）     │
+│                                              │
+│ [六爻] [时间卦]                …图@28%…     │
+└──────────────────────────────────────────────┘
    ↑ AntiqueCard (padding: EdgeInsets.zero)
    └─ ClipRRect (radius: 8)
       └─ Stack
          ├─ Positioned.fill: Image @ 28% opacity
-         └─ Padding(16): Column (5 layers)
+         └─ Padding(16): IntrinsicHeight · Row
+            ├─ Expanded(flex 5): 左列 Column
+            │    · spaceBetween
+            │    · [L1 占问] ─── [L4+L5 tags]
+            └─ Expanded(flex 4): 右列 Column
+                 · spaceBetween, crossAxisEnd
+                 · [L2 时间] ─── [L3 结果摘要]
 ```
+
+两列 `mainAxisAlignment: spaceBetween` + `IntrinsicHeight` 保证：问题 1 行或 2 行时，左右两列同高；左底 tag 与右底摘要自然对齐在同一水平线。
 
 **列表级节奏**：
 - 水平边距：16px
@@ -76,17 +87,23 @@
 | L4 系统 tag label | `fontSize: 10, fontWeight: w500, letterSpacing: 0.5` |
 | L5 方式 tag label | `fontSize: 10, fontWeight: normal, letterSpacing: 0.5` |
 
-### 4.2 Column 行间距
+### 4.2 两列节奏
 
+**左列（`Expanded flex: 5`，`crossAxis: start`，`mainAxis: spaceBetween`）**
 ```
-[L1 占问]         ← minHeight: 24（空时也占这么高）
-  ↓ SizedBox(6)
-[L2 时间]
-  ↓ SizedBox(4)
-[L3 结果摘要]
-  ↓ SizedBox(14)
-[L4+L5 tags] (Wrap spacing: 8, runSpacing: 4)
+[L1 占问]                ← minHeight: 24（空时也占这么高），maxLines: 2 + ellipsis
+   ⇩ SizedBox(14)（question 1 行时由 spaceBetween 补齐额外空隙）
+[L4+L5 tags] Wrap(spacing: 8, runSpacing: 4)
 ```
+
+**右列（`Expanded flex: 4`，`crossAxis: end`，`mainAxis: spaceBetween`）**
+```
+[L2 时间]（textAlign: right）
+   ⇩ SizedBox(8)（question 1 行时由 spaceBetween 补齐额外空隙）
+[L3 结果摘要]（textAlign: right, maxLines: 2 + ellipsis）
+```
+
+两列之间水平间距：`SizedBox(width: 12)`。`IntrinsicHeight` 保证列高一致，`spaceBetween` 把剩余空间塞到中段，形成"顶上贴顶、底下贴底"的双重心节律。
 
 ### 4.3 Tag 色规格
 
@@ -327,7 +344,7 @@ Plan E2 的 Phase 2 接口重构可保留作为未来优化，但不是必需—
 3. ✅ 5 层信息按第 4 节 token 渲染
 4. ✅ 背景图 `Alignment.bottomRight` + 28% opacity 覆盖（4 种系统 + fallback）
 5. ✅ 空占问不显示 placeholder 字，保留 24px 占位
-6. ✅ 长占问 2 行 + ellipsis；长摘要 1 行 + ellipsis
+6. ✅ 长占问 2 行 + ellipsis；长摘要 2 行 + ellipsis（右列宽，允许换行）
 7. ✅ tag 颜色按系统区分，方式 tag 统一 guhe
 8. ✅ `flutter analyze` 干净；10 个 widget tests 全过
 9. ✅ 实模拟器走查：4 种术数的历史记录视觉一致、图文共生可读
