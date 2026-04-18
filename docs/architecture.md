@@ -3,7 +3,23 @@
 **版本**: 1.0
 **创建日期**: 2025-01-14
 **架构师**: Winston
-**状态**: 草稿
+**状态**: 草稿（Epic-1 时代快照）
+
+> ⚠️ **历史参考文档，非当前事实来源**
+>
+> 本文档记录的是 **六爻单系统时代** 的详细架构（2025-01 撰写），下列内容已被后续重构**替代**：
+>
+> - `CastViewModel` / `HistoryViewModel` / `GuaResultViewModel` → 已被 `DivinationViewModel<T>` 泛型基类替代
+> - `CoinCastScreen` / `TimeCastScreen` / `ManualCastScreen` → 已被 `UnifiedCastScreen` + `DivinationUIFactory` 模式替代
+> - `GuaRecord` 表 → 已与多态 `DivinationRecords` 表并存（零迁移）
+> - 文中描述"只有六爻"→ 当前**大六壬**已完整实现，AI 解卦集成于 `lib/ai/`
+>
+> **当前架构事实请以下列文件为准：**
+> - [`README.md`](../README.md) — 项目概览与能力矩阵
+> - [`CLAUDE.md`](../CLAUDE.md) — 多术数系统架构 + 开发规约
+> - [`docs/superpowers/`](superpowers/README.md) — Epic 后续工程的 spec 与 plan 归档
+>
+> 本文档保留作为**叙事上下文**——了解数据模型、Domain 服务、Drift 表设计、核心算法等细节时仍可参考；但**不要**把其中的类名、目录结构、Phase 规划当作现状。
 
 ---
 

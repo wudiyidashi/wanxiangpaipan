@@ -6,7 +6,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 This is a **Flutter** application for **多术数系统平台** (Multi-Divination System Platform). The app supports multiple Chinese divination systems including 六爻 (Liu Yao), 大六壬 (Da Liu Ren), 小六壬 (Xiao Liu Ren), and 梅花易数 (Mei Hua Yi Shu).
 
-**Current Status**: 六爻系统已完整实现，其他系统为骨架（isEnabled=false）
+**Current Status**: 六爻系统和大六壬系统均已完整实现；小六壬、梅花易数为骨架（isEnabled=false）。AI 解卦（OpenAI 兼容）已集成于 `lib/ai/`。
 
 ## Architecture
 
@@ -31,17 +31,26 @@ The project follows **Multi-Divination System Architecture** with **MVVM Pattern
 │  Divination System Layer (lib/divination_systems/)          │
 │  ├─ DivinationSystem (接口)                                 │
 │  ├─ DivinationRegistry (注册表)                             │
-│  ├─ LiuYaoSystem (六爻实现)                                 │
-│  ├─ DaLiuRenSystem (大六壬骨架)                             │
-│  ├─ XiaoLiuRenSystem (小六壬骨架)                           │
-│  └─ MeiHuaSystem (梅花易数骨架)                             │
+│  ├─ LiuYaoSystem ✅ (六爻完整实现)                          │
+│  ├─ DaLiuRenSystem ✅ (大六壬完整实现)                      │
+│  ├─ XiaoLiuRenSystem 🚧 (小六壬骨架)                        │
+│  └─ MeiHuaSystem 🚧 (梅花易数骨架)                          │
 └─────────────────────────────────────────────────────────────┘
                           ↓ uses
 ┌─────────────────────────────────────────────────────────────┐
 │  UI Factory Layer (lib/presentation/)                       │
 │  ├─ DivinationUIFactory (接口)                              │
 │  ├─ DivinationUIRegistry (注册表)                           │
-│  └─ LiuYaoUIFactory (六爻 UI 工厂)                          │
+│  ├─ LiuYaoUIFactory (六爻 UI 工厂)                          │
+│  └─ DaLiuRenUIFactory (大六壬 UI 工厂)                      │
+└─────────────────────────────────────────────────────────────┘
+                          ↓ uses
+┌─────────────────────────────────────────────────────────────┐
+│  AI Layer (lib/ai/)                                         │
+│  ├─ LLMProviderRegistry (模型提供商注册表)                  │
+│  ├─ OpenAI 兼容 Provider                                    │
+│  ├─ AIAnalysisService (解卦调用入口)                        │
+│  └─ 提示词模板（按系统分类）                                │
 └─────────────────────────────────────────────────────────────┘
                           ↓ uses
 ┌─────────────────────────────────────────────────────────────┐
@@ -111,10 +120,12 @@ Shared Services (lib/domain/services/shared/) ← pure functions
 │   │   │   └── liuyao_ui_factory.dart # DivinationUIFactory implementation
 │   │   └── /viewmodels
 │   │       └── liuyao_viewmodel.dart # DivinationViewModel<LiuYaoResult>
-│   ├── /daliuren                # 大六壬系统 (骨架，isEnabled=false)
-│   │   ├── daliuren_system.dart
-│   │   └── /models
-│   │       └── daliuren_result.dart
+│   ├── /daliuren                # 大六壬系统 (完整实现)
+│   │   ├── daliuren_system.dart # DivinationSystem implementation
+│   │   ├── /models              # SiKe / Chuan / TianPan / ShenJiang / ShenSha
+│   │   │   └── daliuren_result.dart
+│   │   └── /ui
+│   │       └── daliuren_ui_factory.dart
 │   ├── /xiaoliuren              # 小六壬系统 (骨架，isEnabled=false)
 │   │   ├── xiaoliuren_system.dart
 │   │   └── /models
@@ -155,22 +166,23 @@ Shared Services (lib/domain/services/shared/) ← pure functions
 └── /presentation                # UI layer (Widgets & Screens)
     ├── divination_ui_registry.dart # DivinationUIRegistry (UI 工厂注册表)
     ├── /screens                 # Screen pages
-    │   ├── /home
-    │   │   ├── home_screen.dart           # 系统选择主界面
-    │   │   └── method_selector_screen.dart # 起卦方式选择
-    │   ├── /cast                # 动态起卦界面（通过 UIFactory 构建）
-    │   │   ├── coin_cast_screen.dart
-    │   │   ├── time_cast_screen.dart
-    │   │   └── manual_cast_screen.dart
-    │   ├── /result              # 动态结果展示（通过 UIFactory 构建）
-    │   │   └── result_screen.dart
-    │   └── /history             # 统一历史记录列表
-    │       └── history_list_screen.dart
-    └── /widgets                 # Reusable UI components
-        ├── divination_system_card.dart # 术数系统卡片
-        ├── yao_display.dart     # Yao line display widget (六爻专用)
-        ├── gua_card.dart        # Hexagram card widget (六爻专用)
-        └── coin_animation.dart  # Coin toss animation
+    │   ├── /home                # 首页（Tab 结构：主页 + 历史 + 日历 + 我的）
+    │   ├── /cast                # 统一起卦界面 UnifiedCastScreen
+    │   ├── /result              # 结果展示
+    │   ├── /history             # 统一历史记录列表
+    │   └── /settings            # 设置 + AI 设置 + 模板编辑
+    └── /widgets                 # Reusable UI components（含 /antique 组件库）
+
+/lib/ai                          # AI 解卦层
+├── ai_bootstrap.dart            # 启动注册 Provider + 加载模板
+├── llm_provider.dart            # LLMProvider 接口
+├── llm_provider_registry.dart
+├── /providers                   # 具体实现（OpenAI 兼容）
+├── /service
+│   └── ai_analysis_service.dart # 解卦调用入口
+├── /config                      # API 配置持久化
+├── /template                    # 提示词模板（按系统分类）
+└── /output                      # 结构化输出解析
 ```
 
 ## Core Data Models
@@ -273,38 +285,29 @@ abstract class DivinationResult {
 
 ## Development Priorities
 
-### Epic 6: Multi-Divination System Architecture (已完成 75%)
+### 已完成工作
 
-**Phase 1: Foundation (已完成)**
-- ✅ 提取共享服务 (TianGanDiZhi, WuXing, LiuQin, Lunar)
-- ✅ 定义核心接口 (DivinationSystem, DivinationResult)
-- ✅ 创建 UI 工厂和注册表 (DivinationUIFactory, DivinationUIRegistry)
-
-**Phase 2: Liu Yao Refactoring (已完成)**
-- ✅ 重构六爻系统为 DivinationSystem 实现
-- ✅ 创建泛型 ViewModel 基类 (DivinationViewModel<T>)
-- ✅ 实现六爻 UI 工厂 (LiuYaoUIFactory)
-
-**Phase 3: Data Layer & UI Integration (已完成)**
+**基础架构**
+- ✅ 共享服务 (TianGanDiZhi, WuXing, LiuQin, Lunar)
+- ✅ 核心接口 (DivinationSystem, DivinationResult, DivinationUIFactory)
+- ✅ 注册表机制 (DivinationRegistry, DivinationUIRegistry)
+- ✅ 泛型 ViewModel 基类 (DivinationViewModel<T>)
 - ✅ 零迁移数据层 (DivinationRecords + GuaRecords)
-- ✅ 仓库适配器模式 (DivinationRepositoryImpl)
-- ✅ 自动注册机制 (DivinationSystemBootstrap)
-- ✅ 动态主界面 (HomeScreen with system selector)
-- ✅ 动态起卦界面 (CastScreen with UIFactory)
-- ✅ 动态结果展示 (ResultScreen with UIFactory)
-- ✅ 统一历史记录 (HistoryListScreen)
-- ✅ 未来系统骨架 (DaLiuRen, XiaoLiuRen, MeiHua)
 
-**Phase 4: Documentation & Testing (进行中)**
-- ✅ 测试覆盖率 99.6% (227/228 tests passing)
-- 🔄 文档更新 (Story 6.16 进行中)
+**术数系统**
+- ✅ 六爻系统（6 种起卦方式：钱币/爻名/数字/报数/时间/电脑）
+- ✅ 大六壬系统（4 种起课方式、四课三传、十二天将、神煞）
 
-### Future Development (未来系统实现)
+**UI 与体验**
+- ✅ 统一起卦界面 UnifiedCastScreen
+- ✅ 统一历史记录 HistoryListScreen
+- ✅ 仿古风设计体系（13 色 token、10+ antique 组件、a11y Semantics）详见 `docs/superpowers/plans/`
+- ✅ AI 解卦（OpenAI 兼容接口 + 按系统分类的提示词模板）
 
-**大六壬系统 (Da Liu Ren)**
-- 四课三传算法
-- 十二神将配置
-- 神煞系统
+**测试**
+- ✅ 283 tests 全部通过（单元 + Widget + Golden）
+
+### 待实现
 
 **小六壬系统 (Xiao Liu Ren)**
 - 六神推算 (大安、留连、速喜、赤口、小吉、空亡)
@@ -315,19 +318,28 @@ abstract class DivinationResult {
 - 体用判断
 - 变卦、互卦推导
 
+**其他**
+- 暗黑模式（墨色主题）
+- 云同步（可选）
+- 多语言（英文）
+- 导出/分享
+
 ## Technology Stack
 
 | Category | Technology | Version | Purpose |
 |----------|-----------|---------|---------|
 | **Language** | Dart | 3.0+ | Strong type system |
-| **Framework** | Flutter | 3.24+ | Cross-platform UI |
+| **Framework** | Flutter | 3.38+ | Cross-platform UI |
 | **State Management** | Provider | 6.x | Official recommendation |
 | **Immutable Models** | freezed | 2.x | Code generation for data classes |
 | **JSON Serialization** | json_serializable | 6.x | Auto-generate serialization |
 | **Routing** | go_router | 14.x | Declarative routing |
 | **Local Database** | drift | 2.x | Type-safe SQL with encryption |
 | **Secure Storage** | flutter_secure_storage | 9.x | Keychain/Keystore |
+| **Key-Value Prefs** | shared_preferences | 2.x | Theme / AI config |
 | **Lunar Calendar** | lunar | 1.7.8 | Stems/Branches calculation |
+| **Markdown** | flutter_markdown | 0.7+ | AI analysis result rendering |
+| **LLM Client** | openai_dart | 4.x | OpenAI-compatible LLM access |
 | **Testing** | flutter_test + mocktail | - | Unit & widget tests |
 
 ## Code Style
@@ -389,4 +401,6 @@ abstract class DivinationResult {
 7. Register UI factory in `DivinationUIRegistry`
 8. Write unit tests for all components
 
-See `docs/architecture/adding-new-system.md` for detailed guide.
+See `docs/architecture.md` for the Epic-1 era detailed architecture reference (code examples refer to pre-refactor class names; use this file as narrative context, not as the source of truth).
+
+See `docs/superpowers/plans/` for the engineering plans that delivered the multi-system architecture and antique UI design system.
