@@ -41,61 +41,7 @@ class DaLiuRenUIFactory implements DivinationUIFactory {
       throw ArgumentError('结果类型必须是 DaLiuRenResult，实际类型: ${result.runtimeType}');
     }
 
-    return Card(
-      margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-      child: InkWell(
-        onTap: () {
-          // TODO: 导航到详情页面
-        },
-        child: Padding(
-          padding: const EdgeInsets.all(16),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              // 课体和时间
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Text(
-                    '${result.keTypeName}课',
-                    style: AppTextStyles.antiqueTitle,
-                  ),
-                  Text(
-                    _formatDateTime(result.castTime),
-                    style: AppTextStyles.antiqueLabel.copyWith(
-                      fontSize: 12,
-                      color: Colors.grey[600],
-                    ),
-                  ),
-                ],
-              ),
-              const SizedBox(height: 8),
-
-              // 三传
-              Row(
-                children: [
-                  _buildTag('初传: ${result.chuChuan}'),
-                  const SizedBox(width: 8),
-                  _buildTag('中传: ${result.zhongChuan}'),
-                  const SizedBox(width: 8),
-                  _buildTag('末传: ${result.moChuan}'),
-                ],
-              ),
-
-              // 日干支
-              const SizedBox(height: 8),
-              Text(
-                '${result.lunarInfo.yearGanZhi}年 ${result.lunarInfo.monthGanZhi}月 ${result.lunarInfo.riGanZhi}日',
-                style: AppTextStyles.antiqueLabel.copyWith(
-                  fontSize: 12,
-                  color: Colors.grey[600],
-                ),
-              ),
-            ],
-          ),
-        ),
-      ),
-    );
+    return _DaLiuRenHistoryCard(result: result);
   }
 
   @override
@@ -110,26 +56,91 @@ class DaLiuRenUIFactory implements DivinationUIFactory {
     return AppColors.daliurenColor;
   }
 
-  // ==================== 私有辅助方法 ====================
+}
 
-  String _formatDateTime(DateTime dateTime) {
-    return '${dateTime.year}-${dateTime.month.toString().padLeft(2, '0')}-${dateTime.day.toString().padLeft(2, '0')} '
-        '${dateTime.hour.toString().padLeft(2, '0')}:${dateTime.minute.toString().padLeft(2, '0')}';
+/// 大六壬历史记录卡片（统一 5 层信息层级）
+class _DaLiuRenHistoryCard extends StatelessWidget {
+  final DaLiuRenResult result;
+
+  const _DaLiuRenHistoryCard({required this.result});
+
+  String _formatDateTime(DateTime dt) {
+    return '${dt.year}-${dt.month.toString().padLeft(2, '0')}-${dt.day.toString().padLeft(2, '0')} '
+        '${dt.hour.toString().padLeft(2, '0')}:${dt.minute.toString().padLeft(2, '0')}';
   }
 
-  Widget _buildTag(String text, {Color? color}) {
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-      decoration: BoxDecoration(
-        color: (color ?? Colors.purple).withOpacity(0.1),
-        borderRadius: BorderRadius.circular(4),
-      ),
-      child: Text(
-        text,
-        // 域色：_buildTag 动态颜色参数，保留 inline
-        style: TextStyle(
-          fontSize: 12,
-          color: color ?? Colors.purple,
+  String get _summary {
+    final keType = result.keTypeName;
+    final chu = result.chuChuan;
+    final zhong = result.zhongChuan;
+    final mo = result.moChuan;
+    return '$keType课 · 初传$chu 中传$zhong 末传$mo';
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final repository = context.read<DivinationRepository>();
+    final questionKey = 'question_${result.id}';
+
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+      child: AntiqueCard(
+        onTap: () {
+          // TODO: 导航到详情页面
+        },
+        child: FutureBuilder<String?>(
+          future: repository.readEncryptedField(questionKey),
+          builder: (context, snapshot) {
+            final question = snapshot.data ?? '';
+            return Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                // 层 1: 占问事项（空时保留高度占位）
+                SizedBox(
+                  height: 24,
+                  child: Text(
+                    question.isNotEmpty ? question : ' ',
+                    style: AppTextStyles.antiqueTitle,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                ),
+                const SizedBox(height: 8),
+
+                // 层 2: 时间
+                Text(
+                  _formatDateTime(result.castTime),
+                  style: AppTextStyles.antiqueLabel.copyWith(color: AppColors.guhe),
+                ),
+                const SizedBox(height: 8),
+
+                // 层 3: 结果摘要（课体 + 三传）
+                Text(
+                  _summary,
+                  style: AppTextStyles.antiqueBody,
+                  maxLines: 2,
+                  overflow: TextOverflow.ellipsis,
+                ),
+                const SizedBox(height: 12),
+
+                // 层 4/5: 排盘类型 + 排盘方式 badges
+                Wrap(
+                  spacing: 8,
+                  runSpacing: 4,
+                  children: [
+                    AntiqueTag(
+                      label: '大六壬',
+                      color: AppColors.daliurenColor,
+                    ),
+                    AntiqueTag(
+                      label: result.castMethod.displayName,
+                      color: AppColors.guhe,
+                    ),
+                  ],
+                ),
+              ],
+            );
+          },
         ),
       ),
     );

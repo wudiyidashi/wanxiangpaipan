@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_text_styles.dart';
+import '../../../domain/repositories/divination_repository.dart';
 import '../../../domain/divination_system.dart';
 import '../models/gua.dart';
 import '../../../presentation/divination_ui_registry.dart';
@@ -52,68 +53,7 @@ class LiuYaoUIFactory implements DivinationUIFactory {
       throw ArgumentError('结果类型必须是 LiuYaoResult，实际类型: ${result.runtimeType}');
     }
 
-    final liuyaoResult = result;
-
-    // 创建六爻历史记录卡片
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-      child: AntiqueCard(
-        onTap: () {
-          // TODO: 导航到详情页面
-          // Navigator.push(context, MaterialPageRoute(
-          //   builder: (_) => buildResultScreen(result),
-          // ));
-        },
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            // 卦名和时间
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Text(
-                  liuyaoResult.mainGua.name,
-                  style: AppTextStyles.antiqueTitle,
-                ),
-                Text(
-                  _formatDateTime(liuyaoResult.castTime),
-                  style: AppTextStyles.antiqueLabel,
-                ),
-              ],
-            ),
-            const SizedBox(height: 8),
-
-            // 八宫和起卦方式
-            Wrap(
-              spacing: 8,
-              runSpacing: 4,
-              children: [
-                _buildTag(liuyaoResult.mainGua.baGong.name),
-                _buildTag(liuyaoResult.castMethod.displayName),
-                if (liuyaoResult.hasChangingGua)
-                  _buildTag('有变卦', color: Colors.orange),
-              ],
-            ),
-
-            // 如果有变卦，显示变卦信息
-            if (liuyaoResult.hasChangingGua) ...[
-              const SizedBox(height: 8),
-              Text(
-                '变卦：${liuyaoResult.changingGua!.name}',
-                style: AppTextStyles.antiqueBody.copyWith(color: AppColors.guhe),
-              ),
-            ],
-
-            // 农历信息
-            const SizedBox(height: 8),
-            Text(
-              '${liuyaoResult.lunarInfo.yearGanZhi}年 ${liuyaoResult.lunarInfo.monthGanZhi}月 ${liuyaoResult.lunarInfo.riGanZhi}日',
-              style: AppTextStyles.antiqueLabel,
-            ),
-          ],
-        ),
-      ),
-    );
+    return _LiuYaoHistoryCard(result: result);
   }
 
   @override
@@ -128,21 +68,92 @@ class LiuYaoUIFactory implements DivinationUIFactory {
     return const Color(0xFFD32F2F); // 六爻系统专属主题色，非通用 token（deferred to semantic-color pass）
   }
 
-  // ==================== 私有辅助方法 ====================
+}
 
-  /// 格式化日期时间
-  String _formatDateTime(DateTime dateTime) {
-    return '${dateTime.year}-${dateTime.month.toString().padLeft(2, '0')}-${dateTime.day.toString().padLeft(2, '0')} '
-        '${dateTime.hour.toString().padLeft(2, '0')}:${dateTime.minute.toString().padLeft(2, '0')}';
+/// 六爻历史记录卡片（统一 5 层信息层级）
+class _LiuYaoHistoryCard extends StatelessWidget {
+  final LiuYaoResult result;
+
+  const _LiuYaoHistoryCard({required this.result});
+
+  String _formatDateTime(DateTime dt) {
+    return '${dt.year}-${dt.month.toString().padLeft(2, '0')}-${dt.day.toString().padLeft(2, '0')} '
+        '${dt.hour.toString().padLeft(2, '0')}:${dt.minute.toString().padLeft(2, '0')}';
   }
 
-  /// 构建标签 Widget
-  Widget _buildTag(String text, {Color? color}) {
-    if (color != null) {
-      return AntiqueTag(label: text, color: color);
-    }
-    // 无色时使用 AntiqueTag 默认色（AppColors.zhusha），保持仿古风主题。
-    return AntiqueTag(label: text, color: AppColors.zhusha);
+  String get _summary {
+    final main = result.mainGua.name;
+    final changing = result.changingGua?.name;
+    return changing != null ? '$main → $changing' : main;
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final repository = context.read<DivinationRepository>();
+    final questionKey = 'question_${result.id}';
+
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+      child: AntiqueCard(
+        onTap: () {
+          // TODO: 导航到详情页面
+        },
+        child: FutureBuilder<String?>(
+          future: repository.readEncryptedField(questionKey),
+          builder: (context, snapshot) {
+            final question = snapshot.data ?? '';
+            return Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                // 层 1: 占问事项（空时保留高度占位）
+                SizedBox(
+                  height: 24,
+                  child: Text(
+                    question.isNotEmpty ? question : ' ',
+                    style: AppTextStyles.antiqueTitle,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                ),
+                const SizedBox(height: 8),
+
+                // 层 2: 时间
+                Text(
+                  _formatDateTime(result.castTime),
+                  style: AppTextStyles.antiqueLabel.copyWith(color: AppColors.guhe),
+                ),
+                const SizedBox(height: 8),
+
+                // 层 3: 结果摘要（主卦 → 变卦 or 主卦）
+                Text(
+                  _summary,
+                  style: AppTextStyles.antiqueBody,
+                  maxLines: 2,
+                  overflow: TextOverflow.ellipsis,
+                ),
+                const SizedBox(height: 12),
+
+                // 层 4/5: 排盘类型 + 排盘方式 badges
+                Wrap(
+                  spacing: 8,
+                  runSpacing: 4,
+                  children: [
+                    AntiqueTag(
+                      label: '六爻',
+                      color: AppColors.liuyaoColor,
+                    ),
+                    AntiqueTag(
+                      label: result.castMethod.displayName,
+                      color: AppColors.guhe,
+                    ),
+                  ],
+                ),
+              ],
+            );
+          },
+        ),
+      ),
+    );
   }
 }
 
