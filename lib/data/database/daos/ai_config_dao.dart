@@ -38,6 +38,11 @@ class AIConfigDao extends DatabaseAccessor<AppDatabase>
         .go();
   }
 
+  /// 删除全部提供者配置
+  Future<int> deleteAllProviderConfigs() {
+    return delete(providerConfigs).go();
+  }
+
   /// 更新提供者启用状态
   Future<bool> updateProviderEnabled(String providerId, bool enabled) async {
     final result = await (update(providerConfigs)
@@ -141,6 +146,12 @@ class AIConfigDao extends DatabaseAccessor<AppDatabase>
         .go();
   }
 
+  /// 删除所有自定义模板
+  Future<int> deleteCustomTemplates() {
+    return (delete(promptTemplates)..where((t) => t.isBuiltIn.equals(false)))
+        .go();
+  }
+
   /// 检查模板是否存在
   Future<bool> templateExists(String id) async {
     final count = await (selectOnly(promptTemplates)
@@ -181,5 +192,10 @@ class AIConfigDao extends DatabaseAccessor<AppDatabase>
   Future<Map<String, String>> getAllPreferences() async {
     final results = await select(userPreferences).get();
     return {for (var r in results) r.key: r.value};
+  }
+
+  /// 删除全部用户偏好
+  Future<int> deleteAllPreferences() {
+    return delete(userPreferences).go();
   }
 }

@@ -35,6 +35,7 @@ export 'llm_provider_registry.dart';
 
 // 配置管理
 export 'config/ai_config_manager.dart';
+export 'config/ai_provider_profile.dart';
 
 // 结构化输出
 export 'output/structured_output.dart';

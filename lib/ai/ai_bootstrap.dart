@@ -4,6 +4,7 @@
 library;
 
 import 'config/ai_config_manager.dart';
+import 'config/ai_provider_profile.dart';
 import 'llm_provider_registry.dart';
 import 'output/structured_output_formatter.dart';
 import 'output/formatters/liuyao_formatter.dart';
@@ -135,14 +136,11 @@ class AIBootstrap {
   static Future<void> _loadSavedConfigs() async {
     final registry = LLMProviderRegistry.instance;
 
-    // 加载 OpenAI 兼容配置
-    final openaiConfig =
-        await _configManager!.loadProviderConfig('openai_compatible');
-    if (openaiConfig != null) {
-      final provider = registry.getProvider('openai_compatible');
-      if (provider is OpenAICompatibleProvider) {
-        provider.updateConfig(OpenAICompatibleConfig.fromJson(openaiConfig));
-      }
+    await _configManager!.migrateLegacyProviderConfigIfNeeded();
+
+    final activeProfile = await _configManager!.getActiveProviderProfile();
+    if (activeProfile != null) {
+      _applyProfileToRegistry(activeProfile, registry);
     }
 
     // 加载默认提供者设置
@@ -150,6 +148,24 @@ class AIBootstrap {
     if (defaultProviderId != null &&
         registry.getProvider(defaultProviderId) != null) {
       registry.setDefaultProvider(defaultProviderId);
+    }
+  }
+
+  static void _applyProfileToRegistry(
+    AIProviderProfile profile,
+    LLMProviderRegistry registry,
+  ) {
+    final provider = registry.getProvider(profile.providerId);
+    if (provider is OpenAICompatibleProvider) {
+      provider.updateConfig(
+        OpenAICompatibleConfig(
+          apiKey: profile.apiKey,
+          baseUrl: profile.baseUrl,
+          model: profile.model,
+          temperature: profile.temperature,
+          maxOutputTokens: profile.maxOutputTokens,
+        ),
+      );
     }
   }
 

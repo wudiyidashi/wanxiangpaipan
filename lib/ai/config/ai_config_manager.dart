@@ -10,6 +10,7 @@ import 'dart:convert';
 import 'package:drift/drift.dart';
 import '../../data/database/app_database.dart';
 import '../../data/secure/secure_storage.dart';
+import 'ai_provider_profile.dart';
 import '../template/prompt_template.dart' as model;
 import '../template/builtin_templates.dart';
 
@@ -26,83 +27,197 @@ class AIConfigManager {
 
   // ==================== Provider 配置管理 ====================
 
-  /// 保存提供者配置
-  ///
-  /// API Key 会被加密存储在 SecureStorage 中，
-  /// 其他配置存储在数据库中。
-  Future<void> saveProviderConfig({
-    required String providerId,
-    required String apiKey,
-    required Map<String, dynamic> config,
-  }) async {
-    // API Key 加密存储
+  static const keyProviderProfiles = 'ai_provider_profiles_v1';
+  static const keyActiveProviderProfileId = 'ai_active_provider_profile_id';
+  static const keyLastBackupAt = 'data_management_last_backup_at';
+  static const internalPreferenceKeys = {
+    keyProviderProfiles,
+    keyActiveProviderProfileId,
+    keyDefaultProviderId,
+    keyLastBackupAt,
+  };
+
+  String _profileApiKeyStorageKey(String profileId) =>
+      'llm_profile_${profileId}_apikey';
+  String _legacyProviderApiKeyStorageKey(String providerId) =>
+      'llm_provider_${providerId}_apikey';
+
+  /// 获取全部命名接口配置。
+  Future<List<AIProviderProfile>> getProviderProfiles() async {
+    final raw = await getString(keyProviderProfiles);
+    if (raw == null || raw.trim().isEmpty) {
+      return [];
+    }
+
+    try {
+      final decoded = jsonDecode(raw);
+      if (decoded is! List) {
+        return [];
+      }
+
+      final profiles = <AIProviderProfile>[];
+      for (final item in decoded) {
+        if (item is! Map) continue;
+        final json = Map<String, dynamic>.from(item);
+        final profileId = json['id'] as String?;
+        if (profileId == null || profileId.isEmpty) continue;
+        final apiKey =
+            await _secureStorage.read(_profileApiKeyStorageKey(profileId));
+        profiles.add(AIProviderProfile.fromJson(json, apiKey: apiKey ?? ''));
+      }
+
+      profiles.sort((a, b) => b.updatedAt.compareTo(a.updatedAt));
+      return profiles;
+    } catch (_) {
+      return [];
+    }
+  }
+
+  Future<AIProviderProfile?> getProviderProfile(String profileId) async {
+    final profiles = await getProviderProfiles();
+    for (final profile in profiles) {
+      if (profile.id == profileId) {
+        return profile;
+      }
+    }
+    return null;
+  }
+
+  Future<void> saveProviderProfile(AIProviderProfile profile) async {
+    final profiles = await getProviderProfiles();
+    final updated = profile.copyWith(updatedAt: DateTime.now());
+    final index = profiles.indexWhere((item) => item.id == updated.id);
+    if (index >= 0) {
+      profiles[index] = updated;
+    } else {
+      profiles.add(updated);
+    }
+
     await _secureStorage.write(
-      'llm_provider_${providerId}_apikey',
-      apiKey,
+      _profileApiKeyStorageKey(updated.id),
+      updated.apiKey,
     );
-
-    // 其他配置存储到数据库
-    final configJson = Map<String, dynamic>.from(config);
-    configJson.remove('apiKey'); // 确保不存储敏感信息
-
-    await _database.aIConfigDao.upsertProviderConfig(
-      ProviderConfigsCompanion(
-        providerId: Value(providerId),
-        config: Value(jsonEncode(configJson)),
-        currentModel: Value(configJson['model'] as String?),
-        isEnabled: const Value(true),
-        updatedAt: Value(DateTime.now()),
-      ),
+    await setString(
+      keyProviderProfiles,
+      jsonEncode(profiles.map((item) => item.toJson()).toList()),
     );
   }
 
-  /// 加载提供者配置
-  ///
-  /// 从 SecureStorage 加载 API Key，从数据库加载其他配置。
-  Future<Map<String, dynamic>?> loadProviderConfig(String providerId) async {
-    final apiKey = await _secureStorage.read(
-      'llm_provider_${providerId}_apikey',
+  Future<void> deleteProviderProfile(String profileId) async {
+    final profiles = await getProviderProfiles();
+    profiles.removeWhere((item) => item.id == profileId);
+    await _secureStorage.delete(_profileApiKeyStorageKey(profileId));
+
+    if (profiles.isEmpty) {
+      await deletePreference(keyProviderProfiles);
+      await deletePreference(keyActiveProviderProfileId);
+      return;
+    }
+
+    await setString(
+      keyProviderProfiles,
+      jsonEncode(profiles.map((item) => item.toJson()).toList()),
     );
 
-    if (apiKey == null) return null;
+    final activeId = await getActiveProviderProfileId();
+    if (activeId == profileId) {
+      await setActiveProviderProfileId(profiles.first.id);
+    }
+  }
+
+  Future<int> getProviderProfileCount() async {
+    final profiles = await getProviderProfiles();
+    return profiles.length;
+  }
+
+  Future<void> clearAllProviderProfiles() async {
+    final profiles = await getProviderProfiles();
+    for (final profile in profiles) {
+      await _secureStorage.delete(_profileApiKeyStorageKey(profile.id));
+    }
+
+    final legacyConfigs = await _database.aIConfigDao.getAllProviderConfigs();
+    for (final config in legacyConfigs) {
+      await _secureStorage.delete('llm_provider_${config.providerId}_apikey');
+    }
+    await _database.aIConfigDao.deleteAllProviderConfigs();
+
+    await deletePreference(keyProviderProfiles);
+    await deletePreference(keyActiveProviderProfileId);
+    await deletePreference(keyDefaultProviderId);
+  }
+
+  Future<String?> getActiveProviderProfileId() =>
+      getString(keyActiveProviderProfileId);
+
+  Future<void> setActiveProviderProfileId(String profileId) =>
+      setString(keyActiveProviderProfileId, profileId);
+
+  Future<AIProviderProfile?> getActiveProviderProfile() async {
+    final activeId = await getActiveProviderProfileId();
+    if (activeId == null || activeId.isEmpty) {
+      return null;
+    }
+    return getProviderProfile(activeId);
+  }
+
+  /// 将旧的单配置结构迁移到多命名配置。
+  Future<void> migrateLegacyProviderConfigIfNeeded() async {
+    final profiles = await getProviderProfiles();
+    if (profiles.isNotEmpty) {
+      return;
+    }
+
+    const legacyProviderId = 'openai_compatible';
+    final legacy = await _loadLegacyProviderConfig(legacyProviderId);
+    if (legacy == null) {
+      return;
+    }
+
+    final profile = AIProviderProfile(
+      id: 'openai_compatible_default',
+      providerId: 'openai_compatible',
+      name: '默认配置',
+      apiKey: legacy['apiKey'] as String? ?? '',
+      baseUrl: legacy['baseUrl'] as String?,
+      model: legacy['model'] as String? ?? 'gpt-3.5-turbo',
+      temperature: (legacy['temperature'] as num?)?.toDouble() ?? 0.7,
+      maxOutputTokens: legacy['maxOutputTokens'] as int? ?? 4096,
+      isEnabled: legacy['isEnabled'] as bool? ?? true,
+      createdAt: DateTime.now(),
+      updatedAt: DateTime.now(),
+    );
+
+    await saveProviderProfile(profile);
+    await setActiveProviderProfileId(profile.id);
+    await _deleteLegacyProviderConfig(legacyProviderId);
+  }
+
+  Future<Map<String, dynamic>?> _loadLegacyProviderConfig(
+    String providerId,
+  ) async {
+    final apiKey =
+        await _secureStorage.read(_legacyProviderApiKeyStorageKey(providerId));
+
+    if (apiKey == null || apiKey.isEmpty) {
+      return null;
+    }
 
     final configRecord =
         await _database.aIConfigDao.getProviderConfig(providerId);
-    if (configRecord == null) return null;
+    if (configRecord == null) {
+      return null;
+    }
 
     final config = jsonDecode(configRecord.config) as Map<String, dynamic>;
     config['apiKey'] = apiKey;
     config['isEnabled'] = configRecord.isEnabled;
-
     return config;
   }
 
-  /// 删除提供者配置
-  Future<void> deleteProviderConfig(String providerId) async {
-    await _secureStorage.delete('llm_provider_${providerId}_apikey');
+  Future<void> _deleteLegacyProviderConfig(String providerId) async {
+    await _secureStorage.delete(_legacyProviderApiKeyStorageKey(providerId));
     await _database.aIConfigDao.deleteProviderConfig(providerId);
-  }
-
-  /// 检查提供者是否已配置
-  Future<bool> isProviderConfigured(String providerId) async {
-    final hasApiKey = await _secureStorage.containsKey(
-      'llm_provider_${providerId}_apikey',
-    );
-    return hasApiKey;
-  }
-
-  /// 获取所有已配置的提供者 ID
-  Future<List<String>> getConfiguredProviderIds() async {
-    final configs = await _database.aIConfigDao.getAllProviderConfigs();
-    final configuredIds = <String>[];
-
-    for (final config in configs) {
-      if (await isProviderConfigured(config.providerId)) {
-        configuredIds.add(config.providerId);
-      }
-    }
-
-    return configuredIds;
   }
 
   // ==================== 模板配置管理 ====================
@@ -157,6 +272,11 @@ class AIConfigManager {
     return records.map(_recordToTemplate).toList();
   }
 
+  Future<int> getCustomTemplateCount() async {
+    final templates = await getAllTemplates();
+    return templates.where((item) => !item.isBuiltIn).length;
+  }
+
   /// 获取指定系统的模板
   Future<List<model.PromptTemplate>> getTemplatesBySystem(
       String systemType) async {
@@ -206,6 +326,29 @@ class AIConfigManager {
   Future<bool> deleteTemplate(String templateId) async {
     final count = await _database.aIConfigDao.deleteTemplate(templateId);
     return count > 0;
+  }
+
+  Future<int> restoreBuiltInTemplates() async {
+    final deletedCustomCount =
+        await _database.aIConfigDao.deleteCustomTemplates();
+    final builtInTemplates = BuiltInTemplates.getAll();
+    final companions = builtInTemplates
+        .map((t) => PromptTemplatesCompanion(
+              id: Value(t.id),
+              name: Value(t.name),
+              description: Value(t.description),
+              systemType: Value(t.systemType),
+              templateType: Value(t.templateType),
+              content: Value(t.content),
+              variablesJson: Value(t.variablesJson),
+              isBuiltIn: Value(t.isBuiltIn),
+              isActive: Value(t.isActive),
+              createdAt: Value(t.createdAt ?? DateTime.now()),
+              updatedAt: Value(DateTime.now()),
+            ))
+        .toList();
+    await _database.aIConfigDao.insertTemplates(companions);
+    return deletedCustomCount + companions.length;
   }
 
   model.PromptTemplate _recordToTemplate(PromptTemplate record) {
@@ -280,6 +423,37 @@ class AIConfigManager {
     await _database.aIConfigDao.deletePreference(key);
   }
 
+  Future<Map<String, String>> getAllPreferences() {
+    return _database.aIConfigDao.getAllPreferences();
+  }
+
+  Future<Map<String, String>> getExportablePreferences() async {
+    final all = await getAllPreferences();
+    final result = <String, String>{};
+    for (final entry in all.entries) {
+      if (!internalPreferenceKeys.contains(entry.key)) {
+        result[entry.key] = entry.value;
+      }
+    }
+    return result;
+  }
+
+  Future<void> replaceExportablePreferences(
+    Map<String, String> preferences, {
+    bool clearExisting = false,
+  }) async {
+    if (clearExisting) {
+      final current = await getExportablePreferences();
+      for (final key in current.keys) {
+        await deletePreference(key);
+      }
+    }
+
+    for (final entry in preferences.entries) {
+      await setString(entry.key, entry.value);
+    }
+  }
+
   // ==================== 偏好常量 ====================
 
   /// 默认提供者 ID
@@ -305,4 +479,15 @@ class AIConfigManager {
   /// 设置是否启用流式输出
   Future<void> setStreamingEnabled(bool enabled) =>
       setBool(keyEnableStreaming, enabled);
+
+  Future<DateTime?> getLastBackupAt() async {
+    final raw = await getString(keyLastBackupAt);
+    if (raw == null || raw.isEmpty) {
+      return null;
+    }
+    return DateTime.tryParse(raw);
+  }
+
+  Future<void> setLastBackupAt(DateTime time) =>
+      setString(keyLastBackupAt, time.toIso8601String());
 }

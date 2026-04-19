@@ -7,6 +7,7 @@ import 'dart:async';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/scheduler.dart';
 import '../config/ai_config_manager.dart';
+import '../config/ai_provider_profile.dart';
 import '../llm_provider.dart';
 import '../llm_provider_registry.dart';
 import '../providers/openai_compatible_provider.dart';
@@ -251,38 +252,125 @@ class AIAnalysisService extends ChangeNotifier {
   /// 获取默认提供者
   LLMProvider? get defaultProvider => _providerRegistry.defaultProvider;
 
+  /// 获取所有命名配置
+  Future<List<AIProviderProfile>> getProviderProfiles() {
+    return _configManager.getProviderProfiles();
+  }
+
+  /// 获取当前激活配置
+  Future<AIProviderProfile?> getActiveProviderProfile() {
+    return _configManager.getActiveProviderProfile();
+  }
+
+  /// 保存命名配置
+  Future<void> saveProviderProfile(
+    AIProviderProfile profile, {
+    bool activate = true,
+  }) async {
+    await _configManager.saveProviderProfile(profile);
+
+    final activeId = await _configManager.getActiveProviderProfileId();
+    if (activate || activeId == null) {
+      await activateProviderProfile(profile.id);
+    } else {
+      notifyListeners();
+    }
+  }
+
+  /// 激活命名配置
+  Future<void> activateProviderProfile(String profileId) async {
+    final profile = await _configManager.getProviderProfile(profileId);
+    if (profile == null) {
+      throw StateError('未找到指定 AI 配置');
+    }
+
+    await _applyProviderProfile(profile);
+    await _configManager.setActiveProviderProfileId(profile.id);
+    await _configManager.setDefaultProviderId(profile.providerId);
+    _providerRegistry.setDefaultProvider(profile.providerId);
+    notifyListeners();
+  }
+
+  /// 删除命名配置
+  Future<void> deleteProviderProfile(String profileId) async {
+    final activeId = await _configManager.getActiveProviderProfileId();
+    await _configManager.deleteProviderProfile(profileId);
+
+    final nextActive = await _configManager.getActiveProviderProfile();
+    if (activeId == profileId) {
+      if (nextActive != null) {
+        await _applyProviderProfile(nextActive);
+        await _configManager.setDefaultProviderId(nextActive.providerId);
+        _providerRegistry.setDefaultProvider(nextActive.providerId);
+      } else {
+        final provider = _providerRegistry.getProvider('openai_compatible');
+        provider?.clearConfig();
+      }
+    }
+
+    notifyListeners();
+  }
+
+  Future<int> clearAllProviderProfiles() async {
+    final count = await _configManager.getProviderProfileCount();
+    await _configManager.clearAllProviderProfiles();
+    final provider = _providerRegistry.getProvider('openai_compatible');
+    provider?.clearConfig();
+    notifyListeners();
+    return count;
+  }
+
+  Future<void> syncActiveProviderProfile() async {
+    final activeProfile = await _configManager.getActiveProviderProfile();
+    if (activeProfile != null) {
+      await _applyProviderProfile(activeProfile);
+      await _configManager.setDefaultProviderId(activeProfile.providerId);
+      _providerRegistry.setDefaultProvider(activeProfile.providerId);
+    } else {
+      final provider = _providerRegistry.getProvider('openai_compatible');
+      provider?.clearConfig();
+    }
+    notifyListeners();
+  }
+
+  Future<void> _applyProviderProfile(AIProviderProfile profile) async {
+    final provider = _providerRegistry.getProvider(profile.providerId);
+    if (provider is OpenAICompatibleProvider) {
+      provider.updateConfig(
+        OpenAICompatibleConfig(
+          apiKey: profile.apiKey,
+          baseUrl: profile.baseUrl,
+          model: profile.model,
+          temperature: profile.temperature,
+          maxOutputTokens: profile.maxOutputTokens,
+        ),
+      );
+      return;
+    }
+
+    throw UnsupportedError('暂不支持的 AI 提供者: ${profile.providerId}');
+  }
+
   /// 配置提供者
   Future<void> configureProvider({
     required String providerId,
     required String apiKey,
     required Map<String, dynamic> config,
   }) async {
-    // 保存到配置管理器
-    await _configManager.saveProviderConfig(
+    final now = DateTime.now();
+    final profile = AIProviderProfile(
+      id: '${providerId}_default',
       providerId: providerId,
+      name: '默认配置',
       apiKey: apiKey,
-      config: config,
+      baseUrl: config['baseUrl'] as String?,
+      model: config['model'] as String? ?? 'gpt-3.5-turbo',
+      temperature: (config['temperature'] as num?)?.toDouble() ?? 0.7,
+      maxOutputTokens: config['maxOutputTokens'] as int? ?? 4096,
+      createdAt: now,
+      updatedAt: now,
     );
-
-    // 更新提供者配置
-    final provider = _providerRegistry.getProvider(providerId);
-    if (provider != null) {
-      final fullConfig = Map<String, dynamic>.from(config);
-      fullConfig['apiKey'] = apiKey;
-
-      if (provider is OpenAICompatibleProvider) {
-        provider.updateConfig(OpenAICompatibleConfig.fromJson(fullConfig));
-      }
-    }
-
-    // 设置为默认提供者（如果是第一个配置的）
-    final defaultId = await _configManager.getDefaultProviderId();
-    if (defaultId == null) {
-      await _configManager.setDefaultProviderId(providerId);
-      _providerRegistry.setDefaultProvider(providerId);
-    }
-
-    notifyListeners();
+    await saveProviderProfile(profile, activate: true);
   }
 
   /// 验证提供者配置
