@@ -27,18 +27,20 @@ class CastButton extends StatelessWidget {
           // 均为CastButton专属UI渐变色，非通用token，保留内联
           gradient: onPressed == null || isLoading
               ? const LinearGradient(
+                  // 禁用灰渐变，CastButton 专属域色
                   colors: [
-                    Color(0xFFB0B0B0),
-                    Color(0xFF909090)
-                  ], // 禁用灰渐变，CastButton专属
+                    Color(0xFFB0B0B0), // 禁用灰渐变起色
+                    Color(0xFF909090), // 禁用灰渐变终色
+                  ],
                   begin: Alignment.topCenter,
                   end: Alignment.bottomCenter,
                 )
               : const LinearGradient(
+                  // 朱砂激活渐变，CastButton 专属域色
                   colors: [
-                    Color(0xFFC84B31),
-                    Color(0xFFA63A24)
-                  ], // 朱砂激活渐变，CastButton专属
+                    Color(0xFFC84B31), // 朱砂激活起色
+                    Color(0xFFA63A24), // 朱砂激活终色
+                  ],
                   begin: Alignment.topCenter,
                   end: Alignment.bottomCenter,
                 ),

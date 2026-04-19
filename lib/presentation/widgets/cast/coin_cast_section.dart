@@ -162,13 +162,13 @@ class _CoinCastSectionState extends State<CoinCastSection> {
         gradient: RadialGradient(
           colors: isFront
               ? [
-                  const Color(0xFFC9A84C),
-                  const Color(0xFF8B6914)
-                ] // 铜钱正面金色渐变，域色
+                  const Color(0xFFC9A84C), // 铜钱正面金色渐变起色
+                  const Color(0xFF8B6914), // 铜钱正面金色渐变终色
+                ]
               : [
-                  const Color(0xFF9A9A9A),
-                  const Color(0xFF666666)
-                ], // 铜钱背面灰色渐变，域色
+                  const Color(0xFF9A9A9A), // 铜钱背面灰色渐变起色
+                  const Color(0xFF666666), // 铜钱背面灰色渐变终色
+                ],
           center: const Alignment(-0.3, -0.3),
           radius: 0.9,
         ),
