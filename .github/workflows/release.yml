@@ -15,7 +15,9 @@ permissions:
   contents: write
 
 env:
-  FLUTTER_VERSION: '3.24.0'
+  # 与本地开发版本对齐；低于 3.27 的 Flutter 带的是 Dart 3.5，
+  # openai_dart 4.x 需要 Dart >= 3.6，否则 `flutter pub get` 会炸。
+  FLUTTER_VERSION: '3.38.5'
   JAVA_VERSION: '17'
 
 jobs:
