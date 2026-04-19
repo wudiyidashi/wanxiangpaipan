@@ -186,7 +186,8 @@ class _ManualCastSectionState extends State<ManualCastSection> {
                   value: _yaoValues[index],
                   hint: Text(
                     '请选择',
-                    style: AppTextStyles.antiqueBody.copyWith(color: AppColors.qianhe),
+                    style: AppTextStyles.antiqueBody
+                        .copyWith(color: AppColors.qianhe),
                   ),
                   isExpanded: true,
                   dropdownColor: Colors.white,

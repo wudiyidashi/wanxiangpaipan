@@ -18,6 +18,7 @@ class AntiqueCard extends StatefulWidget {
   final Widget child;
   final EdgeInsetsGeometry padding;
   final VoidCallback? onTap;
+
   /// Optional a11y label used when [onTap] is non-null.
   final String? semanticsLabel;
 

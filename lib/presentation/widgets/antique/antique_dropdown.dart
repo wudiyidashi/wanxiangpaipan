@@ -49,7 +49,8 @@ class AntiqueDropdown<T> extends StatelessWidget {
           child: DropdownButton<T>(
             value: value,
             isExpanded: true,
-            icon: const Icon(Icons.keyboard_arrow_down, color: AppColors.zhusha),
+            icon:
+                const Icon(Icons.keyboard_arrow_down, color: AppColors.zhusha),
             style: const TextStyle(
               color: AppColors.xuanse,
               fontSize: 13,

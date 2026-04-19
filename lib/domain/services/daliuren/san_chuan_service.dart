@@ -194,7 +194,8 @@ class SanChuanService {
     return (
       keType: KeType.sheHai,
       diZhi: selected.shangShen,
-      explanation: '多上克下且无唯一比用，暂取最靠近日干的第${selected.index}课${selected.shangShen}为用'
+      explanation:
+          '多上克下且无唯一比用，暂取最靠近日干的第${selected.index}课${selected.shangShen}为用'
     );
   }
 

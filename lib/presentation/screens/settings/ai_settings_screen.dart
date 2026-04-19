@@ -23,7 +23,10 @@ class _AISettingsScreenState extends State<AISettingsScreen> {
   static const _presets = [
     _Preset('OpenAI', 'https://api.openai.com/v1', Icons.cloud),
     _Preset('DeepSeek', 'https://api.deepseek.com/v1', Icons.auto_awesome),
-    _Preset('Gemini', 'https://generativelanguage.googleapis.com/v1beta/openai/', Icons.diamond),
+    _Preset(
+        'Gemini',
+        'https://generativelanguage.googleapis.com/v1beta/openai/',
+        Icons.diamond),
     _Preset('Ollama', 'http://localhost:11434/v1', Icons.computer),
   ];
 
@@ -221,7 +224,8 @@ class _AISettingsScreenState extends State<AISettingsScreen> {
             children: _presets.map((p) {
               return ActionChip(
                 avatar: Icon(p.icon, size: 16),
-                label: Text(p.name, style: AppTextStyles.antiqueLabel.copyWith(fontSize: 12)),
+                label: Text(p.name,
+                    style: AppTextStyles.antiqueLabel.copyWith(fontSize: 12)),
                 visualDensity: VisualDensity.compact,
                 onPressed: () {
                   setState(() {
@@ -281,7 +285,6 @@ class _AISettingsScreenState extends State<AISettingsScreen> {
             ],
           ),
           const SizedBox(height: 12),
-
           if (_availableModels.isEmpty)
             Container(
               padding: const EdgeInsets.all(16),

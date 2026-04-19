@@ -36,8 +36,7 @@ void main() {
 
     test('历史记录里的方式不在 allowed 中时返回 null', () async {
       repository.records = [
-        _record(
-            DivinationType.liuYao, CastMethod.reportNumber, DateTime.now()),
+        _record(DivinationType.liuYao, CastMethod.reportNumber, DateTime.now()),
       ];
       final method = await service.getLastMethod(
         DivinationType.liuYao,

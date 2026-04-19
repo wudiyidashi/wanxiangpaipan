@@ -17,9 +17,21 @@ class _FakeRecord {
 void main() {
   group('applySearch', () {
     final records = [
-      _FakeRecord(id: 'r1', systemName: '六爻', summary: '问事业 乾为天 → 天风姤', castTime: DateTime(2026, 4, 18, 10)),
-      _FakeRecord(id: 'r2', systemName: '大六壬', summary: '问婚姻 涉害课', castTime: DateTime(2026, 4, 17, 10)),
-      _FakeRecord(id: 'r3', systemName: '六爻', summary: '求财 坤为地', castTime: DateTime(2026, 4, 16, 10)),
+      _FakeRecord(
+          id: 'r1',
+          systemName: '六爻',
+          summary: '问事业 乾为天 → 天风姤',
+          castTime: DateTime(2026, 4, 18, 10)),
+      _FakeRecord(
+          id: 'r2',
+          systemName: '大六壬',
+          summary: '问婚姻 涉害课',
+          castTime: DateTime(2026, 4, 17, 10)),
+      _FakeRecord(
+          id: 'r3',
+          systemName: '六爻',
+          summary: '求财 坤为地',
+          castTime: DateTime(2026, 4, 16, 10)),
     ];
 
     test('empty query returns all records', () {
@@ -71,9 +83,21 @@ void main() {
 
   group('applySort', () {
     final records = [
-      _FakeRecord(id: 'a', systemName: 'x', summary: '', castTime: DateTime(2026, 1, 1)),
-      _FakeRecord(id: 'b', systemName: 'x', summary: '', castTime: DateTime(2026, 3, 1)),
-      _FakeRecord(id: 'c', systemName: 'x', summary: '', castTime: DateTime(2026, 2, 1)),
+      _FakeRecord(
+          id: 'a',
+          systemName: 'x',
+          summary: '',
+          castTime: DateTime(2026, 1, 1)),
+      _FakeRecord(
+          id: 'b',
+          systemName: 'x',
+          summary: '',
+          castTime: DateTime(2026, 3, 1)),
+      _FakeRecord(
+          id: 'c',
+          systemName: 'x',
+          summary: '',
+          castTime: DateTime(2026, 2, 1)),
     ];
 
     test('newestFirst orders descending', () {
@@ -110,7 +134,11 @@ void main() {
 
     test('today records go to today bucket', () {
       final records = [
-        _FakeRecord(id: 't1', systemName: 'x', summary: '', castTime: DateTime(2026, 4, 18, 9)),
+        _FakeRecord(
+            id: 't1',
+            systemName: 'x',
+            summary: '',
+            castTime: DateTime(2026, 4, 18, 9)),
       ];
       final groups = groupByTime<_FakeRecord>(
         records,
@@ -124,7 +152,11 @@ void main() {
 
     test('yesterday goes to lastSevenDays bucket', () {
       final records = [
-        _FakeRecord(id: 'y1', systemName: 'x', summary: '', castTime: DateTime(2026, 4, 17, 9)),
+        _FakeRecord(
+            id: 'y1',
+            systemName: 'x',
+            summary: '',
+            castTime: DateTime(2026, 4, 17, 9)),
       ];
       final groups = groupByTime<_FakeRecord>(
         records,
@@ -137,7 +169,11 @@ void main() {
 
     test('8 days ago goes to earlier bucket', () {
       final records = [
-        _FakeRecord(id: 'e1', systemName: 'x', summary: '', castTime: DateTime(2026, 4, 10, 9)),
+        _FakeRecord(
+            id: 'e1',
+            systemName: 'x',
+            summary: '',
+            castTime: DateTime(2026, 4, 10, 9)),
       ];
       final groups = groupByTime<_FakeRecord>(
         records,
@@ -151,8 +187,16 @@ void main() {
 
     test('preserves input order within each bucket', () {
       final records = [
-        _FakeRecord(id: 't1', systemName: 'x', summary: '', castTime: DateTime(2026, 4, 18, 10)),
-        _FakeRecord(id: 't2', systemName: 'x', summary: '', castTime: DateTime(2026, 4, 18, 8)),
+        _FakeRecord(
+            id: 't1',
+            systemName: 'x',
+            summary: '',
+            castTime: DateTime(2026, 4, 18, 10)),
+        _FakeRecord(
+            id: 't2',
+            systemName: 'x',
+            summary: '',
+            castTime: DateTime(2026, 4, 18, 8)),
       ];
       final groups = groupByTime<_FakeRecord>(
         records,
@@ -168,7 +212,10 @@ void main() {
         now: now,
         timeExtractor: (x) => x.castTime,
       );
-      expect(groups.keys, containsAll([TimeGroup.today, TimeGroup.lastSevenDays, TimeGroup.earlier]));
+      expect(
+          groups.keys,
+          containsAll(
+              [TimeGroup.today, TimeGroup.lastSevenDays, TimeGroup.earlier]));
     });
   });
 }

@@ -91,7 +91,9 @@ class QiGuaService {
   /// [number] 用户输入的数字
   static List<int> numberCast(int number) {
     final upper = ((number.abs() - 1) % 8) + 1;
-    final lower = ((number.abs() ~/ 10 > 0 ? number.abs() ~/ 10 : number.abs()) - 1) % 8 + 1;
+    final lower =
+        ((number.abs() ~/ 10 > 0 ? number.abs() ~/ 10 : number.abs()) - 1) % 8 +
+            1;
     final moving = ((number.abs() - 1) % 6) + 1;
     return _generateYaoNumbersFromGua(upper, lower, moving);
   }

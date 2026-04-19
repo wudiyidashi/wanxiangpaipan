@@ -551,8 +551,7 @@ class _MeiHuaResultScreen extends StatelessWidget {
 
   Future<String?> _loadQuestion(BuildContext context) {
     final repository = _tryReadRepository(context);
-    final fallback =
-        result.questionId.isNotEmpty ? result.questionId : null;
+    final fallback = result.questionId.isNotEmpty ? result.questionId : null;
     return repository?.readEncryptedField('question_${result.id}') ??
         Future<String?>.value(fallback);
   }
@@ -601,7 +600,8 @@ class _MeiHuaResultScreen extends StatelessWidget {
           _buildInfoRow('互卦', result.huGua.name),
           _buildInfoRow('动爻', result.movingLineLabel),
           _buildInfoRow('体卦', '${result.tiGua.name}·${result.tiGua.symbol}'),
-          _buildInfoRow('用卦', '${result.yongGua.name}·${result.yongGua.symbol}'),
+          _buildInfoRow(
+              '用卦', '${result.yongGua.name}·${result.yongGua.symbol}'),
           _buildInfoRow('体用', result.wuXingRelation),
         ],
       ),

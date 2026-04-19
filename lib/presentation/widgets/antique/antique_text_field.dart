@@ -27,16 +27,19 @@ class AntiqueTextField extends StatelessWidget {
   final TextEditingController? controller;
   final String? hint;
   final ValueChanged<String>? onChanged;
+
   /// null means unlimited lines (grows to fill).
   final int? maxLines;
   final int? minLines;
   final TextInputType? keyboardType;
   final bool obscureText;
   final Widget? suffixIcon;
+
   /// When true the field expands to fill its parent (requires maxLines: null).
   final bool expands;
   final TextAlignVertical? textAlignVertical;
   final TextStyle? style;
+
   /// Optional a11y label. When non-null, wraps the field with Semantics.
   final String? semanticsLabel;
   final TextAlign? textAlign;

@@ -55,9 +55,7 @@ List<T> applySort<T>(
   sorted.sort((a, b) {
     final ta = timeExtractor(a);
     final tb = timeExtractor(b);
-    return order == SortOrder.newestFirst
-        ? tb.compareTo(ta)
-        : ta.compareTo(tb);
+    return order == SortOrder.newestFirst ? tb.compareTo(ta) : ta.compareTo(tb);
   });
   return sorted;
 }

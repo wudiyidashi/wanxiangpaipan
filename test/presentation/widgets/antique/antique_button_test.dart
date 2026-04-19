@@ -56,10 +56,12 @@ void main() {
         ),
       );
       final container = tester.widget<Container>(
-        find.descendant(
-          of: find.byType(AntiqueButton),
-          matching: find.byType(Container),
-        ).first,
+        find
+            .descendant(
+              of: find.byType(AntiqueButton),
+              matching: find.byType(Container),
+            )
+            .first,
       );
       final deco = container.decoration as BoxDecoration;
       expect(deco.gradient, isNull);

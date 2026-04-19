@@ -275,8 +275,7 @@ class MeiHuaStructuredFormatter
   String _formatBodyUse(MeiHuaResult result) {
     final benGua = result.benGua;
     final movingSide = result.movingLine <= 3 ? '下卦' : '上卦';
-    final tiSide =
-        result.tiGua.name == benGua.upperTrigram.name ? '上卦' : '下卦';
+    final tiSide = result.tiGua.name == benGua.upperTrigram.name ? '上卦' : '下卦';
     final yongSide =
         result.yongGua.name == benGua.upperTrigram.name ? '上卦' : '下卦';
 

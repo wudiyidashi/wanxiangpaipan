@@ -271,7 +271,9 @@ class OpenAICompatibleProvider implements LLMProvider {
     if (msg.contains('resource_exhausted') || msg.contains('quota')) {
       return 'API 配额已用完，请稍后再试或更换其他服务商';
     }
-    if (msg.contains('401') || msg.contains('unauthorized') || msg.contains('invalid_api_key')) {
+    if (msg.contains('401') ||
+        msg.contains('unauthorized') ||
+        msg.contains('invalid_api_key')) {
       return 'API Key 无效，请检查设置';
     }
     if (msg.contains('403') || msg.contains('forbidden')) {

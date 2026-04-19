@@ -26,10 +26,26 @@ class _CoinCastSectionState extends State<CoinCastSection> {
 
   /// 铜钱组合选项
   static const List<Map<String, dynamic>> _coinOptions = [
-    {'label': '背背正', 'value': 8, 'coins': [false, false, true]},
-    {'label': '背正正', 'value': 7, 'coins': [false, true, true]},
-    {'label': '正正正', 'value': 9, 'coins': [true, true, true]},
-    {'label': '背背背', 'value': 6, 'coins': [false, false, false]},
+    {
+      'label': '背背正',
+      'value': 8,
+      'coins': [false, false, true]
+    },
+    {
+      'label': '背正正',
+      'value': 7,
+      'coins': [false, true, true]
+    },
+    {
+      'label': '正正正',
+      'value': 9,
+      'coins': [true, true, true]
+    },
+    {
+      'label': '背背背',
+      'value': 6,
+      'coins': [false, false, false]
+    },
   ];
 
   static const List<String> _yaoLabels = [
@@ -53,8 +69,7 @@ class _CoinCastSectionState extends State<CoinCastSection> {
         const SizedBox(height: 24),
         CastButton(
           onPressed: _allSelected
-              ? () =>
-                  widget.onCast?.call(_yaoValues.map((v) => v!).toList())
+              ? () => widget.onCast?.call(_yaoValues.map((v) => v!).toList())
               : null,
           isLoading: widget.isLoading,
         ),
@@ -82,7 +97,8 @@ class _CoinCastSectionState extends State<CoinCastSection> {
                   value: _yaoValues[index],
                   hint: Text(
                     '请选择铜钱组合',
-                    style: AppTextStyles.antiqueBody.copyWith(color: AppColors.qianhe),
+                    style: AppTextStyles.antiqueBody
+                        .copyWith(color: AppColors.qianhe),
                   ),
                   isExpanded: true,
                   dropdownColor: Colors.white,
@@ -145,8 +161,14 @@ class _CoinCastSectionState extends State<CoinCastSection> {
         // 铜钱正面/背面渐变：域色（铜钱金/灰），保留内联
         gradient: RadialGradient(
           colors: isFront
-              ? [const Color(0xFFC9A84C), const Color(0xFF8B6914)] // 铜钱正面金色渐变，域色
-              : [const Color(0xFF9A9A9A), const Color(0xFF666666)], // 铜钱背面灰色渐变，域色
+              ? [
+                  const Color(0xFFC9A84C),
+                  const Color(0xFF8B6914)
+                ] // 铜钱正面金色渐变，域色
+              : [
+                  const Color(0xFF9A9A9A),
+                  const Color(0xFF666666)
+                ], // 铜钱背面灰色渐变，域色
           center: const Alignment(-0.3, -0.3),
           radius: 0.9,
         ),
