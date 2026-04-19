@@ -1,13 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:lunar/lunar.dart';
 import 'package:provider/provider.dart';
 
 import '../../../core/theme/app_colors.dart';
-import '../../../core/theme/app_text_styles.dart';
 import '../../../domain/divination_system.dart';
 import '../../../domain/services/last_cast_method_service.dart';
 import '../../../presentation/widgets/antique/antique.dart';
+import '../../../presentation/widgets/cast/cast_form_sections.dart';
 import '../models/xiaoliuren_result.dart';
 import '../viewmodels/xiaoliuren_viewmodel.dart';
 import 'xiaoliuren_result_screen.dart';
@@ -196,13 +195,51 @@ class _XiaoLiuRenCastScreenState extends State<XiaoLiuRenCastScreen> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              _buildQuestionSection(),
+              CastQuestionInputSection(controller: _questionController),
               const SizedBox(height: 16),
               Row(
                 children: [
-                  Expanded(child: _buildMethodSelector()),
+                  Expanded(
+                    child: CastLabeledDropdown<CastMethod>(
+                      label: '起课方式',
+                      value: _selectedMethod,
+                      items: _availableMethods
+                          .map(
+                            (method) => AntiqueDropdownItem<CastMethod>(
+                              value: method,
+                              label:
+                                  _methodLabels[method] ?? method.displayName,
+                            ),
+                          )
+                          .toList(),
+                      onChanged: (method) {
+                        if (method != null) {
+                          setState(() => _selectedMethod = method);
+                        }
+                      },
+                    ),
+                  ),
                   const SizedBox(width: 12),
-                  Expanded(child: _buildPalaceModeSelector()),
+                  Expanded(
+                    child: CastLabeledDropdown<XiaoLiuRenPalaceMode>(
+                      label: '盘式',
+                      value: _palaceMode,
+                      items: XiaoLiuRenPalaceMode.values
+                          .map(
+                            (mode) =>
+                                AntiqueDropdownItem<XiaoLiuRenPalaceMode>(
+                              value: mode,
+                              label: mode.displayName,
+                            ),
+                          )
+                          .toList(),
+                      onChanged: (mode) {
+                        if (mode != null) {
+                          setState(() => _palaceMode = mode);
+                        }
+                      },
+                    ),
+                  ),
                 ],
               ),
               const SizedBox(height: 16),
@@ -220,74 +257,6 @@ class _XiaoLiuRenCastScreenState extends State<XiaoLiuRenCastScreen> {
           ),
         ),
       ),
-    );
-  }
-
-  Widget _buildQuestionSection() {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        const Text('占问事项', style: AppTextStyles.antiqueLabel),
-        const SizedBox(height: 6),
-        AntiqueTextField(
-          controller: _questionController,
-          hint: '请输入您想占问的事项...',
-          maxLines: 2,
-          minLines: 1,
-        ),
-      ],
-    );
-  }
-
-  Widget _buildMethodSelector() {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        const Text('起课方式', style: AppTextStyles.antiqueLabel),
-        const SizedBox(height: 6),
-        AntiqueDropdown<CastMethod>(
-          value: _selectedMethod,
-          items: _availableMethods
-              .map(
-                (m) => AntiqueDropdownItem<CastMethod>(
-                  value: m,
-                  label: _methodLabels[m] ?? m.displayName,
-                ),
-              )
-              .toList(),
-          onChanged: (m) {
-            if (m != null) {
-              setState(() => _selectedMethod = m);
-            }
-          },
-        ),
-      ],
-    );
-  }
-
-  Widget _buildPalaceModeSelector() {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        const Text('盘式', style: AppTextStyles.antiqueLabel),
-        const SizedBox(height: 6),
-        AntiqueDropdown<XiaoLiuRenPalaceMode>(
-          value: _palaceMode,
-          items: XiaoLiuRenPalaceMode.values
-              .map(
-                (m) => AntiqueDropdownItem<XiaoLiuRenPalaceMode>(
-                  value: m,
-                  label: m.displayName,
-                ),
-              )
-              .toList(),
-          onChanged: (m) {
-            if (m != null) {
-              setState(() => _palaceMode = m);
-            }
-          },
-        ),
-      ],
     );
   }
 
@@ -332,33 +301,11 @@ class _XiaoLiuRenCastScreenState extends State<XiaoLiuRenCastScreen> {
     final lunarDate = '农历${lunar.getMonthInChinese()}月'
         '${lunar.getDayInChinese()} ${lunar.getTimeZhi()}时';
 
-    return AntiqueCard(
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          const AntiqueSectionTitle(title: '当前时辰'),
-          const AntiqueDivider(),
-          const SizedBox(height: 8),
-          Text(
-            ganZhi,
-            style: AppTextStyles.antiqueTitle.copyWith(
-              fontSize: 15,
-              color: AppColors.xiaoliurenColor,
-              letterSpacing: 1,
-            ),
-          ),
-          const SizedBox(height: 4),
-          Text(
-            lunarDate,
-            style: AppTextStyles.antiqueBody.copyWith(color: AppColors.guhe),
-          ),
-          const SizedBox(height: 6),
-          Text(
-            '取农历月数、农历日数、时支序数作为三段起数',
-            style: AppTextStyles.antiqueLabel.copyWith(fontSize: 11),
-          ),
-        ],
-      ),
+    return CastTimeSummaryCard(
+      ganZhiText: ganZhi,
+      lunarText: lunarDate,
+      note: '取农历月数、农历日数、时支序数作为三段起数',
+      accentColor: AppColors.xiaoliurenColor,
     );
   }
 
@@ -368,68 +315,11 @@ class _XiaoLiuRenCastScreenState extends State<XiaoLiuRenCastScreen> {
     required List<TextEditingController> controllers,
     required String note,
   }) {
-    return AntiqueCard(
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          AntiqueSectionTitle(title: title),
-          const AntiqueDivider(),
-          const SizedBox(height: 8),
-          Row(
-            children: [
-              for (var i = 0; i < 3; i++) ...[
-                Expanded(
-                  child: _buildNumberField(
-                    label: labels[i],
-                    controller: controllers[i],
-                  ),
-                ),
-                if (i < 2) const SizedBox(width: 10),
-              ],
-            ],
-          ),
-          const SizedBox(height: 8),
-          Text(
-            note,
-            style: AppTextStyles.antiqueLabel.copyWith(fontSize: 11),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildNumberField({
-    required String label,
-    required TextEditingController controller,
-  }) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(label, style: AppTextStyles.antiqueLabel),
-        const SizedBox(height: 4),
-        Container(
-          decoration: BoxDecoration(
-            color: Colors.white.withOpacity(0.6),
-            border: Border.all(color: AppColors.danjin),
-            borderRadius: BorderRadius.circular(6),
-          ),
-          padding: const EdgeInsets.symmetric(horizontal: 10),
-          child: TextField(
-            controller: controller,
-            keyboardType: TextInputType.number,
-            inputFormatters: [FilteringTextInputFormatter.digitsOnly],
-            style: AppTextStyles.antiqueBody,
-            decoration: InputDecoration(
-              border: InputBorder.none,
-              hintText: '正整数',
-              hintStyle: AppTextStyles.antiqueBody.copyWith(
-                color: AppColors.qianhe,
-              ),
-              isDense: true,
-            ),
-          ),
-        ),
-      ],
+    return CastNumberTripleCard(
+      title: title,
+      labels: labels,
+      controllers: controllers,
+      note: note,
     );
   }
 }
