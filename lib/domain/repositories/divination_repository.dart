@@ -109,6 +109,12 @@ abstract class DivinationRepository {
   /// 返回删除的记录数
   Future<int> deleteRecordsBySystemType(DivinationType systemType);
 
+  /// 删除指定时间之前的记录
+  ///
+  /// [beforeTime] 时间阈值
+  /// 返回删除的记录数
+  Future<int> deleteRecordsBeforeTime(DateTime beforeTime);
+
   // ==================== 加密字段操作 ====================
 
   /// 保存加密字段

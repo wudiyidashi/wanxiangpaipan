@@ -403,6 +403,53 @@ void main() {
         expect(count, 2);
         expect(await repository.getRecordCount(), 0);
       });
+
+      test('删除全部历史时不应误删无关敏感字段', () async {
+        await repository.saveRecord(_createMockLiuYaoResult(id: 'id1'));
+        await repository.saveEncryptedField('question_id1', '测试问题');
+        await repository.saveEncryptedField(
+          'llm_profile_default_apikey',
+          'secret-key',
+        );
+
+        final count = await repository.deleteAllRecords();
+
+        expect(count, 1);
+        expect(await repository.readEncryptedField('question_id1'), isNull);
+        expect(
+          await repository.readEncryptedField('llm_profile_default_apikey'),
+          'secret-key',
+        );
+      });
+
+      test('应该删除指定时间之前的记录及其加密字段', () async {
+        await repository.saveRecord(
+          _createMockLiuYaoResult(
+            id: 'old-id',
+            castTime: DateTime(2025, 1, 1),
+          ),
+        );
+        await repository.saveRecord(
+          _createMockLiuYaoResult(
+            id: 'new-id',
+            castTime: DateTime(2025, 3, 1),
+          ),
+        );
+        await repository.saveEncryptedField('question_old-id', '旧问题');
+        await repository.saveEncryptedField('question_new-id', '新问题');
+
+        final count =
+            await repository.deleteRecordsBeforeTime(DateTime(2025, 2, 1));
+
+        expect(count, 1);
+        expect(await repository.recordExists('old-id'), false);
+        expect(await repository.recordExists('new-id'), true);
+        expect(await repository.readEncryptedField('question_old-id'), isNull);
+        expect(
+          await repository.readEncryptedField('question_new-id'),
+          '新问题',
+        );
+      });
     });
 
     group('加密字段操作', () {

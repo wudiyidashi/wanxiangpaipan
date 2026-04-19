@@ -140,11 +140,16 @@ class DivinationRepositoryImpl implements DivinationRepository {
 
   @override
   Future<int> deleteAllRecords() async {
+    final records = await _database.divinationRecordDao.getAllRecords();
+    final encryptedKeys = _encryptedKeysForRecordIds(
+      records.map((record) => record.id).toList(),
+    );
+
     // 删除所有数据库记录
     final count = await _database.divinationRecordDao.deleteAllRecords();
 
-    // 删除所有加密字段
-    await _secureStorage.deleteAll();
+    // 仅删除与历史记录关联的加密字段，避免误删 AI 配置等敏感数据
+    await deleteEncryptedFieldsBatch(encryptedKeys);
 
     return count;
   }
@@ -160,16 +165,25 @@ class DivinationRepositoryImpl implements DivinationRepository {
         .deleteRecordsBySystemType(systemType.id);
 
     // 删除关联的加密字段
-    final encryptedKeys = <String>[];
-    for (final id in ids) {
-      encryptedKeys.addAll([
-        'question_$id',
-        'detail_$id',
-        'interpretation_$id',
-      ]);
-    }
+    final encryptedKeys = _encryptedKeysForRecordIds(ids);
     await deleteEncryptedFieldsBatch(encryptedKeys);
 
+    return count;
+  }
+
+  @override
+  Future<int> deleteRecordsBeforeTime(DateTime beforeTime) async {
+    final records = await _database.divinationRecordDao.getRecordsByTimeRange(
+      DateTime.fromMillisecondsSinceEpoch(0),
+      beforeTime.subtract(const Duration(microseconds: 1)),
+    );
+    final encryptedKeys = _encryptedKeysForRecordIds(
+      records.map((record) => record.id).toList(),
+    );
+
+    final count =
+        await _database.divinationRecordDao.deleteRecordsBeforeTime(beforeTime);
+    await deleteEncryptedFieldsBatch(encryptedKeys);
     return count;
   }
 
@@ -309,5 +323,17 @@ class DivinationRepositoryImpl implements DivinationRepository {
       createdAt: DateTime.now(),
       updatedAt: DateTime.now(),
     );
+  }
+
+  List<String> _encryptedKeysForRecordIds(List<String> ids) {
+    final encryptedKeys = <String>[];
+    for (final id in ids) {
+      encryptedKeys.addAll([
+        'question_$id',
+        'detail_$id',
+        'interpretation_$id',
+      ]);
+    }
+    return encryptedKeys;
   }
 }
