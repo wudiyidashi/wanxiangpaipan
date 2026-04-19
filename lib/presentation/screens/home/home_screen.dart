@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:lunar/lunar.dart';
 import 'package:provider/provider.dart';
+import '../../../core/navigation/route_observer.dart';
 import '../../../domain/divination_registry.dart';
 import '../../../domain/divination_system.dart';
 import '../../../domain/repositories/divination_repository.dart';
@@ -41,7 +42,7 @@ class HomeScreen extends StatefulWidget {
   State<HomeScreen> createState() => _HomeScreenState();
 }
 
-class _HomeScreenState extends State<HomeScreen> {
+class _HomeScreenState extends State<HomeScreen> with RouteAware {
   int _currentNavIndex = 0;
   String? _lastQuestion;
   String? _lastSystemName;
@@ -51,6 +52,27 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   void initState() {
     super.initState();
+    _loadLastRecord();
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    final route = ModalRoute.of(context);
+    if (route is PageRoute) {
+      appRouteObserver.subscribe(this, route);
+    }
+  }
+
+  @override
+  void dispose() {
+    appRouteObserver.unsubscribe(this);
+    super.dispose();
+  }
+
+  /// 从起课/结果页 pop 回首页时触发——刷新 QuickHistoryBar 等依赖历史记录的 UI。
+  @override
+  void didPopNext() {
     _loadLastRecord();
   }
 
@@ -126,21 +148,21 @@ class _HomeScreenState extends State<HomeScreen> {
         child: Stack(
           key: ValueKey(_currentNavIndex),
           children: [
-          // 背景装饰大字
-          if (_currentNavIndex == 0)
-            BackgroundDecor(text: _getCurrentDayZhi()),
-          // 主内容
-          SafeArea(
-            top: _currentNavIndex == 0,
-            child: Column(
-              children: [
-                if (_currentNavIndex == 0) _buildAppBar(),
-                Expanded(child: _buildBody()),
-              ],
+            // 背景装饰大字
+            if (_currentNavIndex == 0)
+              BackgroundDecor(text: _getCurrentDayZhi()),
+            // 主内容
+            SafeArea(
+              top: _currentNavIndex == 0,
+              child: Column(
+                children: [
+                  if (_currentNavIndex == 0) _buildAppBar(),
+                  Expanded(child: _buildBody()),
+                ],
+              ),
             ),
-          ),
-        ],
-      ),
+          ],
+        ),
       ),
     );
   }
@@ -298,7 +320,8 @@ class _HomeScreenState extends State<HomeScreen> {
             padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
             child: Text(
               title,
-              style: AppTextStyles.antiqueTitle.copyWith(color: AppColors.xuanse),
+              style:
+                  AppTextStyles.antiqueTitle.copyWith(color: AppColors.xuanse),
             ),
           ),
           const AntiqueDivider(),
@@ -316,10 +339,13 @@ class _HomeScreenState extends State<HomeScreen> {
           Icon(Icons.calendar_today_outlined,
               size: 48, color: AppColors.huiseLight),
           const SizedBox(height: 12),
-          Text('历法功能', style: AppTextStyles.antiqueBody.copyWith(color: AppColors.huise)),
+          Text('历法功能',
+              style:
+                  AppTextStyles.antiqueBody.copyWith(color: AppColors.huise)),
           const SizedBox(height: 4),
           Text('即将推出',
-              style: AppTextStyles.antiqueLabel.copyWith(color: AppColors.huiseLight)),
+              style: AppTextStyles.antiqueLabel
+                  .copyWith(color: AppColors.huiseLight)),
         ],
       ),
     );
@@ -332,10 +358,13 @@ class _HomeScreenState extends State<HomeScreen> {
         children: [
           Icon(Icons.person_outline, size: 48, color: AppColors.huiseLight),
           const SizedBox(height: 12),
-          Text('个人中心', style: AppTextStyles.antiqueBody.copyWith(color: AppColors.huise)),
+          Text('个人中心',
+              style:
+                  AppTextStyles.antiqueBody.copyWith(color: AppColors.huise)),
           const SizedBox(height: 4),
           Text('即将推出',
-              style: AppTextStyles.antiqueLabel.copyWith(color: AppColors.huiseLight)),
+              style: AppTextStyles.antiqueLabel
+                  .copyWith(color: AppColors.huiseLight)),
         ],
       ),
     );

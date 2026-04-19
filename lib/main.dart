@@ -1,6 +1,7 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'core/navigation/route_observer.dart';
 import 'core/theme/app_theme.dart';
 import 'data/database/app_database.dart';
 import 'data/repositories/divination_repository_impl.dart';
@@ -145,6 +146,7 @@ class _WanxiangPaipanAppState extends State<WanxiangPaipanApp> {
         theme: AppTheme.lightTheme,
         darkTheme: AppTheme.darkTheme,
         themeMode: ThemeMode.light,
+        navigatorObservers: [appRouteObserver],
         home: const HomeScreen(),
         routes: {
           '/history': (context) => const HistoryListScreen(),

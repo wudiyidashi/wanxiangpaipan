@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import '../../../core/navigation/route_observer.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_text_styles.dart';
 import '../../../domain/divination_system.dart';
@@ -24,7 +25,7 @@ class HistoryListScreen extends StatefulWidget {
   State<HistoryListScreen> createState() => _HistoryListScreenState();
 }
 
-class _HistoryListScreenState extends State<HistoryListScreen> {
+class _HistoryListScreenState extends State<HistoryListScreen> with RouteAware {
   List<DivinationResult> _records = [];
   List<DivinationResult> _filteredRecords = [];
   bool _isLoading = true;
@@ -45,9 +46,31 @@ class _HistoryListScreenState extends State<HistoryListScreen> {
   }
 
   @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    // chromeless 嵌在 HomeScreen tab 1，路由是 HomeScreen 的；由 HomeScreen
+    // 负责刷；本 widget 切出/切入 tab 时会整个重建，initState 自然重跑。
+    // 仅独立路由 (/history) 形态需要订阅 RouteObserver，以在更深层页面
+    // pop 回来时刷新列表。
+    if (widget.chromeless) return;
+    final route = ModalRoute.of(context);
+    if (route is PageRoute) {
+      appRouteObserver.subscribe(this, route);
+    }
+  }
+
+  @override
   void dispose() {
+    if (!widget.chromeless) {
+      appRouteObserver.unsubscribe(this);
+    }
     _searchController.dispose();
     super.dispose();
+  }
+
+  @override
+  void didPopNext() {
+    _loadRecords();
   }
 
   /// 加载历史记录
@@ -304,8 +327,7 @@ class _HistoryListScreenState extends State<HistoryListScreen> {
             const SizedBox(height: 8),
             Text(
               '去首页选一种术数起卦吧',
-              style:
-                  AppTextStyles.antiqueLabel.copyWith(color: AppColors.guhe),
+              style: AppTextStyles.antiqueLabel.copyWith(color: AppColors.guhe),
             ),
             const SizedBox(height: 24),
             AntiqueButton(
@@ -339,8 +361,7 @@ class _HistoryListScreenState extends State<HistoryListScreen> {
             const SizedBox(height: 8),
             Text(
               '试试调整筛选或关键字',
-              style:
-                  AppTextStyles.antiqueLabel.copyWith(color: AppColors.guhe),
+              style: AppTextStyles.antiqueLabel.copyWith(color: AppColors.guhe),
             ),
             const SizedBox(height: 24),
             AntiqueButton(
@@ -463,7 +484,8 @@ class _HistoryListScreenState extends State<HistoryListScreen> {
             },
             child: Text(
               '清除',
-              style: AppTextStyles.antiqueLabel.copyWith(color: AppColors.zhusha),
+              style:
+                  AppTextStyles.antiqueLabel.copyWith(color: AppColors.zhusha),
             ),
           ),
         ],
