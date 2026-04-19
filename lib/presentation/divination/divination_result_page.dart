@@ -79,6 +79,7 @@ class DivinationResultPage extends StatelessWidget {
       }
       children.add(
         AIAnalysisWidget(
+          key: ValueKey('ai-analysis-${result.id}'),
           result: result,
           question: question.isEmpty ? null : question,
         ),

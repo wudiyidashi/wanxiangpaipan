@@ -38,7 +38,9 @@ class AIAnalysisService extends ChangeNotifier {
   String _currentContent = '';
   String? _error;
   AnalysisResponse? _lastResponse;
+  String? _currentResultId;
   StreamSubscription<String>? _streamSubscription;
+  Completer<AnalysisResponse>? _pendingStreamCompleter;
 
   AIAnalysisService({
     required LLMProviderRegistry providerRegistry,
@@ -66,6 +68,9 @@ class AIAnalysisService extends ChangeNotifier {
   /// 最后一次响应
   AnalysisResponse? get lastResponse => _lastResponse;
 
+  /// 当前分析对应的排盘记录 ID
+  String? get currentResultId => _currentResultId;
+
   // ==================== 分析方法 ====================
 
   /// 分析排盘结果
@@ -85,6 +90,9 @@ class AIAnalysisService extends ChangeNotifier {
     bool? useStreaming,
     Map<String, dynamic>? customVariables,
   }) async {
+    await _cancelActiveStreamIfNeeded();
+
+    _currentResultId = result.id;
     _state = AnalysisState.loading;
     _currentContent = '';
     _error = null;
@@ -161,6 +169,7 @@ class AIAnalysisService extends ChangeNotifier {
     final stopwatch = Stopwatch()..start();
     final buffer = StringBuffer();
     final completer = Completer<AnalysisResponse>();
+    _pendingStreamCompleter = completer;
 
     _streamSubscription = stream.listen(
       (chunk) {
@@ -181,6 +190,8 @@ class AIAnalysisService extends ChangeNotifier {
 
         _lastResponse = response;
         _state = AnalysisState.completed;
+        _pendingStreamCompleter = null;
+        _streamSubscription = null;
         notifyListeners();
 
         completer.complete(response);
@@ -189,6 +200,8 @@ class AIAnalysisService extends ChangeNotifier {
         stopwatch.stop();
         _state = AnalysisState.error;
         _error = error.toString();
+        _pendingStreamCompleter = null;
+        _streamSubscription = null;
         notifyListeners();
 
         completer.completeError(error);
@@ -200,9 +213,8 @@ class AIAnalysisService extends ChangeNotifier {
   }
 
   /// 取消当前分析
-  void cancelAnalysis() {
-    _streamSubscription?.cancel();
-    _streamSubscription = null;
+  Future<void> cancelAnalysis() async {
+    await _cancelActiveStreamIfNeeded();
 
     if (isAnalyzing) {
       _state = AnalysisState.idle;
@@ -215,6 +227,7 @@ class AIAnalysisService extends ChangeNotifier {
     _currentContent = '';
     _error = null;
     _lastResponse = null;
+    _currentResultId = null;
     _state = AnalysisState.idle;
     notifyListeners();
   }
@@ -386,5 +399,16 @@ class AIAnalysisService extends ChangeNotifier {
   void dispose() {
     _streamSubscription?.cancel();
     super.dispose();
+  }
+
+  Future<void> _cancelActiveStreamIfNeeded() async {
+    await _streamSubscription?.cancel();
+    _streamSubscription = null;
+
+    final completer = _pendingStreamCompleter;
+    if (completer != null && !completer.isCompleted) {
+      completer.completeError(StateError('分析已取消'));
+    }
+    _pendingStreamCompleter = null;
   }
 }

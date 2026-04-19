@@ -7,11 +7,12 @@ import '../../ai/service/prompt_assembler.dart';
 import '../../ai/output/structured_output_formatter.dart';
 import '../../core/theme/app_text_styles.dart';
 import '../../domain/divination_system.dart';
+import '../../domain/repositories/divination_repository.dart';
 
 /// AI 分析组件
 ///
 /// 内容直接展开，随外部页面一起滚动，无内部滚动。
-class AIAnalysisWidget extends StatelessWidget {
+class AIAnalysisWidget extends StatefulWidget {
   final DivinationResult result;
   final String? question;
 
@@ -22,6 +23,33 @@ class AIAnalysisWidget extends StatelessWidget {
   });
 
   @override
+  State<AIAnalysisWidget> createState() => _AIAnalysisWidgetState();
+}
+
+class _AIAnalysisWidgetState extends State<AIAnalysisWidget> {
+  String _persistedContent = '';
+  String? _loadedResultId;
+  bool _isLoadingPersistedContent = false;
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _loadPersistedAnalysis(force: true);
+    });
+  }
+
+  @override
+  void didUpdateWidget(covariant AIAnalysisWidget oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.result.id != widget.result.id) {
+      _persistedContent = '';
+      _loadedResultId = null;
+      _loadPersistedAnalysis(force: true);
+    }
+  }
+
+  @override
   Widget build(BuildContext context) {
     final aiService = context.watch<AIAnalysisService?>();
 
@@ -29,25 +57,48 @@ class AIAnalysisWidget extends StatelessWidget {
       return const SizedBox.shrink();
     }
 
+    final isCurrentResult = aiService.currentResultId == widget.result.id;
+    final isAnalyzing = isCurrentResult && aiService.isAnalyzing;
+    final error = isCurrentResult ? aiService.error : null;
+    final content =
+        isCurrentResult ? aiService.currentContent : _persistedContent;
+    final hasContent = content.isNotEmpty;
+
     return Card(
       margin: const EdgeInsets.symmetric(vertical: 8),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          _buildHeader(context, aiService),
-          if (aiService.isAnalyzing ||
-              aiService.currentContent.isNotEmpty ||
-              aiService.error != null)
-            _buildContent(context, aiService),
+          _buildHeader(
+            context,
+            aiService,
+            isAnalyzing: isAnalyzing,
+            hasContent: hasContent,
+          ),
+          if (isAnalyzing ||
+              hasContent ||
+              error != null ||
+              _isLoadingPersistedContent)
+            _buildContent(
+              context,
+              aiService,
+              isCurrentResult: isCurrentResult,
+              isAnalyzing: isAnalyzing,
+              content: content,
+              error: error,
+            ),
         ],
       ),
     );
   }
 
-  Widget _buildHeader(BuildContext context, AIAnalysisService aiService) {
+  Widget _buildHeader(
+    BuildContext context,
+    AIAnalysisService aiService, {
+    required bool isAnalyzing,
+    required bool hasContent,
+  }) {
     final isConfigured = aiService.hasAvailableProvider;
-    final isAnalyzing = aiService.isAnalyzing;
-    final hasContent = aiService.currentContent.isNotEmpty;
 
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
@@ -107,7 +158,14 @@ class AIAnalysisWidget extends StatelessWidget {
     );
   }
 
-  Widget _buildContent(BuildContext context, AIAnalysisService aiService) {
+  Widget _buildContent(
+    BuildContext context,
+    AIAnalysisService aiService, {
+    required bool isCurrentResult,
+    required bool isAnalyzing,
+    required String content,
+    required String? error,
+  }) {
     return Padding(
       padding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
       child: Column(
@@ -116,9 +174,14 @@ class AIAnalysisWidget extends StatelessWidget {
           const Divider(height: 1),
           const SizedBox(height: 12),
 
-          if (aiService.error != null)
-            _buildError(context, aiService)
-          else if (aiService.currentContent.isEmpty && aiService.isAnalyzing)
+          if (_isLoadingPersistedContent && !isAnalyzing && content.isEmpty)
+            const Padding(
+              padding: EdgeInsets.symmetric(vertical: 16),
+              child: Center(child: Text('正在加载已保存的分析内容...')),
+            )
+          else if (error != null)
+            _buildError(context, error)
+          else if (content.isEmpty && isAnalyzing)
             const Padding(
               padding: EdgeInsets.symmetric(vertical: 24),
               child: Center(child: Text('正在分析卦象...')),
@@ -126,7 +189,7 @@ class AIAnalysisWidget extends StatelessWidget {
           else
             // Markdown 渲染，无内部滚动
             MarkdownBody(
-              data: aiService.currentContent,
+              data: content,
               selectable: true,
               styleSheet: MarkdownStyleSheet(
                 p: Theme.of(context)
@@ -157,11 +220,11 @@ class AIAnalysisWidget extends StatelessWidget {
             ),
 
           // 清除按钮
-          if (aiService.state == AnalysisState.completed)
+          if (!isAnalyzing && error == null && content.isNotEmpty)
             Align(
               alignment: Alignment.centerRight,
               child: TextButton.icon(
-                onPressed: () => aiService.clearResult(),
+                onPressed: () => _clearAnalysis(aiService, isCurrentResult),
                 icon: const Icon(Icons.clear, size: 16),
                 label: Text('清除',
                     style: AppTextStyles.antiqueLabel.copyWith(fontSize: 12)),
@@ -172,8 +235,7 @@ class AIAnalysisWidget extends StatelessWidget {
     );
   }
 
-  Widget _buildError(BuildContext context, AIAnalysisService aiService) {
-    final error = aiService.error ?? '分析失败';
+  Widget _buildError(BuildContext context, String error) {
     final message = error.replaceFirst(RegExp(r'^Exception:\s*'), '');
 
     return Container(
@@ -206,15 +268,47 @@ class AIAnalysisWidget extends StatelessWidget {
 
   Future<void> _startAnalysis(
       BuildContext context, AIAnalysisService aiService) async {
+    final repository = _tryReadRepository();
     try {
-      await aiService.analyze(
-        result,
-        question: question,
+      final response = await aiService.analyze(
+        widget.result,
+        question: widget.question,
         useStreaming: true,
       );
+      final content = response.content.trim();
+      if (repository != null && content.isNotEmpty) {
+        await repository.saveEncryptedField(_interpretationKey, content);
+      }
+      if (!mounted) {
+        return;
+      }
+      setState(() {
+        _persistedContent = content;
+        _loadedResultId = widget.result.id;
+      });
     } catch (_) {
       // 错误已在 service 中处理
     }
+  }
+
+  Future<void> _clearAnalysis(
+    AIAnalysisService aiService,
+    bool isCurrentResult,
+  ) async {
+    final repository = _tryReadRepository();
+    if (isCurrentResult) {
+      aiService.clearResult();
+    }
+    if (repository != null) {
+      await repository.deleteEncryptedField(_interpretationKey);
+    }
+    if (!mounted) {
+      return;
+    }
+    setState(() {
+      _persistedContent = '';
+      _loadedResultId = widget.result.id;
+    });
   }
 
   Future<void> _showPreview(BuildContext context) async {
@@ -224,7 +318,8 @@ class AIAnalysisWidget extends StatelessWidget {
         configManager: AIBootstrap.configManager,
         formatterRegistry: StructuredOutputFormatterRegistry.instance,
       );
-      final prompt = await assembler.assemble(result, question: question);
+      final prompt =
+          await assembler.assemble(widget.result, question: widget.question);
       previewContent =
           '--- 系统提示词 ---\n${prompt.systemPrompt}\n\n--- 用户提示词 ---\n${prompt.userPrompt}';
     } catch (e) {
@@ -295,6 +390,58 @@ class AIAnalysisWidget extends StatelessWidget {
       ),
     );
   }
+
+  Future<void> _loadPersistedAnalysis({required bool force}) async {
+    if (!force && _loadedResultId == widget.result.id) {
+      return;
+    }
+
+    final repository = _tryReadRepository();
+    if (repository == null) {
+      if (!mounted) {
+        return;
+      }
+      setState(() {
+        _persistedContent = '';
+        _loadedResultId = widget.result.id;
+        _isLoadingPersistedContent = false;
+      });
+      return;
+    }
+
+    if (mounted) {
+      setState(() {
+        _isLoadingPersistedContent = true;
+      });
+    }
+
+    final resultId = widget.result.id;
+    final content = (await repository.readEncryptedField(
+              'interpretation_$resultId',
+            ) ??
+            '')
+        .trim();
+
+    if (!mounted || widget.result.id != resultId) {
+      return;
+    }
+
+    setState(() {
+      _persistedContent = content;
+      _loadedResultId = resultId;
+      _isLoadingPersistedContent = false;
+    });
+  }
+
+  DivinationRepository? _tryReadRepository() {
+    try {
+      return context.read<DivinationRepository>();
+    } catch (_) {
+      return null;
+    }
+  }
+
+  String get _interpretationKey => 'interpretation_${widget.result.id}';
 }
 
 /// AI 分析浮动按钮
