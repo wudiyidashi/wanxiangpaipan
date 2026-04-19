@@ -22,6 +22,9 @@ class AntiqueTextField extends StatelessWidget {
     this.textAlign,
     this.inputFormatters,
     this.hintStyle,
+    this.contentPadding,
+    this.suffixIconConstraints,
+    this.obscuringCharacter = '•',
   });
 
   final TextEditingController? controller;
@@ -45,6 +48,9 @@ class AntiqueTextField extends StatelessWidget {
   final TextAlign? textAlign;
   final List<TextInputFormatter>? inputFormatters;
   final TextStyle? hintStyle;
+  final EdgeInsetsGeometry? contentPadding;
+  final BoxConstraints? suffixIconConstraints;
+  final String obscuringCharacter;
 
   @override
   Widget build(BuildContext context) {
@@ -65,6 +71,7 @@ class AntiqueTextField extends StatelessWidget {
         minLines: minLines,
         keyboardType: keyboardType,
         obscureText: obscureText,
+        obscuringCharacter: obscuringCharacter,
         expands: expands,
         textAlignVertical: textAlignVertical,
         textAlign: textAlign ?? TextAlign.start,
@@ -83,7 +90,9 @@ class AntiqueTextField extends StatelessWidget {
                 fontSize: 13,
               ),
           isDense: true,
+          contentPadding: contentPadding,
           suffixIcon: suffixIcon,
+          suffixIconConstraints: suffixIconConstraints,
         ),
       ),
     );
