@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import '../../../core/theme/app_colors.dart';
 import '../../../domain/divination_system.dart';
 import '../../../presentation/divination_ui_registry.dart';
 import '../../../presentation/widgets/history_record_card.dart';
@@ -33,5 +34,5 @@ class LiuYaoUIFactory implements DivinationUIFactory {
   IconData? getSystemIcon() => Icons.hexagon;
 
   @override
-  Color? getSystemColor() => const Color(0xFFD32F2F);
+  Color? getSystemColor() => AppColors.liuyaoColor;
 }
