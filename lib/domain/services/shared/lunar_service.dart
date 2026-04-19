@@ -17,6 +17,7 @@ class LunarService {
     final kongWang = _calculateKongWang(lunar);
     final yearGanZhi = lunar.getYearInGanZhi();
     final monthGanZhi = lunar.getMonthInGanZhi();
+    final hourGanZhi = lunar.getTimeInGanZhi();
     final solarTerm = lunar.getJieQi();
 
     return LunarInfo(
@@ -24,6 +25,7 @@ class LunarService {
       riGan: riGan,
       riZhi: riZhi,
       riGanZhi: riGanZhi,
+      hourGanZhi: hourGanZhi,
       kongWang: kongWang,
       yearGanZhi: yearGanZhi,
       monthGanZhi: monthGanZhi,

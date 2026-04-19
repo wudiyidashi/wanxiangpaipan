@@ -6,6 +6,7 @@ import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_text_styles.dart';
 import '../../../domain/divination_system.dart';
 import '../../../domain/repositories/divination_repository.dart';
+import '../../../domain/services/shared/tiangan_dizhi_service.dart';
 import '../../../presentation/divination_ui_registry.dart';
 import '../../../presentation/widgets/ai_analysis_widget.dart';
 import '../../../presentation/widgets/extended_info_section.dart';
@@ -14,6 +15,7 @@ import '../../../presentation/widgets/history_record_card.dart';
 import '../daliuren_system.dart';
 import '../models/daliuren_result.dart';
 import '../models/chuan.dart';
+import '../models/pan_params.dart';
 
 /// 大六壬 UI 工厂
 ///
@@ -37,7 +39,8 @@ class DaLiuRenUIFactory implements DivinationUIFactory {
   }
 
   @override
-  Widget buildHistoryCard(DivinationResult result) => HistoryRecordCard(result: result);
+  Widget buildHistoryCard(DivinationResult result) =>
+      HistoryRecordCard(result: result);
 
   @override
   IconData? getSystemIcon() {
@@ -50,7 +53,6 @@ class DaLiuRenUIFactory implements DivinationUIFactory {
     // 使用紫檀色作为大六壬的主题色
     return AppColors.daliurenColor;
   }
-
 }
 
 // ==================== 统一起课界面 ====================
@@ -87,24 +89,71 @@ class _DaLiuRenCastScreenState extends State<_DaLiuRenCastScreen> {
   bool _isLoading = false;
   final TextEditingController _questionController = TextEditingController();
   final TextEditingController _numberController = TextEditingController();
+  final TextEditingController _birthYearController = TextEditingController();
 
   // 手动输入相关
   static const List<String> _tianGan = [
-    '甲', '乙', '丙', '丁', '戊', '己', '庚', '辛', '壬', '癸',
+    '甲',
+    '乙',
+    '丙',
+    '丁',
+    '戊',
+    '己',
+    '庚',
+    '辛',
+    '壬',
+    '癸',
   ];
   static const List<String> _diZhi = [
-    '子', '丑', '寅', '卯', '辰', '巳', '午', '未', '申', '酉', '戌', '亥',
+    '子',
+    '丑',
+    '寅',
+    '卯',
+    '辰',
+    '巳',
+    '午',
+    '未',
+    '申',
+    '酉',
+    '戌',
+    '亥',
   ];
 
-  String _riGan = '甲';
-  String _riZhi = '子';
-  String _shiZhi = '子';
-  String _yueJian = '寅';
+  String _yearGan = '丙';
+  String _yearZhi = '午';
+  String _monthGan = '壬';
+  String _monthZhi = '辰';
+  String _dayGan = '壬';
+  String _dayZhi = '戌';
+  String _hourGan = '辛';
+  String _hourZhi = '亥';
+
+  DaLiuRenMonthGeneralMode _monthGeneralMode = DaLiuRenMonthGeneralMode.auto;
+  String _manualMonthGeneral = '戌';
+  DaLiuRenDayNightMode _dayNightMode = DaLiuRenDayNightMode.auto;
+  DaLiuRenGuiRenVerse _guiRenVerse = DaLiuRenGuiRenVerse.classic;
+  DaLiuRenXunShouMode _xunShouMode = DaLiuRenXunShouMode.day;
+  bool _showSanChuanOnTop = true;
+
+  @override
+  void initState() {
+    super.initState();
+    final nowLunar = Lunar.fromDate(DateTime.now());
+    _yearGan = nowLunar.getYearGan();
+    _yearZhi = nowLunar.getYearZhi();
+    _monthGan = nowLunar.getMonthGan();
+    _monthZhi = nowLunar.getMonthZhi();
+    _dayGan = nowLunar.getDayGan();
+    _dayZhi = nowLunar.getDayZhi();
+    _hourGan = nowLunar.getTimeGan();
+    _hourZhi = nowLunar.getTimeZhi();
+  }
 
   @override
   void dispose() {
     _questionController.dispose();
     _numberController.dispose();
+    _birthYearController.dispose();
     super.dispose();
   }
 
@@ -117,12 +166,13 @@ class _DaLiuRenCastScreenState extends State<_DaLiuRenCastScreen> {
     try {
       final system = DaLiuRenSystem();
       DivinationResult result;
+      final params = _buildPanParams();
 
       switch (_selectedMethod) {
         case CastMethod.time:
           result = await system.cast(
             method: CastMethod.time,
-            input: {},
+            input: {'params': params.toJson()},
             castTime: DateTime.now(),
           );
         case CastMethod.reportNumber:
@@ -134,23 +184,27 @@ class _DaLiuRenCastScreenState extends State<_DaLiuRenCastScreen> {
           }
           result = await system.cast(
             method: CastMethod.reportNumber,
-            input: {'number': number},
+            input: {
+              'number': number,
+              'params': params.toJson(),
+            },
             castTime: DateTime.now(),
           );
         case CastMethod.manual:
           result = await system.cast(
             method: CastMethod.manual,
             input: {
-              'riGan': _riGan,
-              'riZhi': _riZhi,
-              'shiZhi': _shiZhi,
-              'yueJian': _yueJian,
+              'yearGanZhi': '$_yearGan$_yearZhi',
+              'monthGanZhi': '$_monthGan$_monthZhi',
+              'dayGanZhi': '$_dayGan$_dayZhi',
+              'hourGanZhi': '$_hourGan$_hourZhi',
+              'params': params.toJson(),
             },
           );
         case CastMethod.computer:
           result = await system.cast(
             method: CastMethod.computer,
-            input: {},
+            input: {'params': params.toJson()},
             castTime: DateTime.now(),
           );
         default:
@@ -201,6 +255,32 @@ class _DaLiuRenCastScreenState extends State<_DaLiuRenCastScreen> {
     );
   }
 
+  DaLiuRenPanParams _buildPanParams() {
+    final birthYearText = _birthYearController.text.trim();
+    final birthYear =
+        birthYearText.isEmpty ? null : int.tryParse(birthYearText);
+    if (birthYearText.isNotEmpty && birthYear == null) {
+      throw FormatException('生年必须为数字');
+    }
+
+    final forceManualMonthGeneral = _selectedMethod == CastMethod.manual;
+    final monthGeneralMode = forceManualMonthGeneral
+        ? DaLiuRenMonthGeneralMode.manual
+        : _monthGeneralMode;
+
+    return DaLiuRenPanParams(
+      birthYear: birthYear,
+      monthGeneralMode: monthGeneralMode,
+      manualMonthGeneral: monthGeneralMode == DaLiuRenMonthGeneralMode.manual
+          ? _manualMonthGeneral
+          : null,
+      dayNightMode: _dayNightMode,
+      guiRenVerse: _guiRenVerse,
+      xunShouMode: _xunShouMode,
+      showSanChuanOnTop: _showSanChuanOnTop,
+    );
+  }
+
   // ==================== UI 构建 ====================
 
   @override
@@ -217,6 +297,8 @@ class _DaLiuRenCastScreenState extends State<_DaLiuRenCastScreen> {
               _buildQuestionSection(),
               const SizedBox(height: 16),
               _buildMethodSelector(),
+              const SizedBox(height: 16),
+              _buildPanParamsSection(),
               const SizedBox(height: 16),
               const AntiqueDivider(),
               const SizedBox(height: 20),
@@ -267,6 +349,160 @@ class _DaLiuRenCastScreenState extends State<_DaLiuRenCastScreen> {
           },
         ),
       ],
+    );
+  }
+
+  Widget _buildPanParamsSection() {
+    final forceManualMonthGeneral = _selectedMethod == CastMethod.manual;
+    final effectiveMonthGeneralMode = forceManualMonthGeneral
+        ? DaLiuRenMonthGeneralMode.manual
+        : _monthGeneralMode;
+
+    return AntiqueCard(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          AntiqueSectionTitle(title: '排盘参数'),
+          const AntiqueDivider(),
+          const SizedBox(height: 12),
+          Row(
+            children: [
+              Expanded(
+                child: _buildDropdown(
+                  '昼夜',
+                  _dayNightMode.id,
+                  DaLiuRenDayNightMode.values.map((e) => e.id).toList(),
+                  (value) {
+                    if (value != null) {
+                      setState(() {
+                        _dayNightMode = DaLiuRenDayNightMode.fromId(value);
+                      });
+                    }
+                  },
+                  labels: const {
+                    'auto': '自动',
+                    'day': '昼贵',
+                    'night': '夜贵',
+                  },
+                ),
+              ),
+              const SizedBox(width: 12),
+              Expanded(
+                child: _buildDropdown(
+                  '旬位',
+                  _xunShouMode.id,
+                  DaLiuRenXunShouMode.values.map((e) => e.id).toList(),
+                  (value) {
+                    if (value != null) {
+                      setState(() {
+                        _xunShouMode = DaLiuRenXunShouMode.fromId(value);
+                      });
+                    }
+                  },
+                  labels: const {
+                    'day': '日柱旬遁干',
+                    'hour': '时柱旬遁干',
+                  },
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 12),
+          Row(
+            children: [
+              Expanded(
+                child: _buildDropdown(
+                  '贵人口诀',
+                  _guiRenVerse.id,
+                  DaLiuRenGuiRenVerse.values.map((e) => e.id).toList(),
+                  (value) {
+                    if (value != null) {
+                      setState(() {
+                        _guiRenVerse = DaLiuRenGuiRenVerse.fromId(value);
+                      });
+                    }
+                  },
+                  labels: const {
+                    'classic': '甲戊庚牛羊',
+                    'jiaDayAlt': '甲羊戊庚牛',
+                  },
+                ),
+              ),
+              const SizedBox(width: 12),
+              Expanded(
+                child: forceManualMonthGeneral
+                    ? _buildDropdown(
+                        '月将',
+                        _manualMonthGeneral,
+                        _diZhi,
+                        (value) {
+                          if (value != null) {
+                            setState(() => _manualMonthGeneral = value);
+                          }
+                        },
+                      )
+                    : _buildDropdown(
+                        '月将模式',
+                        effectiveMonthGeneralMode.id,
+                        DaLiuRenMonthGeneralMode.values
+                            .map((e) => e.id)
+                            .toList(),
+                        (value) {
+                          if (value != null) {
+                            setState(() {
+                              _monthGeneralMode =
+                                  DaLiuRenMonthGeneralMode.fromId(value);
+                            });
+                          }
+                        },
+                        labels: const {
+                          'auto': '自动',
+                          'manual': '手动',
+                        },
+                      ),
+              ),
+            ],
+          ),
+          if (!forceManualMonthGeneral &&
+              effectiveMonthGeneralMode == DaLiuRenMonthGeneralMode.manual) ...[
+            const SizedBox(height: 12),
+            _buildDropdown(
+              '手动月将',
+              _manualMonthGeneral,
+              _diZhi,
+              (value) {
+                if (value != null) {
+                  setState(() => _manualMonthGeneral = value);
+                }
+              },
+            ),
+          ],
+          const SizedBox(height: 12),
+          Text('生年', style: AppTextStyles.antiqueLabel),
+          const SizedBox(height: 6),
+          AntiqueTextField(
+            controller: _birthYearController,
+            hint: '本命占可填，时事占可留空',
+            keyboardType: TextInputType.number,
+          ),
+          const SizedBox(height: 12),
+          Row(
+            children: [
+              Checkbox(
+                value: _showSanChuanOnTop,
+                activeColor: AppColors.zhusha,
+                onChanged: (value) {
+                  if (value != null) {
+                    setState(() => _showSanChuanOnTop = value);
+                  }
+                },
+              ),
+              const SizedBox(width: 4),
+              Text('三传显示在上', style: AppTextStyles.antiqueLabel),
+            ],
+          ),
+        ],
+      ),
     );
   }
 
@@ -399,30 +635,41 @@ class _DaLiuRenCastScreenState extends State<_DaLiuRenCastScreen> {
   Widget _buildManualCastSection() {
     return Column(
       children: [
-        // 日干 / 日支
-        Row(
-          children: [
-            Expanded(child: _buildDropdown('日干', _riGan, _tianGan, (v) {
-              setState(() => _riGan = v!);
-            })),
-            const SizedBox(width: 12),
-            Expanded(child: _buildDropdown('日支', _riZhi, _diZhi, (v) {
-              setState(() => _riZhi = v!);
-            })),
-          ],
+        _buildPillarSelectorRow(
+          label: '年柱',
+          gan: _yearGan,
+          zhi: _yearZhi,
+          onGanChanged: (value) => setState(() => _yearGan = value),
+          onZhiChanged: (value) => setState(() => _yearZhi = value),
         ),
         const SizedBox(height: 12),
-        // 时支 / 月建
-        Row(
-          children: [
-            Expanded(child: _buildDropdown('时支', _shiZhi, _diZhi, (v) {
-              setState(() => _shiZhi = v!);
-            })),
-            const SizedBox(width: 12),
-            Expanded(child: _buildDropdown('月建', _yueJian, _diZhi, (v) {
-              setState(() => _yueJian = v!);
-            })),
-          ],
+        _buildPillarSelectorRow(
+          label: '月柱',
+          gan: _monthGan,
+          zhi: _monthZhi,
+          onGanChanged: (value) => setState(() => _monthGan = value),
+          onZhiChanged: (value) => setState(() => _monthZhi = value),
+        ),
+        const SizedBox(height: 12),
+        _buildPillarSelectorRow(
+          label: '日柱',
+          gan: _dayGan,
+          zhi: _dayZhi,
+          onGanChanged: (value) => setState(() => _dayGan = value),
+          onZhiChanged: (value) => setState(() => _dayZhi = value),
+        ),
+        const SizedBox(height: 12),
+        _buildPillarSelectorRow(
+          label: '时柱',
+          gan: _hourGan,
+          zhi: _hourZhi,
+          onGanChanged: (value) => setState(() => _hourGan = value),
+          onZhiChanged: (value) => setState(() => _hourZhi = value),
+        ),
+        const SizedBox(height: 8),
+        Text(
+          '指定干支模式按输入四柱直接起课，月将请在上方“排盘参数”中明确指定。',
+          style: AppTextStyles.antiqueLabel.copyWith(fontSize: 12),
         ),
         const SizedBox(height: 24),
         AntiqueButton(
@@ -440,8 +687,9 @@ class _DaLiuRenCastScreenState extends State<_DaLiuRenCastScreen> {
     String label,
     String value,
     List<String> items,
-    ValueChanged<String?> onChanged,
-  ) {
+    ValueChanged<String?> onChanged, {
+    Map<String, String>? labels,
+  }) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -450,9 +698,56 @@ class _DaLiuRenCastScreenState extends State<_DaLiuRenCastScreen> {
         AntiqueDropdown<String>(
           value: value,
           items: items
-              .map((item) => AntiqueDropdownItem<String>(value: item, label: item))
+              .map(
+                (item) => AntiqueDropdownItem<String>(
+                  value: item,
+                  label: labels?[item] ?? item,
+                ),
+              )
               .toList(),
           onChanged: onChanged,
+        ),
+      ],
+    );
+  }
+
+  Widget _buildPillarSelectorRow({
+    required String label,
+    required String gan,
+    required String zhi,
+    required ValueChanged<String> onGanChanged,
+    required ValueChanged<String> onZhiChanged,
+  }) {
+    return Row(
+      children: [
+        SizedBox(
+          width: 44,
+          child: Text(label, style: AppTextStyles.antiqueLabel),
+        ),
+        Expanded(
+          child: _buildDropdown(
+            '天干',
+            gan,
+            _tianGan,
+            (value) {
+              if (value != null) {
+                onGanChanged(value);
+              }
+            },
+          ),
+        ),
+        const SizedBox(width: 12),
+        Expanded(
+          child: _buildDropdown(
+            '地支',
+            zhi,
+            _diZhi,
+            (value) {
+              if (value != null) {
+                onZhiChanged(value);
+              }
+            },
+          ),
         ),
       ],
     );
@@ -507,51 +802,136 @@ class _DaLiuRenResultScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return AntiqueScaffold(
-      appBar: const AntiqueAppBar(title: '大六壬排盘结果'),
-      body: SafeArea(
-        child: SingleChildScrollView(
-          padding: const EdgeInsets.all(16),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              ExtendedInfoSection(
-                castTime: result.castTime,
-                lunarInfo: result.lunarInfo,
-                liuShen: const [],
+    final upperSection = result.panParams.showSanChuanOnTop
+        ? _buildSanChuanSection()
+        : _buildSiKeSection();
+    final lowerSection = result.panParams.showSanChuanOnTop
+        ? _buildSiKeSection()
+        : _buildSanChuanSection();
+    final questionFuture = _loadQuestion(context);
+
+    return FutureBuilder<String?>(
+      future: questionFuture,
+      builder: (context, snapshot) {
+        final question = (snapshot.data ?? '').trim();
+        return AntiqueScaffold(
+          appBar: const AntiqueAppBar(title: '大六壬排盘结果'),
+          body: SafeArea(
+            child: SingleChildScrollView(
+              padding: const EdgeInsets.all(16),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  ExtendedInfoSection(
+                    castTime: result.castTime,
+                    lunarInfo: result.lunarInfo,
+                    liuShen: const [],
+                  ),
+                  const SizedBox(height: 16),
+                  _buildPanParamsSummarySection(question),
+                  const SizedBox(height: 16),
+                  upperSection,
+                  const SizedBox(height: 16),
+                  lowerSection,
+                  const SizedBox(height: 16),
+
+                  // 天盘
+                  _buildTianPanSection(),
+                  const SizedBox(height: 16),
+
+                  // 神将
+                  _buildShenJiangSection(),
+                  const SizedBox(height: 16),
+
+                  // 神煞
+                  _buildShenShaSection(),
+                  const SizedBox(height: 16),
+
+                  // AI 分析组件
+                  AIAnalysisWidget(
+                    result: result,
+                    question: question.isEmpty ? null : question,
+                  ),
+                ],
               ),
-              const SizedBox(height: 16),
-
-              // 四课（传统 2x2 格子）
-              _buildSiKeSection(),
-              const SizedBox(height: 16),
-
-              // 三传（横排三圆）
-              _buildSanChuanSection(),
-              const SizedBox(height: 16),
-
-              // 天盘
-              _buildTianPanSection(),
-              const SizedBox(height: 16),
-
-              // 神将
-              _buildShenJiangSection(),
-              const SizedBox(height: 16),
-
-              // 神煞
-              _buildShenShaSection(),
-              const SizedBox(height: 16),
-
-              // AI 分析组件
-              AIAnalysisWidget(result: result),
-            ],
+            ),
           ),
-        ),
-      ),
+        );
+      },
     );
   }
 
   // ==================== 1. 基本信息 → 使用统一的 ExtendedInfoSection ====================
+
+  Widget _buildPanParamsSummarySection(String question) {
+    return AntiqueCard(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          AntiqueSectionTitle(title: '排盘参数'),
+          const AntiqueDivider(),
+          const SizedBox(height: 8),
+          _buildAntiqueInfoRow('占问', question.isEmpty ? '未设置' : question),
+          _buildAntiqueInfoRow('干支', _buildGanZhiText()),
+          _buildAntiqueInfoRow('遁干', _buildDunGanText()),
+          _buildAntiqueInfoRow('月将', _buildYueJiangText()),
+          _buildAntiqueInfoRow('贵神', _buildGuiRenText()),
+        ],
+      ),
+    );
+  }
+
+  Future<String?> _loadQuestion(BuildContext context) {
+    final repository = _tryReadRepository(context);
+    final fallbackQuestion =
+        result.questionId.isNotEmpty ? result.questionId : null;
+    return repository?.readEncryptedField('question_${result.id}') ??
+        Future<String?>.value(fallbackQuestion);
+  }
+
+  DivinationRepository? _tryReadRepository(BuildContext context) {
+    try {
+      return context.read<DivinationRepository>();
+    } catch (_) {
+      return null;
+    }
+  }
+
+  String _buildGanZhiText() {
+    final hourGanZhi = result.lunarInfo.hourGanZhi ?? result.shiZhi;
+    return '${result.lunarInfo.yearGanZhi}年　'
+        '${result.lunarInfo.monthGanZhi}月　'
+        '${result.lunarInfo.riGanZhi}日　'
+        '$hourGanZhi时';
+  }
+
+  String _buildDunGanText() {
+    final xunTarget = result.panParams.xunShouMode == DaLiuRenXunShouMode.hour
+        ? (result.lunarInfo.hourGanZhi ?? result.lunarInfo.riGanZhi)
+        : result.lunarInfo.riGanZhi;
+    final xunName = _resolveXunName(xunTarget);
+    final kongWang = result.lunarInfo.kongWang.join();
+    return '${result.panParams.xunShouModeLabel} $xunName旬 $kongWang空';
+  }
+
+  String _buildYueJiangText() {
+    final modeLabel = result.panParams.usesManualMonthGeneral ? '手动指定' : '系统选将';
+    return '${result.tianPan.yueJiang} 将($modeLabel)';
+  }
+
+  String _buildGuiRenText() {
+    final guiRenType = result.shenJiangConfig.isYangGui ? '昼贵' : '夜贵';
+    return '$guiRenType （${result.panParams.guiRenVerseLabel}）';
+  }
+
+  String _resolveXunName(String ganZhi) {
+    final index = TianGanDiZhiService.getGanZhiIndex(ganZhi);
+    if (index == -1) {
+      return '';
+    }
+    final xunStartIndex = (index ~/ 10) * 10;
+    return TianGanDiZhiService.getGanZhi(xunStartIndex);
+  }
 
   // ==================== 2. 四课（传统 2x2 格子） ====================
 
@@ -614,7 +994,8 @@ class _DaLiuRenResultScreen extends StatelessWidget {
                           style: TextStyle(
                             fontSize: 16,
                             fontWeight: FontWeight.bold,
-                            color: ke.hasKe ? AppColors.zhusha : AppColors.xuanse,
+                            color:
+                                ke.hasKe ? AppColors.zhusha : AppColors.xuanse,
                           ),
                         ),
                       ),
@@ -686,12 +1067,14 @@ class _DaLiuRenResultScreen extends StatelessWidget {
               _buildChuanCircle('初传', result.sanChuan.chuChuan),
               const Padding(
                 padding: EdgeInsets.only(bottom: 20),
-                child: Icon(Icons.arrow_forward, size: 18, color: AppColors.guhe),
+                child:
+                    Icon(Icons.arrow_forward, size: 18, color: AppColors.guhe),
               ),
               _buildChuanCircle('中传', result.sanChuan.zhongChuan),
               const Padding(
                 padding: EdgeInsets.only(bottom: 20),
-                child: Icon(Icons.arrow_forward, size: 18, color: AppColors.guhe),
+                child:
+                    Icon(Icons.arrow_forward, size: 18, color: AppColors.guhe),
               ),
               _buildChuanCircle('末传', result.sanChuan.moChuan),
             ],
@@ -777,6 +1160,21 @@ class _DaLiuRenResultScreen extends StatelessWidget {
             chuan.liuQin,
             style: AppTextStyles.antiqueLabel.copyWith(fontSize: 12),
           ),
+          const SizedBox(height: 2),
+          Text(
+            chuan.chengShenName,
+            style: AppTextStyles.antiqueLabel.copyWith(fontSize: 11),
+          ),
+          if (chuan.isKongWang) ...[
+            const SizedBox(height: 2),
+            Text(
+              '空亡',
+              style: AppTextStyles.antiqueLabel.copyWith(
+                fontSize: 11,
+                color: AppColors.zhusha,
+              ),
+            ),
+          ],
         ],
       ),
     );
@@ -795,6 +1193,16 @@ class _DaLiuRenResultScreen extends StatelessWidget {
           _buildAntiqueInfoRow('月将',
               '${result.tianPan.yueJiang}（${result.tianPan.yueJiangName}）'),
           _buildAntiqueInfoRow('描述', result.tianPan.yueJiangDescription),
+          const SizedBox(height: 12),
+          _buildGridSection(
+            items: result.tianPan.fullDisplay
+                .map((item) => _buildGridItem(
+                      title: '${item['地盘']}宫',
+                      primary: item['天盘'] ?? '',
+                      secondary: '天地盘',
+                    ))
+                .toList(),
+          ),
         ],
       ),
     );
@@ -812,7 +1220,18 @@ class _DaLiuRenResultScreen extends StatelessWidget {
           const SizedBox(height: 4),
           _buildAntiqueInfoRow('贵人',
               '${result.shenJiangConfig.guiRenPosition}（${result.shenJiangConfig.guiRenTypeDescription}）'),
-          _buildAntiqueInfoRow('布神', result.shenJiangConfig.directionDescription),
+          _buildAntiqueInfoRow(
+              '布神', result.shenJiangConfig.directionDescription),
+          const SizedBox(height: 12),
+          _buildGridSection(
+            items: result.shenJiangConfig.positions
+                .map((pos) => _buildGridItem(
+                      title: pos.name,
+                      primary: pos.diZhi,
+                      secondary: '乘${pos.tianPanZhi}',
+                    ))
+                .toList(),
+          ),
         ],
       ),
     );
@@ -885,12 +1304,14 @@ class _DaLiuRenResultScreen extends StatelessWidget {
                   decoration: BoxDecoration(
                     color: AppColors.zhusha.withOpacity(0.1),
                     borderRadius: BorderRadius.circular(12),
-                    border: Border.all(color: AppColors.zhusha.withOpacity(0.3)),
+                    border:
+                        Border.all(color: AppColors.zhusha.withOpacity(0.3)),
                   ),
                   child: Text(
                     shenSha.displayText,
                     // 域色：凶神朱砂语义色
-                    style: const TextStyle(fontSize: 12, color: AppColors.zhusha),
+                    style:
+                        const TextStyle(fontSize: 12, color: AppColors.zhusha),
                   ),
                 );
               }).toList(),
@@ -923,6 +1344,51 @@ class _DaLiuRenResultScreen extends StatelessWidget {
               value,
               style: AppTextStyles.antiqueBody,
             ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildGridSection({required List<Widget> items}) {
+    return Wrap(
+      spacing: 8,
+      runSpacing: 8,
+      children: items,
+    );
+  }
+
+  Widget _buildGridItem({
+    required String title,
+    required String primary,
+    required String secondary,
+  }) {
+    return Container(
+      width: 72,
+      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 10),
+      decoration: BoxDecoration(
+        color: Colors.white.withOpacity(0.55),
+        borderRadius: BorderRadius.circular(8),
+        border: Border.all(color: AppColors.danjin.withOpacity(0.45)),
+      ),
+      child: Column(
+        children: [
+          Text(
+            title,
+            style: AppTextStyles.antiqueLabel.copyWith(fontSize: 11),
+            textAlign: TextAlign.center,
+          ),
+          const SizedBox(height: 6),
+          Text(
+            primary,
+            style: AppTextStyles.antiqueTitle.copyWith(fontSize: 16),
+            textAlign: TextAlign.center,
+          ),
+          const SizedBox(height: 4),
+          Text(
+            secondary,
+            style: AppTextStyles.antiqueLabel.copyWith(fontSize: 10),
+            textAlign: TextAlign.center,
           ),
         ],
       ),

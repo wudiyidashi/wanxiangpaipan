@@ -30,12 +30,12 @@ class SiKeService {
     // 获取日干寄宫
     final riGanJiGong = DaLiuRenConstants.getGanJiGong(riGan);
 
-    // 一课：日干寄宫为下神，其上天盘地支为上神
-    final ke1XiaShen = riGanJiGong;
-    final ke1ShangShen = tianPanMap[ke1XiaShen] ?? ke1XiaShen;
+    // 一课：日干为下神，其寄宫上的天盘地支为上神
+    final ke1XiaShen = riGan;
+    final ke1ShangShenFromJiGong = tianPanMap[riGanJiGong] ?? riGanJiGong;
 
     // 二课：一课上神为下神，其上天盘地支为上神
-    final ke2XiaShen = ke1ShangShen;
+    final ke2XiaShen = ke1ShangShenFromJiGong;
     final ke2ShangShen = tianPanMap[ke2XiaShen] ?? ke2XiaShen;
 
     // 三课：日支为下神，其上天盘地支为上神
@@ -49,9 +49,8 @@ class SiKeService {
     // 创建四课
     final ke1 = _createKe(
       index: 1,
-      shangShen: ke1ShangShen,
+      shangShen: ke1ShangShenFromJiGong,
       xiaShen: ke1XiaShen,
-      riGan: riGan,
       shenJiangConfig: shenJiangConfig,
     );
 
@@ -59,7 +58,6 @@ class SiKeService {
       index: 2,
       shangShen: ke2ShangShen,
       xiaShen: ke2XiaShen,
-      riGan: riGan,
       shenJiangConfig: shenJiangConfig,
     );
 
@@ -67,7 +65,6 @@ class SiKeService {
       index: 3,
       shangShen: ke3ShangShen,
       xiaShen: ke3XiaShen,
-      riGan: riGan,
       shenJiangConfig: shenJiangConfig,
     );
 
@@ -75,7 +72,6 @@ class SiKeService {
       index: 4,
       shangShen: ke4ShangShen,
       xiaShen: ke4XiaShen,
-      riGan: riGan,
       shenJiangConfig: shenJiangConfig,
     );
 
@@ -94,12 +90,11 @@ class SiKeService {
     required int index,
     required String shangShen,
     required String xiaShen,
-    required String riGan,
     ShenJiangConfig? shenJiangConfig,
   }) {
     // 获取上下神五行
-    final shangShenWuXing = WuXingService.getWuXingFromBranch(shangShen);
-    final xiaShenWuXing = WuXingService.getWuXingFromBranch(xiaShen);
+    final shangShenWuXing = _getWuXing(shangShen);
+    final xiaShenWuXing = _getWuXing(xiaShen);
 
     // 计算五行关系
     String? wuXingRelation;
@@ -108,15 +103,15 @@ class SiKeService {
     bool isBiYong = false;
 
     if (shangShenWuXing != null && xiaShenWuXing != null) {
-      // 下克上为贼克
-      if (WuXingService.isKe(xiaShenWuXing, shangShenWuXing)) {
-        wuXingRelation = '下克上（贼克）';
+      // 上克下为正统当前优先发用
+      if (WuXingService.isKe(shangShenWuXing, xiaShenWuXing)) {
+        wuXingRelation = '上克下';
         hasKe = true;
         isZeiKe = true;
       }
-      // 上克下为比用
-      else if (WuXingService.isKe(shangShenWuXing, xiaShenWuXing)) {
-        wuXingRelation = '上克下';
+      // 无上克下时，再看下克上
+      else if (WuXingService.isKe(xiaShenWuXing, shangShenWuXing)) {
+        wuXingRelation = '下克上';
         hasKe = true;
         isBiYong = true;
       }
@@ -184,5 +179,10 @@ class SiKeService {
       }
     }
     return true;
+  }
+
+  static WuXing? _getWuXing(String symbol) {
+    return WuXingService.getWuXingFromBranch(symbol) ??
+        WuXingService.getWuXingFromStem(symbol);
   }
 }

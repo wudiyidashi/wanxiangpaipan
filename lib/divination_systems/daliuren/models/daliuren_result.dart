@@ -6,6 +6,7 @@ import 'san_chuan.dart';
 import 'tianpan.dart';
 import 'shen_jiang_config.dart';
 import 'shen_sha.dart';
+import 'pan_params.dart';
 
 part 'daliuren_result.freezed.dart';
 part 'daliuren_result.g.dart';
@@ -52,6 +53,9 @@ class DaLiuRenResult with _$DaLiuRenResult implements DivinationResult {
     /// 神煞列表
     required ShenShaList shenShaList,
 
+    /// 排盘参数
+    required DaLiuRenPanParams panParams,
+
     /// 占问ID（加密存储引用）
     @Default('') String questionId,
 
@@ -76,7 +80,9 @@ class DaLiuRenResult with _$DaLiuRenResult implements DivinationResult {
   String getSummary() {
     final keTypeName = sanChuan.keTypeName;
     final chuChuan = sanChuan.chuChuanDiZhi;
-    return '$keTypeName课 · 初传$chuChuan';
+    final zhongChuan = sanChuan.zhongChuanDiZhi;
+    final moChuan = sanChuan.moChuanDiZhi;
+    return '$keTypeName课 · 初传$chuChuan 中传$zhongChuan 末传$moChuan';
   }
 
   /// 获取日干

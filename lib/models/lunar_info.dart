@@ -11,6 +11,7 @@ class LunarInfo with _$LunarInfo {
     required String riGan,
     required String riZhi,
     required String riGanZhi,
+    String? hourGanZhi,
     required List<String> kongWang,
     required String yearGanZhi,
     required String monthGanZhi,

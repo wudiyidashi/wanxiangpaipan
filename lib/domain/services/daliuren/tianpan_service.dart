@@ -55,12 +55,20 @@ class TianPanService {
   static TianPan createTianPan({
     required String yueJian,
     required String shiZhi,
+    String? resolvedYueJiang,
+    DateTime? castTime,
     String? solarTerm,
   }) {
     // 计算月将
-    final yueJiang = solarTerm != null
-        ? YueJiangService.getYueJiangBySolarTerm(solarTerm, yueJian)
-        : YueJiangService.getYueJiang(yueJian);
+    final yueJiang = resolvedYueJiang ??
+        (castTime != null
+            ? YueJiangService.getYueJiangByDateTime(
+                castTime,
+                fallbackYueJian: yueJian,
+              )
+            : solarTerm != null
+                ? YueJiangService.getYueJiangBySolarTerm(solarTerm, yueJian)
+                : YueJiangService.getYueJiang(yueJian));
 
     // 获取月将名称
     final yueJiangName = YueJiangService.getYueJiangName(yueJiang);

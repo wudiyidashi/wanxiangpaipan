@@ -7,6 +7,7 @@ import 'package:wanxiang_paipan/divination_systems/daliuren/daliuren_constants.d
 import 'package:wanxiang_paipan/divination_systems/daliuren/models/chuan.dart';
 import 'package:wanxiang_paipan/divination_systems/daliuren/models/daliuren_result.dart';
 import 'package:wanxiang_paipan/divination_systems/daliuren/models/ke.dart';
+import 'package:wanxiang_paipan/divination_systems/daliuren/models/pan_params.dart';
 import 'package:wanxiang_paipan/divination_systems/daliuren/models/san_chuan.dart';
 import 'package:wanxiang_paipan/divination_systems/daliuren/models/shen_jiang_config.dart';
 import 'package:wanxiang_paipan/divination_systems/daliuren/models/shen_sha.dart';
@@ -44,6 +45,7 @@ LunarInfo _fakeLunar() => const LunarInfo(
       riGan: '戊',
       riZhi: '午',
       riGanZhi: '戊午',
+      hourGanZhi: '壬午',
       yueJian: '寅',
       kongWang: ['子', '丑'],
     );
@@ -130,9 +132,18 @@ DaLiuRenResult _daliurenResult({
       yueJiangName: '河魁',
       shiZhi: '午',
       tianPanMap: {
-        '子': '申', '丑': '酉', '寅': '戌', '卯': '亥',
-        '辰': '子', '巳': '丑', '午': '寅', '未': '卯',
-        '申': '辰', '酉': '巳', '戌': '午', '亥': '未',
+        '子': '申',
+        '丑': '酉',
+        '寅': '戌',
+        '卯': '亥',
+        '辰': '子',
+        '巳': '丑',
+        '午': '寅',
+        '未': '卯',
+        '申': '辰',
+        '酉': '巳',
+        '戌': '午',
+        '亥': '未',
       },
     ),
     shenJiangConfig: const ShenJiangConfig(
@@ -143,6 +154,7 @@ DaLiuRenResult _daliurenResult({
       diZhiToShenJiang: {},
     ),
     shenShaList: const ShenShaList(allShenSha: []),
+    panParams: const DaLiuRenPanParams(),
     questionId: id,
   );
 }
@@ -169,11 +181,11 @@ void main() {
       ));
       await tester.pumpAndSettle();
 
-      expect(find.text('问事业'), findsOneWidget);               // L1
-      expect(find.text('2026-04-18 14:32'), findsOneWidget);    // L2
-      expect(find.text('乾为天'), findsOneWidget);               // L3 (no changing)
-      expect(find.text('六爻'), findsOneWidget);                 // L4
-      expect(find.text('时间卦'), findsOneWidget);               // L5
+      expect(find.text('问事业'), findsOneWidget); // L1
+      expect(find.text('2026-04-18 14:32'), findsOneWidget); // L2
+      expect(find.text('乾为天'), findsOneWidget); // L3 (no changing)
+      expect(find.text('六爻'), findsOneWidget); // L4
+      expect(find.text('时间卦'), findsOneWidget); // L5
     });
 
     testWidgets('renders 5 layers for DaLiuRenResult', (tester) async {
@@ -198,11 +210,13 @@ void main() {
 
       // 找到 Layer 1 的 ConstrainedBox——其 minHeight 应为 24
       final constrainedBox = tester.widget<ConstrainedBox>(
-        find.descendant(
-          of: find.byType(HistoryRecordCard),
-          matching: find.byWidgetPredicate((w) =>
-              w is ConstrainedBox && w.constraints.minHeight == 24),
-        ).first,
+        find
+            .descendant(
+              of: find.byType(HistoryRecordCard),
+              matching: find.byWidgetPredicate(
+                  (w) => w is ConstrainedBox && w.constraints.minHeight == 24),
+            )
+            .first,
       );
       expect(constrainedBox.constraints.minHeight, 24);
     });

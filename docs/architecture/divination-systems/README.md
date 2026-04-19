@@ -39,7 +39,7 @@
 ## 3. 目录
 
 - [`liuyao.md`](liuyao.md) — 六爻系统说明
-- [`daliuren.md`](daliuren.md) — 大六壬系统说明
+- [`daliuren.md`](daliuren.md) — 大六壬系统说明，包含参数面板规则、完整排盘链路、固定校盘样例、错误回收基线与结果页布局规范
 - [`xiaoliuren.md`](xiaoliuren.md) — 小六壬系统说明
 - [`meihua.md`](meihua.md) — 梅花易数系统说明
 

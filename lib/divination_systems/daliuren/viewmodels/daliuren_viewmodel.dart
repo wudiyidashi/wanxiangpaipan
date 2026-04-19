@@ -8,6 +8,7 @@ import '../models/san_chuan.dart';
 import '../models/tianpan.dart';
 import '../models/shen_jiang_config.dart';
 import '../models/shen_sha.dart';
+import '../models/pan_params.dart';
 import '../daliuren_constants.dart';
 
 /// 大六壬 ViewModel
@@ -36,6 +37,9 @@ class DaLiuRenViewModel extends DivinationViewModel<DaLiuRenResult> {
 
   /// 获取神煞列表
   ShenShaList? get shenShaList => result?.shenShaList;
+
+  /// 获取排盘参数
+  DaLiuRenPanParams? get panParams => result?.panParams;
 
   /// 获取日干
   String? get riGan => result?.riGan;
@@ -72,33 +76,40 @@ class DaLiuRenViewModel extends DivinationViewModel<DaLiuRenResult> {
   /// 时间起课
   ///
   /// 使用当前时间进行起课
-  Future<void> castByTime({DateTime? castTime}) async {
+  Future<void> castByTime({
+    DateTime? castTime,
+    DaLiuRenPanParams params = const DaLiuRenPanParams(),
+  }) async {
     await cast(
       method: CastMethod.time,
-      input: {},
+      input: {'params': params.toJson()},
       castTime: castTime ?? DateTime.now(),
     );
   }
 
   /// 手动起课
   ///
-  /// [riGan] 日干
-  /// [riZhi] 日支
-  /// [shiZhi] 时支（可选，默认子时）
-  /// [yueJian] 月建（可选，默认寅月）
+  /// [yearGanZhi] 年柱
+  /// [monthGanZhi] 月柱
+  /// [dayGanZhi] 日柱
+  /// [hourGanZhi] 时柱
   Future<void> castByManual({
-    required String riGan,
-    required String riZhi,
-    String? shiZhi,
-    String? yueJian,
+    required String yearGanZhi,
+    required String monthGanZhi,
+    required String dayGanZhi,
+    required String hourGanZhi,
+    DaLiuRenPanParams params = const DaLiuRenPanParams(
+      monthGeneralMode: DaLiuRenMonthGeneralMode.manual,
+    ),
   }) async {
     await cast(
       method: CastMethod.manual,
       input: {
-        'riGan': riGan,
-        'riZhi': riZhi,
-        if (shiZhi != null) 'shiZhi': shiZhi,
-        if (yueJian != null) 'yueJian': yueJian,
+        'yearGanZhi': yearGanZhi,
+        'monthGanZhi': monthGanZhi,
+        'dayGanZhi': dayGanZhi,
+        'hourGanZhi': hourGanZhi,
+        'params': params.toJson(),
       },
     );
   }
@@ -109,7 +120,7 @@ class DaLiuRenViewModel extends DivinationViewModel<DaLiuRenResult> {
   Future<void> castByReportNumber(int number, {DateTime? castTime}) async {
     await cast(
       method: CastMethod.reportNumber,
-      input: {'number': number},
+      input: {'number': number, 'params': const DaLiuRenPanParams().toJson()},
       castTime: castTime,
     );
   }
@@ -120,7 +131,7 @@ class DaLiuRenViewModel extends DivinationViewModel<DaLiuRenResult> {
   Future<void> castByComputer({DateTime? castTime}) async {
     await cast(
       method: CastMethod.computer,
-      input: {},
+      input: {'params': const DaLiuRenPanParams().toJson()},
       castTime: castTime,
     );
   }

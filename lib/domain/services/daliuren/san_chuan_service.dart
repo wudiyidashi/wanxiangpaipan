@@ -10,9 +10,9 @@ import '../shared/wuxing_service.dart';
 /// 大六壬三传的推导是排盘的核心，根据四课的五行关系，
 /// 按照九种课体规则推导出初传、中传、末传。
 ///
-/// 九种课体（按判断优先级）：
-/// 1. 贼克 - 下克上，取下克上者为用
-/// 2. 比用 - 上克下，取与日干比者为用
+/// 九种课体（按当前实现优先级）：
+/// 1. 贼克 - 上克下，取上神为用
+/// 2. 比用 - 多上克下时，取与日干同阴阳者为用；无上克下时兼作下克上兜底
 /// 3. 涉害 - 俱比俱不比，涉害深者为用
 /// 4. 遥克 - 四课无克，遥克取之（TODO）
 /// 5. 昴星 - 无遥克，昴星从位取之（TODO）
@@ -55,15 +55,13 @@ class SanChuanService {
       chuChuanDiZhi = _deriveFanYinChuChuan(siKe, tianPanMap);
       keTypeExplanation = '天地盘相冲，反吟法取用';
     } else if (siKe.hasZeiKe) {
-      // 贼克课（下克上）
-      keType = KeType.zeiKe;
-      final result = _deriveZeiKeChuChuan(siKe);
+      final result = _deriveShangKeXiaChuChuan(siKe);
+      keType = result.keType;
       chuChuanDiZhi = result.diZhi;
       keTypeExplanation = result.explanation;
     } else if (siKe.hasBiYong) {
-      // 比用课（上克下）
       keType = KeType.biYong;
-      final result = _deriveBiYongChuChuan(siKe);
+      final result = _deriveXiaKeShangChuChuan(siKe);
       chuChuanDiZhi = result.diZhi;
       keTypeExplanation = result.explanation;
     } else {
@@ -164,63 +162,51 @@ class SanChuanService {
     return DaLiuRenConstants.getChongZhi(siKe.riZhi);
   }
 
-  /// 贼克法取初传
-  ///
-  /// 贼克课：下克上为贼，取下克上者的下神为初传
-  /// 如果有多个贼克，取涉害深者
-  static ({String diZhi, String explanation}) _deriveZeiKeChuChuan(SiKe siKe) {
-    final zeiKeList = siKe.zeiKeList;
+  /// 正统当前优先规则：上克下取初传
+  static ({KeType keType, String diZhi, String explanation})
+      _deriveShangKeXiaChuChuan(SiKe siKe) {
+    final shangKeXiaList = siKe.zeiKeList;
 
-    if (zeiKeList.length == 1) {
+    if (shangKeXiaList.length == 1) {
+      final selected = shangKeXiaList.first;
       return (
-        diZhi: zeiKeList.first.xiaShen,
+        keType: KeType.zeiKe,
+        diZhi: selected.shangShen,
         explanation:
-            '下克上，第${zeiKeList.first.index}课${zeiKeList.first.xiaShen}贼${zeiKeList.first.shangShen}，取${zeiKeList.first.xiaShen}为用'
+            '上克下，第${selected.index}课${selected.shangShen}克${selected.xiaShen}，取${selected.shangShen}为用'
       );
     }
 
-    // 多个贼克，需要进一步判断（比较涉害深度或取与日干比者）
-    // 简化处理：取第一个贼克
-    final selected = zeiKeList.first;
+    final sameParityList = shangKeXiaList
+        .where((ke) => _isSameParityAsRiGan(ke.shangShen, siKe.riGan))
+        .toList();
+    if (sameParityList.length == 1) {
+      final selected = sameParityList.first;
+      return (
+        keType: KeType.biYong,
+        diZhi: selected.shangShen,
+        explanation:
+            '多上克下，取与日干${siKe.riGan}同阴阳的第${selected.index}课${selected.shangShen}为用'
+      );
+    }
+
+    final selected = shangKeXiaList.first;
     return (
-      diZhi: selected.xiaShen,
-      explanation: '多贼克，取第${selected.index}课${selected.xiaShen}为用'
+      keType: KeType.sheHai,
+      diZhi: selected.shangShen,
+      explanation: '多上克下且无唯一比用，暂取最靠近日干的第${selected.index}课${selected.shangShen}为用'
     );
   }
 
-  /// 比用法取初传
-  ///
-  /// 比用课：上克下，取与日干同类（比）者的上神为初传
-  static ({String diZhi, String explanation}) _deriveBiYongChuChuan(SiKe siKe) {
-    final biYongList = siKe.biYongList;
-    final riGanWuXing = WuXingService.getWuXingFromStem(siKe.riGan);
-
-    if (biYongList.length == 1) {
-      return (
-        diZhi: biYongList.first.shangShen,
-        explanation:
-            '上克下，第${biYongList.first.index}课${biYongList.first.shangShen}克${biYongList.first.xiaShen}，取${biYongList.first.shangShen}为用'
-      );
-    }
-
-    // 多个比用，取与日干五行相同（比）者
-    if (riGanWuXing != null) {
-      for (final ke in biYongList) {
-        final shangShenWuXing = WuXingService.getWuXingFromBranch(ke.shangShen);
-        if (shangShenWuXing == riGanWuXing) {
-          return (
-            diZhi: ke.shangShen,
-            explanation: '多比用，取与日干${siKe.riGan}同五行的${ke.shangShen}为用'
-          );
-        }
-      }
-    }
-
-    // 如果没有与日干比者，取第一个
-    final selected = biYongList.first;
+  /// 无上克下时，以下克上兜底取初传
+  static ({String diZhi, String explanation}) _deriveXiaKeShangChuChuan(
+      SiKe siKe) {
+    final xiaKeShangList = siKe.biYongList;
+    final selected = xiaKeShangList.first;
     return (
-      diZhi: selected.shangShen,
-      explanation: '上克下，取第${selected.index}课${selected.shangShen}为用'
+      diZhi: selected.xiaShen,
+      explanation:
+          '无上克下，以下克上取用，第${selected.index}课${selected.xiaShen}克${selected.shangShen}，取${selected.xiaShen}为用'
     );
   }
 
@@ -234,6 +220,11 @@ class SanChuanService {
     // 取日干寄宫上神为初传
     final jiGong = DaLiuRenConstants.getGanJiGong(siKe.riGan);
     return tianPanMap[jiGong] ?? jiGong;
+  }
+
+  static bool _isSameParityAsRiGan(String branch, String riGan) {
+    return DaLiuRenConstants.isYangZhi(branch) ==
+        DaLiuRenConstants.isYangGan(riGan);
   }
 
   /// 创建单传

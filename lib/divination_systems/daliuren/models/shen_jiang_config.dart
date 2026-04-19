@@ -36,7 +36,7 @@ class ShenJiangPosition with _$ShenJiangPosition {
 /// 十二神将配置模型
 ///
 /// 大六壬十二神将的完整配置，包含每个神将的位置信息。
-/// 神将从贵人起，阳日顺布，阴日逆布。
+/// 神将从贵人起，昼课顺布，夜课逆布。
 @freezed
 class ShenJiangConfig with _$ShenJiangConfig {
   @JsonSerializable(explicitToJson: true)
@@ -47,7 +47,9 @@ class ShenJiangConfig with _$ShenJiangConfig {
     /// 是否为阳贵（昼贵）
     required bool isYangGui,
 
-    /// 是否为阳日（阳干）
+    /// 是否为顺布方向
+    ///
+    /// 当前沿用旧字段名序列化，`true` 表示昼课顺布，`false` 表示夜课逆布。
     required bool isYangRi,
 
     /// 十二神将配置列表
@@ -90,5 +92,5 @@ class ShenJiangConfig with _$ShenJiangConfig {
   String get guiRenTypeDescription => isYangGui ? '阳贵（昼贵）' : '阴贵（夜贵）';
 
   /// 布神方向描述
-  String get directionDescription => isYangRi ? '阳日顺布' : '阴日逆布';
+  String get directionDescription => isYangRi ? '昼课顺布' : '夜课逆布';
 }

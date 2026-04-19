@@ -1,3 +1,5 @@
+import 'package:lunar/lunar.dart';
+
 import '../../../divination_systems/daliuren/daliuren_constants.dart';
 
 /// 月将计算服务
@@ -6,6 +8,21 @@ import '../../../divination_systems/daliuren/daliuren_constants.dart';
 /// 月将为太阳所在宫位的对冲。
 class YueJiangService {
   YueJiangService._();
+
+  static const Map<String, String> _qiToYueJiang = {
+    '雨水': '亥',
+    '春分': '戌',
+    '谷雨': '酉',
+    '小满': '申',
+    '夏至': '未',
+    '大暑': '午',
+    '处暑': '巳',
+    '秋分': '辰',
+    '霜降': '卯',
+    '小雪': '寅',
+    '冬至': '丑',
+    '大寒': '子',
+  };
 
   /// 根据月建（月支）获取月将
   ///
@@ -53,6 +70,32 @@ class YueJiangService {
     final yueJiang = getYueJiang(yueJian);
     final name = getYueJiangName(yueJiang);
     return (yueJiang: yueJiang, name: name);
+  }
+
+  /// 根据公历时间精确计算月将
+  ///
+  /// 规则不是“当前时刻恰好命中哪个节气”，而是取**最近已经发生的中气**。
+  /// 例如 2026-04-18 位于春分后、谷雨前，应取春分后的戌将。
+  static String getYueJiangByDateTime(
+    DateTime dateTime, {
+    String? fallbackYueJian,
+  }) {
+    final lunar = Solar.fromDate(dateTime).getLunar();
+    final currentQi = lunar.getCurrentQi()?.getName();
+    if (currentQi != null && _qiToYueJiang.containsKey(currentQi)) {
+      return _qiToYueJiang[currentQi]!;
+    }
+
+    final prevQi = lunar.getPrevQi().getName();
+    if (_qiToYueJiang.containsKey(prevQi)) {
+      return _qiToYueJiang[prevQi]!;
+    }
+
+    if (fallbackYueJian != null) {
+      return getYueJiang(fallbackYueJian);
+    }
+
+    throw StateError('无法根据时间 $dateTime 确定月将');
   }
 
   /// 根据节气精确计算月将

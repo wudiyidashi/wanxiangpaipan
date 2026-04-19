@@ -3,6 +3,8 @@
 /// 包含十二神将、课体类型、天干寄宫、贵人等核心常量。
 library;
 
+import 'models/pan_params.dart';
+
 /// 十二神将枚举
 ///
 /// 大六壬中的十二位神将，按阳顺阴逆的顺序排列。
@@ -120,7 +122,7 @@ class DaLiuRenConstants {
   ///
   /// 第一个为阳贵（昼贵），第二个为阴贵（夜贵）
   /// 甲戊庚牛羊，乙己鼠猴乡，
-  /// 丙丁猪鸡位，壬癸蛇兔藏，
+  /// 丙丁猪鸡位，壬癸兔蛇藏，
   /// 六辛逢马虎，此是贵人方。
   static const Map<String, List<String>> ganGuiRen = {
     '甲': ['丑', '未'], // 甲戊庚牛羊
@@ -130,8 +132,8 @@ class DaLiuRenConstants {
     '己': ['子', '申'],
     '丙': ['亥', '酉'], // 丙丁猪鸡位
     '丁': ['亥', '酉'],
-    '壬': ['卯', '巳'], // 壬癸蛇兔藏
-    '癸': ['卯', '巳'],
+    '壬': ['巳', '卯'], // 壬癸兔蛇藏
+    '癸': ['巳', '卯'],
     '辛': ['午', '寅'], // 六辛逢马虎
   };
 
@@ -256,8 +258,17 @@ class DaLiuRenConstants {
   /// 阴干列表
   static const List<String> yinGan = ['乙', '丁', '己', '辛', '癸'];
 
+  /// 阳支列表
+  static const List<String> yangZhi = ['子', '寅', '辰', '午', '申', '戌'];
+
+  /// 阴支列表
+  static const List<String> yinZhi = ['丑', '卯', '巳', '未', '酉', '亥'];
+
   /// 判断天干阴阳
   static bool isYangGan(String gan) => yangGan.contains(gan);
+
+  /// 判断地支阴阳
+  static bool isYangZhi(String zhi) => yangZhi.contains(zhi);
 
   /// 获取地支索引
   static int getDiZhiIndex(String zhi) => diZhi.indexOf(zhi);
@@ -280,4 +291,16 @@ class DaLiuRenConstants {
   /// 获取贵人位置
   static List<String> getGuiRenPosition(String gan) =>
       ganGuiRen[gan] ?? ['丑', '未'];
+
+  /// 获取指定口诀版本下的贵人位置
+  static List<String> getGuiRenPositionByVerse(
+    String gan,
+    DaLiuRenGuiRenVerse verse,
+  ) {
+    final base = List<String>.from(getGuiRenPosition(gan));
+    if (verse == DaLiuRenGuiRenVerse.jiaDayAlt && gan == '甲') {
+      return [base[1], base[0]];
+    }
+    return base;
+  }
 }

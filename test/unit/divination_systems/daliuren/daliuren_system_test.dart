@@ -4,6 +4,7 @@ import 'package:wanxiang_paipan/divination_systems/daliuren/daliuren_system.dart
 import 'package:wanxiang_paipan/divination_systems/daliuren/models/chuan.dart';
 import 'package:wanxiang_paipan/divination_systems/daliuren/models/daliuren_result.dart';
 import 'package:wanxiang_paipan/divination_systems/daliuren/models/ke.dart';
+import 'package:wanxiang_paipan/divination_systems/daliuren/models/pan_params.dart';
 import 'package:wanxiang_paipan/divination_systems/daliuren/models/san_chuan.dart';
 import 'package:wanxiang_paipan/divination_systems/daliuren/models/shen_jiang_config.dart';
 import 'package:wanxiang_paipan/divination_systems/daliuren/models/shen_sha.dart';
@@ -115,6 +116,7 @@ DaLiuRenResult _buildTestDaLiuRenResult(LunarInfo lunarInfo) {
     shenShaList: ShenShaList(
       allShenSha: <ShenSha>[],
     ),
+    panParams: const DaLiuRenPanParams(),
   );
 }
 
@@ -130,6 +132,7 @@ void main() {
         riGan: '戊',
         riZhi: '寅',
         riGanZhi: '戊寅',
+        hourGanZhi: '甲子',
         yearGanZhi: '甲辰',
         monthGanZhi: '丁丑',
         kongWang: ['戌', '亥'],
@@ -175,15 +178,101 @@ void main() {
         final result = await system.cast(
           method: CastMethod.manual,
           input: {
-            'riGan': '甲',
-            'riZhi': '子',
-            'shiZhi': '子',
-            'yueJian': '子',
+            'yearGanZhi': '丙午',
+            'monthGanZhi': '壬辰',
+            'dayGanZhi': '壬戌',
+            'hourGanZhi': '辛亥',
+            'params': {
+              'monthGeneralMode': 'manual',
+              'manualMonthGeneral': '戌',
+            },
           },
         );
 
         expect(result, isA<DaLiuRenResult>());
         expect(result.castMethod, CastMethod.manual);
+      });
+
+      test('旧 manual 输入格式应直接判定无效', () {
+        expect(
+          system.validateInput(
+            CastMethod.manual,
+            {
+              'riGan': '甲',
+              'riZhi': '子',
+              'shiZhi': '子',
+              'yueJian': '子',
+            },
+          ),
+          false,
+        );
+      });
+
+      test('手动月将参数应覆盖自动月将', () async {
+        final result = await system.cast(
+          method: CastMethod.time,
+          input: {
+            'params': {
+              'monthGeneralMode': 'manual',
+              'manualMonthGeneral': '酉',
+            },
+          },
+          castTime: DateTime(2026, 4, 18, 22, 20),
+        );
+
+        final dlr = result as DaLiuRenResult;
+        expect(dlr.tianPan.yueJiang, '酉');
+        expect(dlr.panParams.monthGeneralMode, DaLiuRenMonthGeneralMode.manual);
+      });
+
+      test('时柱旬遁干应切换空亡主轴', () async {
+        final result = await system.cast(
+          method: CastMethod.time,
+          input: {
+            'params': {
+              'xunShouMode': 'hour',
+            },
+          },
+          castTime: DateTime(2026, 4, 18, 22, 20),
+        );
+
+        final dlr = result as DaLiuRenResult;
+        expect(dlr.lunarInfo.hourGanZhi, '辛亥');
+        expect(dlr.lunarInfo.kongWang, ['寅', '卯']);
+      });
+
+      test('固定样例应排出正统关键结构', () async {
+        final result = await system.cast(
+          method: CastMethod.time,
+          input: {},
+          castTime: DateTime(2026, 4, 18, 22, 20),
+        );
+
+        final dlr = result as DaLiuRenResult;
+        expect(dlr.lunarInfo.yearGanZhi, '丙午');
+        expect(dlr.lunarInfo.monthGanZhi, '壬辰');
+        expect(dlr.lunarInfo.riGanZhi, '壬戌');
+        expect(dlr.tianPan.yueJiang, '戌');
+
+        expect(dlr.shenJiangConfig.guiRenPosition, '卯');
+        expect(dlr.shenJiangConfig.guiRenTypeDescription, '阴贵（夜贵）');
+        expect(dlr.shenJiangConfig.directionDescription, '夜课逆布');
+
+        expect(dlr.siKe.ke1.shangShen, '戌');
+        expect(dlr.siKe.ke1.xiaShen, '壬');
+        expect(dlr.siKe.ke1.wuXingRelation, '上克下');
+
+        expect(dlr.sanChuan.keType, KeType.zeiKe);
+        expect(dlr.chuChuan, '戌');
+        expect(dlr.zhongChuan, '酉');
+        expect(dlr.moChuan, '申');
+
+        expect(dlr.shenJiangConfig.getShenJiangByDiZhi('卯'), ShenJiang.guiRen);
+        expect(
+            dlr.shenJiangConfig.getShenJiangByDiZhi('申'), ShenJiang.qingLong);
+        expect(
+            dlr.shenJiangConfig.getShenJiangByDiZhi('酉'), ShenJiang.tianKong);
+        expect(dlr.shenJiangConfig.getShenJiangByDiZhi('戌'), ShenJiang.baiHu);
       });
     });
 
@@ -213,6 +302,7 @@ void main() {
         riGan: '戊',
         riZhi: '寅',
         riGanZhi: '戊寅',
+        hourGanZhi: '甲子',
         yearGanZhi: '甲辰',
         monthGanZhi: '丁丑',
         kongWang: ['戌', '亥'],
@@ -226,7 +316,7 @@ void main() {
     });
 
     test('应该返回正确的摘要', () {
-      expect(result.getSummary(), '贼克课 · 初传子');
+      expect(result.getSummary(), '贼克课 · 初传子 中传丑 末传寅');
     });
 
     test('应该能够序列化为 JSON', () {
@@ -240,6 +330,7 @@ void main() {
       expect(json['sanChuan'], isA<Map<String, dynamic>>());
       expect(json['shenJiangConfig'], isA<Map<String, dynamic>>());
       expect(json['shenShaList'], isA<Map<String, dynamic>>());
+      expect(json['panParams'], isA<Map<String, dynamic>>());
     });
 
     test('应该能够从 JSON 反序列化', () {

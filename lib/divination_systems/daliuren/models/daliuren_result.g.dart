@@ -19,6 +19,8 @@ _$DaLiuRenResultImpl _$$DaLiuRenResultImplFromJson(Map<String, dynamic> json) =>
           json['shenJiangConfig'] as Map<String, dynamic>),
       shenShaList:
           ShenShaList.fromJson(json['shenShaList'] as Map<String, dynamic>),
+      panParams:
+          DaLiuRenPanParams.fromJson(json['panParams'] as Map<String, dynamic>),
       questionId: json['questionId'] as String? ?? '',
       detailId: json['detailId'] as String? ?? '',
       interpretationId: json['interpretationId'] as String? ?? '',
@@ -36,6 +38,7 @@ Map<String, dynamic> _$$DaLiuRenResultImplToJson(
       'sanChuan': instance.sanChuan.toJson(),
       'shenJiangConfig': instance.shenJiangConfig.toJson(),
       'shenShaList': instance.shenShaList.toJson(),
+      'panParams': instance.panParams.toJson(),
       'questionId': instance.questionId,
       'detailId': instance.detailId,
       'interpretationId': instance.interpretationId,

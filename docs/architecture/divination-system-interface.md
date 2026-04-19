@@ -315,19 +315,39 @@ Future<DivinationResult> cast({
 #### `time`
 
 ```dart
-{}
+{
+  'params': {
+    'birthYear': 1990,
+    'monthGeneralMode': 'auto',
+    'manualMonthGeneral': '戌',
+    'dayNightMode': 'auto',
+    'guiRenVerse': 'classic',
+    'xunShouMode': 'day',
+    'showSanChuanOnTop': true,
+  }
+}
 ```
 
 说明：
 
-- 不需要额外输入
-- 计算依赖 `castTime`
+- 核心输入依赖 `castTime`
+- `params` 可省略；省略时必须采用系统默认正统参数
+- `params` 的具体古法语义，以 [`divination-systems/daliuren.md`](divination-systems/daliuren.md) 为准
 
 #### `reportNumber`
 
 ```dart
 {
   'number': 7,
+  'params': {
+    'birthYear': 1990,
+    'monthGeneralMode': 'auto',
+    'manualMonthGeneral': '戌',
+    'dayNightMode': 'auto',
+    'guiRenVerse': 'classic',
+    'xunShouMode': 'day',
+    'showSanChuanOnTop': true,
+  }
 }
 ```
 
@@ -339,52 +359,86 @@ Future<DivinationResult> cast({
 约束：
 
 - `number` 必须为 `int`
+- `params` 可省略；省略时必须采用系统默认正统参数
 
 #### `manual`
 
 ```dart
 {
-  'riGan': '甲',
-  'riZhi': '子',
-  'shiZhi': '午',
-  'yueJian': '寅',
+  'yearGanZhi': '丙午',
+  'monthGanZhi': '壬辰',
+  'dayGanZhi': '壬戌',
+  'hourGanZhi': '辛亥',
+  'params': {
+    'birthYear': 1990,
+    'monthGeneralMode': 'auto',
+    'manualMonthGeneral': '戌',
+    'dayNightMode': 'auto',
+    'guiRenVerse': 'classic',
+    'xunShouMode': 'day',
+    'showSanChuanOnTop': true,
+  }
 }
 ```
 
 约束：
 
-- `riGan` 必填，且必须是合法天干
-- `riZhi` 必填，且必须是合法地支
-- `shiZhi` 可选，若提供必须是合法地支
-- `yueJian` 可选，若提供必须是合法地支
+- `yearGanZhi`、`monthGanZhi`、`dayGanZhi`、`hourGanZhi` 目标上都应为必填
+- 四柱必须是合法干支组合
+- `params` 可省略；省略时必须采用系统默认正统参数
 
-当前实现中的默认行为：
+当前实现中的问题：
 
-- 缺省时会回退到：
-  - `riGan = '甲'`
-  - `riZhi = '子'`
-  - `shiZhi = '子'`
-  - `yueJian = '寅'`
+- 代码里仍存在简化版 `riGan/riZhi/shiZhi/yueJian` 输入和调试型默认值
+- 这类回退只允许作为开发期兜底，不属于正式契约
 
-当前问题：
+收敛要求：
 
-- 这类默认值对调试友好，但对正式契约不够严谨
-
-收敛建议：
-
-- 未来 UI 层传入 `manual` 时应显式提供完整四项
-- 系统层可保留默认值，仅作为开发期兜底
+- 未来 UI 层传入 `manual` 时应显式提供完整四柱
+- 服务层不得在正式流程里静默拼装默认柱
 
 #### `computer`
 
 ```dart
-{}
+{
+  'params': {
+    'birthYear': 1990,
+    'monthGeneralMode': 'auto',
+    'manualMonthGeneral': '戌',
+    'dayNightMode': 'auto',
+    'guiRenVerse': 'classic',
+    'xunShouMode': 'day',
+    'showSanChuanOnTop': true,
+  }
+}
 ```
 
 说明：
 
-- 不需要额外输入
-- 系统随机选择时支，再复用时间起课流程
+- 不需要额外业务输入
+- 系统随机生成起课上下文后，再走同一条正统排盘链
+
+### `params` 字段约束
+
+为了避免 UI、服务层、历史迁移各自发明字段名，大六壬参数对象统一约定如下：
+
+| 字段 | 类型 | 必需 | 说明 |
+|---|---|---|---|
+| `birthYear` | `int?` | 否 | 本命占扩展参数，时事占可空 |
+| `monthGeneralMode` | `String` | 否 | `auto` 或 `manual` |
+| `manualMonthGeneral` | `String?` | 否 | 仅 `monthGeneralMode = manual` 时有效，必须是合法地支 |
+| `dayNightMode` | `String` | 否 | `auto`、`day`、`night` |
+| `guiRenVerse` | `String` | 否 | `classic` 对应 `甲戊庚牛羊`，`jiaDayAlt` 对应 `甲羊戊庚牛` |
+| `xunShouMode` | `String` | 否 | `day` 表示日柱旬遁干，`hour` 表示时柱旬遁干 |
+| `showSanChuanOnTop` | `bool` | 否 | 纯显示选项，不参与算法 |
+
+默认值要求：
+
+- `monthGeneralMode = auto`
+- `dayNightMode = auto`
+- `guiRenVerse = classic`
+- `xunShouMode = day`
+- `showSanChuanOnTop = true`
 
 ### 输出规范
 
@@ -406,22 +460,34 @@ Future<DivinationResult> cast({
 | `detailId` | `String` | 加密详情引用 |
 | `interpretationId` | `String` | 加密解读引用 |
 
+补充要求：
+
+- `tianPan` 不能只保存月将摘要，必须足以表达完整 12 宫天地盘映射
+- `siKe` 不能只保存简化的上下神，必须保留四课序、天将、六亲、上下生克关系
+- `sanChuan` 不能只保存三个地支，必须保留课体名称和取传说明
+- `shenJiangConfig` 不能只保存“贵人位置 + 顺逆方向”，必须足以表达完整 12 将落宫
+- `toJson()` / `fromJson()` 必须能完整还原这些结构
+
 ### 摘要规范
 
 当前实现：
 
-- `getSummary() => '$keTypeName课 · 初传$chuChuan'`
+- `getSummary() => '$keTypeName课 · 初传$chuChuan 中传$zhongChuan 末传$moChuan'`
 
-这是合格的 P0 摘要，因为它至少表达了：
+这是当前推荐摘要，因为它至少表达了：
 
 - 课体
-- 核心三传起点
+- 完整三传链
 
-推荐目标：
+标准格式：
 
-- `涉害课 · 初传申`
-- 如果历史卡片空间允许，再扩展：
-  - `涉害课 · 初传申 中传子 末传辰`
+- `涉害课 · 初传申 中传子 末传辰`
+
+注意：
+
+- 历史摘要允许简写
+- 结果对象本身不允许只剩摘要，结构化盘面字段必须完整保留
+- AI formatter 另有完整文本模板，标题固定为 `【大六壬完整结构化排盘】`
 
 ---
 
@@ -430,14 +496,16 @@ Future<DivinationResult> cast({
 当前状态：
 
 - `isEnabled = false`
-- 结果对象为 placeholder
+- 核心排盘与结果对象已实现，但 UI 工厂与 AI formatter 尚未接入
+- 当前已实现 `六宫 / 九宫`
 
-即便未实现，也必须提前定义目标契约，避免启用时再临时发明字段。
+当前仍未启用，因此这里保留系统级最小契约。
 
 ### 支持方式
 
 - `time`
-- `manual`
+- `reportNumber`
+- `characterStroke`
 
 ### 目标输入规范
 
@@ -449,27 +517,51 @@ Future<DivinationResult> cast({
 
 说明：
 
-- 基于 `castTime` 推算月、日、时
+- 基于 `castTime` 推算农历月、农历日、时支
+- 可选附带 `palaceMode: 'sixPalaces' | 'ninePalaces'`
 
-#### `manual`
+#### `reportNumber`
 
 ```dart
 {
-  'month': 4,
-  'day': 18,
-  'hourZhi': '午',
+  'firstNumber': 4,
+  'secondNumber': 18,
+  'thirdNumber': 7,
+  'palaceMode': 'ninePalaces', // optional
 }
 ```
 
-建议约束：
+约束：
 
-- `month`: `1..12`
-- `day`: `1..31`
-- `hourZhi`: 合法地支
+- 必须包含三个数字字段
+- 允许额外附带 `palaceMode`
+- 三个字段都必须为正整数
 
 说明：
 
-- 手动模式的本质，是手动指定月、日、时推算条件
+- 三个数字分别作为三段起数
+
+#### `characterStroke`
+
+```dart
+{
+  'firstStroke': 8,
+  'secondStroke': 11,
+  'thirdStroke': 6,
+  'palaceMode': 'ninePalaces', // optional
+}
+```
+
+约束：
+
+- 必须包含三个笔画字段
+- 允许额外附带 `palaceMode`
+- 三个字段都必须为正整数
+
+说明：
+
+- 当前底层直接接收三段笔画数
+- 汉字到笔画数的转换必须由上层完成
 
 ### 目标输出规范
 
@@ -482,17 +574,20 @@ Future<DivinationResult> cast({
 | `castMethod` | `CastMethod` | 起卦方式 |
 | `systemType` | `DivinationType.xiaoLiuRen` | 系统类型 |
 | `lunarInfo` | `LunarInfo` | 农历信息 |
-| `monthPosition` | `String` | 月推算结果 |
-| `dayPosition` | `String` | 日推算结果 |
-| `hourPosition` | `String` | 时推算结果 |
-| `finalPosition` | `String` | 最终落宫 |
+| `palaceMode` | model | `sixPalaces / ninePalaces` |
+| `source` | model | 三段输入源与推算痕迹 |
+| `monthPosition` | model | 第一段落宫 |
+| `dayPosition` | model | 第二段落宫 |
+| `hourPosition` | model | 第三段落宫 |
+| `finalPosition` | model | 最终落宫 |
 | `judgement` | `String` | 占断结果 |
+| `detail` | `String` | 结构化推算说明 |
 
 ### 摘要规范
 
 最低要求：
 
-- `大安 · 吉`
+- `大安 · 诸事安稳`
 - `赤口 · 口舌是非`
 
 历史页必须一眼看出“最终落宫是什么”。
@@ -504,9 +599,9 @@ Future<DivinationResult> cast({
 当前状态：
 
 - `isEnabled = false`
-- 结果对象为 placeholder
+- 核心排盘与结果对象已实现，但 UI 工厂与 AI formatter 尚未接入
 
-同样需要提前定义目标契约。
+当前仍未启用，因此这里保留系统级最小契约。
 
 ### 支持方式
 
@@ -560,7 +655,7 @@ Future<DivinationResult> cast({
 
 ### 目标输出规范
 
-梅花易数结果对象启用前，至少应具备：
+梅花易数结果对象当前至少应具备：
 
 | 字段 | 类型 | 说明 |
 |---|---|---|
@@ -582,9 +677,9 @@ Future<DivinationResult> cast({
 
 最低要求：
 
-- `山火贲 → 山天大畜`
+- `风火家人 → 风山渐`
 - 若有体用信息，可扩展为：
-  - `山火贲 → 山天大畜 · 体生用`
+  - `风火家人 → 风山渐 · 体生用`
 
 ---
 

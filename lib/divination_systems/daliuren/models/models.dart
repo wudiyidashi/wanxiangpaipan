@@ -6,6 +6,7 @@ library;
 export 'chuan.dart';
 export 'daliuren_result.dart';
 export 'ke.dart';
+export 'pan_params.dart';
 export 'san_chuan.dart';
 export 'shen_jiang_config.dart';
 export 'shen_sha.dart';

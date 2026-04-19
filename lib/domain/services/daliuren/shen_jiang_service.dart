@@ -1,4 +1,5 @@
 import '../../../divination_systems/daliuren/daliuren_constants.dart';
+import '../../../divination_systems/daliuren/models/pan_params.dart';
 import '../../../divination_systems/daliuren/models/shen_jiang_config.dart';
 
 /// 神将配置服务
@@ -6,7 +7,7 @@ import '../../../divination_systems/daliuren/models/shen_jiang_config.dart';
 /// 大六壬十二神将的配置规则：
 /// 1. 先确定贵人位置（根据日干查表）
 /// 2. 判断昼夜用阳贵还是阴贵
-/// 3. 根据日干阴阳决定布神方向（阳日顺布，阴日逆布）
+/// 3. 根据昼夜决定布神方向（昼课顺布，夜课逆布）
 /// 4. 从贵人位置开始，按顺序排列十二神将
 class ShenJiangService {
   ShenJiangService._();
@@ -21,20 +22,24 @@ class ShenJiangService {
     required String riGan,
     required String shiZhi,
     required Map<String, String> tianPanMap,
+    DaLiuRenDayNightMode dayNightMode = DaLiuRenDayNightMode.auto,
+    DaLiuRenGuiRenVerse guiRenVerse = DaLiuRenGuiRenVerse.classic,
   }) {
-    // 判断日干阴阳
-    final isYangRi = DaLiuRenConstants.isYangGan(riGan);
-
     // 判断昼夜（卯-申为昼，酉-寅为夜）
-    final isDay = _isDay(shiZhi);
+    final isDay = switch (dayNightMode) {
+      DaLiuRenDayNightMode.auto => _isDay(shiZhi),
+      DaLiuRenDayNightMode.day => true,
+      DaLiuRenDayNightMode.night => false,
+    };
 
-    // 获取贵人位置（阳贵或阴贵）
-    final guiRenPositions = DaLiuRenConstants.getGuiRenPosition(riGan);
-    final isYangGui = isDay; // 昼用阳贵，夜用阴贵
-    final guiRenPosition = isYangGui ? guiRenPositions[0] : guiRenPositions[1];
+    // 获取贵人位置（昼贵或夜贵）
+    final guiRenPositions =
+        DaLiuRenConstants.getGuiRenPositionByVerse(riGan, guiRenVerse);
+    final isYangGui = isDay;
+    final guiRenPosition = isDay ? guiRenPositions[0] : guiRenPositions[1];
 
-    // 获取神将顺序（阳日顺布，阴日逆布）
-    final shenJiangOrder = isYangRi
+    // 获取神将顺序（昼课顺布，夜课逆布）
+    final shenJiangOrder = isDay
         ? DaLiuRenConstants.shenJiangOrderYang
         : DaLiuRenConstants.shenJiangOrderYin;
 
@@ -48,11 +53,11 @@ class ShenJiangService {
     for (var i = 0; i < 12; i++) {
       // 计算当前神将所在地盘位置
       int diZhiIndex;
-      if (isYangRi) {
-        // 阳日顺布
+      if (isDay) {
+        // 昼课顺布
         diZhiIndex = (guiRenDiZhiIndex + i) % 12;
       } else {
-        // 阴日逆布
+        // 夜课逆布
         diZhiIndex = (guiRenDiZhiIndex - i + 12) % 12;
       }
 
@@ -72,7 +77,7 @@ class ShenJiangService {
     return ShenJiangConfig(
       guiRenPosition: guiRenPosition,
       isYangGui: isYangGui,
-      isYangRi: isYangRi,
+      isYangRi: isDay,
       positions: positions,
       diZhiToShenJiang: diZhiToShenJiang,
     );
