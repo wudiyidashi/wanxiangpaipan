@@ -6,6 +6,7 @@ import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_text_styles.dart';
 import '../../../domain/divination_system.dart';
 import '../../../domain/repositories/divination_repository.dart';
+import '../../../domain/services/last_cast_method_service.dart';
 import '../../../domain/services/shared/tiangan_dizhi_service.dart';
 import '../../../presentation/divination_ui_registry.dart';
 import '../../../presentation/widgets/ai_analysis_widget.dart';
@@ -147,6 +148,23 @@ class _DaLiuRenCastScreenState extends State<_DaLiuRenCastScreen> {
     _dayZhi = nowLunar.getDayZhi();
     _hourGan = nowLunar.getTimeGan();
     _hourZhi = nowLunar.getTimeZhi();
+    _loadLastMethod();
+  }
+
+  Future<void> _loadLastMethod() async {
+    final LastCastMethodService service;
+    try {
+      service = context.read<LastCastMethodService>();
+    } catch (_) {
+      return;
+    }
+    final method = await service.getLastMethod(
+      DivinationType.daLiuRen,
+      allowed: _availableMethods,
+    );
+    if (method != null && mounted) {
+      setState(() => _selectedMethod = method);
+    }
   }
 
   @override

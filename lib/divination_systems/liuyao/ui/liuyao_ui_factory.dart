@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_text_styles.dart';
 import '../../../domain/divination_system.dart';
+import '../../../domain/repositories/divination_repository.dart';
+import '../../../domain/services/last_cast_method_service.dart';
 import '../models/gua.dart';
 import '../../../presentation/divination_ui_registry.dart';
 import '../../../presentation/widgets/ai_analysis_widget.dart';
@@ -15,7 +16,6 @@ import '../../../presentation/widgets/cast/report_number_cast_section.dart';
 import '../../../presentation/widgets/cast/time_cast_section.dart';
 import '../../../presentation/widgets/cast/yao_name_cast_section.dart';
 import '../../../presentation/widgets/diagram_comparison_row.dart';
-import '../../../presentation/widgets/question_section.dart';
 import '../../../presentation/widgets/extended_info_section.dart';
 import '../../../presentation/widgets/special_relation_section.dart';
 import '../../../presentation/widgets/history_record_card.dart';
@@ -47,7 +47,8 @@ class LiuYaoUIFactory implements DivinationUIFactory {
   }
 
   @override
-  Widget buildHistoryCard(DivinationResult result) => HistoryRecordCard(result: result);
+  Widget buildHistoryCard(DivinationResult result) =>
+      HistoryRecordCard(result: result);
 
   @override
   IconData? getSystemIcon() {
@@ -58,9 +59,9 @@ class LiuYaoUIFactory implements DivinationUIFactory {
   @override
   Color? getSystemColor() {
     // 返回六爻系统的主题色（中国传统色：朱红）
-    return const Color(0xFFD32F2F); // 六爻系统专属主题色，非通用 token（deferred to semantic-color pass）
+    return const Color(
+        0xFFD32F2F); // 六爻系统专属主题色，非通用 token（deferred to semantic-color pass）
   }
-
 }
 
 /// 六爻结果页面（包含 AI 分析功能）
@@ -73,66 +74,121 @@ class _LiuYaoResultScreenWithAI extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return AntiqueScaffold(
-      appBar: const AntiqueAppBar(title: '排盘结果'),
-      body: SafeArea(
-        child: SingleChildScrollView(
-          padding: const EdgeInsets.all(12),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-            // 占问信息区块
-            Builder(builder: (context) {
-              final question =
-                  context.select<LiuYaoViewModel, String?>((vm) => vm.question);
-              if (question == null || question.isEmpty) {
-                return const SizedBox.shrink();
-              }
-              return QuestionSection(
-                subject: null,
-                question: question,
-              );
-            }),
-
-            // 扩展信息区块（农历、节气、神煞）
-            ExtendedInfoSection(
-              castTime: result.castTime,
-              lunarInfo: result.lunarInfo,
-              liuShen: result.liuShen,
-              shenShaInfo: null,
+    return FutureBuilder<String?>(
+      future: _loadQuestion(context),
+      builder: (context, snapshot) {
+        final question = (snapshot.data ?? '').trim();
+        return AntiqueScaffold(
+          appBar: const AntiqueAppBar(title: '排盘结果'),
+          body: SafeArea(
+            child: SingleChildScrollView(
+              padding: const EdgeInsets.all(12),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  ExtendedInfoSection(
+                    castTime: result.castTime,
+                    lunarInfo: result.lunarInfo,
+                    liuShen: result.liuShen,
+                    shenShaInfo: null,
+                  ),
+                  _buildPanParamsSection(question),
+                  DiagramComparisonRow(
+                    mainGua: result.mainGua,
+                    changingGua: result.changingGua,
+                    liuShen: result.liuShen,
+                  ),
+                  SpecialRelationSection(
+                    relationType: _getSpecialRelationType(result.mainGua),
+                    description: _getSpecialRelationDescription(result.mainGua),
+                  ),
+                  AIAnalysisWidget(
+                    result: result,
+                    question: question.isEmpty ? null : question,
+                  ),
+                  const SizedBox(height: 16),
+                ],
+              ),
             ),
+          ),
+        );
+      },
+    );
+  }
 
-            // 卦象横向对比布局
-            DiagramComparisonRow(
-              mainGua: result.mainGua,
-              changingGua: result.changingGua,
-              liuShen: result.liuShen,
-            ),
-
-            // 特殊关系解析区块
-            SpecialRelationSection(
-              relationType: _getSpecialRelationType(result.mainGua),
-              description: _getSpecialRelationDescription(result.mainGua),
-            ),
-
-            // AI 分析区块
-            Builder(builder: (context) {
-              final question =
-                  context.select<LiuYaoViewModel, String?>((vm) => vm.question);
-              return AIAnalysisWidget(
-                result: result,
-                question: question,
-              );
-            }),
-
-            // 底部间距
-            const SizedBox(height: 16),
+  Widget _buildPanParamsSection(String question) {
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 12),
+      child: AntiqueCard(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            AntiqueSectionTitle(title: '排盘参数'),
+            const AntiqueDivider(),
+            const SizedBox(height: 8),
+            _buildInfoRow('占问', question.isEmpty ? '未设置' : question),
+            _buildInfoRow('干支', _buildGanZhiText()),
+            _buildInfoRow('月日建', _buildMonthDayBuildText()),
           ],
         ),
       ),
-    ),
-  );
-}
+    );
+  }
+
+  Future<String?> _loadQuestion(BuildContext context) {
+    final repository = _tryReadRepository(context);
+    final fallbackQuestion =
+        result.questionId.isNotEmpty ? result.questionId : null;
+    return repository?.readEncryptedField('question_${result.id}') ??
+        Future<String?>.value(fallbackQuestion);
+  }
+
+  DivinationRepository? _tryReadRepository(BuildContext context) {
+    try {
+      return context.read<DivinationRepository>();
+    } catch (_) {
+      return null;
+    }
+  }
+
+  String _buildGanZhiText() {
+    final hourGanZhi = result.lunarInfo.hourGanZhi ?? '';
+    return '${result.lunarInfo.yearGanZhi}年　'
+        '${result.lunarInfo.monthGanZhi}月　'
+        '${result.lunarInfo.riGanZhi}日　'
+        '$hourGanZhi时';
+  }
+
+  String _buildMonthDayBuildText() {
+    final kongWang = result.lunarInfo.kongWang.join();
+    return '月建${result.lunarInfo.yueJian}　日建${result.lunarInfo.riZhi}　空亡$kongWang';
+  }
+
+  Widget _buildInfoRow(String label, String value) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 4),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          SizedBox(
+            width: 48,
+            child: Text(
+              label,
+              style: AppTextStyles.antiqueBody.copyWith(
+                color: AppColors.guhe,
+              ),
+            ),
+          ),
+          Expanded(
+            child: Text(
+              value,
+              style: AppTextStyles.antiqueBody,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
 
   /// 获取特殊关系类型
   String? _getSpecialRelationType(Gua gua) {
@@ -168,8 +224,6 @@ class _LiuYaoCastScreen extends StatefulWidget {
 }
 
 class _LiuYaoCastScreenState extends State<_LiuYaoCastScreen> {
-  static const _prefKey = 'liuyao_last_cast_method';
-
   CastMethod _selectedMethod = CastMethod.coin;
   bool _isProcessing = false;
   final TextEditingController _questionController = TextEditingController();
@@ -196,36 +250,34 @@ class _LiuYaoCastScreenState extends State<_LiuYaoCastScreen> {
   }
 
   Future<void> _loadLastMethod() async {
-    final prefs = await SharedPreferences.getInstance();
-    final id = prefs.getString(_prefKey);
-    if (id != null) {
-      try {
-        final method = CastMethod.fromId(id);
-        if (_availableMethods.contains(method)) {
-          setState(() => _selectedMethod = method);
-        }
-      } catch (_) {
-        // unknown id — ignore
-      }
+    // 历史记录即是权威真相源：跨系统共享的 LastCastMethodService 负责查询。
+    // 服务在 widget 测试场景下可能未注册，此时静默降级为默认方式。
+    final LastCastMethodService service;
+    try {
+      service = context.read<LastCastMethodService>();
+    } catch (_) {
+      return;
     }
-  }
-
-  Future<void> _saveLastMethod(CastMethod method) async {
-    final prefs = await SharedPreferences.getInstance();
-    await prefs.setString(_prefKey, method.id);
+    final method = await service.getLastMethod(
+      DivinationType.liuYao,
+      allowed: _availableMethods,
+    );
+    if (method != null && mounted) {
+      setState(() => _selectedMethod = method);
+    }
   }
 
   void _onMethodChanged(CastMethod? method) {
     if (method == null) return;
     setState(() => _selectedMethod = method);
-    _saveLastMethod(method);
   }
 
   Future<void> _navigateToResult(
       BuildContext context, LiuYaoViewModel viewModel) async {
     if (!viewModel.hasResult) return;
     // 确保占问事项在结果页可见
-    if (_question.isNotEmpty && (viewModel.question == null || viewModel.question!.isEmpty)) {
+    if (_question.isNotEmpty &&
+        (viewModel.question == null || viewModel.question!.isEmpty)) {
       await viewModel.saveRecord(question: _question);
     }
     final result = viewModel.result!;
@@ -461,6 +513,9 @@ class _LiuYaoCastScreenState extends State<_LiuYaoCastScreen> {
           onCast: _isProcessing ? null : _handleComputerCast,
           isLoading: _isProcessing,
         );
+      case CastMethod.characterStroke:
+      case CastMethod.objectSound:
+        return const SizedBox.shrink();
     }
   }
 }

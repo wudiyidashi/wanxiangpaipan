@@ -7,6 +7,7 @@ import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_text_styles.dart';
 import '../../../domain/divination_system.dart';
 import '../../../domain/repositories/divination_repository.dart';
+import '../../../domain/services/last_cast_method_service.dart';
 import '../../../presentation/divination_ui_registry.dart';
 import '../../../presentation/widgets/ai_analysis_widget.dart';
 import '../../../presentation/widgets/antique/antique.dart';
@@ -103,11 +104,33 @@ class _MeiHuaCastScreenState extends State<_MeiHuaCastScreen> {
   bool _isLoading = false;
 
   @override
+  void initState() {
+    super.initState();
+    _loadLastMethod();
+  }
+
+  @override
   void dispose() {
     _questionController.dispose();
     _upperNumberController.dispose();
     _lowerNumberController.dispose();
     super.dispose();
+  }
+
+  Future<void> _loadLastMethod() async {
+    final LastCastMethodService service;
+    try {
+      service = context.read<LastCastMethodService>();
+    } catch (_) {
+      return;
+    }
+    final method = await service.getLastMethod(
+      DivinationType.meiHua,
+      allowed: _availableMethods,
+    );
+    if (method != null && mounted) {
+      setState(() => _selectedMethod = method);
+    }
   }
 
   Future<void> _handleCast() async {

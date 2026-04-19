@@ -7,6 +7,7 @@ import 'data/repositories/divination_repository_impl.dart';
 import 'data/secure/secure_storage.dart';
 import 'domain/repositories/divination_repository.dart';
 import 'domain/divination_registry.dart';
+import 'domain/services/last_cast_method_service.dart';
 import 'presentation/screens/home/home_screen.dart';
 import 'presentation/screens/history/history_list_screen.dart';
 import 'presentation/screens/settings/settings_screen.dart';
@@ -104,6 +105,12 @@ class _WanxiangPaipanAppState extends State<WanxiangPaipanApp> {
                 secureStorage: storage,
                 registry: context.read<DivinationRegistry>(),
               ),
+        ),
+
+        // ==================== 跨系统记忆服务 ====================
+        ProxyProvider<DivinationRepository, LastCastMethodService>(
+          update: (_, repository, previous) =>
+              previous ?? LastCastMethodService(repository: repository),
         ),
 
         // ==================== AI 服务 ====================
