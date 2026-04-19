@@ -5,6 +5,7 @@ import 'package:wanxiang_paipan/presentation/screens/calendar/widgets/almanac_he
 import 'package:wanxiang_paipan/presentation/screens/calendar/widgets/festival_banner.dart';
 import 'package:wanxiang_paipan/presentation/screens/calendar/widgets/four_pillars_card.dart';
 import 'package:wanxiang_paipan/presentation/screens/calendar/widgets/yiji_panel.dart';
+import 'package:wanxiang_paipan/presentation/screens/calendar/widgets/time_hour_bar.dart';
 
 DailyAlmanac _fixture({
   String? currentJieQi,
@@ -32,6 +33,18 @@ DailyAlmanac _fixture({
       festivals: festivals,
       twelveHours: twelveHours,
     );
+
+HourAlmanac _h(String zhi, String luck) => HourAlmanac(
+  zhi: zhi,
+  ganZhi: '$zhi$zhi',
+  tianShen: '青龙',
+  huangHei: '黄',
+  luck: luck,
+  yi: [],
+  ji: [],
+  startHour: 0,
+  endHour: 2,
+);
 
 void main() {
   testWidgets('FestivalBanner hides when festivals is empty', (t) async {
@@ -112,5 +125,40 @@ void main() {
       home: Scaffold(body: YijiPanel(yi: [], ji: [])),
     ));
     expect(find.text('—'), findsNWidgets(2));
+  });
+
+  testWidgets('TimeHourBar fires onSelect with tapped zhi', (t) async {
+    String? picked;
+    await t.pumpWidget(MaterialApp(
+      home: Scaffold(
+        body: TimeHourBar(
+          hours: [_h('子', '吉'), _h('丑', '凶'), _h('寅', '吉')],
+          selectedZhi: null,
+          onSelect: (z) => picked = z,
+        ),
+      ),
+    ));
+    await t.tap(find.byKey(const ValueKey('hour-丑')));
+    await t.pumpAndSettle();
+    expect(picked, '丑');
+  });
+
+  testWidgets('TimeHourBar renders 12 zhi keys', (t) async {
+    final hours = ['子', '丑', '寅', '卯', '辰', '巳', '午', '未', '申', '酉', '戌', '亥']
+        .map((z) => _h(z, '吉'))
+        .toList();
+    await t.pumpWidget(MaterialApp(
+      home: Scaffold(
+        body: TimeHourBar(
+          hours: hours,
+          selectedZhi: '未',
+          onSelect: (_) {},
+        ),
+      ),
+    ));
+    // 验证 12 个 key 全部存在
+    for (final z in ['子', '丑', '寅', '卯', '辰', '巳', '午', '未', '申', '酉', '戌', '亥']) {
+      expect(find.byKey(ValueKey('hour-$z')), findsOneWidget);
+    }
   });
 }
