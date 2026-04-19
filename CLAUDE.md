@@ -61,8 +61,7 @@ The project follows **Multi-Divination System Architecture** with **MVVM Pattern
                           ↓ uses
 ┌─────────────────────────────────────────────────────────────┐
 │  Data Layer (lib/data/)                                     │
-│  ├─ DivinationRecords 表 (新架构)                           │
-│  ├─ GuaRecords 表 (旧架构，向后兼容)                        │
+│  ├─ DivinationRecords 表 (多态存储)                         │
 │  └─ SecureStorage (加密字段)                                │
 └─────────────────────────────────────────────────────────────┘
                           ↓ uses
@@ -154,7 +153,7 @@ Shared Services (lib/domain/services/shared/) ← pure functions
 ├── /data                        # Data layer (implementations)
 │   ├── /database                # Drift database
 │   │   ├── app_database.dart    # Database definition
-│   │   ├── tables.dart          # Table schemas (DivinationRecords + GuaRecords)
+│   │   ├── tables.dart          # Table schemas (DivinationRecords)
 │   │   └── /daos                # Data Access Objects
 │   │       └── divination_record_dao.dart
 │   ├── /secure                  # flutter_secure_storage wrapper
@@ -259,7 +258,6 @@ abstract class DivinationResult {
 2. **Type Safety**: Each system has a unique DivinationType enum value
 3. **Result Polymorphism**: All results implement DivinationResult interface for unified storage
 4. **UI Factory Pattern**: Each system provides its own DivinationUIFactory for custom UI rendering
-5. **Zero Migration**: New DivinationRecords table coexists with legacy GuaRecords table
 
 ### Liu Yao Specific Rules
 
@@ -292,7 +290,7 @@ abstract class DivinationResult {
 - ✅ 核心接口 (DivinationSystem, DivinationResult, DivinationUIFactory)
 - ✅ 注册表机制 (DivinationRegistry, DivinationUIRegistry)
 - ✅ 泛型 ViewModel 基类 (DivinationViewModel<T>)
-- ✅ 零迁移数据层 (DivinationRecords + GuaRecords)
+- ✅ 多态数据层 (DivinationRecords)
 
 **术数系统**
 - ✅ 六爻系统（6 种起卦方式：钱币/爻名/数字/报数/时间/电脑）
@@ -368,7 +366,6 @@ abstract class DivinationResult {
 - **DivinationUIRegistry**: Centralized registry for all UI factories
 - **Type Safety**: Use generic types (e.g., `DivinationViewModel<T extends DivinationResult>`) for type-safe state management
 - **Polymorphic Storage**: Results stored as JSON in `resultData` field, deserialized via `DivinationSystem.resultFromJson()`
-- **Zero Migration**: New `DivinationRecords` table coexists with legacy `GuaRecords` table for backward compatibility
 - **Automatic Registration**: All systems registered in `DivinationSystemBootstrap.initialize()` called from `main.dart`
 
 ### SOLID Principles Application
