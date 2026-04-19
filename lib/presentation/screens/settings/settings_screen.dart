@@ -26,7 +26,8 @@ class SettingsScreen extends StatelessWidget {
             padding: const EdgeInsets.fromLTRB(16, 16, 16, 8),
             child: Text('AI 功能', style: AppTextStyles.antiqueSection),
           ),
-          _buildAISettingsTile(context),
+          _buildAIProviderSettingsTile(context),
+          _buildPromptTemplateSettingsTile(context),
 
           const SizedBox(height: 32),
 
@@ -61,44 +62,77 @@ class SettingsScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildAISettingsTile(BuildContext context) {
+  Widget _buildAIProviderSettingsTile(BuildContext context) {
     final aiService = context.watch<AIAnalysisService?>();
     final isConfigured = aiService?.hasAvailableProvider ?? false;
 
+    return _buildSettingsTile(
+      context: context,
+      title: 'AI 接口配置',
+      subtitle: isConfigured ? '已配置，可切换接口、模型与密钥' : '未配置，点击新增 AI 接口配置',
+      icon: Icons.smart_toy,
+      trailing: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Container(
+            width: 8,
+            height: 8,
+            decoration: BoxDecoration(
+              shape: BoxShape.circle,
+              color: isConfigured ? AppColors.success : AppColors.warning,
+            ),
+          ),
+          const SizedBox(width: 8),
+          const Icon(Icons.chevron_right, color: AppColors.guhe, size: 20),
+        ],
+      ),
+      onTap: () => Navigator.pushNamed(context, '/ai-settings'),
+    );
+  }
+
+  Widget _buildPromptTemplateSettingsTile(BuildContext context) {
+    return _buildSettingsTile(
+      context: context,
+      title: '提示词模板',
+      subtitle: '按术数系统管理 AI 模板内容',
+      icon: Icons.edit_note,
+      onTap: () => Navigator.pushNamed(context, '/prompt-template-settings'),
+    );
+  }
+
+  Widget _buildSettingsTile({
+    required BuildContext context,
+    required String title,
+    required String subtitle,
+    required IconData icon,
+    required VoidCallback onTap,
+    Widget? trailing,
+  }) {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
       child: AntiqueCard(
-        onTap: () {
-          Navigator.pushNamed(context, '/ai-settings');
-        },
+        onTap: onTap,
         child: Row(
           children: [
-            Icon(Icons.smart_toy, color: AppColors.zhusha, size: 24),
+            Icon(icon, color: AppColors.zhusha, size: 24),
             const SizedBox(width: 12),
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  Text('AI 分析设置', style: AppTextStyles.antiqueBody),
+                  Text(title, style: AppTextStyles.antiqueBody),
                   const SizedBox(height: 2),
-                  Text(
-                    isConfigured ? '已配置' : '未配置，点击设置 API Key',
-                    style: AppTextStyles.antiqueLabel,
-                  ),
+                  Text(subtitle, style: AppTextStyles.antiqueLabel),
                 ],
               ),
             ),
-            Container(
-              width: 8,
-              height: 8,
-              decoration: BoxDecoration(
-                shape: BoxShape.circle,
-                color: isConfigured ? AppColors.success : AppColors.warning,
-              ),
-            ),
-            const SizedBox(width: 8),
-            const Icon(Icons.chevron_right, color: AppColors.guhe, size: 20),
+            trailing ??
+                const Icon(
+                  Icons.chevron_right,
+                  color: AppColors.guhe,
+                  size: 20,
+                ),
           ],
         ),
       ),
@@ -138,34 +172,12 @@ class SettingsScreen extends StatelessWidget {
   }
 
   Widget _buildDataSettingsTile(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
-      child: AntiqueCard(
-        onTap: () {
-          // TODO: 导航到数据管理页面
-          ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text('数据管理功能开发中...')),
-          );
-        },
-        child: Row(
-          children: [
-            Icon(Icons.storage, color: AppColors.zhusha, size: 24),
-            const SizedBox(width: 12),
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Text('数据管理', style: AppTextStyles.antiqueBody),
-                  const SizedBox(height: 2),
-                  Text('备份、恢复、清除数据', style: AppTextStyles.antiqueLabel),
-                ],
-              ),
-            ),
-            const Icon(Icons.chevron_right, color: AppColors.guhe, size: 20),
-          ],
-        ),
-      ),
+    return _buildSettingsTile(
+      context: context,
+      title: '数据管理',
+      subtitle: '历史、备份、恢复与清理',
+      icon: Icons.storage,
+      onTap: () => Navigator.pushNamed(context, '/data-management'),
     );
   }
 
@@ -178,7 +190,7 @@ class SettingsScreen extends StatelessWidget {
             context: context,
             applicationName: '万象排盘',
             applicationVersion: '1.0.0',
-            applicationLegalese: '© 2024 万象排盘',
+            applicationLegalese: '© 2026 万象排盘',
             children: [
               const SizedBox(height: 16),
               const Text(

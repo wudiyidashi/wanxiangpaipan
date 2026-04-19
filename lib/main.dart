@@ -8,13 +8,20 @@ import 'data/repositories/divination_repository_impl.dart';
 import 'data/secure/secure_storage.dart';
 import 'domain/repositories/divination_repository.dart';
 import 'domain/divination_registry.dart';
+import 'domain/services/data_management_service.dart';
 import 'domain/services/last_cast_method_service.dart';
 import 'presentation/screens/home/home_screen.dart';
 import 'presentation/screens/history/history_list_screen.dart';
 import 'presentation/screens/settings/settings_screen.dart';
 import 'presentation/screens/settings/ai_settings_screen.dart';
+import 'presentation/screens/settings/data_management_screen.dart';
+import 'presentation/screens/settings/prompt_template_settings_screen.dart';
 import 'divination_systems/liuyao/liuyao_system.dart';
 import 'divination_systems/liuyao/viewmodels/liuyao_viewmodel.dart';
+import 'divination_systems/meihua/meihua_system.dart';
+import 'divination_systems/meihua/viewmodels/meihua_viewmodel.dart';
+import 'divination_systems/xiaoliuren/xiaoliuren_system.dart';
+import 'divination_systems/xiaoliuren/viewmodels/xiaoliuren_viewmodel.dart';
 import 'divination_systems/registry_bootstrap.dart';
 import 'ai/ai_bootstrap.dart';
 import 'ai/service/ai_analysis_service.dart';
@@ -114,6 +121,16 @@ class _WanxiangPaipanAppState extends State<WanxiangPaipanApp> {
               previous ?? LastCastMethodService(repository: repository),
         ),
 
+        ProxyProvider<DivinationRepository, DataManagementService>(
+          update: (_, repository, previous) => DataManagementService(
+            repository: repository,
+            aiConfigManager:
+                AIBootstrap.isInitialized ? AIBootstrap.configManager : null,
+            aiAnalysisService: _aiService,
+            registry: DivinationRegistry(),
+          ),
+        ),
+
         // ==================== AI 服务 ====================
         if (_aiService != null)
           ChangeNotifierProvider<AIAnalysisService>.value(
@@ -139,6 +156,42 @@ class _WanxiangPaipanAppState extends State<WanxiangPaipanApp> {
                 repository: repository,
               ),
         ),
+
+        Provider<MeiHuaSystem>(
+          create: (_) => MeiHuaSystem(),
+        ),
+
+        ChangeNotifierProxyProvider2<MeiHuaSystem, DivinationRepository,
+            MeiHuaViewModel>(
+          create: (context) => MeiHuaViewModel(
+            system: context.read<MeiHuaSystem>(),
+            repository: context.read<DivinationRepository>(),
+          ),
+          update: (_, system, repository, previousViewModel) =>
+              previousViewModel ??
+              MeiHuaViewModel(
+                system: system,
+                repository: repository,
+              ),
+        ),
+
+        Provider<XiaoLiuRenSystem>(
+          create: (_) => XiaoLiuRenSystem(),
+        ),
+
+        ChangeNotifierProxyProvider2<XiaoLiuRenSystem, DivinationRepository,
+            XiaoLiuRenViewModel>(
+          create: (context) => XiaoLiuRenViewModel(
+            system: context.read<XiaoLiuRenSystem>(),
+            repository: context.read<DivinationRepository>(),
+          ),
+          update: (_, system, repository, previousViewModel) =>
+              previousViewModel ??
+              XiaoLiuRenViewModel(
+                system: system,
+                repository: repository,
+              ),
+        ),
       ],
       child: MaterialApp(
         title: '万象排盘',
@@ -152,6 +205,9 @@ class _WanxiangPaipanAppState extends State<WanxiangPaipanApp> {
           '/history': (context) => const HistoryListScreen(),
           '/settings': (context) => const SettingsScreen(),
           '/ai-settings': (context) => const AISettingsScreen(),
+          '/data-management': (context) => const DataManagementScreen(),
+          '/prompt-template-settings': (context) =>
+              const PromptTemplateSettingsScreen(),
         },
       ),
     );
