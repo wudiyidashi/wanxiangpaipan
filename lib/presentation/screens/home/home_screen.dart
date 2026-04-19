@@ -13,6 +13,7 @@ import '../../widgets/home/time_engine_card.dart';
 import '../../widgets/home/quick_history_bar.dart';
 import '../../widgets/home/background_decor.dart';
 import '../../widgets/home/app_bottom_nav_bar.dart';
+import '../calendar/calendar_screen.dart';
 import '../history/history_list_screen.dart';
 
 /// 应用主界面（严格匹配设计图）
@@ -226,7 +227,7 @@ class _HomeScreenState extends State<HomeScreen> with RouteAware {
       case 2:
         return _buildSimpleTab(
           title: '历法',
-          child: _buildCalendarContent(),
+          child: const CalendarScreen(chromeless: true),
         );
       case 3:
         return _buildSimpleTab(
@@ -326,26 +327,6 @@ class _HomeScreenState extends State<HomeScreen> with RouteAware {
           ),
           const AntiqueDivider(),
           Expanded(child: child),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildCalendarContent() {
-    return Center(
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Icon(Icons.calendar_today_outlined,
-              size: 48, color: AppColors.huiseLight),
-          const SizedBox(height: 12),
-          Text('历法功能',
-              style:
-                  AppTextStyles.antiqueBody.copyWith(color: AppColors.huise)),
-          const SizedBox(height: 4),
-          Text('即将推出',
-              style: AppTextStyles.antiqueLabel
-                  .copyWith(color: AppColors.huiseLight)),
         ],
       ),
     );
