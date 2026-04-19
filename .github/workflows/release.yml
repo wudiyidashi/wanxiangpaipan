@@ -5,34 +5,148 @@ on:
     tags:
       - 'v*.*.*'
   workflow_dispatch:
+    inputs:
+      version:
+        description: '版本号（例如 1.0.0）；留空则用 pubspec.yaml 中的版本'
+        required: false
+        default: ''
 
 permissions:
   contents: write
 
+env:
+  FLUTTER_VERSION: '3.24.0'
+  JAVA_VERSION: '17'
+
 jobs:
-  build-and-release:
-    runs-on: macos-latest
+  # ──────────────────────────────────────────
+  # 分析 + 测试（在打包之前跑一遍，保证发布产物是绿的）
+  # ──────────────────────────────────────────
+  verify:
+    name: Analyze & Test
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: subosito/flutter-action@v2
+        with:
+          flutter-version: ${{ env.FLUTTER_VERSION }}
+          channel: 'stable'
+          cache: true
+      - run: flutter pub get
+      - run: dart run build_runner build --delete-conflicting-outputs
+      - run: dart format --set-exit-if-changed lib/ test/
+      - run: flutter analyze
+      - run: flutter test
+
+  # ──────────────────────────────────────────
+  # Android APK + AAB
+  # 未做 keystore 签名 —— APK 以 debug key 签名，安装会提示"未知来源"，
+  # 功能上可用；AAB 主要给 Play Console 上传（需在那侧做 Play App Signing）。
+  # 后续如需正式签名：把 keystore base64 + 密码放 repo secrets，在这里解码生成
+  # android/key.properties + key.jks，再跑 flutter build。
+  # ──────────────────────────────────────────
+  build-android:
+    name: Build Android
+    runs-on: ubuntu-latest
+    needs: verify
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-java@v4
         with:
           distribution: 'zulu'
-          java-version: '17'
+          java-version: ${{ env.JAVA_VERSION }}
       - uses: subosito/flutter-action@v2
         with:
-          flutter-version: '3.24.0'
+          flutter-version: ${{ env.FLUTTER_VERSION }}
           channel: 'stable'
           cache: true
+
+      - name: Resolve version
+        id: version
+        run: |
+          REF_TAG="${GITHUB_REF##*/}"
+          if [[ "$GITHUB_REF" == refs/tags/v* ]]; then
+            VERSION="${REF_TAG#v}"
+          elif [[ -n "${{ inputs.version }}" ]]; then
+            VERSION="${{ inputs.version }}"
+          else
+            # manual dispatch 且没填 → 拿 pubspec.yaml 里的
+            VERSION=$(grep '^version:' pubspec.yaml | awk '{print $2}' | cut -d'+' -f1)
+          fi
+          echo "version=$VERSION" >> "$GITHUB_OUTPUT"
+          echo "build=${{ github.run_number }}" >> "$GITHUB_OUTPUT"
+          echo "解析到版本：$VERSION+${{ github.run_number }}"
+
       - run: flutter pub get
-      - run: flutter pub run build_runner build --delete-conflicting-outputs
-      - run: flutter test
-      - run: flutter build apk --release
-      - run: flutter build appbundle --release
-      - run: flutter build ios --release --no-codesign
-      - name: Create GitHub Release
-        uses: softprops/action-gh-release@v3
+      - run: dart run build_runner build --delete-conflicting-outputs
+
+      - name: Build APK
+        run: |
+          flutter build apk --release \
+            --build-name=${{ steps.version.outputs.version }} \
+            --build-number=${{ steps.version.outputs.build }}
+
+      - name: Build App Bundle
+        run: |
+          flutter build appbundle --release \
+            --build-name=${{ steps.version.outputs.version }} \
+            --build-number=${{ steps.version.outputs.build }}
+
+      - name: Rename artifacts with version
+        run: |
+          V=${{ steps.version.outputs.version }}
+          mkdir -p dist
+          cp build/app/outputs/flutter-apk/app-release.apk \
+             dist/wanxiang-paipan-${V}.apk
+          cp build/app/outputs/bundle/release/app-release.aab \
+             dist/wanxiang-paipan-${V}.aab
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: android
+          path: dist/*
+          retention-days: 7
+
+  # ──────────────────────────────────────────
+  # Release 收集产物 + 创建 GitHub Release
+  # ──────────────────────────────────────────
+  release:
+    name: Create GitHub Release
+    runs-on: ubuntu-latest
+    needs: [build-android]
+    if: startsWith(github.ref, 'refs/tags/v')
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Download all artifacts
+        uses: actions/download-artifact@v4
+        with:
+          path: dist
+
+      - name: List downloaded artifacts
+        run: ls -R dist
+
+      - name: Create Release
+        uses: softprops/action-gh-release@v2
         with:
           generate_release_notes: true
+          draft: false
+          prerelease: ${{ contains(github.ref_name, '-') }}
           files: |
-            build/app/outputs/flutter-apk/app-release.apk
-            build/app/outputs/bundle/release/app-release.aab
+            dist/android/*.apk
+            dist/android/*.aab
+          body: |
+            ## 万象排盘 ${{ github.ref_name }}
+
+            ### 下载
+            - **Android APK** — 直接安装到手机（首次安装会提示"未知来源"）
+            - **Android AAB** — 给 Google Play Console 上传用；App Signing 在 Play 侧完成
+
+            ### 安装说明
+            1. 下载 `wanxiang-paipan-*.apk`
+            2. 在安卓设置里允许来源应用安装未知来源
+            3. 点开 APK 安装
+
+            ---
+
+            以下 release notes 自动生成自提交历史：
