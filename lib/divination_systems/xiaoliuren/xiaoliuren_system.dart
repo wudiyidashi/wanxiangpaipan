@@ -1,20 +1,20 @@
+import 'package:lunar/lunar.dart';
+import 'package:uuid/uuid.dart';
+
 import '../../domain/divination_system.dart';
+import '../../domain/services/shared/lunar_service.dart';
+import '../../models/lunar_info.dart';
 import 'models/xiaoliuren_result.dart';
 
 /// 小六壬排盘
 ///
-/// 小六壬是一种简化的占卜方法，使用大安、留连、速喜、赤口、小吉、空亡
-/// 六个位置进行推算。
+/// 当前底层收敛为三种起课方式：
+/// 1. 时间起（农历月、日、时）
+/// 2. 报数起（三个数字）
+/// 3. 汉字笔画起（三段笔画数）
 ///
-/// 核心算法：
-/// 1. 六神定义：大安、留连、速喜、赤口、小吉、空亡
-/// 2. 月推算：从大安起，数到当前月份
-/// 3. 日推算：从月推算结果起，数到当前日期
-/// 4. 时推算：从日推算结果起，数到当前时辰
-/// 5. 落宫判断：最终落在哪个六神位置
-/// 6. 占断分析：根据落宫位置进行占断
-///
-/// 注意：此类为骨架实现，暂时禁用（isEnabled = false）
+/// 物象声音起当前仅在全局枚举层预留，不纳入小六壬第一版契约。
+/// 当前已实现六宫/九宫两种盘式，均使用“起点记 1、三段顺推”的同构规则。
 class XiaoLiuRenSystem implements DivinationSystem {
   @override
   DivinationType get type => DivinationType.xiaoLiuRen;
@@ -23,16 +23,173 @@ class XiaoLiuRenSystem implements DivinationSystem {
   String get name => '小六壬';
 
   @override
-  String get description => '小六壬：简化的占卜方法，使用大安、留连、速喜、赤口、小吉、空亡六个位置进行推算';
+  String get description => '小六壬：支持时间起、报数起、笔画起，以三段顺推落宫直断吉凶';
 
   @override
-  bool get isEnabled => false; // 暂时禁用，等待未来实现
+  bool get isEnabled => false;
 
   @override
   List<CastMethod> get supportedMethods => [
-        CastMethod.time, // 时间起卦
-        CastMethod.manual, // 手动输入
+        CastMethod.time,
+        CastMethod.reportNumber,
+        CastMethod.characterStroke,
       ];
+
+  static const Map<String, int> _hourZhiNumbers = {
+    '子': 1,
+    '丑': 2,
+    '寅': 3,
+    '卯': 4,
+    '辰': 5,
+    '巳': 6,
+    '午': 7,
+    '未': 8,
+    '申': 9,
+    '酉': 10,
+    '戌': 11,
+    '亥': 12,
+  };
+
+  static const List<XiaoLiuRenPosition> _sixPalacePositions = [
+    XiaoLiuRenPosition(
+      index: 1,
+      name: '大安',
+      fortune: '吉',
+      keyword: '诸事安稳',
+      description: '主安稳、平顺、可守可谋，适合按既定节奏推进。',
+      wuXing: '木',
+      direction: '东方',
+    ),
+    XiaoLiuRenPosition(
+      index: 2,
+      name: '留连',
+      fortune: '凶',
+      keyword: '迟滞反复',
+      description: '主拖延、反复、牵扯，事情不宜急推，宜等时机。',
+      wuXing: '水',
+      direction: '北方',
+    ),
+    XiaoLiuRenPosition(
+      index: 3,
+      name: '速喜',
+      fortune: '吉',
+      keyword: '喜信速来',
+      description: '主喜讯、效率、结果加速，利会面、回音、推进。',
+      wuXing: '火',
+      direction: '南方',
+    ),
+    XiaoLiuRenPosition(
+      index: 4,
+      name: '赤口',
+      fortune: '凶',
+      keyword: '口舌是非',
+      description: '主争执、冲突、言语失和，沟通宜谨慎，忌硬碰硬。',
+      wuXing: '金',
+      direction: '西方',
+    ),
+    XiaoLiuRenPosition(
+      index: 5,
+      name: '小吉',
+      fortune: '吉',
+      keyword: '小成可望',
+      description: '主小利、人和、渐成，虽非大吉，但可稳步见好。',
+      wuXing: '木',
+      direction: '东方',
+    ),
+    XiaoLiuRenPosition(
+      index: 6,
+      name: '空亡',
+      fortune: '凶',
+      keyword: '事易落空',
+      description: '主空耗、落空、消息不实，宜暂缓定论，不可过信。',
+      wuXing: '土',
+      direction: '中央',
+    ),
+  ];
+
+  static const List<XiaoLiuRenPosition> _ninePalacePositions = [
+    XiaoLiuRenPosition(
+      index: 1,
+      name: '大安',
+      fortune: '吉',
+      keyword: '诸事安稳',
+      description: '主安稳、平顺、可守可谋，适合按既定节奏推进。',
+      wuXing: '木',
+      direction: '东方',
+    ),
+    XiaoLiuRenPosition(
+      index: 2,
+      name: '留连',
+      fortune: '凶',
+      keyword: '迟滞反复',
+      description: '主拖延、反复、牵扯，事情不宜急推，宜等时机。',
+      wuXing: '水',
+      direction: '北方',
+    ),
+    XiaoLiuRenPosition(
+      index: 3,
+      name: '速喜',
+      fortune: '吉',
+      keyword: '喜信速来',
+      description: '主喜讯、效率、结果加速，利会面、回音、推进。',
+      wuXing: '火',
+      direction: '南方',
+    ),
+    XiaoLiuRenPosition(
+      index: 4,
+      name: '赤口',
+      fortune: '凶',
+      keyword: '口舌是非',
+      description: '主争执、冲突、言语失和，沟通宜谨慎，忌硬碰硬。',
+      wuXing: '金',
+      direction: '西方',
+    ),
+    XiaoLiuRenPosition(
+      index: 5,
+      name: '小吉',
+      fortune: '吉',
+      keyword: '小成可望',
+      description: '主小利、人和、渐成，虽非大吉，但可稳步见好。',
+      wuXing: '木',
+      direction: '东方',
+    ),
+    XiaoLiuRenPosition(
+      index: 6,
+      name: '空亡',
+      fortune: '凶',
+      keyword: '事易落空',
+      description: '主空耗、落空、消息不实，宜暂缓定论，不可过信。',
+      wuXing: '土',
+      direction: '中央',
+    ),
+    XiaoLiuRenPosition(
+      index: 7,
+      name: '病符',
+      fortune: '凶',
+      keyword: '疾病隐患',
+      description: '主病气、损耗、身体不宁、事务暗藏隐患，宜修养避耗。',
+      wuXing: '土',
+      direction: '东北',
+    ),
+    XiaoLiuRenPosition(
+      index: 8,
+      name: '桃花',
+      fortune: '平',
+      keyword: '人缘情缘',
+      description: '主人缘、情缘、社交往来，利联络会面，亦防牵缠纠葛。',
+      wuXing: '土',
+      direction: '东北',
+    ),
+    XiaoLiuRenPosition(
+      index: 9,
+      name: '天德',
+      fortune: '吉',
+      keyword: '贵人解厄',
+      description: '主贵人扶持、德助解厄、转危为安，利求人和解。',
+      wuXing: '金',
+      direction: '西北',
+    ),
+  ];
 
   @override
   Future<DivinationResult> cast({
@@ -40,16 +197,27 @@ class XiaoLiuRenSystem implements DivinationSystem {
     required Map<String, dynamic> input,
     DateTime? castTime,
   }) async {
-    throw UnimplementedError(
-      '小六壬系统尚未实现。\n'
-      '未来实现时需要：\n'
-      '1. 定义六神（大安、留连、速喜、赤口、小吉、空亡）\n'
-      '2. 实现月推算算法\n'
-      '3. 实现日推算算法\n'
-      '4. 实现时推算算法\n'
-      '5. 实现落宫判断\n'
-      '6. 实现占断规则',
-    );
+    if (!supportedMethods.contains(method)) {
+      throw UnsupportedError('小六壬不支持的起课方式: ${method.displayName}');
+    }
+
+    if (!validateInput(method, input)) {
+      throw ArgumentError('输入参数无效');
+    }
+
+    final time = castTime ?? DateTime.now();
+    final lunarInfo = LunarService.getLunarInfo(time);
+
+    switch (method) {
+      case CastMethod.time:
+        return _castByTime(time, lunarInfo, input);
+      case CastMethod.reportNumber:
+        return _castByReportNumber(time, lunarInfo, input);
+      case CastMethod.characterStroke:
+        return _castByCharacterStroke(time, lunarInfo, input);
+      default:
+        throw UnsupportedError('小六壬不支持的起课方式: ${method.displayName}');
+    }
   }
 
   @override
@@ -59,48 +227,266 @@ class XiaoLiuRenSystem implements DivinationSystem {
 
   @override
   bool validateInput(CastMethod method, Map<String, dynamic> input) {
-    // 骨架实现：暂时返回 true
-    // 未来实现时需要根据不同的起卦方式验证输入参数
-    return true;
+    if (!_isValidPalaceModeInput(input['palaceMode'])) {
+      return false;
+    }
+
+    switch (method) {
+      case CastMethod.time:
+        return input.isEmpty ||
+            (input.length == 1 && input.containsKey('palaceMode'));
+      case CastMethod.reportNumber:
+        return _hasRequiredIntKeys(
+          input,
+          const {'firstNumber', 'secondNumber', 'thirdNumber'},
+        );
+      case CastMethod.characterStroke:
+        return _hasRequiredIntKeys(
+          input,
+          const {'firstStroke', 'secondStroke', 'thirdStroke'},
+        );
+      default:
+        return false;
+    }
   }
 
-  // ==================== 未来实现的扩展点 ====================
+  XiaoLiuRenResult _castByTime(
+    DateTime castTime,
+    LunarInfo lunarInfo,
+    Map<String, dynamic> input,
+  ) {
+    final lunar = Solar.fromDate(castTime).getLunar();
+    final month = lunar.getMonth().abs();
+    final day = lunar.getDay();
+    final hourZhi = lunar.getTimeZhi();
+    final hourNumber = _hourZhiNumbers[hourZhi]!;
+    final palaceMode = _resolvePalaceMode(input);
 
-  // TODO: 定义六神
-  // 六神的顺序和含义
-  // enum LiuShen { daAn, liuLian, suXi, chiKou, xiaoJi, kongWang }
-  // Map<LiuShen, String> _liuShenMeanings = { ... }
+    return _buildResult(
+      castTime: castTime,
+      castMethod: CastMethod.time,
+      lunarInfo: lunarInfo,
+      palaceMode: palaceMode,
+      source: XiaoLiuRenSource(
+        methodLabel: '时间起课',
+        firstNumber: month,
+        secondNumber: day,
+        thirdNumber: hourNumber,
+        firstLabel: '月数',
+        secondLabel: '日数',
+        thirdLabel: '时数',
+        hourZhi: hourZhi,
+        usesLunarDate: true,
+        rule: '大安起月，月上起日，日上起时；各段均起点记 1 顺推',
+        note: '时间起课固定取农历月、农历日与时支',
+      ),
+    );
+  }
 
-  // TODO: 实现月推算算法
-  // 从大安起，数到当前月份
-  // LiuShen _calculateMonthPosition(int month) { ... }
+  XiaoLiuRenResult _castByReportNumber(
+    DateTime castTime,
+    LunarInfo lunarInfo,
+    Map<String, dynamic> input,
+  ) {
+    final palaceMode = _resolvePalaceMode(input);
 
-  // TODO: 实现日推算算法
-  // 从月推算结果起，数到当前日期
-  // LiuShen _calculateDayPosition(LiuShen monthPosition, int day) { ... }
+    return _buildResult(
+      castTime: castTime,
+      castMethod: CastMethod.reportNumber,
+      lunarInfo: lunarInfo,
+      palaceMode: palaceMode,
+      source: XiaoLiuRenSource(
+        methodLabel: '报数起课',
+        firstNumber: input['firstNumber'] as int,
+        secondNumber: input['secondNumber'] as int,
+        thirdNumber: input['thirdNumber'] as int,
+        firstLabel: '数一',
+        secondLabel: '数二',
+        thirdLabel: '数三',
+        usesLunarDate: false,
+        rule: '大安起第一数，首位上起第二数，次位上起第三数；各段均起点记 1 顺推',
+        note: '报数起课直接以三个数字作为三段起数',
+      ),
+    );
+  }
 
-  // TODO: 实现时推算算法
-  // 从日推算结果起，数到当前时辰
-  // LiuShen _calculateHourPosition(LiuShen dayPosition, int hour) { ... }
+  XiaoLiuRenResult _castByCharacterStroke(
+    DateTime castTime,
+    LunarInfo lunarInfo,
+    Map<String, dynamic> input,
+  ) {
+    final palaceMode = _resolvePalaceMode(input);
 
-  // TODO: 实现落宫判断
-  // 最终落在哪个六神位置
-  // LiuShen _determineFinalPosition(DateTime castTime) { ... }
+    return _buildResult(
+      castTime: castTime,
+      castMethod: CastMethod.characterStroke,
+      lunarInfo: lunarInfo,
+      palaceMode: palaceMode,
+      source: XiaoLiuRenSource(
+        methodLabel: '汉字笔画起',
+        firstNumber: input['firstStroke'] as int,
+        secondNumber: input['secondStroke'] as int,
+        thirdNumber: input['thirdStroke'] as int,
+        firstLabel: '首字笔画',
+        secondLabel: '次字笔画',
+        thirdLabel: '末字笔画',
+        usesLunarDate: false,
+        rule: '大安起首字笔画，首位上起次字笔画，次位上起末字笔画；各段均起点记 1 顺推',
+        note: '当前底层直接接收三段笔画数；自动汉字转笔画将在上层或独立服务实现',
+      ),
+    );
+  }
 
-  // TODO: 实现占断规则
-  // 根据落宫位置进行占断
-  // String _analyze(LiuShen finalPosition) { ... }
+  XiaoLiuRenResult _buildResult({
+    required DateTime castTime,
+    required CastMethod castMethod,
+    required LunarInfo lunarInfo,
+    required XiaoLiuRenPalaceMode palaceMode,
+    required XiaoLiuRenSource source,
+  }) {
+    final positions = _positionsFor(palaceMode);
+    final monthPosition = _positionByStep(
+      source.firstNumber,
+      positions: positions,
+    );
+    final dayPosition = _positionFrom(
+      startIndex: monthPosition.index,
+      steps: source.secondNumber,
+      positions: positions,
+    );
+    final hourPosition = _positionFrom(
+      startIndex: dayPosition.index,
+      steps: source.thirdNumber,
+      positions: positions,
+    );
 
-  // ==================== 六神含义参考 ====================
-  // 大安：身不动时，五行属木，颜色青色，方位东方。临青龙，谋事主一、五、七。
-  // 留连：卒未归时，五行属水，颜色黑色，方位北方。临玄武，谋事主二、八、十。
-  // 速喜：人即至时，五行属火，颜色红色，方位南方。临朱雀，谋事主三、六、九。
-  // 赤口：官事凶时，五行属金，颜色白色，方位西方。临白虎，谋事主四、七、十。
-  // 小吉：人来喜时，五行属木，颜色青色，方位东方。临六合，谋事主一、五、七。
-  // 空亡：音信稀时，五行属土，颜色黄色，方位中央。临勾陈，谋事主三、六、九。
+    final judgement = _buildJudgement(hourPosition);
+    final detail = _buildDetail(
+      palaceMode: palaceMode,
+      source: source,
+      firstPosition: monthPosition,
+      secondPosition: dayPosition,
+      thirdPosition: hourPosition,
+    );
 
-  // ==================== 参考资料 ====================
-  // 1. 《小六壬金口诀》
-  // 2. 《诸葛神数》
-  // 3. 民间小六壬传承资料
+    return XiaoLiuRenResult(
+      id: const Uuid().v4(),
+      castTime: castTime,
+      castMethod: castMethod,
+      lunarInfo: lunarInfo,
+      palaceMode: palaceMode,
+      source: source,
+      monthPosition: monthPosition,
+      dayPosition: dayPosition,
+      hourPosition: hourPosition,
+      finalPosition: hourPosition,
+      judgement: judgement,
+      detail: detail,
+    );
+  }
+
+  List<XiaoLiuRenPosition> _positionsFor(XiaoLiuRenPalaceMode palaceMode) {
+    switch (palaceMode) {
+      case XiaoLiuRenPalaceMode.sixPalaces:
+        return _sixPalacePositions;
+      case XiaoLiuRenPalaceMode.ninePalaces:
+        return _ninePalacePositions;
+    }
+  }
+
+  XiaoLiuRenPosition _positionByStep(
+    int step, {
+    required List<XiaoLiuRenPosition> positions,
+  }) {
+    final index = ((step - 1) % positions.length) + 1;
+    return positions[index - 1];
+  }
+
+  XiaoLiuRenPosition _positionFrom({
+    required int startIndex,
+    required int steps,
+    required List<XiaoLiuRenPosition> positions,
+  }) {
+    final index = ((startIndex - 1) + (steps - 1)) % positions.length + 1;
+    return positions[index - 1];
+  }
+
+  String _buildJudgement(XiaoLiuRenPosition position) {
+    switch (position.name) {
+      case '大安':
+        return '大安，主诸事安稳，宜守正稳进。';
+      case '留连':
+        return '留连，主迟滞反复，宜缓不宜急。';
+      case '速喜':
+        return '速喜，主喜信速来，利推进与回音。';
+      case '赤口':
+        return '赤口，主口舌是非，宜谨言慎行。';
+      case '小吉':
+        return '小吉，主小成可望，利人和与渐进。';
+      case '空亡':
+        return '空亡，主事易落空，宜暂缓定论。';
+      case '病符':
+        return '病符，主疾病隐患与暗耗，宜修养避损。';
+      case '桃花':
+        return '桃花，主人缘情缘与来往牵动，宜明辨分寸。';
+      case '天德':
+        return '天德，主贵人解厄与转机，利和解求助。';
+      default:
+        return '${position.name}，待判。';
+    }
+  }
+
+  String _buildDetail({
+    required XiaoLiuRenPalaceMode palaceMode,
+    required XiaoLiuRenSource source,
+    required XiaoLiuRenPosition firstPosition,
+    required XiaoLiuRenPosition secondPosition,
+    required XiaoLiuRenPosition thirdPosition,
+  }) {
+    final thirdDescriptor = source.hourZhi == null
+        ? '${source.thirdLabel}${source.thirdNumber}'
+        : '时支${source.hourZhi}，${source.thirdLabel}${source.thirdNumber}';
+
+    return '按${palaceMode.displayName}${source.rule}。'
+        '${source.firstLabel}${source.firstNumber}落${firstPosition.name}，'
+        '${source.secondLabel}${source.secondNumber}从${firstPosition.name}推至${secondPosition.name}，'
+        '$thirdDescriptor从${secondPosition.name}推至${thirdPosition.name}。'
+        '最终落${thirdPosition.name}，${thirdPosition.description}';
+  }
+
+  XiaoLiuRenPalaceMode _resolvePalaceMode(Map<String, dynamic> input) {
+    final raw = input['palaceMode'];
+    if (raw == null) {
+      return XiaoLiuRenPalaceMode.sixPalaces;
+    }
+    if (raw is String) {
+      return XiaoLiuRenPalaceMode.fromId(raw);
+    }
+    if (raw is XiaoLiuRenPalaceMode) {
+      return raw;
+    }
+    throw ArgumentError('小六壬 palaceMode 参数无效');
+  }
+
+  static bool _isValidPalaceModeInput(dynamic raw) {
+    if (raw == null) {
+      return true;
+    }
+    if (raw is String) {
+      return raw == XiaoLiuRenPalaceMode.sixPalaces.id ||
+          raw == XiaoLiuRenPalaceMode.ninePalaces.id;
+    }
+    return raw is XiaoLiuRenPalaceMode;
+  }
+
+  static bool _hasRequiredIntKeys(
+    Map<String, dynamic> input,
+    Set<String> requiredKeys,
+  ) {
+    final allowedKeys = {...requiredKeys, 'palaceMode'};
+    return input.keys.toSet().containsAll(requiredKeys) &&
+        input.keys.every(allowedKeys.contains) &&
+        requiredKeys
+            .every((key) => input[key] is int && (input[key] as int) > 0);
+  }
 }

@@ -3,19 +3,11 @@ import '../../../models/lunar_info.dart';
 
 /// 小六壬占卜结果
 ///
-/// 小六壬是一种简化的占卜方法，使用大安、留连、速喜、赤口、小吉、空亡
-/// 六个位置进行推算。
-///
-/// 核心概念：
-/// - 六神：大安、留连、速喜、赤口、小吉、空亡
-/// - 起卦方式：月、日、时三次推算
-/// - 落宫：最终落在哪个六神位置
+/// 第一版严格围绕“月 -> 日 -> 时”三段顺推链建模，
+/// 不引入额外神煞、宫盘或多流派兼容规则。
 class XiaoLiuRenResult implements DivinationResult {
   @override
   final String id;
-
-  @override
-  final DivinationType systemType;
 
   @override
   final DateTime castTime;
@@ -26,21 +18,41 @@ class XiaoLiuRenResult implements DivinationResult {
   @override
   final LunarInfo lunarInfo;
 
-  /// 占位数据（未来实现时替换）
-  final Map<String, dynamic> placeholderData;
+  final XiaoLiuRenPalaceMode palaceMode;
+  final XiaoLiuRenSource source;
+  final XiaoLiuRenPosition monthPosition;
+  final XiaoLiuRenPosition dayPosition;
+  final XiaoLiuRenPosition hourPosition;
+  final XiaoLiuRenPosition finalPosition;
+  final String judgement;
+  final String detail;
+  final String questionId;
+  final String detailId;
+  final String interpretationId;
 
   XiaoLiuRenResult({
     required this.id,
     required this.castTime,
     required this.castMethod,
     required this.lunarInfo,
-    this.placeholderData = const {},
-  }) : systemType = DivinationType.xiaoLiuRen;
+    required this.palaceMode,
+    required this.source,
+    required this.monthPosition,
+    required this.dayPosition,
+    required this.hourPosition,
+    required this.finalPosition,
+    required this.judgement,
+    required this.detail,
+    this.questionId = '',
+    this.detailId = '',
+    this.interpretationId = '',
+  });
 
   @override
-  String getSummary() {
-    return '小六壬占卜（未实现）';
-  }
+  DivinationType get systemType => DivinationType.xiaoLiuRen;
+
+  @override
+  String getSummary() => '${finalPosition.name} · ${finalPosition.keyword}';
 
   @override
   Map<String, dynamic> toJson() {
@@ -50,7 +62,17 @@ class XiaoLiuRenResult implements DivinationResult {
       'castTime': castTime.toIso8601String(),
       'castMethod': castMethod.id,
       'lunarInfo': lunarInfo.toJson(),
-      'placeholderData': placeholderData,
+      'palaceMode': palaceMode.id,
+      'source': source.toJson(),
+      'monthPosition': monthPosition.toJson(),
+      'dayPosition': dayPosition.toJson(),
+      'hourPosition': hourPosition.toJson(),
+      'finalPosition': finalPosition.toJson(),
+      'judgement': judgement,
+      'detail': detail,
+      'questionId': questionId,
+      'detailId': detailId,
+      'interpretationId': interpretationId,
     };
   }
 
@@ -65,17 +87,148 @@ class XiaoLiuRenResult implements DivinationResult {
       castTime: DateTime.parse(json['castTime'] as String),
       castMethod: CastMethod.fromId(json['castMethod'] as String),
       lunarInfo: LunarInfo.fromJson(json['lunarInfo'] as Map<String, dynamic>),
-      placeholderData: (json['placeholderData'] as Map<dynamic, dynamic>?)
-              ?.cast<String, dynamic>() ??
-          {},
+      palaceMode: XiaoLiuRenPalaceMode.fromId(json['palaceMode'] as String),
+      source: XiaoLiuRenSource.fromJson(json['source'] as Map<String, dynamic>),
+      monthPosition: XiaoLiuRenPosition.fromJson(
+        json['monthPosition'] as Map<String, dynamic>,
+      ),
+      dayPosition: XiaoLiuRenPosition.fromJson(
+        json['dayPosition'] as Map<String, dynamic>,
+      ),
+      hourPosition: XiaoLiuRenPosition.fromJson(
+        json['hourPosition'] as Map<String, dynamic>,
+      ),
+      finalPosition: XiaoLiuRenPosition.fromJson(
+        json['finalPosition'] as Map<String, dynamic>,
+      ),
+      judgement: json['judgement'] as String,
+      detail: json['detail'] as String,
+      questionId: json['questionId'] as String? ?? '',
+      detailId: json['detailId'] as String? ?? '',
+      interpretationId: json['interpretationId'] as String? ?? '',
     );
   }
+}
 
-  // TODO: 未来实现时添加以下字段
-  // - 六神名称（大安、留连、速喜、赤口、小吉、空亡）
-  // - 月推算结果
-  // - 日推算结果
-  // - 时推算结果
-  // - 最终落宫
-  // - 占断结果
+enum XiaoLiuRenPalaceMode {
+  sixPalaces('六宫', 'sixPalaces'),
+  ninePalaces('九宫', 'ninePalaces');
+
+  const XiaoLiuRenPalaceMode(this.displayName, this.id);
+
+  final String displayName;
+  final String id;
+
+  static XiaoLiuRenPalaceMode fromId(String id) {
+    return XiaoLiuRenPalaceMode.values.firstWhere(
+      (mode) => mode.id == id,
+      orElse: () => throw ArgumentError('未知的小六壬盘式: $id'),
+    );
+  }
+}
+
+/// 起课输入源与推算痕迹
+class XiaoLiuRenSource {
+  final String methodLabel;
+  final int firstNumber;
+  final int secondNumber;
+  final int thirdNumber;
+  final String firstLabel;
+  final String secondLabel;
+  final String thirdLabel;
+  final String? hourZhi;
+  final bool usesLunarDate;
+  final String rule;
+  final String? note;
+
+  const XiaoLiuRenSource({
+    required this.methodLabel,
+    required this.firstNumber,
+    required this.secondNumber,
+    required this.thirdNumber,
+    required this.firstLabel,
+    required this.secondLabel,
+    required this.thirdLabel,
+    this.hourZhi,
+    required this.usesLunarDate,
+    required this.rule,
+    this.note,
+  });
+
+  Map<String, dynamic> toJson() {
+    return {
+      'methodLabel': methodLabel,
+      'firstNumber': firstNumber,
+      'secondNumber': secondNumber,
+      'thirdNumber': thirdNumber,
+      'firstLabel': firstLabel,
+      'secondLabel': secondLabel,
+      'thirdLabel': thirdLabel,
+      'hourZhi': hourZhi,
+      'usesLunarDate': usesLunarDate,
+      'rule': rule,
+      'note': note,
+    };
+  }
+
+  factory XiaoLiuRenSource.fromJson(Map<String, dynamic> json) {
+    return XiaoLiuRenSource(
+      methodLabel: json['methodLabel'] as String,
+      firstNumber: json['firstNumber'] as int,
+      secondNumber: json['secondNumber'] as int,
+      thirdNumber: json['thirdNumber'] as int,
+      firstLabel: json['firstLabel'] as String,
+      secondLabel: json['secondLabel'] as String,
+      thirdLabel: json['thirdLabel'] as String,
+      hourZhi: json['hourZhi'] as String?,
+      usesLunarDate: json['usesLunarDate'] as bool,
+      rule: json['rule'] as String,
+      note: json['note'] as String?,
+    );
+  }
+}
+
+/// 六宫定义
+class XiaoLiuRenPosition {
+  final int index;
+  final String name;
+  final String fortune;
+  final String keyword;
+  final String description;
+  final String wuXing;
+  final String direction;
+
+  const XiaoLiuRenPosition({
+    required this.index,
+    required this.name,
+    required this.fortune,
+    required this.keyword,
+    required this.description,
+    required this.wuXing,
+    required this.direction,
+  });
+
+  Map<String, dynamic> toJson() {
+    return {
+      'index': index,
+      'name': name,
+      'fortune': fortune,
+      'keyword': keyword,
+      'description': description,
+      'wuXing': wuXing,
+      'direction': direction,
+    };
+  }
+
+  factory XiaoLiuRenPosition.fromJson(Map<String, dynamic> json) {
+    return XiaoLiuRenPosition(
+      index: json['index'] as int,
+      name: json['name'] as String,
+      fortune: json['fortune'] as String,
+      keyword: json['keyword'] as String,
+      description: json['description'] as String,
+      wuXing: json['wuXing'] as String,
+      direction: json['direction'] as String,
+    );
+  }
 }

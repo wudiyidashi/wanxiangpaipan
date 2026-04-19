@@ -79,6 +79,12 @@ enum CastMethod {
   /// 报数卦（用户报三个数：上卦、下卦、动爻）
   reportNumber('报数卦', 'reportNumber'),
 
+  /// 汉字笔画卦（按汉字笔画数起卦）
+  characterStroke('笔画卦', 'characterStroke'),
+
+  /// 物象声音卦（按物象/声音换算数值起卦）
+  objectSound('物象声音卦', 'objectSound'),
+
   /// 时间卦（根据起卦时间计算）
   time('时间卦', 'time'),
 
@@ -226,7 +232,7 @@ abstract class DivinationSystem {
   ///
   /// 例如：
   /// - 六爻支持：[CastMethod.coin, CastMethod.manual, CastMethod.number, CastMethod.reportNumber, CastMethod.time, CastMethod.computer]
-  /// - 梅花易数支持：[CastMethod.time, CastMethod.number, CastMethod.computer]
+  /// - 梅花易数支持：[CastMethod.time, CastMethod.number, CastMethod.manual]
   List<CastMethod> get supportedMethods;
 
   /// 系统是否启用

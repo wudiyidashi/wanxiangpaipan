@@ -103,6 +103,9 @@ class LiuYaoSystem implements DivinationSystem {
       case CastMethod.computer:
         yaoNumbers = QiGuaService.computerCast();
         break;
+      case CastMethod.characterStroke:
+      case CastMethod.objectSound:
+        throw UnsupportedError('六爻不支持的起卦方式: ${method.displayName}');
     }
 
     // 2. 计算农历信息
@@ -178,6 +181,9 @@ class LiuYaoSystem implements DivinationSystem {
             input['lowerNum'] is int &&
             input.containsKey('movingNum') &&
             input['movingNum'] is int;
+      case CastMethod.characterStroke:
+      case CastMethod.objectSound:
+        return false;
     }
   }
 

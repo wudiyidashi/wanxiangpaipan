@@ -52,11 +52,13 @@ void main() {
 
   group('CastMethod', () {
     test('应该包含所有起卦方式', () {
-      expect(CastMethod.values.length, 6);
+      expect(CastMethod.values.length, 8);
       expect(CastMethod.values, contains(CastMethod.coin));
       expect(CastMethod.values, contains(CastMethod.manual));
       expect(CastMethod.values, contains(CastMethod.number));
       expect(CastMethod.values, contains(CastMethod.reportNumber));
+      expect(CastMethod.values, contains(CastMethod.characterStroke));
+      expect(CastMethod.values, contains(CastMethod.objectSound));
       expect(CastMethod.values, contains(CastMethod.time));
       expect(CastMethod.values, contains(CastMethod.computer));
     });
@@ -66,6 +68,8 @@ void main() {
       expect(CastMethod.manual.displayName, '爻名卦');
       expect(CastMethod.number.displayName, '数字卦');
       expect(CastMethod.reportNumber.displayName, '报数卦');
+      expect(CastMethod.characterStroke.displayName, '笔画卦');
+      expect(CastMethod.objectSound.displayName, '物象声音卦');
       expect(CastMethod.time.displayName, '时间卦');
       expect(CastMethod.computer.displayName, '电脑卦');
     });
@@ -75,6 +79,8 @@ void main() {
       expect(CastMethod.manual.id, 'manual');
       expect(CastMethod.number.id, 'number');
       expect(CastMethod.reportNumber.id, 'reportNumber');
+      expect(CastMethod.characterStroke.id, 'characterStroke');
+      expect(CastMethod.objectSound.id, 'objectSound');
       expect(CastMethod.time.id, 'time');
       expect(CastMethod.computer.id, 'computer');
     });
@@ -84,6 +90,11 @@ void main() {
       expect(CastMethod.fromId('manual'), CastMethod.manual);
       expect(CastMethod.fromId('number'), CastMethod.number);
       expect(CastMethod.fromId('reportNumber'), CastMethod.reportNumber);
+      expect(
+        CastMethod.fromId('characterStroke'),
+        CastMethod.characterStroke,
+      );
+      expect(CastMethod.fromId('objectSound'), CastMethod.objectSound);
       expect(CastMethod.fromId('time'), CastMethod.time);
       expect(CastMethod.fromId('computer'), CastMethod.computer);
     });
