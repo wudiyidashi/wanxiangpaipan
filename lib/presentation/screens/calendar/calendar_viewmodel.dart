@@ -68,12 +68,8 @@ class CalendarViewModel extends ChangeNotifier {
   }
 
   DailyAlmanac get currentAlmanac {
-    final d = _selectedDate;
-    return _cache.putIfAbsent(d, () {
-      final v = _service.getDay(d);
-      _evictIfNeeded();
-      return v;
-    });
+    _prime(_selectedDate);
+    return _cache[_selectedDate]!;
   }
 
   HourAlmanac get currentHourAlmanac {

@@ -59,8 +59,9 @@ void main() {
   test('B5: selectHour(null) falls back to now()-based hour', () {
     vm.selectDate(DateTime(2026, 4, 18));
     vm.selectHour('未');
+    expect(vm.currentHourAlmanac.zhi, '未');
     vm.selectHour(null);
-    expect(vm.currentHourAlmanac.zhi, isNotEmpty);
+    expect(vm.currentHourAlmanac.zhi, '巳');
   });
 
   test('B6: isDisplayedMonthToday true for today month, false otherwise', () {
