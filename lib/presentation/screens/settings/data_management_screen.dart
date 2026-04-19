@@ -197,16 +197,14 @@ class _DataManagementBody extends StatelessWidget {
                         onClearAIProfiles: () => _confirmAndRun(
                           context: context,
                           title: '清空 AI 接口配置',
-                          message:
-                              '将删除所有已保存的 AI 接口配置和 API Key，不影响历史记录与提示词模板。',
+                          message: '将删除所有已保存的 AI 接口配置和 API Key，不影响历史记录与提示词模板。',
                           isDanger: true,
                           action: viewModel.clearAllAIProfiles,
                         ),
                         onRestoreTemplates: () => _confirmAndRun(
                           context: context,
                           title: '恢复默认提示词',
-                          message:
-                              '将删除自定义模板，并把内置模板内容恢复为默认版本，不影响历史记录与 AI 配置。',
+                          message: '将删除自定义模板，并把内置模板内容恢复为默认版本，不影响历史记录与 AI 配置。',
                           isDanger: true,
                           action: viewModel.restoreDefaultPromptTemplates,
                         ),

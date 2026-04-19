@@ -179,13 +179,15 @@ class DaLiuRenSanChuanSection extends StatelessWidget {
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              _DaLiuRenChuanCircle(label: '初传', chuan: result.sanChuan.chuChuan),
+              _DaLiuRenChuanCircle(
+                  label: '初传', chuan: result.sanChuan.chuChuan),
               const Padding(
                 padding: EdgeInsets.only(bottom: 20),
                 child:
                     Icon(Icons.arrow_forward, size: 18, color: AppColors.guhe),
               ),
-              _DaLiuRenChuanCircle(label: '中传', chuan: result.sanChuan.zhongChuan),
+              _DaLiuRenChuanCircle(
+                  label: '中传', chuan: result.sanChuan.zhongChuan),
               const Padding(
                 padding: EdgeInsets.only(bottom: 20),
                 child:

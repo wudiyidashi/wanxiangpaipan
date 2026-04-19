@@ -36,9 +36,7 @@ Future<BackupImportMode?> showBackupImportModeDialog(
         ),
         const SizedBox(height: 8),
         Text(
-          preview.includesApiKeys
-              ? '该备份包含敏感信息。'
-              : '该备份不包含 API Key，导入后需重新填写密钥。',
+          preview.includesApiKeys ? '该备份包含敏感信息。' : '该备份不包含 API Key，导入后需重新填写密钥。',
           style: AppTextStyles.antiqueLabel,
         ),
         const SizedBox(height: 8),
@@ -468,7 +466,8 @@ class _DataManagementActionTile extends StatelessWidget {
                   Text(
                     title,
                     style: AppTextStyles.antiqueBody.copyWith(
-                      color: onTap == null ? AppColors.qianhe : AppColors.xuanse,
+                      color:
+                          onTap == null ? AppColors.qianhe : AppColors.xuanse,
                     ),
                   ),
                   const SizedBox(height: 2),

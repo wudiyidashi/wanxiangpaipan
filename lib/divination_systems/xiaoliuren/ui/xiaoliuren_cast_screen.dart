@@ -226,8 +226,7 @@ class _XiaoLiuRenCastScreenState extends State<XiaoLiuRenCastScreen> {
                       value: _palaceMode,
                       items: XiaoLiuRenPalaceMode.values
                           .map(
-                            (mode) =>
-                                AntiqueDropdownItem<XiaoLiuRenPalaceMode>(
+                            (mode) => AntiqueDropdownItem<XiaoLiuRenPalaceMode>(
                               value: mode,
                               label: mode.displayName,
                             ),

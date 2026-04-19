@@ -228,8 +228,8 @@ class CastNumberTripleCard extends StatelessWidget {
     required this.controllers,
     required this.note,
     this.hintText = '正整数',
-  }) : assert(labels.length == 3),
-       assert(controllers.length == 3);
+  })  : assert(labels.length == 3),
+        assert(controllers.length == 3);
 
   final String title;
   final List<String> labels;
