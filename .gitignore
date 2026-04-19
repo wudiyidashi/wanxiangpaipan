@@ -8,7 +8,9 @@
 .pub-cache/
 .pub/
 /build/
-/android/
+# Note: /android/ was previously blanket-ignored here, which broke CI (no
+# Gradle project reached the runner). The specific android/* ignores below
+# now keep build artifacts and secrets out without nuking the scaffold.
 *.lock
 lcov.info
 
@@ -33,6 +35,14 @@ android/gradlew.bat
 android/local.properties
 android/**/GeneratedPluginRegistrant.java
 android/key.properties
+android/build/
+android/app/build/
+android/app/.cxx/
+android/app/release/
+android/app/debug/
+android/.kotlin/
+android/.idea/
+android/*.iml
 *.jks
 
 # IntelliJ
