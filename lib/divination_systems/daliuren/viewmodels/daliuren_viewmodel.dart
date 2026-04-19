@@ -117,10 +117,14 @@ class DaLiuRenViewModel extends DivinationViewModel<DaLiuRenResult> {
   /// 报数起课
   ///
   /// [number] 用户报的数字，映射到地支作为时支
-  Future<void> castByReportNumber(int number, {DateTime? castTime}) async {
+  Future<void> castByReportNumber(
+    int number, {
+    DateTime? castTime,
+    DaLiuRenPanParams params = const DaLiuRenPanParams(),
+  }) async {
     await cast(
       method: CastMethod.reportNumber,
-      input: {'number': number, 'params': const DaLiuRenPanParams().toJson()},
+      input: {'number': number, 'params': params.toJson()},
       castTime: castTime,
     );
   }
@@ -128,10 +132,13 @@ class DaLiuRenViewModel extends DivinationViewModel<DaLiuRenResult> {
   /// 随机起课
   ///
   /// 系统随机选择一个地支作为时支进行起课
-  Future<void> castByComputer({DateTime? castTime}) async {
+  Future<void> castByComputer({
+    DateTime? castTime,
+    DaLiuRenPanParams params = const DaLiuRenPanParams(),
+  }) async {
     await cast(
       method: CastMethod.computer,
-      input: {'params': const DaLiuRenPanParams().toJson()},
+      input: {'params': params.toJson()},
       castTime: castTime,
     );
   }

@@ -22,6 +22,8 @@ import 'divination_systems/meihua/meihua_system.dart';
 import 'divination_systems/meihua/viewmodels/meihua_viewmodel.dart';
 import 'divination_systems/xiaoliuren/xiaoliuren_system.dart';
 import 'divination_systems/xiaoliuren/viewmodels/xiaoliuren_viewmodel.dart';
+import 'divination_systems/daliuren/daliuren_system.dart';
+import 'divination_systems/daliuren/viewmodels/daliuren_viewmodel.dart';
 import 'divination_systems/registry_bootstrap.dart';
 import 'ai/ai_bootstrap.dart';
 import 'ai/service/ai_analysis_service.dart';
@@ -188,6 +190,24 @@ class _WanxiangPaipanAppState extends State<WanxiangPaipanApp> {
           update: (_, system, repository, previousViewModel) =>
               previousViewModel ??
               XiaoLiuRenViewModel(
+                system: system,
+                repository: repository,
+              ),
+        ),
+
+        Provider<DaLiuRenSystem>(
+          create: (_) => DaLiuRenSystem(),
+        ),
+
+        ChangeNotifierProxyProvider2<DaLiuRenSystem, DivinationRepository,
+            DaLiuRenViewModel>(
+          create: (context) => DaLiuRenViewModel(
+            system: context.read<DaLiuRenSystem>(),
+            repository: context.read<DivinationRepository>(),
+          ),
+          update: (_, system, repository, previousViewModel) =>
+              previousViewModel ??
+              DaLiuRenViewModel(
                 system: system,
                 repository: repository,
               ),

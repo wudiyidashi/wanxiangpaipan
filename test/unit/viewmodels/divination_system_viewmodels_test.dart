@@ -3,6 +3,9 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:wanxiang_paipan/data/database/app_database.dart';
 import 'package:wanxiang_paipan/data/repositories/divination_repository_impl.dart';
 import 'package:wanxiang_paipan/domain/divination_registry.dart';
+import 'package:wanxiang_paipan/divination_systems/daliuren/daliuren_system.dart';
+import 'package:wanxiang_paipan/divination_systems/daliuren/models/pan_params.dart';
+import 'package:wanxiang_paipan/divination_systems/daliuren/viewmodels/daliuren_viewmodel.dart';
 import 'package:wanxiang_paipan/divination_systems/meihua/meihua_system.dart';
 import 'package:wanxiang_paipan/divination_systems/meihua/viewmodels/meihua_viewmodel.dart';
 import 'package:wanxiang_paipan/divination_systems/xiaoliuren/models/xiaoliuren_result.dart';
@@ -24,6 +27,7 @@ void main() {
       secureStorage = MockSecureStorage();
       registry = DivinationRegistry();
       registry.clear();
+      registry.register(DaLiuRenSystem());
       registry.register(MeiHuaSystem());
       registry.register(XiaoLiuRenSystem());
 
@@ -93,6 +97,36 @@ void main() {
       expect(
         await repository.readEncryptedField('question_${viewModel.result!.id}'),
         '测试小六壬占问',
+      );
+    });
+
+    test('DaLiuRenViewModel 应能按参数起课并保存占问', () async {
+      final viewModel = DaLiuRenViewModel(
+        system: DaLiuRenSystem(),
+        repository: repository,
+      );
+
+      await viewModel.castByTime(
+        castTime: DateTime(2026, 4, 19, 9, 22),
+        params: const DaLiuRenPanParams(
+          guiRenVerse: DaLiuRenGuiRenVerse.classic,
+          xunShouMode: DaLiuRenXunShouMode.day,
+          showSanChuanOnTop: true,
+        ),
+      );
+
+      expect(viewModel.hasError, isFalse);
+      expect(viewModel.hasResult, isTrue);
+      expect(viewModel.tianPan, isNotNull);
+      expect(viewModel.panParams?.showSanChuanOnTop, isTrue);
+
+      await viewModel.saveRecord(question: '测试大六壬占问');
+
+      expect(viewModel.question, '测试大六壬占问');
+      expect(await repository.getRecordCount(), 1);
+      expect(
+        await repository.readEncryptedField('question_${viewModel.result!.id}'),
+        '测试大六壬占问',
       );
     });
   });

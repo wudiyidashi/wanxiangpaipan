@@ -1,23 +1,17 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:lunar/lunar.dart';
 import 'package:provider/provider.dart';
 
 import '../../../core/theme/app_colors.dart';
-import '../../../core/theme/app_text_styles.dart';
 import '../../../domain/divination_system.dart';
-import '../../../domain/repositories/divination_repository.dart';
 import '../../../domain/services/last_cast_method_service.dart';
 import '../../../presentation/widgets/antique/antique.dart';
-import '../daliuren_system.dart';
-import '../models/daliuren_result.dart';
+import '../viewmodels/daliuren_viewmodel.dart';
 import '../models/pan_params.dart';
+import 'daliuren_cast_sections.dart';
 import 'daliuren_result_screen.dart';
 
 /// 大六壬统一起课界面（仿古风）
-///
-/// 将四种起课方式（正时、报数、指定干支、随机）合并到一个页面，
-/// 通过下拉选择切换，风格为新中式仿古风。
 class DaLiuRenCastScreen extends StatefulWidget {
   const DaLiuRenCastScreen({super.key});
 
@@ -52,6 +46,7 @@ class _DaLiuRenCastScreenState extends State<DaLiuRenCastScreen> {
     '壬',
     '癸',
   ];
+
   static const List<String> _diZhi = [
     '子',
     '丑',
@@ -69,6 +64,7 @@ class _DaLiuRenCastScreenState extends State<DaLiuRenCastScreen> {
 
   CastMethod _selectedMethod = CastMethod.time;
   bool _isLoading = false;
+
   final TextEditingController _questionController = TextEditingController();
   final TextEditingController _numberController = TextEditingController();
   final TextEditingController _birthYearController = TextEditingController();
@@ -104,6 +100,14 @@ class _DaLiuRenCastScreenState extends State<DaLiuRenCastScreen> {
     _loadLastMethod();
   }
 
+  @override
+  void dispose() {
+    _questionController.dispose();
+    _numberController.dispose();
+    _birthYearController.dispose();
+    super.dispose();
+  }
+
   Future<void> _loadLastMethod() async {
     final LastCastMethodService service;
     try {
@@ -120,14 +124,6 @@ class _DaLiuRenCastScreenState extends State<DaLiuRenCastScreen> {
     }
   }
 
-  @override
-  void dispose() {
-    _questionController.dispose();
-    _numberController.dispose();
-    _birthYearController.dispose();
-    super.dispose();
-  }
-
   Future<void> _handleCast() async {
     if (_isLoading) {
       return;
@@ -135,17 +131,13 @@ class _DaLiuRenCastScreenState extends State<DaLiuRenCastScreen> {
     setState(() => _isLoading = true);
 
     try {
-      final system = DaLiuRenSystem();
-      DivinationResult result;
+      final viewModel = context.read<DaLiuRenViewModel>();
       final params = _buildPanParams();
+      final now = DateTime.now();
 
       switch (_selectedMethod) {
         case CastMethod.time:
-          result = await system.cast(
-            method: CastMethod.time,
-            input: {'params': params.toJson()},
-            castTime: DateTime.now(),
-          );
+          await viewModel.castByTime(castTime: now, params: params);
         case CastMethod.reportNumber:
           final number = int.tryParse(_numberController.text.trim());
           if (number == null) {
@@ -153,61 +145,42 @@ class _DaLiuRenCastScreenState extends State<DaLiuRenCastScreen> {
             setState(() => _isLoading = false);
             return;
           }
-          result = await system.cast(
-            method: CastMethod.reportNumber,
-            input: {
-              'number': number,
-              'params': params.toJson(),
-            },
-            castTime: DateTime.now(),
+          await viewModel.castByReportNumber(
+            number,
+            castTime: now,
+            params: params,
           );
         case CastMethod.manual:
-          result = await system.cast(
-            method: CastMethod.manual,
-            input: {
-              'yearGanZhi': '$_yearGan$_yearZhi',
-              'monthGanZhi': '$_monthGan$_monthZhi',
-              'dayGanZhi': '$_dayGan$_dayZhi',
-              'hourGanZhi': '$_hourGan$_hourZhi',
-              'params': params.toJson(),
-            },
+          await viewModel.castByManual(
+            yearGanZhi: '$_yearGan$_yearZhi',
+            monthGanZhi: '$_monthGan$_monthZhi',
+            dayGanZhi: '$_dayGan$_dayZhi',
+            hourGanZhi: '$_hourGan$_hourZhi',
+            params: params,
           );
         case CastMethod.computer:
-          result = await system.cast(
-            method: CastMethod.computer,
-            input: {'params': params.toJson()},
-            castTime: DateTime.now(),
-          );
+          await viewModel.castByComputer(castTime: now, params: params);
         default:
           throw UnsupportedError('不支持的起课方式');
       }
 
-      if (!mounted) {
+      if (viewModel.hasError || !viewModel.hasResult) {
+        _showError(viewModel.errorMessage ?? '起课失败');
         return;
       }
 
-      try {
-        final repository = context.read<DivinationRepository>();
-        await repository.saveRecord(result);
-
-        final question = _questionController.text.trim();
-        if (question.isNotEmpty) {
-          await repository.saveEncryptedFieldsBatch({
-            'question_${result.id}': question,
-          });
-        }
-      } catch (saveError) {
-        debugPrint('DLR: failed to save record: $saveError');
-      }
+      await viewModel.saveRecord(
+        question: _question.isEmpty ? null : _question,
+      );
 
       if (!mounted) {
         return;
       }
 
+      final result = viewModel.result!;
       Navigator.of(context).push(
         MaterialPageRoute<void>(
-          builder: (context) =>
-              DaLiuRenResultScreen(result: result as DaLiuRenResult),
+          builder: (context) => DaLiuRenResultScreen(result: result),
         ),
       );
     } catch (e) {
@@ -221,6 +194,8 @@ class _DaLiuRenCastScreenState extends State<DaLiuRenCastScreen> {
       }
     }
   }
+
+  String get _question => _questionController.text.trim();
 
   void _showError(String message) {
     ScaffoldMessenger.of(context).showSnackBar(
@@ -268,11 +243,48 @@ class _DaLiuRenCastScreenState extends State<DaLiuRenCastScreen> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              _buildQuestionSection(),
+              DaLiuRenCastQuestionSection(controller: _questionController),
               const SizedBox(height: 16),
-              _buildMethodSelector(),
+              DaLiuRenCastMethodSelector(
+                selectedMethod: _selectedMethod,
+                availableMethods: _availableMethods,
+                methodNames: _methodNames,
+                onChanged: (method) {
+                  if (method != null) {
+                    setState(() => _selectedMethod = method);
+                  }
+                },
+              ),
               const SizedBox(height: 16),
-              _buildPanParamsSection(),
+              DaLiuRenCastPanParamsSection(
+                selectedMethod: _selectedMethod,
+                diZhiOptions: _diZhi,
+                dayNightMode: _dayNightMode,
+                onDayNightModeChanged: (value) {
+                  setState(() => _dayNightMode = value);
+                },
+                xunShouMode: _xunShouMode,
+                onXunShouModeChanged: (value) {
+                  setState(() => _xunShouMode = value);
+                },
+                guiRenVerse: _guiRenVerse,
+                onGuiRenVerseChanged: (value) {
+                  setState(() => _guiRenVerse = value);
+                },
+                monthGeneralMode: _monthGeneralMode,
+                onMonthGeneralModeChanged: (value) {
+                  setState(() => _monthGeneralMode = value);
+                },
+                manualMonthGeneral: _manualMonthGeneral,
+                onManualMonthGeneralChanged: (value) {
+                  setState(() => _manualMonthGeneral = value);
+                },
+                birthYearController: _birthYearController,
+                showSanChuanOnTop: _showSanChuanOnTop,
+                onShowSanChuanOnTopChanged: (value) {
+                  setState(() => _showSanChuanOnTop = value);
+                },
+              ),
               const SizedBox(height: 16),
               const AntiqueDivider(),
               const SizedBox(height: 20),
@@ -284,472 +296,55 @@ class _DaLiuRenCastScreenState extends State<DaLiuRenCastScreen> {
     );
   }
 
-  Widget _buildQuestionSection() {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text('占问事项', style: AppTextStyles.antiqueLabel),
-        const SizedBox(height: 6),
-        AntiqueTextField(
-          controller: _questionController,
-          hint: '请输入您想占问的事项...',
-          maxLines: 2,
-          minLines: 1,
-        ),
-      ],
-    );
-  }
-
-  Widget _buildMethodSelector() {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text('起课方式', style: AppTextStyles.antiqueLabel),
-        const SizedBox(height: 6),
-        AntiqueDropdown<CastMethod>(
-          value: _selectedMethod,
-          items: _availableMethods
-              .map(
-                (method) => AntiqueDropdownItem<CastMethod>(
-                  value: method,
-                  label: _methodNames[method] ?? method.displayName,
-                ),
-              )
-              .toList(),
-          onChanged: (method) {
-            if (method != null) {
-              setState(() => _selectedMethod = method);
-            }
-          },
-        ),
-      ],
-    );
-  }
-
-  Widget _buildPanParamsSection() {
-    final forceManualMonthGeneral = _selectedMethod == CastMethod.manual;
-    final effectiveMonthGeneralMode = forceManualMonthGeneral
-        ? DaLiuRenMonthGeneralMode.manual
-        : _monthGeneralMode;
-
-    return AntiqueCard(
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          AntiqueSectionTitle(title: '排盘参数'),
-          const AntiqueDivider(),
-          const SizedBox(height: 12),
-          Row(
-            children: [
-              Expanded(
-                child: _buildDropdown(
-                  '昼夜',
-                  _dayNightMode.id,
-                  DaLiuRenDayNightMode.values.map((e) => e.id).toList(),
-                  (value) {
-                    if (value != null) {
-                      setState(() {
-                        _dayNightMode = DaLiuRenDayNightMode.fromId(value);
-                      });
-                    }
-                  },
-                  labels: const {
-                    'auto': '自动',
-                    'day': '昼贵',
-                    'night': '夜贵',
-                  },
-                ),
-              ),
-              const SizedBox(width: 12),
-              Expanded(
-                child: _buildDropdown(
-                  '旬位',
-                  _xunShouMode.id,
-                  DaLiuRenXunShouMode.values.map((e) => e.id).toList(),
-                  (value) {
-                    if (value != null) {
-                      setState(() {
-                        _xunShouMode = DaLiuRenXunShouMode.fromId(value);
-                      });
-                    }
-                  },
-                  labels: const {
-                    'day': '日柱旬遁干',
-                    'hour': '时柱旬遁干',
-                  },
-                ),
-              ),
-            ],
-          ),
-          const SizedBox(height: 12),
-          Row(
-            children: [
-              Expanded(
-                child: _buildDropdown(
-                  '贵人口诀',
-                  _guiRenVerse.id,
-                  DaLiuRenGuiRenVerse.values.map((e) => e.id).toList(),
-                  (value) {
-                    if (value != null) {
-                      setState(() {
-                        _guiRenVerse = DaLiuRenGuiRenVerse.fromId(value);
-                      });
-                    }
-                  },
-                  labels: const {
-                    'classic': '甲戊庚牛羊',
-                    'jiaDayAlt': '甲羊戊庚牛',
-                  },
-                ),
-              ),
-              const SizedBox(width: 12),
-              Expanded(
-                child: forceManualMonthGeneral
-                    ? _buildDropdown(
-                        '月将',
-                        _manualMonthGeneral,
-                        _diZhi,
-                        (value) {
-                          if (value != null) {
-                            setState(() => _manualMonthGeneral = value);
-                          }
-                        },
-                      )
-                    : _buildDropdown(
-                        '月将模式',
-                        effectiveMonthGeneralMode.id,
-                        DaLiuRenMonthGeneralMode.values
-                            .map((e) => e.id)
-                            .toList(),
-                        (value) {
-                          if (value != null) {
-                            setState(() {
-                              _monthGeneralMode =
-                                  DaLiuRenMonthGeneralMode.fromId(value);
-                            });
-                          }
-                        },
-                        labels: const {
-                          'auto': '自动',
-                          'manual': '手动',
-                        },
-                      ),
-              ),
-            ],
-          ),
-          if (!forceManualMonthGeneral &&
-              effectiveMonthGeneralMode == DaLiuRenMonthGeneralMode.manual) ...[
-            const SizedBox(height: 12),
-            _buildDropdown(
-              '手动月将',
-              _manualMonthGeneral,
-              _diZhi,
-              (value) {
-                if (value != null) {
-                  setState(() => _manualMonthGeneral = value);
-                }
-              },
-            ),
-          ],
-          const SizedBox(height: 12),
-          Text('生年', style: AppTextStyles.antiqueLabel),
-          const SizedBox(height: 6),
-          AntiqueTextField(
-            controller: _birthYearController,
-            hint: '本命占可填，时事占可留空',
-            keyboardType: TextInputType.number,
-          ),
-          const SizedBox(height: 12),
-          Row(
-            children: [
-              Checkbox(
-                value: _showSanChuanOnTop,
-                activeColor: AppColors.zhusha,
-                onChanged: (value) {
-                  if (value != null) {
-                    setState(() => _showSanChuanOnTop = value);
-                  }
-                },
-              ),
-              const SizedBox(width: 4),
-              Text('三传显示在上', style: AppTextStyles.antiqueLabel),
-            ],
-          ),
-        ],
-      ),
-    );
-  }
-
   Widget _buildCastSection() {
     switch (_selectedMethod) {
       case CastMethod.time:
-        return _buildTimeCastSection();
+        final now = DateTime.now();
+        final lunar = Lunar.fromDate(now);
+        return DaLiuRenTimeCastSection(
+          yearGanZhi: '${lunar.getYearGan()}${lunar.getYearZhi()}',
+          monthGanZhi: '${lunar.getMonthGan()}${lunar.getMonthZhi()}',
+          dayGanZhi: '${lunar.getDayGan()}${lunar.getDayZhi()}',
+          timeGanZhi: '${lunar.getTimeGan()}${lunar.getTimeZhi()}',
+          isLoading: _isLoading,
+          onCast: _isLoading ? null : _handleCast,
+        );
       case CastMethod.reportNumber:
-        return _buildReportNumberCastSection();
+        return DaLiuRenReportNumberCastSection(
+          controller: _numberController,
+          isLoading: _isLoading,
+          onCast: _isLoading ? null : _handleCast,
+        );
       case CastMethod.manual:
-        return _buildManualCastSection();
+        return DaLiuRenManualCastSection(
+          tianGanOptions: _tianGan,
+          diZhiOptions: _diZhi,
+          yearGan: _yearGan,
+          yearZhi: _yearZhi,
+          onYearGanChanged: (value) => setState(() => _yearGan = value),
+          onYearZhiChanged: (value) => setState(() => _yearZhi = value),
+          monthGan: _monthGan,
+          monthZhi: _monthZhi,
+          onMonthGanChanged: (value) => setState(() => _monthGan = value),
+          onMonthZhiChanged: (value) => setState(() => _monthZhi = value),
+          dayGan: _dayGan,
+          dayZhi: _dayZhi,
+          onDayGanChanged: (value) => setState(() => _dayGan = value),
+          onDayZhiChanged: (value) => setState(() => _dayZhi = value),
+          hourGan: _hourGan,
+          hourZhi: _hourZhi,
+          onHourGanChanged: (value) => setState(() => _hourGan = value),
+          onHourZhiChanged: (value) => setState(() => _hourZhi = value),
+          isLoading: _isLoading,
+          onCast: _isLoading ? null : _handleCast,
+        );
       case CastMethod.computer:
-        return _buildComputerCastSection();
+        return DaLiuRenComputerCastSection(
+          isLoading: _isLoading,
+          onCast: _isLoading ? null : _handleCast,
+        );
       default:
         return const SizedBox.shrink();
     }
-  }
-
-  Widget _buildTimeCastSection() {
-    final now = DateTime.now();
-    final lunar = Lunar.fromDate(now);
-    final yearGanZhi = '${lunar.getYearGan()}${lunar.getYearZhi()}';
-    final monthGanZhi = '${lunar.getMonthGan()}${lunar.getMonthZhi()}';
-    final dayGanZhi = '${lunar.getDayGan()}${lunar.getDayZhi()}';
-    final timeGanZhi = '${lunar.getTimeGan()}${lunar.getTimeZhi()}';
-
-    return Column(
-      children: [
-        Container(
-          width: double.infinity,
-          padding: const EdgeInsets.all(16),
-          decoration: BoxDecoration(
-            color: Colors.white.withOpacity(0.5),
-            border: Border.all(color: AppColors.danjin.withOpacity(0.5)),
-            borderRadius: BorderRadius.circular(8),
-          ),
-          child: Column(
-            children: [
-              Text(
-                '当前干支',
-                style: AppTextStyles.antiqueLabel.copyWith(fontSize: 12),
-              ),
-              const SizedBox(height: 12),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: [
-                  _buildGanZhiItem('年', yearGanZhi),
-                  _buildGanZhiItem('月', monthGanZhi),
-                  _buildGanZhiItem('日', dayGanZhi),
-                  _buildGanZhiItem('时', timeGanZhi),
-                ],
-              ),
-            ],
-          ),
-        ),
-        const SizedBox(height: 24),
-        AntiqueButton(
-          label: _isLoading ? '起课中...' : '起课',
-          onPressed: _isLoading ? null : _handleCast,
-          variant: AntiqueButtonVariant.primary,
-          fullWidth: true,
-        ),
-      ],
-    );
-  }
-
-  Widget _buildGanZhiItem(String label, String ganZhi) {
-    return Column(
-      children: [
-        Text(label, style: AppTextStyles.antiqueLabel),
-        const SizedBox(height: 4),
-        Text(ganZhi, style: AppTextStyles.antiqueTitle),
-      ],
-    );
-  }
-
-  Widget _buildReportNumberCastSection() {
-    return Column(
-      children: [
-        Container(
-          decoration: BoxDecoration(
-            color: Colors.white.withOpacity(0.6),
-            border: Border.all(color: AppColors.danjin),
-            borderRadius: BorderRadius.circular(8),
-          ),
-          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
-          child: TextField(
-            controller: _numberController,
-            keyboardType: TextInputType.number,
-            inputFormatters: [FilteringTextInputFormatter.digitsOnly],
-            style: AppTextStyles.antiqueBody,
-            decoration: InputDecoration(
-              border: InputBorder.none,
-              hintText: '请输入任意数字',
-              hintStyle: AppTextStyles.antiqueBody.copyWith(
-                color: AppColors.qianhe,
-              ),
-              isDense: true,
-            ),
-          ),
-        ),
-        const SizedBox(height: 8),
-        Text(
-          '输入任意数字，除12取余映射地支',
-          style: AppTextStyles.antiqueLabel,
-        ),
-        const SizedBox(height: 24),
-        AntiqueButton(
-          label: _isLoading ? '起课中...' : '起课',
-          onPressed: _isLoading ? null : _handleCast,
-          variant: AntiqueButtonVariant.primary,
-          fullWidth: true,
-        ),
-      ],
-    );
-  }
-
-  Widget _buildManualCastSection() {
-    return Column(
-      children: [
-        _buildPillarSelectorRow(
-          label: '年柱',
-          gan: _yearGan,
-          zhi: _yearZhi,
-          onGanChanged: (value) => setState(() => _yearGan = value),
-          onZhiChanged: (value) => setState(() => _yearZhi = value),
-        ),
-        const SizedBox(height: 12),
-        _buildPillarSelectorRow(
-          label: '月柱',
-          gan: _monthGan,
-          zhi: _monthZhi,
-          onGanChanged: (value) => setState(() => _monthGan = value),
-          onZhiChanged: (value) => setState(() => _monthZhi = value),
-        ),
-        const SizedBox(height: 12),
-        _buildPillarSelectorRow(
-          label: '日柱',
-          gan: _dayGan,
-          zhi: _dayZhi,
-          onGanChanged: (value) => setState(() => _dayGan = value),
-          onZhiChanged: (value) => setState(() => _dayZhi = value),
-        ),
-        const SizedBox(height: 12),
-        _buildPillarSelectorRow(
-          label: '时柱',
-          gan: _hourGan,
-          zhi: _hourZhi,
-          onGanChanged: (value) => setState(() => _hourGan = value),
-          onZhiChanged: (value) => setState(() => _hourZhi = value),
-        ),
-        const SizedBox(height: 8),
-        Text(
-          '指定干支模式按输入四柱直接起课，月将请在上方“排盘参数”中明确指定。',
-          style: AppTextStyles.antiqueLabel.copyWith(fontSize: 12),
-        ),
-        const SizedBox(height: 24),
-        AntiqueButton(
-          label: _isLoading ? '起课中...' : '起课',
-          onPressed: _isLoading ? null : _handleCast,
-          variant: AntiqueButtonVariant.primary,
-          fullWidth: true,
-        ),
-      ],
-    );
-  }
-
-  Widget _buildDropdown(
-    String label,
-    String value,
-    List<String> items,
-    ValueChanged<String?> onChanged, {
-    Map<String, String>? labels,
-  }) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(label, style: AppTextStyles.antiqueLabel),
-        const SizedBox(height: 4),
-        AntiqueDropdown<String>(
-          value: value,
-          items: items
-              .map(
-                (item) => AntiqueDropdownItem<String>(
-                  value: item,
-                  label: labels?[item] ?? item,
-                ),
-              )
-              .toList(),
-          onChanged: onChanged,
-        ),
-      ],
-    );
-  }
-
-  Widget _buildPillarSelectorRow({
-    required String label,
-    required String gan,
-    required String zhi,
-    required ValueChanged<String> onGanChanged,
-    required ValueChanged<String> onZhiChanged,
-  }) {
-    return Row(
-      children: [
-        SizedBox(
-          width: 44,
-          child: Text(label, style: AppTextStyles.antiqueLabel),
-        ),
-        Expanded(
-          child: _buildDropdown(
-            '天干',
-            gan,
-            _tianGan,
-            (value) {
-              if (value != null) {
-                onGanChanged(value);
-              }
-            },
-          ),
-        ),
-        const SizedBox(width: 12),
-        Expanded(
-          child: _buildDropdown(
-            '地支',
-            zhi,
-            _diZhi,
-            (value) {
-              if (value != null) {
-                onZhiChanged(value);
-              }
-            },
-          ),
-        ),
-      ],
-    );
-  }
-
-  Widget _buildComputerCastSection() {
-    return Column(
-      children: [
-        Container(
-          width: double.infinity,
-          padding: const EdgeInsets.all(20),
-          decoration: BoxDecoration(
-            color: Colors.white.withOpacity(0.5),
-            border: Border.all(color: AppColors.danjin.withOpacity(0.5)),
-            borderRadius: BorderRadius.circular(8),
-          ),
-          child: Column(
-            children: [
-              Icon(
-                Icons.casino_outlined,
-                size: 48,
-                color: AppColors.zhusha.withOpacity(0.7),
-              ),
-              const SizedBox(height: 12),
-              Text(
-                '系统随机取地支作为占时',
-                style: AppTextStyles.antiqueBody.copyWith(
-                  color: AppColors.guhe,
-                ),
-              ),
-            ],
-          ),
-        ),
-        const SizedBox(height: 24),
-        AntiqueButton(
-          label: _isLoading ? '起课中...' : '起课',
-          onPressed: _isLoading ? null : _handleCast,
-          variant: AntiqueButtonVariant.primary,
-          fullWidth: true,
-        ),
-      ],
-    );
   }
 }
