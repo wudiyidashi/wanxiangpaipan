@@ -125,7 +125,7 @@ class AlmanacService {
       final start = _startHours[i];
       final probeHour = start;
       // Build a Lunar object for this specific hour to get hour-level data
-      final lt = Lunar.fromYmdHms(y, m, d, probeHour, 0, 0);
+      final lt = Solar.fromYmdHms(y, m, d, probeHour, 0, 0).getLunar();
       // Use getTimeTianShen() — per-hour 天神 (uses _timeZhiIndex)
       final tianShen = lt.getTimeTianShen();
       // TIAN_SHEN_TYPE returns '黄道'/'黑道'; strip '道' to match HourAlmanac contract

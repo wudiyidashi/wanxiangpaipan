@@ -33,22 +33,11 @@ void main() {
   });
 
   test('B2: LRU eviction after 90 distinct days', () {
-    // Use days 1-14 of Jan-Jul 2026 (all within safe lunar calendar range,
-    // avoids month-end dates that hit a known lunar-package boundary bug).
-    final dates = <DateTime>[];
-    for (int m = 1; m <= 7; m++) {
-      for (int d = 1; d <= 14; d++) {
-        dates.add(DateTime(2026, m, d));
-        if (dates.length == 91) break;
-      }
-      if (dates.length == 91) break;
-    }
-    for (final d in dates) {
-      vm.selectDate(d);
+    for (int i = 0; i < 91; i++) {
+      vm.selectDate(DateTime(2026, 1, 1).add(Duration(days: i)));
     }
     final before = service.calls;
-    // dates[0] = 2026-01-01 was evicted when the 91st entry was added
-    vm.selectDate(dates[0]);
+    vm.selectDate(DateTime(2026, 1, 1));
     expect(service.calls, before + 1);
   });
 
