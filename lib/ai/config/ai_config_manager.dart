@@ -39,8 +39,6 @@ class AIConfigManager {
 
   String _profileApiKeyStorageKey(String profileId) =>
       'llm_profile_${profileId}_apikey';
-  String _legacyProviderApiKeyStorageKey(String providerId) =>
-      'llm_provider_${providerId}_apikey';
 
   /// 获取全部命名接口配置。
   Future<List<AIProviderProfile>> getProviderProfiles() async {
@@ -159,65 +157,6 @@ class AIConfigManager {
       return null;
     }
     return getProviderProfile(activeId);
-  }
-
-  /// 将旧的单配置结构迁移到多命名配置。
-  Future<void> migrateLegacyProviderConfigIfNeeded() async {
-    final profiles = await getProviderProfiles();
-    if (profiles.isNotEmpty) {
-      return;
-    }
-
-    const legacyProviderId = 'openai_compatible';
-    final legacy = await _loadLegacyProviderConfig(legacyProviderId);
-    if (legacy == null) {
-      return;
-    }
-
-    final profile = AIProviderProfile(
-      id: 'openai_compatible_default',
-      providerId: 'openai_compatible',
-      name: '默认配置',
-      apiKey: legacy['apiKey'] as String? ?? '',
-      baseUrl: legacy['baseUrl'] as String?,
-      model: legacy['model'] as String? ?? 'gpt-3.5-turbo',
-      temperature: (legacy['temperature'] as num?)?.toDouble() ?? 0.7,
-      maxOutputTokens: legacy['maxOutputTokens'] as int? ?? 4096,
-      isEnabled: legacy['isEnabled'] as bool? ?? true,
-      createdAt: DateTime.now(),
-      updatedAt: DateTime.now(),
-    );
-
-    await saveProviderProfile(profile);
-    await setActiveProviderProfileId(profile.id);
-    await _deleteLegacyProviderConfig(legacyProviderId);
-  }
-
-  Future<Map<String, dynamic>?> _loadLegacyProviderConfig(
-    String providerId,
-  ) async {
-    final apiKey =
-        await _secureStorage.read(_legacyProviderApiKeyStorageKey(providerId));
-
-    if (apiKey == null || apiKey.isEmpty) {
-      return null;
-    }
-
-    final configRecord =
-        await _database.aIConfigDao.getProviderConfig(providerId);
-    if (configRecord == null) {
-      return null;
-    }
-
-    final config = jsonDecode(configRecord.config) as Map<String, dynamic>;
-    config['apiKey'] = apiKey;
-    config['isEnabled'] = configRecord.isEnabled;
-    return config;
-  }
-
-  Future<void> _deleteLegacyProviderConfig(String providerId) async {
-    await _secureStorage.delete(_legacyProviderApiKeyStorageKey(providerId));
-    await _database.aIConfigDao.deleteProviderConfig(providerId);
   }
 
   // ==================== 模板配置管理 ====================

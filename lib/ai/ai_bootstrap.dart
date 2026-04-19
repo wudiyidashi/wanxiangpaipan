@@ -136,8 +136,6 @@ class AIBootstrap {
   static Future<void> _loadSavedConfigs() async {
     final registry = LLMProviderRegistry.instance;
 
-    await _configManager!.migrateLegacyProviderConfigIfNeeded();
-
     final activeProfile = await _configManager!.getActiveProviderProfile();
     if (activeProfile != null) {
       _applyProfileToRegistry(activeProfile, registry);

@@ -126,7 +126,7 @@ void main() {
       expect(await manager.getCustomTemplateCount(), 0);
     });
 
-    test('migrateLegacyProviderConfigIfNeeded 应迁移旧单配置并清理旧存储', () async {
+    test('clearAllProviderProfiles 应顺带清理遗留旧配置残留', () async {
       await secureStorage.write(
         'llm_provider_openai_compatible_apikey',
         'legacy-key',
@@ -142,25 +142,14 @@ void main() {
         ),
       );
 
-      await manager.migrateLegacyProviderConfigIfNeeded();
+      await manager.clearAllProviderProfiles();
 
-      final profiles = await manager.getProviderProfiles();
-      expect(profiles, hasLength(1));
-      expect(profiles.first.id, 'openai_compatible_default');
-      expect(profiles.first.apiKey, 'legacy-key');
-      expect(profiles.first.baseUrl, 'https://api.deepseek.com/v1');
-      expect(profiles.first.model, 'deepseek-chat');
-      expect(await manager.getActiveProviderProfileId(),
-          'openai_compatible_default');
       expect(
         await secureStorage
             .containsKey('llm_provider_openai_compatible_apikey'),
         isFalse,
       );
-      expect(
-        await database.aIConfigDao.getProviderConfig('openai_compatible'),
-        isNull,
-      );
+      expect(await database.aIConfigDao.getAllProviderConfigs(), isEmpty);
     });
   });
 }
