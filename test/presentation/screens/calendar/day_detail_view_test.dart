@@ -4,6 +4,7 @@ import 'package:wanxiang_paipan/models/daily_almanac.dart';
 import 'package:wanxiang_paipan/presentation/screens/calendar/widgets/almanac_header.dart';
 import 'package:wanxiang_paipan/presentation/screens/calendar/widgets/festival_banner.dart';
 import 'package:wanxiang_paipan/presentation/screens/calendar/widgets/four_pillars_card.dart';
+import 'package:wanxiang_paipan/presentation/screens/calendar/widgets/yiji_panel.dart';
 
 DailyAlmanac _fixture({
   String? currentJieQi,
@@ -95,5 +96,21 @@ void main() {
     ));
     final hourText = t.widget<Text>(find.byKey(const Key('pillar-hour-gz')));
     expect(hourText.data, '庚午');
+  });
+
+  testWidgets('YijiPanel shows yi and ji items', (t) async {
+    await t.pumpWidget(const MaterialApp(
+      home: Scaffold(body: YijiPanel(yi: ['祭祀', '祈福'], ji: ['动土'])),
+    ));
+    expect(find.text('· 祭祀'), findsOneWidget);
+    expect(find.text('· 祈福'), findsOneWidget);
+    expect(find.text('· 动土'), findsOneWidget);
+  });
+
+  testWidgets('YijiPanel shows em-dash when list is empty', (t) async {
+    await t.pumpWidget(const MaterialApp(
+      home: Scaffold(body: YijiPanel(yi: [], ji: [])),
+    ));
+    expect(find.text('—'), findsNWidgets(2));
   });
 }
