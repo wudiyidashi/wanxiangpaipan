@@ -29,6 +29,8 @@ class CalendarScreen extends StatefulWidget {
 class _CalendarScreenState extends State<CalendarScreen> {
   late final CalendarViewModel _vm;
   late final bool _ownsVm;
+  final ScrollController _scroll = ScrollController();
+  DateTime? _lastSelected;
 
   @override
   void initState() {
@@ -43,10 +45,22 @@ class _CalendarScreenState extends State<CalendarScreen> {
       );
       _ownsVm = true;
     }
+    _vm.addListener(_onVmChange);
+  }
+
+  void _onVmChange() {
+    if (_lastSelected != _vm.selectedDate) {
+      _lastSelected = _vm.selectedDate;
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (_scroll.hasClients) _scroll.jumpTo(0);
+      });
+    }
   }
 
   @override
   void dispose() {
+    _vm.removeListener(_onVmChange);
+    _scroll.dispose();
     if (_ownsVm) _vm.dispose();
     super.dispose();
   }
@@ -55,7 +69,7 @@ class _CalendarScreenState extends State<CalendarScreen> {
   Widget build(BuildContext context) {
     final body = ChangeNotifierProvider<CalendarViewModel>.value(
       value: _vm,
-      child: const _CalendarBody(),
+      child: _CalendarBody(scrollController: _scroll),
     );
     if (widget.chromeless) return body;
     return AntiqueScaffold(
@@ -66,17 +80,27 @@ class _CalendarScreenState extends State<CalendarScreen> {
 }
 
 class _CalendarBody extends StatelessWidget {
-  const _CalendarBody();
+  const _CalendarBody({required this.scrollController});
+  final ScrollController scrollController;
 
   @override
   Widget build(BuildContext context) {
     return Column(
-      children: const [
-        _Topbar(),
-        AntiqueDivider(),
-        MonthGridView(),
-        AntiqueDivider(),
-        Expanded(child: DayDetailView()),
+      children: [
+        const _Topbar(),
+        const AntiqueDivider(),
+        Expanded(
+          child: SingleChildScrollView(
+            controller: scrollController,
+            child: const Column(
+              children: [
+                MonthGridView(),
+                AntiqueDivider(),
+                DayDetailView(),
+              ],
+            ),
+          ),
+        ),
       ],
     );
   }

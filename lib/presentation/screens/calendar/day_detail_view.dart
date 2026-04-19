@@ -9,22 +9,11 @@ import 'widgets/pengzu_card.dart';
 import 'widgets/time_hour_bar.dart';
 import 'widgets/yiji_panel.dart';
 
-class DayDetailView extends StatefulWidget {
+/// 日详情内容区（不包含自身滚动）。
+/// 滚动由外层 CalendarScreen 的 SingleChildScrollView 统一管理，
+/// 让月视图与详情作为整体一起滚动。
+class DayDetailView extends StatelessWidget {
   const DayDetailView({super.key});
-
-  @override
-  State<DayDetailView> createState() => _DayDetailViewState();
-}
-
-class _DayDetailViewState extends State<DayDetailView> {
-  final ScrollController _scroll = ScrollController();
-  DateTime? _lastSelected;
-
-  @override
-  void dispose() {
-    _scroll.dispose();
-    super.dispose();
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -32,36 +21,25 @@ class _DayDetailViewState extends State<DayDetailView> {
     final almanac = vm.currentAlmanac;
     final hour = vm.currentHourAlmanac;
 
-    // 选中日变了 → 滚到顶
-    if (_lastSelected != vm.selectedDate) {
-      _lastSelected = vm.selectedDate;
-      WidgetsBinding.instance.addPostFrameCallback((_) {
-        if (_scroll.hasClients) _scroll.jumpTo(0);
-      });
-    }
-
-    return SingleChildScrollView(
-      controller: _scroll,
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          FestivalBanner(festivals: almanac.festivals),
-          AlmanacHeader(almanac: almanac),
-          FourPillarsCard(almanac: almanac, hourGanZhi: hour.ganZhi),
-          YijiPanel(yi: almanac.yi, ji: almanac.ji),
-          TimeHourBar(
-            hours: almanac.twelveHours,
-            selectedZhi: vm.selectedHour ?? hour.zhi,
-            onSelect: vm.selectHour,
-          ),
-          MoonPhaseKongwang(
-            yueXiang: almanac.yueXiang,
-            kongWang: almanac.kongWang,
-          ),
-          PengzuCard(gan: almanac.pengZuGan, zhi: almanac.pengZuZhi),
-          const SizedBox(height: 24),
-        ],
-      ),
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        FestivalBanner(festivals: almanac.festivals),
+        AlmanacHeader(almanac: almanac),
+        FourPillarsCard(almanac: almanac, hourGanZhi: hour.ganZhi),
+        YijiPanel(yi: almanac.yi, ji: almanac.ji),
+        TimeHourBar(
+          hours: almanac.twelveHours,
+          selectedZhi: vm.selectedHour ?? hour.zhi,
+          onSelect: vm.selectHour,
+        ),
+        MoonPhaseKongwang(
+          yueXiang: almanac.yueXiang,
+          kongWang: almanac.kongWang,
+        ),
+        PengzuCard(gan: almanac.pengZuGan, zhi: almanac.pengZuZhi),
+        const SizedBox(height: 24),
+      ],
     );
   }
 }
