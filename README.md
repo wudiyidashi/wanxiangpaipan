@@ -38,16 +38,27 @@
 
 **大六壬系统** (Da Liu Ren)
 - ✅ **四种起课方式**：时间起课、报数起课、手动输入、电脑随机
-- ✅ 四课三传完整推演
-- ✅ 十二天将配置
-- ✅ 天盘地盘、月将月建
-- ✅ 神煞系统
-- ✅ 比用、涉害、遥克等课体识别
+- ✅ 四课三传完整推演（九宗门课体：贼克/比用/涉害/遥克/昴星/别责/八专/返吟/伏吟）
+- ✅ 十二天将配置（含昼贵/夜贵、贵人口诀切换）
+- ✅ 天盘地盘、月将月建（自动/手动切换）
+- ✅ 神煞系统（吉神 / 凶神）
+- ✅ 旬遁干（日柱 / 时柱）
 
-#### 🚧 预留骨架（待实现）
+**梅花易数系统** (Mei Hua)
+- ✅ **三种起卦方式**：时间起卦、数字起卦、手动输入
+- ✅ 本卦 / 变卦 / 互卦完整推导
+- ✅ 单动爻 + 体卦 / 用卦判定
+- ✅ 体用五行关系（体生用 / 用生体 / 体克用 / 用克体 / 体用比和）
+- ✅ 独立自绘卦图（阳实条 / 阴断条 / 动爻高亮 / 体用角标）
+- ✅ 第一版边界：不展开纳甲、六亲、六神、世应；占断交 AI
 
-- **小六壬系统** (Xiao Liu Ren): 六神推算（大安、留连、速喜、赤口、小吉、空亡）
-- **梅花易数系统** (Mei Hua): 时间/数字/物象起卦、体用判断、互卦变卦
+**小六壬系统** (Xiao Liu Ren)
+- ✅ **三种起课方式**：时间起课、报数起课、汉字笔画起
+- ✅ 六宫 / 九宫两种盘式（六宫：大安/留连/速喜/赤口/小吉/空亡；九宫另加病符/桃花/天德）
+- ✅ 三段顺推链（起点记 1 → 顺推落宫 → 最终宫）
+- ✅ 固定宫义（吉凶、关键词、五行、方位）
+- ✅ 独立自绘顺推链可视化（胶囊 + 箭头，最终落宫朱砂描边 + ★ 角标）
+- ✅ 断语交 AI，系统不固化吉凶文案
 
 #### 🤖 AI 解卦
 
@@ -58,9 +69,10 @@
 
 #### 🛠️ 平台功能
 
-- **统一起卦界面**: `UnifiedCastScreen` 单页面承载全部术数与起卦方式，通过 UI 工厂动态构建
-- **统一历史记录**: 跨系统的统一记录管理
-- **加密存储**: 用户问题和解读信息端到端加密
+- **每系统独立起卦界面**: 各术数系统通过 `DivinationUIFactory` 提供自己的起卦页与结果页；起卦方式切换在系统内部完成
+- **统一历史记录**: 跨系统的统一记录管理；首页 QuickHistoryBar + `/history` 独立路由均通过 `RouteObserver` 自动响应 pop 事件刷新
+- **起卦方式记忆**: `LastCastMethodService` 从历史记录查最近一条的 `castMethod` 回填下拉，跨系统共享，无需 SharedPreferences
+- **加密存储**: 用户问题和解读信息端到端加密（flutter_secure_storage）
 - **离线优先**: 所有功能完全离线可用（AI 功能除外）
 - **无障碍支持**: 核心组件带 Semantics 标签，支持 VoiceOver / TalkBack
 
@@ -89,8 +101,8 @@
 │  ├─ DivinationRegistry（系统注册表）                        │
 │  ├─ LiuYaoSystem ✅（六爻完整实现）                         │
 │  ├─ DaLiuRenSystem ✅（大六壬完整实现）                     │
-│  ├─ XiaoLiuRenSystem 🚧（骨架）                             │
-│  └─ MeiHuaSystem 🚧（骨架）                                 │
+│  ├─ MeiHuaSystem ✅（梅花易数完整实现）                     │
+│  └─ XiaoLiuRenSystem ✅（小六壬完整实现）                   │
 └─────────────────────────────────────────────────────────────┘
                           ↓ uses
 ┌─────────────────────────────────────────────────────────────┐
@@ -206,7 +218,7 @@ User Action → ViewModel → Repository → Data Source
 
 3. **代码生成**
    ```bash
-   flutter pub run build_runner build --delete-conflicting-outputs
+   dart run build_runner build --delete-conflicting-outputs
    ```
 
 4. **运行应用**
@@ -225,7 +237,7 @@ User Action → ViewModel → Repository → Data Source
 
 ```bash
 # 代码生成监听模式（推荐开发时使用）
-flutter pub run build_runner watch --delete-conflicting-outputs
+dart run build_runner watch --delete-conflicting-outputs
 
 # 代码分析
 flutter analyze
@@ -269,10 +281,16 @@ lib/
 │   │   └── /viewmodels
 │   ├── /daliuren                      # 大六壬系统 ✅
 │   │   ├── daliuren_system.dart
-│   │   ├── /models                    # SiKe / Chuan / TianPan / ShenJiang / ShenSha
-│   │   └── /ui
-│   ├── /xiaoliuren                    # 小六壬系统 🚧
-│   └── /meihua                        # 梅花易数系统 🚧
+│   │   ├── /models                    # SiKe / Chuan / TianPan / ShenJiang / ShenSha / PanParams
+│   │   └── /ui                        # UI 工厂
+│   ├── /meihua                        # 梅花易数系统 ✅
+│   │   ├── meihua_system.dart
+│   │   ├── /models                    # Trigram / Hexagram / Source
+│   │   └── /ui                        # UI 工厂 + 独立自绘卦图
+│   └── /xiaoliuren                    # 小六壬系统 ✅
+│       ├── xiaoliuren_system.dart
+│       ├── /models                    # Source / Position (六宫/九宫)
+│       └── /ui                        # UI 工厂 + 独立自绘顺推链
 ├── /models                            # 共享数据模型
 │   ├── yao.dart                       # 爻模型（六爻专用）
 │   ├── gua.dart                       # 卦模型（六爻专用）
@@ -288,6 +306,7 @@ lib/
 │       │   ├── wuxing_service.dart
 │       │   ├── liuqin_service.dart
 │       │   └── lunar_service.dart
+│       ├── last_cast_method_service.dart # 🔥 跨系统起卦方式记忆
 │       └── gua_calculator.dart        # 六爻专用算法
 ├── /data                              # 数据层
 │   ├── /database                      # Drift 数据库
@@ -302,13 +321,14 @@ lib/
     ├── divination_ui_registry.dart    # 🔥 UI 工厂注册表
     ├── /screens
     │   ├── /home                      # 首页（系统选择 + 历史 + 日历 + 我的）
-    │   ├── /cast                      # 🔥 UnifiedCastScreen 统一起卦页
-    │   ├── /result                    # 结果展示（动态构建）
+    │   ├── /result                    # 结果展示（各系统 UI 工厂内实现）
     │   ├── /history                   # 历史记录（统一列表）
     │   └── /settings                  # 设置 + AI 设置 + 模板编辑
     └── /widgets                       # 可复用组件
 
-test/                                  # 测试（283 tests passing）
+core/navigation/route_observer.dart    # 🔥 全局 RouteObserver，驱动 pop 后刷新
+
+test/                                  # 测试（350 tests passing）
 docs/                                  # 文档
 └── /superpowers                       # 工程实施计划与 spec 归档
 ```
@@ -414,7 +434,7 @@ void registerDivinationSystems() {
 
 ## 🧪 测试策略
 
-项目采用**测试驱动开发**，当前 **283 tests 全部通过**。
+项目采用**测试驱动开发**，当前 **350 tests 全部通过**。
 
 ### 测试层次
 
@@ -479,23 +499,27 @@ flutter test --update-goldens
 - [x] 泛型 ViewModel 基类
 - [x] 零迁移数据层
 - [x] 六爻系统完整实现（6 种起卦方式）
-- [x] 全量 283 测试通过
 
-### ✅ Phase 2: 核心系统扩展（进行中）
+### ✅ Phase 2: 四大系统全面上线（已完成）
 
-- [x] 大六壬系统完整实现（4 种起课方式、四课三传、十二天将、神煞）
-- [x] AI 解卦（OpenAI 兼容接口 + 提示词模板）
-- [x] 统一起卦界面（UnifiedCastScreen）
-- [ ] 小六壬系统实现
-- [ ] 梅花易数系统实现
-- [ ] 导出/分享功能
+- [x] 大六壬系统完整实现（4 种起课方式、九宗门课体、十二天将、神煞）
+- [x] 梅花易数系统完整实现（时间/数字/手动起卦、本变互卦、体用五行）
+- [x] 小六壬系统完整实现（时间/报数/笔画起课、六宫/九宫、三段顺推）
+- [x] AI 解卦（OpenAI 兼容接口 + 四系统各自提示词模板）
+- [x] 各系统独立起卦页 + 自绘卦图 / 顺推链
+- [x] 跨系统起卦方式记忆（LastCastMethodService，历史记录即真相源）
+- [x] RouteObserver 驱动的 pop 刷新（首页 QuickHistoryBar + 历史独立路由）
+- [x] 全量 350 测试通过
+- [x] GitHub Actions Release 流水线（Android APK + AAB 自动打包）
 
 ### 🔮 Phase 3: 增强功能（计划中）
 
+- [ ] 导出 / 分享功能
+- [ ] 暗黑模式（墨色主题）
 - [ ] 云同步（可选）
-- [ ] 暗黑模式
 - [ ] 多语言支持（英文）
 - [ ] 更丰富的起卦方式（摇卦动画、语音输入）
+- [ ] iOS / macOS 签名发布
 
 ---
 
