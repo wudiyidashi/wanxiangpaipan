@@ -24,8 +24,6 @@ class XiaoLiuRenResult implements DivinationResult {
   final XiaoLiuRenPosition dayPosition;
   final XiaoLiuRenPosition hourPosition;
   final XiaoLiuRenPosition finalPosition;
-  final String judgement;
-  final String detail;
   final String questionId;
   final String detailId;
   final String interpretationId;
@@ -41,8 +39,6 @@ class XiaoLiuRenResult implements DivinationResult {
     required this.dayPosition,
     required this.hourPosition,
     required this.finalPosition,
-    required this.judgement,
-    required this.detail,
     this.questionId = '',
     this.detailId = '',
     this.interpretationId = '',
@@ -68,8 +64,6 @@ class XiaoLiuRenResult implements DivinationResult {
       'dayPosition': dayPosition.toJson(),
       'hourPosition': hourPosition.toJson(),
       'finalPosition': finalPosition.toJson(),
-      'judgement': judgement,
-      'detail': detail,
       'questionId': questionId,
       'detailId': detailId,
       'interpretationId': interpretationId,
@@ -101,8 +95,6 @@ class XiaoLiuRenResult implements DivinationResult {
       finalPosition: XiaoLiuRenPosition.fromJson(
         json['finalPosition'] as Map<String, dynamic>,
       ),
-      judgement: json['judgement'] as String,
-      detail: json['detail'] as String,
       questionId: json['questionId'] as String? ?? '',
       detailId: json['detailId'] as String? ?? '',
       interpretationId: json['interpretationId'] as String? ?? '',

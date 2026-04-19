@@ -45,6 +45,7 @@ import 'liuyao/ui/liuyao_ui_factory.dart';
 import 'meihua/meihua_system.dart';
 import 'meihua/ui/meihua_ui_factory.dart';
 import 'xiaoliuren/xiaoliuren_system.dart';
+import 'xiaoliuren/ui/xiaoliuren_ui_factory.dart';
 import 'daliuren/daliuren_system.dart';
 import 'daliuren/ui/daliuren_ui_factory.dart';
 
@@ -109,8 +110,8 @@ class DivinationSystemBootstrap {
     // 注册梅花易数 UI 工厂
     uiRegistry.registerUI(MeiHuaUIFactory());
 
-    // 注册小六壬 UI 工厂（暂时禁用）
-    // uiRegistry.registerUI(XiaoLiuRenUIFactory());
+    // 注册小六壬 UI 工厂
+    uiRegistry.registerUI(XiaoLiuRenUIFactory());
   }
 
   /// 注册六爻系统

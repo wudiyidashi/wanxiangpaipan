@@ -9,6 +9,7 @@ import 'output/structured_output_formatter.dart';
 import 'output/formatters/liuyao_formatter.dart';
 import 'output/formatters/daliuren_formatter.dart';
 import 'output/formatters/meihua_formatter.dart';
+import 'output/formatters/xiaoliuren_formatter.dart';
 import 'providers/openai_compatible_provider.dart';
 import 'service/prompt_assembler.dart';
 import 'service/ai_analysis_service.dart';
@@ -115,6 +116,9 @@ class AIBootstrap {
 
     // 梅花易数格式化器
     registry.register(MeiHuaStructuredFormatter());
+
+    // 小六壬格式化器
+    registry.register(XiaoLiuRenStructuredFormatter());
 
     // 未来添加其他系统的格式化器...
   }

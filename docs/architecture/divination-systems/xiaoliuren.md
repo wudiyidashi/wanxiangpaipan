@@ -1,7 +1,7 @@
 # 小六壬系统说明
 
 **系统类型**：`DivinationType.xiaoLiuRen`  
-**状态**：Disabled / Core Cast Contract Landed  
+**状态**：Enabled / UI + AI Formatter Online  
 **当前权威实现**：
 
 - `lib/divination_systems/xiaoliuren/xiaoliuren_system.dart`
@@ -41,20 +41,24 @@
 4. 最终落宫
 5. 固定宫义
 
+占断结论不由排盘层产出——断语统一交由 AI 分析基于结构化输出独立生成。
+
 ---
 
 ## 3. 当前代码状态
 
 当前实现事实如下：
 
-- `isEnabled = false`
+- `isEnabled = true`
 - `cast()` 已实现 `time / reportNumber / characterStroke`
 - `validateInput()` 已按三种方式严格收敛
 - `XiaoLiuRenResult` 已使用正式结果模型
 - `XiaoLiuRenSource` 已统一为三段输入源结构
 - `palaceMode` 已入结果对象
 - 当前已实现 `六宫 / 九宫`
-- UI 工厂与 AI formatter 仍未接入
+- `XiaoLiuRenUIFactory` 已注册，起课页 / 结果页已上线
+- `XiaoLiuRenStructuredFormatter` 已注册，AI 分析链路可用
+- 结果对象**不再**保留 `judgement` / `detail` 字段——断语交 AI
 
 ---
 
@@ -330,8 +334,6 @@
 | `dayPosition` | `XiaoLiuRenPosition` | 第二段落宫 |
 | `hourPosition` | `XiaoLiuRenPosition` | 第三段落宫 |
 | `finalPosition` | `XiaoLiuRenPosition` | 最终落宫 |
-| `judgement` | `String` | 一句话断语 |
-| `detail` | `String` | 完整推算说明 |
 | `questionId` | `String` | 加密问事引用位 |
 | `detailId` | `String` | 加密详情引用位 |
 | `interpretationId` | `String` | 加密解读引用位 |
@@ -372,7 +374,7 @@
 
 ---
 
-## 10. 摘要与断语规则
+## 10. 摘要规则
 
 ### 10.1 `getSummary()`
 
@@ -386,47 +388,32 @@
 - `速喜 · 喜信速来`
 - `赤口 · 口舌是非`
 
-### 10.2 `judgement`
+### 10.2 占断（已收敛）
 
-当前按最终落宫固定输出一句话，不做 AI 风格变体。
+排盘层**不生成**占断结论，也**不保留** `judgement` / `detail` 字段。
 
-例如：
-
-- 大安：`大安，主诸事安稳，宜守正稳进。`
-- 留连：`留连，主迟滞反复，宜缓不宜急。`
-- 速喜：`速喜，主喜信速来，利推进与回音。`
-- 赤口：`赤口，主口舌是非，宜谨言慎行。`
-- 小吉：`小吉，主小成可望，利人和与渐进。`
-- 空亡：`空亡，主事易落空，宜暂缓定论。`
-
-### 10.3 `detail`
-
-必须同时保留：
-
-1. 规则说明
-2. 第一段输入与落宫
-3. 第二段输入与推算结果
-4. 第三段输入与推算结果
-5. 最终落宫与基础宫义
+- 断语、事态解读、行动建议一律走 AI 分析
+- 原因是断语属于高度主观、流派分歧大的输出，不应写死在排盘引擎里
+- AI formatter 输出 `排盘总览 / 起课依据 / 三段顺推 / 最终落宫` 四块供 AI 消费
 
 ---
 
-## 11. 结果页与历史页预留规范
-
-虽然当前 UI 未启用，但启用时必须按以下结构接入。
+## 11. 结果页与历史页规范
 
 ### 11.1 结果页
 
 结果页至少要显示：
 
 1. 占问事项
-2. 时间上下文
+2. 时间上下文（扩展信息）
 3. 起课方式
 4. 盘式
 5. 三段输入
 6. 三段落宫
 7. 最终落宫
 8. 宫义说明
+
+**不设置**系统生成的"占断"段——占断交由 AI 分析卡片承担。
 
 ### 11.2 历史卡片
 
@@ -508,10 +495,9 @@
 
 后续若要继续推进小六壬，必须先写文档再改代码，尤其是：
 
-1. 启用 UI
-2. 接入 AI formatter
-3. 引入九宫完整算法
-4. 引入自动笔画换算
-5. 引入物象 / 声音到数值的正式映射规则
+1. 引入自动笔画换算
+2. 引入物象 / 声音到数值的正式映射规则（`objectSound` 当前仅在全局枚举层预留）
+3. 引入多流派的宫义变体或替代断语模板
+4. 恢复排盘层产出断语字段（当前已明确交由 AI 层负责）
 
-在这些规则未固化前，不得以“先做个兼容版”名义绕开当前契约。
+在这些规则未固化前，不得以"先做个兼容版"名义绕开当前契约。

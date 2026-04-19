@@ -7,6 +7,7 @@ import '../../core/theme/app_text_styles.dart';
 import '../../divination_systems/daliuren/models/daliuren_result.dart';
 import '../../divination_systems/liuyao/liuyao_result.dart';
 import '../../divination_systems/meihua/models/meihua_result.dart';
+import '../../divination_systems/xiaoliuren/models/xiaoliuren_result.dart';
 import '../../domain/divination_system.dart';
 import '../../domain/repositories/divination_repository.dart';
 import 'antique/antique.dart';
@@ -223,7 +224,10 @@ String _summary(DivinationResult r) {
   if (r is MeiHuaResult) {
     return '${r.benGua.name} → ${r.bianGua.name} · ${r.wuXingRelation}';
   }
-  // 未来小六壬 / 紫微等系统接入时，在此 switch 补 case；
+  if (r is XiaoLiuRenResult) {
+    return '${r.finalPosition.name} · ${r.finalPosition.keyword}';
+  }
+  // 未来紫微等系统接入时，在此 switch 补 case；
   // 兜底使用 DivinationResult.getSummary()
   return r.getSummary();
 }

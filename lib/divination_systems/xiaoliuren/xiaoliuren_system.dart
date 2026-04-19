@@ -15,6 +15,7 @@ import 'models/xiaoliuren_result.dart';
 ///
 /// 物象声音起当前仅在全局枚举层预留，不纳入小六壬第一版契约。
 /// 当前已实现六宫/九宫两种盘式，均使用“起点记 1、三段顺推”的同构规则。
+/// 排盘不生成占断结论——断语交由 AI 分析模块基于结构化输出独立生成。
 class XiaoLiuRenSystem implements DivinationSystem {
   @override
   DivinationType get type => DivinationType.xiaoLiuRen;
@@ -26,7 +27,7 @@ class XiaoLiuRenSystem implements DivinationSystem {
   String get description => '小六壬：支持时间起、报数起、笔画起，以三段顺推落宫直断吉凶';
 
   @override
-  bool get isEnabled => false;
+  bool get isEnabled => true;
 
   @override
   List<CastMethod> get supportedMethods => [
@@ -360,15 +361,6 @@ class XiaoLiuRenSystem implements DivinationSystem {
       positions: positions,
     );
 
-    final judgement = _buildJudgement(hourPosition);
-    final detail = _buildDetail(
-      palaceMode: palaceMode,
-      source: source,
-      firstPosition: monthPosition,
-      secondPosition: dayPosition,
-      thirdPosition: hourPosition,
-    );
-
     return XiaoLiuRenResult(
       id: const Uuid().v4(),
       castTime: castTime,
@@ -380,8 +372,6 @@ class XiaoLiuRenSystem implements DivinationSystem {
       dayPosition: dayPosition,
       hourPosition: hourPosition,
       finalPosition: hourPosition,
-      judgement: judgement,
-      detail: detail,
     );
   }
 
@@ -409,49 +399,6 @@ class XiaoLiuRenSystem implements DivinationSystem {
   }) {
     final index = ((startIndex - 1) + (steps - 1)) % positions.length + 1;
     return positions[index - 1];
-  }
-
-  String _buildJudgement(XiaoLiuRenPosition position) {
-    switch (position.name) {
-      case '大安':
-        return '大安，主诸事安稳，宜守正稳进。';
-      case '留连':
-        return '留连，主迟滞反复，宜缓不宜急。';
-      case '速喜':
-        return '速喜，主喜信速来，利推进与回音。';
-      case '赤口':
-        return '赤口，主口舌是非，宜谨言慎行。';
-      case '小吉':
-        return '小吉，主小成可望，利人和与渐进。';
-      case '空亡':
-        return '空亡，主事易落空，宜暂缓定论。';
-      case '病符':
-        return '病符，主疾病隐患与暗耗，宜修养避损。';
-      case '桃花':
-        return '桃花，主人缘情缘与来往牵动，宜明辨分寸。';
-      case '天德':
-        return '天德，主贵人解厄与转机，利和解求助。';
-      default:
-        return '${position.name}，待判。';
-    }
-  }
-
-  String _buildDetail({
-    required XiaoLiuRenPalaceMode palaceMode,
-    required XiaoLiuRenSource source,
-    required XiaoLiuRenPosition firstPosition,
-    required XiaoLiuRenPosition secondPosition,
-    required XiaoLiuRenPosition thirdPosition,
-  }) {
-    final thirdDescriptor = source.hourZhi == null
-        ? '${source.thirdLabel}${source.thirdNumber}'
-        : '时支${source.hourZhi}，${source.thirdLabel}${source.thirdNumber}';
-
-    return '按${palaceMode.displayName}${source.rule}。'
-        '${source.firstLabel}${source.firstNumber}落${firstPosition.name}，'
-        '${source.secondLabel}${source.secondNumber}从${firstPosition.name}推至${secondPosition.name}，'
-        '$thirdDescriptor从${secondPosition.name}推至${thirdPosition.name}。'
-        '最终落${thirdPosition.name}，${thirdPosition.description}';
   }
 
   XiaoLiuRenPalaceMode _resolvePalaceMode(Map<String, dynamic> input) {

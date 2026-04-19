@@ -382,6 +382,124 @@ class BuiltInTemplates {
 ''',
       );
 
+  // ==================== 小六壬模板 ====================
+
+  /// 小六壬系统提示词模板
+  ///
+  /// 对齐 `docs/architecture/divination-systems/xiaoliuren.md` 第一版：
+  /// 以三段顺推 + 最终落宫为核心；**不**引入纳甲、六亲、六神、世应、神煞。
+  static PromptTemplate get xiaoLiuRenSystemPrompt => PromptTemplate(
+        id: 'builtin_xiaoliuren_system',
+        name: '小六壬系统提示词（默认）',
+        description: '定义 AI 的角色和小六壬分析规则',
+        systemType: 'xiaoliuren',
+        templateType: 'system',
+        isBuiltIn: true,
+        isActive: true,
+        content: '''
+你是一位精通小六壬的易学专家，熟悉六宫与九宫两种盘式下的三段顺推速断法。
+
+## 你的专业领域
+- 六宫：大安 / 留连 / 速喜 / 赤口 / 小吉 / 空亡
+- 九宫：六宫之后再接 病符 / 桃花 / 天德
+- 三段顺推：大安起第一段，首位上起第二段，次位上起第三段
+- 最终落宫的吉凶性格、关键词与宫义解读
+- 结合起课方式（时间 / 报数 / 汉字笔画）理解输入含义
+
+## 第一版分析边界
+1. 以三段顺推链 + 最终落宫为主轴
+2. 排盘输出中的 `盘式` 字段决定使用六宫还是九宫
+3. **不**引入纳甲、六亲、六神、世应、神煞
+4. **不**展开复杂掌诀 / 多流派兼容的断语模板
+
+## 分析原则
+1. 先读排盘总览，明确三段输入、三段落宫与最终落宫
+2. 重点解读最终落宫的吉凶性格与关键词
+3. 以中间段（第一、第二段）作为事情演进的辅助提示
+4. 给出清晰、有条理的断语，避免模棱两可
+
+## 分析顺序
+1. 最终落宫的吉凶基调与宫义
+2. 三段演进：起点 → 中段 → 终点，说明事态走向
+3. 盘式差异：若为九宫，说明后三宫（病符 / 桃花 / 天德）的具体含义
+4. 综合结论与建议
+
+{{#if customInstructions}}
+## 用户自定义指令
+{{customInstructions}}
+{{/if}}
+''',
+      );
+
+  /// 小六壬综合分析模板
+  static PromptTemplate get xiaoLiuRenAnalysisPrompt => PromptTemplate(
+        id: 'builtin_xiaoliuren_analysis',
+        name: '小六壬综合分析模板（默认）',
+        description: '全面分析落宫的默认模板',
+        systemType: 'xiaoliuren',
+        templateType: 'analysis',
+        isBuiltIn: true,
+        isActive: true,
+        content: '''
+请根据以下小六壬排课信息进行专业解读：
+
+{{structuredOutput}}
+
+{{#if question}}
+【求测问题】{{question}}
+
+请针对上述问题，结合落宫进行解读。
+{{else}}
+请对此课进行全面解读。
+{{/if}}
+
+## 请按以下结构输出分析：
+
+### 1. 最终落宫主基调
+说明最终落宫（${'{{finalPosition}}'}）的吉凶性格、关键词与核心宫义。
+
+### 2. 三段演进
+依 第一段 → 第二段 → 第三段 的顺序，
+说明事态的起点、中段与终点。
+
+### 3. 盘式提示
+若盘式为九宫，补充说明最终落宫是否属于后三宫（病符 / 桃花 / 天德），
+以及由此带来的额外含义。
+
+### 4. 综合判断
+综合以上分析，给出最终判断与核心提示。
+
+{{#if includeAdvice}}
+### 5. 行动建议
+根据落宫与三段演进给出具体的行动建议和注意事项。
+{{/if}}
+
+注意：第一版不展开纳甲、六亲、六神、世应、神煞。
+''',
+      );
+
+  /// 小六壬简要分析模板
+  static PromptTemplate get xiaoLiuRenBriefPrompt => PromptTemplate(
+        id: 'builtin_xiaoliuren_brief',
+        name: '小六壬简要分析模板',
+        description: '快速简要的落宫解读',
+        systemType: 'xiaoliuren',
+        templateType: 'analysis',
+        isBuiltIn: true,
+        isActive: false,
+        content: '''
+请根据以下小六壬排课信息进行简要解读：
+
+{{structuredOutput}}
+
+{{#if question}}
+【求测问题】{{question}}
+{{/if}}
+
+请用简洁的语言（200字以内）概括最终落宫的吉凶基调与主要提示。
+''',
+      );
+
   /// 梅花易数简要分析模板
   static PromptTemplate get meiHuaBriefPrompt => PromptTemplate(
         id: 'builtin_meihua_brief',
@@ -417,6 +535,9 @@ class BuiltInTemplates {
         meiHuaSystemPrompt,
         meiHuaAnalysisPrompt,
         meiHuaBriefPrompt,
+        xiaoLiuRenSystemPrompt,
+        xiaoLiuRenAnalysisPrompt,
+        xiaoLiuRenBriefPrompt,
       ];
 
   /// 获取指定系统的内置模板

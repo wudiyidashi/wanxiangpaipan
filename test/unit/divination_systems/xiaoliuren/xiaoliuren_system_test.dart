@@ -26,8 +26,8 @@ void main() {
         expect(system.description, isNot(contains('物象声音起')));
       });
 
-      test('应该暂时禁用', () {
-        expect(system.isEnabled, false);
+      test('应该已启用', () {
+        expect(system.isEnabled, true);
       });
 
       test('应该支持三种起课方式', () {
@@ -181,7 +181,6 @@ void main() {
         expect(result.finalPosition.name, '赤口');
         expect(result.finalPosition.fortune, '凶');
         expect(result.getSummary(), '赤口 · 口舌是非');
-        expect(result.judgement, '赤口，主口舌是非，宜谨言慎行。');
       });
 
       test('时间起课在九宫下应该按同样顺推规则计算', () async {
@@ -403,8 +402,6 @@ void main() {
         ),
         hourPosition: finalPosition,
         finalPosition: finalPosition,
-        judgement: '赤口，主口舌是非，宜谨言慎行。',
-        detail: '测试详情',
       );
     });
 
@@ -435,7 +432,6 @@ void main() {
       expect(deserialized.palaceMode, result.palaceMode);
       expect(deserialized.monthPosition.name, result.monthPosition.name);
       expect(deserialized.finalPosition.name, result.finalPosition.name);
-      expect(deserialized.judgement, result.judgement);
     });
   });
 }
