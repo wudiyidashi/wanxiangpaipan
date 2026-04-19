@@ -6,6 +6,8 @@ import 'package:wanxiang_paipan/presentation/screens/calendar/widgets/festival_b
 import 'package:wanxiang_paipan/presentation/screens/calendar/widgets/four_pillars_card.dart';
 import 'package:wanxiang_paipan/presentation/screens/calendar/widgets/yiji_panel.dart';
 import 'package:wanxiang_paipan/presentation/screens/calendar/widgets/time_hour_bar.dart';
+import 'package:wanxiang_paipan/presentation/screens/calendar/widgets/moon_phase_kongwang.dart';
+import 'package:wanxiang_paipan/presentation/screens/calendar/widgets/pengzu_card.dart';
 
 DailyAlmanac _fixture({
   String? currentJieQi,
@@ -160,5 +162,25 @@ void main() {
     for (final z in ['子', '丑', '寅', '卯', '辰', '巳', '午', '未', '申', '酉', '戌', '亥']) {
       expect(find.byKey(ValueKey('hour-$z')), findsOneWidget);
     }
+  });
+
+  testWidgets('MoonPhaseKongwang renders combined string', (t) async {
+    await t.pumpWidget(const MaterialApp(home: Scaffold(body:
+      MoonPhaseKongwang(yueXiang: '上弦', kongWang: ['子', '丑']))));
+    expect(find.text('月相：上弦 · 空亡：子丑'), findsOneWidget);
+  });
+
+  testWidgets('MoonPhaseKongwang shows em-dash when kongWang empty', (t) async {
+    await t.pumpWidget(const MaterialApp(home: Scaffold(body:
+      MoonPhaseKongwang(yueXiang: '上弦', kongWang: []))));
+    expect(find.text('月相：上弦 · 空亡：—'), findsOneWidget);
+  });
+
+  testWidgets('PengzuCard shows gan and zhi lines', (t) async {
+    await t.pumpWidget(const MaterialApp(home: Scaffold(body:
+      PengzuCard(gan: '甲不开仓', zhi: '子不问卜'))));
+    expect(find.text('甲不开仓'), findsOneWidget);
+    expect(find.text('子不问卜'), findsOneWidget);
+    expect(find.text('彭祖百忌'), findsOneWidget);
   });
 }
