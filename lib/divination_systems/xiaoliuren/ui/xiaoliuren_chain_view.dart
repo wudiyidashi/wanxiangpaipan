@@ -11,7 +11,6 @@ import '../models/xiaoliuren_result.dart';
 /// - 三胶囊横排展示 `第一段 → 第二段 → 第三段`
 /// - 每胶囊显示：段位标签、落宫名、吉/凶/平 徽章
 /// - 箭头连接相邻段
-/// - 最终落宫胶囊加朱砂描边 + ★ 角标，形成视觉重心
 ///
 /// 颜色语义：吉（青翠）/ 凶（朱砂）/ 平（赭黄）
 class XiaoLiuRenChainView extends StatelessWidget {
@@ -48,7 +47,6 @@ class XiaoLiuRenChainView extends StatelessWidget {
             stepLabel: firstStepLabel,
             stepNumber: firstStepNumber,
             position: firstPosition,
-            isFinal: false,
           ),
         ),
         _buildArrow(),
@@ -57,7 +55,6 @@ class XiaoLiuRenChainView extends StatelessWidget {
             stepLabel: secondStepLabel,
             stepNumber: secondStepNumber,
             position: secondPosition,
-            isFinal: false,
           ),
         ),
         _buildArrow(),
@@ -66,7 +63,6 @@ class XiaoLiuRenChainView extends StatelessWidget {
             stepLabel: thirdStepLabel,
             stepNumber: thirdStepNumber,
             position: thirdPosition,
-            isFinal: true,
           ),
         ),
       ],
@@ -88,76 +84,41 @@ class XiaoLiuRenChainView extends StatelessWidget {
     required String stepLabel,
     required int stepNumber,
     required XiaoLiuRenPosition position,
-    required bool isFinal,
   }) {
     final fortuneColor = _fortuneColor(position.fortune);
-    final borderColor = isFinal ? AppColors.zhusha : AppColors.danjin;
-    final borderWidth = isFinal ? 1.5 : 1.0;
-
-    return Stack(
-      clipBehavior: Clip.none,
-      children: [
-        Container(
-          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 10),
-          decoration: BoxDecoration(
-            color: Colors.white.withOpacity(0.6),
-            borderRadius: BorderRadius.circular(10),
-            border: Border.all(color: borderColor, width: borderWidth),
-          ),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Text(
-                '$stepLabel $stepNumber',
-                style: AppTextStyles.antiqueLabel.copyWith(
-                  fontSize: 11,
-                  color: AppColors.guhe,
-                ),
-                textAlign: TextAlign.center,
-                maxLines: 1,
-                overflow: TextOverflow.ellipsis,
-              ),
-              const SizedBox(height: 4),
-              Text(
-                position.name,
-                style: AppTextStyles.antiqueTitle.copyWith(
-                  fontSize: 16,
-                  color: isFinal ? AppColors.zhusha : AppColors.xuanse,
-                ),
-                textAlign: TextAlign.center,
-              ),
-              const SizedBox(height: 6),
-              _buildFortuneBadge(position.fortune, fortuneColor),
-            ],
-          ),
-        ),
-        if (isFinal)
-          Positioned(
-            right: -4,
-            top: -4,
-            child: Container(
-              width: 18,
-              height: 18,
-              decoration: BoxDecoration(
-                color: AppColors.zhusha,
-                shape: BoxShape.circle,
-                boxShadow: [
-                  BoxShadow(
-                    color: AppColors.zhusha.withOpacity(0.35),
-                    blurRadius: 4,
-                  ),
-                ],
-              ),
-              child: const Center(
-                child: Icon(
-                  Icons.star,
-                  size: 11,
-                  color: Colors.white,
-                ),
-              ),
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 10),
+      decoration: BoxDecoration(
+        color: Colors.white.withOpacity(0.6),
+        borderRadius: BorderRadius.circular(10),
+        border: Border.all(color: AppColors.danjin),
+      ),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Text(
+            '$stepLabel $stepNumber',
+            style: AppTextStyles.antiqueLabel.copyWith(
+              fontSize: 11,
+              color: AppColors.guhe,
             ),
+            textAlign: TextAlign.center,
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
           ),
-      ],
+          const SizedBox(height: 4),
+          Text(
+            position.name,
+            style: AppTextStyles.antiqueTitle.copyWith(
+              fontSize: 16,
+              color: AppColors.xuanse,
+            ),
+            textAlign: TextAlign.center,
+          ),
+          const SizedBox(height: 6),
+          _buildFortuneBadge(position.fortune, fortuneColor),
+        ],
+      ),
     );
   }
 

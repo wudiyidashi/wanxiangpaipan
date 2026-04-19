@@ -33,7 +33,7 @@ class XiaoLiuRenResultScreen extends StatelessWidget {
         _buildOverviewSection(),
         _buildSourceSection(),
         _buildChainSection(),
-        _buildFinalPositionSection(),
+        XiaoLiuRenPalaceInfoSection(result: result),
       ],
     );
   }
@@ -142,48 +142,6 @@ class XiaoLiuRenResultScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildFinalPositionSection() {
-    final finalPos = result.finalPosition;
-    return AntiqueCard(
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          const AntiqueSectionTitle(title: '最终落宫'),
-          const AntiqueDivider(),
-          const SizedBox(height: 10),
-          Center(
-            child: Container(
-              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-              decoration: BoxDecoration(
-                color: AppColors.zhusha.withOpacity(0.1),
-                borderRadius: BorderRadius.circular(16),
-                border: Border.all(color: AppColors.zhusha.withOpacity(0.4)),
-              ),
-              child: Text(
-                '${finalPos.name} · ${finalPos.keyword}',
-                style: TextStyle(
-                  fontSize: 15,
-                  color: AppColors.zhusha,
-                  fontWeight: FontWeight.bold,
-                  letterSpacing: 1,
-                ),
-              ),
-            ),
-          ),
-          const SizedBox(height: 12),
-          _buildInfoRow('吉凶', finalPos.fortune),
-          _buildInfoRow('五行', finalPos.wuXing),
-          _buildInfoRow('方位', finalPos.direction),
-          const SizedBox(height: 6),
-          Text(
-            finalPos.description,
-            style: AppTextStyles.antiqueBody.copyWith(height: 1.6),
-          ),
-        ],
-      ),
-    );
-  }
-
   Widget _buildInfoRow(String label, String value) {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 3),
@@ -204,4 +162,181 @@ class XiaoLiuRenResultScreen extends StatelessWidget {
       ),
     );
   }
+}
+
+class XiaoLiuRenPalaceInfoSection extends StatefulWidget {
+  const XiaoLiuRenPalaceInfoSection({
+    super.key,
+    required this.result,
+  });
+
+  final XiaoLiuRenResult result;
+
+  @override
+  State<XiaoLiuRenPalaceInfoSection> createState() =>
+      _XiaoLiuRenPalaceInfoSectionState();
+}
+
+class _XiaoLiuRenPalaceInfoSectionState
+    extends State<XiaoLiuRenPalaceInfoSection> {
+  static const _defaultStepIndex = 0;
+
+  late int _selectedStepIndex;
+
+  @override
+  void initState() {
+    super.initState();
+    _selectedStepIndex = _defaultStepIndex;
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final steps = _steps;
+    final selectedStep = steps[_selectedStepIndex];
+    final position = selectedStep.position;
+
+    return AntiqueCard(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          const AntiqueSectionTitle(title: '宫位信息'),
+          const AntiqueDivider(),
+          const SizedBox(height: 12),
+          Wrap(
+            spacing: 10,
+            runSpacing: 10,
+            children: List.generate(
+              steps.length,
+              (index) => _buildSelectorChip(
+                step: steps[index],
+                index: index,
+                selected: index == _selectedStepIndex,
+              ),
+            ),
+          ),
+          const SizedBox(height: 14),
+          Container(
+            width: double.infinity,
+            padding: const EdgeInsets.all(12),
+            decoration: BoxDecoration(
+              color: Colors.white.withOpacity(0.55),
+              borderRadius: BorderRadius.circular(12),
+              border: Border.all(color: AppColors.danjin),
+            ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  '${selectedStep.title} · ${position.name}',
+                  style: AppTextStyles.antiqueSection.copyWith(
+                    color: AppColors.xuanse,
+                  ),
+                ),
+                const SizedBox(height: 10),
+                _buildInfoRow('关键词', position.keyword),
+                _buildInfoRow('吉凶', position.fortune),
+                _buildInfoRow('五行', position.wuXing),
+                _buildInfoRow('方位', position.direction),
+                const SizedBox(height: 6),
+                Text(
+                  position.description,
+                  style: AppTextStyles.antiqueBody.copyWith(height: 1.6),
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  List<_PalaceInfoStep> get _steps => [
+        _PalaceInfoStep(title: '第一段', position: widget.result.monthPosition),
+        _PalaceInfoStep(title: '第二段', position: widget.result.dayPosition),
+        _PalaceInfoStep(title: '第三段', position: widget.result.hourPosition),
+      ];
+
+  Widget _buildSelectorChip({
+    required _PalaceInfoStep step,
+    required int index,
+    required bool selected,
+  }) {
+    final color = selected ? AppColors.zhusha : AppColors.guhe;
+    return InkWell(
+      key: ValueKey('xiaoliuren-palace-step-$index'),
+      onTap: () {
+        setState(() {
+          _selectedStepIndex = index;
+        });
+      },
+      borderRadius: BorderRadius.circular(12),
+      child: AnimatedContainer(
+        duration: const Duration(milliseconds: 180),
+        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+        decoration: BoxDecoration(
+          color: selected
+              ? AppColors.zhusha.withOpacity(0.08)
+              : Colors.white.withOpacity(0.45),
+          borderRadius: BorderRadius.circular(12),
+          border: Border.all(
+            color: selected
+                ? AppColors.zhusha.withOpacity(0.45)
+                : AppColors.danjin,
+          ),
+        ),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              step.title,
+              style: AppTextStyles.antiqueLabel.copyWith(
+                color: AppColors.guhe,
+                fontSize: 11,
+              ),
+            ),
+            const SizedBox(height: 4),
+            Text(
+              step.position.name,
+              style: AppTextStyles.antiqueBody.copyWith(
+                color: color,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildInfoRow(String label, String value) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 3),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          SizedBox(
+            width: 52,
+            child: Text(
+              label,
+              style: AppTextStyles.antiqueBody.copyWith(color: AppColors.guhe),
+            ),
+          ),
+          Expanded(
+            child: Text(value, style: AppTextStyles.antiqueBody),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _PalaceInfoStep {
+  const _PalaceInfoStep({
+    required this.title,
+    required this.position,
+  });
+
+  final String title;
+  final XiaoLiuRenPosition position;
 }
