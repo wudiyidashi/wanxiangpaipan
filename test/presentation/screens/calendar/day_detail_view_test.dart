@@ -3,6 +3,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:wanxiang_paipan/models/daily_almanac.dart';
 import 'package:wanxiang_paipan/presentation/screens/calendar/widgets/almanac_header.dart';
 import 'package:wanxiang_paipan/presentation/screens/calendar/widgets/festival_banner.dart';
+import 'package:wanxiang_paipan/presentation/screens/calendar/widgets/four_pillars_card.dart';
 
 DailyAlmanac _fixture({
   String? currentJieQi,
@@ -68,5 +69,31 @@ void main() {
       home: Scaffold(body: AlmanacHeader(almanac: _fixture(currentJieQi: '清明'))),
     ));
     expect(find.textContaining('今日节气：清明'), findsOneWidget);
+  });
+
+  testWidgets('FourPillarsCard shows 4 gz pairs', (t) async {
+    await t.pumpWidget(MaterialApp(
+      home: Scaffold(
+          body: FourPillarsCard(
+        almanac: _fixture(),
+        hourGanZhi: '庚午',
+      )),
+    ));
+    expect(find.text('丙午'), findsOneWidget); // yearGZ
+    expect(find.text('壬辰'), findsOneWidget); // monthGZ
+    expect(find.text('乙卯'), findsOneWidget); // dayGZ
+    expect(find.text('庚午'), findsOneWidget); // hourGanZhi
+  });
+
+  testWidgets('FourPillarsCard exposes 时柱 via Key', (t) async {
+    await t.pumpWidget(MaterialApp(
+      home: Scaffold(
+          body: FourPillarsCard(
+        almanac: _fixture(),
+        hourGanZhi: '庚午',
+      )),
+    ));
+    final hourText = t.widget<Text>(find.byKey(const Key('pillar-hour-gz')));
+    expect(hourText.data, '庚午');
   });
 }
