@@ -11,6 +11,12 @@
 # Note: /android/ was previously blanket-ignored here, which broke CI (no
 # Gradle project reached the runner). The specific android/* ignores below
 # now keep build artifacts and secrets out without nuking the scaffold.
+#
+# iOS / macOS / Linux are intentionally blanket-ignored — Flutter will
+# regenerate each platform dir locally on demand, and the release pipeline
+# is Android-only. Commit these back when (and only when) their build
+# pipeline is added.
+/ios/
 *.lock
 lcov.info
 
