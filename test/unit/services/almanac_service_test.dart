@@ -1,6 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:wanxiang_paipan/domain/services/shared/almanac_service.dart';
-import 'package:wanxiang_paipan/models/daily_almanac.dart';
 
 void main() {
   final service = AlmanacService();

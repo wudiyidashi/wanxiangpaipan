@@ -72,7 +72,7 @@ class AlmanacService {
   String _formatLunarDate(Lunar lunar) {
     final monthCn = lunar.getMonthInChinese();
     final dayCn = lunar.getDayInChinese();
-    return '农历${monthCn}月${dayCn}';
+    return '农历$monthCn月$dayCn';
   }
 
   String _weekdayCn(int w) {
