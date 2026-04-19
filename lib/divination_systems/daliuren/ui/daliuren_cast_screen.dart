@@ -6,6 +6,7 @@ import '../../../core/theme/app_colors.dart';
 import '../../../domain/divination_system.dart';
 import '../../../domain/services/last_cast_method_service.dart';
 import '../../../presentation/widgets/antique/antique.dart';
+import '../../../presentation/widgets/cast/cast_form_sections.dart';
 import '../viewmodels/daliuren_viewmodel.dart';
 import '../models/pan_params.dart';
 import 'daliuren_cast_sections.dart';
@@ -243,12 +244,19 @@ class _DaLiuRenCastScreenState extends State<DaLiuRenCastScreen> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              DaLiuRenCastQuestionSection(controller: _questionController),
+              CastQuestionInputSection(controller: _questionController),
               const SizedBox(height: 16),
-              DaLiuRenCastMethodSelector(
-                selectedMethod: _selectedMethod,
-                availableMethods: _availableMethods,
-                methodNames: _methodNames,
+              CastLabeledDropdown<CastMethod>(
+                label: '起课方式',
+                value: _selectedMethod,
+                items: _availableMethods
+                    .map(
+                      (method) => AntiqueDropdownItem<CastMethod>(
+                        value: method,
+                        label: _methodNames[method] ?? method.displayName,
+                      ),
+                    )
+                    .toList(),
                 onChanged: (method) {
                   if (method != null) {
                     setState(() => _selectedMethod = method);
