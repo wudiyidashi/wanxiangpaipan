@@ -35,7 +35,7 @@ dependencies:
   lunar: ^1.7.8
 
   # UUID 生成
-  uuid: ^4.5.1
+  uuid: ^4.5.3
 
   # 国际化和日期格式化
   intl: ^0.19.0
