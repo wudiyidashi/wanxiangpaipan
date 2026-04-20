@@ -46,7 +46,7 @@ dependencies:
   # Cupertino Icons (iOS 风格图标)
   cupertino_icons: ^1.0.9
   shared_preferences: ^2.5.5
-  openai_dart: ^4.1.0
+  openai_dart: ^4.2.0
   flutter_markdown: ^0.7.7+1
   file_picker: ^8.1.2
   share_plus: ^10.0.2
