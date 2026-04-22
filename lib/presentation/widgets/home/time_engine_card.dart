@@ -1,7 +1,6 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:lunar/lunar.dart';
-import '../../../core/theme/app_colors.dart';
 import 'jieqi_seal.dart';
 
 /// 时间引擎卡片组件（新中式风格）
@@ -18,7 +17,7 @@ import 'jieqi_seal.dart';
 /// │   年  │  月  │  日  │ │  时    │ (便签效果) │
 /// │       │      │      │ └────────┘            │
 /// ├──────────────────────────────────────────────┤
-/// │ 14:30                     真太阳时已校准     │
+/// │ 14:30                                        │
 /// └──────────────────────────────────────────────┘
 ///
 /// 资源依赖：
@@ -93,7 +92,7 @@ class _TimeEngineCardState extends State<TimeEngineCard> {
           // 中间：干支历显示（带分隔线）
           _buildGanZhiSection(),
           const SizedBox(height: 24),
-          // 底部：时钟 + 真太阳时状态
+          // 底部：时钟
           _buildFooter(),
         ],
       ),
@@ -224,48 +223,23 @@ class _TimeEngineCardState extends State<TimeEngineCard> {
     );
   }
 
-  /// 底部：时钟 + 真太阳时状态
+  /// 底部：时钟
   Widget _buildFooter() {
     final hour = _currentTime.hour.toString().padLeft(2, '0');
     final minute = _currentTime.minute.toString().padLeft(2, '0');
 
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      crossAxisAlignment: CrossAxisAlignment.end,
-      children: [
-        // 大数字时钟（域色：_textDark，超大字号）
-        Text(
-          '$hour:$minute',
-          style: const TextStyle(
-            color: _textDark,
-            fontSize: 48,
-            fontWeight: FontWeight.w600,
-            letterSpacing: 2,
-            height: 1,
-          ),
+    return Align(
+      alignment: Alignment.centerLeft,
+      child: Text(
+        '$hour:$minute',
+        style: const TextStyle(
+          color: _textDark,
+          fontSize: 48,
+          fontWeight: FontWeight.w600,
+          letterSpacing: 2,
+          height: 1,
         ),
-        // 真太阳时状态
-        Column(
-          crossAxisAlignment: CrossAxisAlignment.end,
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Icon(
-              Icons.location_on_outlined,
-              size: 14,
-              color: AppColors.huiseLight,
-            ),
-            const SizedBox(height: 2),
-            // 真太阳时状态提示（域色：AppColors.huiseLight）
-            Text(
-              '真太阳时已校准',
-              style: TextStyle(
-                color: AppColors.huiseLight,
-                fontSize: 11,
-              ),
-            ),
-          ],
-        ),
-      ],
+      ),
     );
   }
 }

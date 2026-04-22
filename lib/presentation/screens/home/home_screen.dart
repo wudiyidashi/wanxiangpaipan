@@ -20,7 +20,7 @@ import '../history/history_list_screen.dart';
 ///
 /// 布局结构：
 /// ┌─────────────────────────────────────┐
-/// │ [头像]    起卦大厅    [设置]        │  顶部栏
+/// │           起卦大厅    [设置]        │  顶部栏
 /// ├─────────────────────────────────────┤
 /// │ Time Engine 卡片                    │  时间区
 /// ├─────────────────────────────────────┤
@@ -33,7 +33,7 @@ import '../history/history_list_screen.dart';
 /// ├─────────────────────────────────────┤
 /// │ 上次排盘：问事业发展（六爻）>        │  历史条
 /// ├─────────────────────────────────────┤
-/// │ 首页  历史  历法  我的              │  导航栏
+/// │ 首页  历史  历法                   │  导航栏
 /// └─────────────────────────────────────┘
 /// 右侧背景：大字"辰"
 class HomeScreen extends StatefulWidget {
@@ -168,48 +168,34 @@ class _HomeScreenState extends State<HomeScreen> with RouteAware {
     );
   }
 
-  /// 顶部标题栏（左头像 + 中标题 + 右设置）
+  /// 顶部标题栏（中标题 + 右设置）
   Widget _buildAppBar() {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
-      child: Row(
+      child: Stack(
+        alignment: Alignment.center,
         children: [
-          // 左侧：用户头像
-          Container(
-            width: 32,
-            height: 32,
-            decoration: BoxDecoration(
-              color: AppColors.divider,
-              shape: BoxShape.circle,
-            ),
-            child: const Icon(
-              Icons.person_outline,
-              size: 20,
-              color: AppColors.huise,
-            ),
-          ),
-          // 中间：标题
-          Expanded(
-            child: Center(
-              child: Text(
-                '起卦大厅',
-                style: AppTextStyles.antiqueTitle.copyWith(
-                  color: AppColors.xuanse,
-                ),
+          Center(
+            child: Text(
+              '起卦大厅',
+              style: AppTextStyles.antiqueTitle.copyWith(
+                color: AppColors.xuanse,
               ),
             ),
           ),
-          // 右侧：设置按钮
-          GestureDetector(
-            onTap: () => Navigator.pushNamed(context, '/settings'),
-            child: Container(
-              width: 32,
-              height: 32,
-              alignment: Alignment.center,
-              child: const Icon(
-                Icons.settings_outlined,
-                size: 22,
-                color: AppColors.xuanse,
+          Align(
+            alignment: Alignment.centerRight,
+            child: GestureDetector(
+              onTap: () => Navigator.pushNamed(context, '/settings'),
+              child: Container(
+                width: 32,
+                height: 32,
+                alignment: Alignment.center,
+                child: const Icon(
+                  Icons.settings_outlined,
+                  size: 22,
+                  color: AppColors.xuanse,
+                ),
               ),
             ),
           ),
@@ -228,11 +214,6 @@ class _HomeScreenState extends State<HomeScreen> with RouteAware {
         return _buildSimpleTab(
           title: '历法',
           child: const CalendarScreen(chromeless: true),
-        );
-      case 3:
-        return _buildSimpleTab(
-          title: '我的',
-          child: _buildProfileContent(),
         );
       default:
         return _buildHomeContent();
@@ -327,25 +308,6 @@ class _HomeScreenState extends State<HomeScreen> with RouteAware {
           ),
           const AntiqueDivider(),
           Expanded(child: child),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildProfileContent() {
-    return Center(
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Icon(Icons.person_outline, size: 48, color: AppColors.huiseLight),
-          const SizedBox(height: 12),
-          Text('个人中心',
-              style:
-                  AppTextStyles.antiqueBody.copyWith(color: AppColors.huise)),
-          const SizedBox(height: 4),
-          Text('即将推出',
-              style: AppTextStyles.antiqueLabel
-                  .copyWith(color: AppColors.huiseLight)),
         ],
       ),
     );

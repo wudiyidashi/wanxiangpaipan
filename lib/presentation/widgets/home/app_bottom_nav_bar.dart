@@ -42,7 +42,6 @@ class AppBottomNavBar extends StatelessWidget {
               _buildNavItem(1, '历史', Icons.schedule_outlined, Icons.schedule),
               _buildNavItem(
                   2, '历法', Icons.calendar_today_outlined, Icons.calendar_today),
-              _buildNavItem(3, '我的', Icons.person_outline, Icons.person),
             ],
           ),
         ),
