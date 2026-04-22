@@ -76,7 +76,7 @@ class AlmanacHeader extends StatelessWidget {
         boxShadow: emphasize
             ? const [
                 BoxShadow(
-                  color: Color(0x33C94A4A),
+                  color: AppColors.zhushaGlow,
                   offset: Offset(0, 2),
                   blurRadius: 6,
                 ),

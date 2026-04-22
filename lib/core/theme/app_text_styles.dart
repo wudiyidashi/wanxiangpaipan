@@ -133,7 +133,7 @@ class AppTextStyles {
   static const TextStyle decorText = TextStyle(
     fontSize: 200,
     fontWeight: FontWeight.w100,
-    color: Color(0x08000000),
+    color: AppColors.inkWash,
     height: 1,
   );
 

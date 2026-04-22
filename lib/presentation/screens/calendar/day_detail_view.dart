@@ -29,7 +29,7 @@ class DayDetailView extends StatelessWidget {
         border: Border.all(color: AppColors.danjin.withOpacity(0.3)),
         boxShadow: const [
           BoxShadow(
-            color: Color(0x05000000),
+            color: AppColors.shadowSubtle,
             offset: Offset(0, 4),
             blurRadius: 16,
           ),

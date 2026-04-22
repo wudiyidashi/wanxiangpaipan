@@ -92,7 +92,7 @@ class _Row extends StatelessWidget {
                           vertical: 2,
                         ),
                         decoration: BoxDecoration(
-                          color: const Color(0x08000000),
+                          color: AppColors.inkWash,
                           borderRadius: BorderRadius.circular(4),
                         ),
                         child: Text(

@@ -78,6 +78,15 @@ class AppColors {
   /// 分割线颜色
   static const Color divider = Color(0xFFE8E8E6);
 
+  /// 极浅墨影 - 轻量卡片阴影
+  static const Color shadowSubtle = Color(0x05000000);
+
+  /// 墨洗底色 - 装饰文字、chip 底板
+  static const Color inkWash = Color(0x08000000);
+
+  /// 朱砂雾影 - 强调标签外发光
+  static const Color zhushaGlow = Color(0x33C94A4A);
+
   // ==================== 功能色 ====================
 
   /// 成功色（青绿）
