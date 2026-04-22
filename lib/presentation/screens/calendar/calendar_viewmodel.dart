@@ -20,8 +20,30 @@ class CalendarViewModel extends ChangeNotifier {
   // 0: 子, 1-2: 丑, 3-4: 寅, 5-6: 卯, 7-8: 辰, 9-10: 巳,
   // 11-12: 午, 13-14: 未, 15-16: 申, 17-18: 酉, 19-20: 戌, 21-22: 亥, 23: 子
   static const _zhiByHour = [
-    '子', '丑', '丑', '寅', '寅', '卯', '卯', '辰', '辰', '巳', '巳',
-    '午', '午', '未', '未', '申', '申', '酉', '酉', '戌', '戌', '亥', '亥', '子',
+    '子',
+    '丑',
+    '丑',
+    '寅',
+    '寅',
+    '卯',
+    '卯',
+    '辰',
+    '辰',
+    '巳',
+    '巳',
+    '午',
+    '午',
+    '未',
+    '未',
+    '申',
+    '申',
+    '酉',
+    '酉',
+    '戌',
+    '戌',
+    '亥',
+    '亥',
+    '子',
   ];
 
   final AlmanacService _service;
@@ -108,6 +130,5 @@ class CalendarViewModel extends ChangeNotifier {
     }
   }
 
-  static DateTime _dateOnly(DateTime d) =>
-      DateTime(d.year, d.month, d.day);
+  static DateTime _dateOnly(DateTime d) => DateTime(d.year, d.month, d.day);
 }

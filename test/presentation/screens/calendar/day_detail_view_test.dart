@@ -37,16 +37,16 @@ DailyAlmanac _fixture({
     );
 
 HourAlmanac _h(String zhi, String luck) => HourAlmanac(
-  zhi: zhi,
-  ganZhi: '$zhi$zhi',
-  tianShen: '青龙',
-  huangHei: '黄',
-  luck: luck,
-  yi: [],
-  ji: [],
-  startHour: 0,
-  endHour: 2,
-);
+      zhi: zhi,
+      ganZhi: '$zhi$zhi',
+      tianShen: '青龙',
+      huangHei: '黄',
+      luck: luck,
+      yi: [],
+      ji: [],
+      startHour: 0,
+      endHour: 2,
+    );
 
 void main() {
   testWidgets('FestivalBanner hides when festivals is empty', (t) async {
@@ -64,7 +64,8 @@ void main() {
     expect(find.text('春节 · 情人节'), findsOneWidget);
   });
 
-  testWidgets('AlmanacHeader shows primary line with date/weekday/lunar', (t) async {
+  testWidgets('AlmanacHeader shows primary line with date/weekday/lunar',
+      (t) async {
     await t.pumpWidget(MaterialApp(
       home: Scaffold(body: AlmanacHeader(almanac: _fixture())),
     ));
@@ -73,7 +74,9 @@ void main() {
     expect(find.textContaining('农历三月初二'), findsOneWidget);
   });
 
-  testWidgets('AlmanacHeader shows nextJieQi countdown when currentJieQi is null', (t) async {
+  testWidgets(
+      'AlmanacHeader shows nextJieQi countdown when currentJieQi is null',
+      (t) async {
     await t.pumpWidget(MaterialApp(
       home: Scaffold(body: AlmanacHeader(almanac: _fixture())),
     ));
@@ -82,7 +85,8 @@ void main() {
 
   testWidgets('AlmanacHeader shows current jieQi when present', (t) async {
     await t.pumpWidget(MaterialApp(
-      home: Scaffold(body: AlmanacHeader(almanac: _fixture(currentJieQi: '清明'))),
+      home:
+          Scaffold(body: AlmanacHeader(almanac: _fixture(currentJieQi: '清明'))),
     ));
     expect(find.textContaining('清明'), findsOneWidget);
   });
@@ -159,26 +163,40 @@ void main() {
       ),
     ));
     // 验证 12 个 key 全部存在
-    for (final z in ['子', '丑', '寅', '卯', '辰', '巳', '午', '未', '申', '酉', '戌', '亥']) {
+    for (final z in [
+      '子',
+      '丑',
+      '寅',
+      '卯',
+      '辰',
+      '巳',
+      '午',
+      '未',
+      '申',
+      '酉',
+      '戌',
+      '亥'
+    ]) {
       expect(find.byKey(ValueKey('hour-$z')), findsOneWidget);
     }
   });
 
   testWidgets('MoonPhaseKongwang renders combined string', (t) async {
-    await t.pumpWidget(const MaterialApp(home: Scaffold(body:
-      MoonPhaseKongwang(yueXiang: '上弦', kongWang: ['子', '丑']))));
+    await t.pumpWidget(const MaterialApp(
+        home: Scaffold(
+            body: MoonPhaseKongwang(yueXiang: '上弦', kongWang: ['子', '丑']))));
     expect(find.text('月相：上弦 · 空亡：子丑'), findsOneWidget);
   });
 
   testWidgets('MoonPhaseKongwang shows em-dash when kongWang empty', (t) async {
-    await t.pumpWidget(const MaterialApp(home: Scaffold(body:
-      MoonPhaseKongwang(yueXiang: '上弦', kongWang: []))));
+    await t.pumpWidget(const MaterialApp(
+        home: Scaffold(body: MoonPhaseKongwang(yueXiang: '上弦', kongWang: []))));
     expect(find.text('月相：上弦 · 空亡：—'), findsOneWidget);
   });
 
   testWidgets('PengzuCard shows gan and zhi lines', (t) async {
-    await t.pumpWidget(const MaterialApp(home: Scaffold(body:
-      PengzuCard(gan: '甲不开仓', zhi: '子不问卜'))));
+    await t.pumpWidget(const MaterialApp(
+        home: Scaffold(body: PengzuCard(gan: '甲不开仓', zhi: '子不问卜'))));
     expect(find.text('甲不开仓'), findsOneWidget);
     expect(find.text('子不问卜'), findsOneWidget);
     expect(find.text('彭祖百忌'), findsOneWidget);

@@ -12,7 +12,8 @@ void main() {
     ));
   }
 
-  testWidgets('C1: chromeless=true does not introduce Scaffold/AppBar', (t) async {
+  testWidgets('C1: chromeless=true does not introduce Scaffold/AppBar',
+      (t) async {
     await pump(t, chromeless: true);
     final calendarFinder = find.byType(CalendarScreen);
     final appBars = find.descendant(
@@ -22,7 +23,8 @@ void main() {
     expect(appBars, findsNothing);
   });
 
-  testWidgets('C4: "今日" button hidden on today month, visible after switching', (t) async {
+  testWidgets('C4: "今日" button hidden on today month, visible after switching',
+      (t) async {
     await pump(t, chromeless: true);
     expect(find.text('今日'), findsNothing);
 
@@ -35,7 +37,8 @@ void main() {
   });
 
   testWidgets('C3: tapping a day updates DayDetailView', (t) async {
-    await t.pumpWidget(MaterialApp(home: Scaffold(
+    await t.pumpWidget(MaterialApp(
+        home: Scaffold(
       body: CalendarScreen(
         chromeless: true,
         almanacService: const AlmanacService(),
@@ -54,7 +57,8 @@ void main() {
   });
 
   testWidgets('C5: tapping 未时 hour updates four-pillars 时柱', (t) async {
-    await t.pumpWidget(MaterialApp(home: Scaffold(
+    await t.pumpWidget(MaterialApp(
+        home: Scaffold(
       body: CalendarScreen(
         chromeless: true,
         almanacService: const AlmanacService(),

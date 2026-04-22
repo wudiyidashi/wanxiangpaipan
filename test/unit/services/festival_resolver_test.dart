@@ -33,8 +33,7 @@ void main() {
     test('returns unique names without duplicates', () {
       final d = DateTime(2026, 1, 1);
       final result = FestivalResolver.resolve(d, _lunarOf(d));
-      expect(result.length, result.toSet().length,
-          reason: '合并后应去重');
+      expect(result.length, result.toSet().length, reason: '合并后应去重');
     });
   });
 }

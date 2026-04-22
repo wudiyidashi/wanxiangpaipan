@@ -41,8 +41,8 @@ class MonthGridView extends StatelessWidget {
                   Expanded(
                     child: _Cell(
                       date: days[row * 7 + col],
-                      inMonth: days[row * 7 + col].month ==
-                          vm.displayedMonth.month,
+                      inMonth:
+                          days[row * 7 + col].month == vm.displayedMonth.month,
                     ),
                   ),
               ],
@@ -85,9 +85,8 @@ class _Cell extends StatelessWidget {
         : isSelected
             ? AppColors.xiangseLight
             : null;
-    final border = isToday
-        ? Border.all(color: AppColors.dailan, width: 1.2)
-        : null;
+    final border =
+        isToday ? Border.all(color: AppColors.dailan, width: 1.2) : null;
 
     return InkWell(
       key: const ValueKey('month-cell'),

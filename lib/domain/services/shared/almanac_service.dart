@@ -17,12 +17,21 @@ class AlmanacError implements Exception {
 class AlmanacService {
   const AlmanacService();
 
-  static DateTime _dateOnly(DateTime d) =>
-      DateTime(d.year, d.month, d.day);
+  static DateTime _dateOnly(DateTime d) => DateTime(d.year, d.month, d.day);
 
   static const _zhiOrder = [
-    '子', '丑', '寅', '卯', '辰', '巳',
-    '午', '未', '申', '酉', '戌', '亥',
+    '子',
+    '丑',
+    '寅',
+    '卯',
+    '辰',
+    '巳',
+    '午',
+    '未',
+    '申',
+    '酉',
+    '戌',
+    '亥',
   ];
   // 子时跨日：23-1 使用 23；其余按双数起点。
   static const _startHours = [23, 1, 3, 5, 7, 9, 11, 13, 15, 17, 19, 21];
@@ -103,8 +112,7 @@ class AlmanacService {
     );
     table.forEach((name, solar) {
       final dt = DateTime(solar.getYear(), solar.getMonth(), solar.getDay());
-      if (dt.isAfter(now) &&
-          (nearest == null || dt.isBefore(nearest!))) {
+      if (dt.isAfter(now) && (nearest == null || dt.isBefore(nearest!))) {
         nearest = dt;
         nearestName = name;
       }
