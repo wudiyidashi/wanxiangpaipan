@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import '../../../../core/theme/app_colors.dart';
 import '../../../../core/theme/app_text_styles.dart';
-import '../../../../core/theme/antique_tokens.dart';
 
+/// 宜忌列表：左侧 24×24 方色块 + 右侧 chip 组，纵向两行。
 class YijiPanel extends StatelessWidget {
   const YijiPanel({super.key, required this.yi, required this.ji});
   final List<String> yi;
@@ -11,26 +11,20 @@ class YijiPanel extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
+      padding: const EdgeInsets.symmetric(horizontal: 16),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          Expanded(
-            child: _Column(
-              title: '宜',
-              items: yi,
-              titleColor: AppColors.danjin,
-              bgColor: const Color(0xFFEBE4D2), // danjinLight (light warm tone)
-            ),
+          _Row(
+            label: '宜',
+            items: yi,
+            badgeColor: AppColors.danjinDeep,
           ),
-          const SizedBox(width: 8),
-          Expanded(
-            child: _Column(
-              title: '忌',
-              items: ji,
-              titleColor: AppColors.zhusha,
-              bgColor: AppColors.zhushaLight,
-            ),
+          const SizedBox(height: 10),
+          _Row(
+            label: '忌',
+            items: ji,
+            badgeColor: AppColors.zhusha,
           ),
         ],
       ),
@@ -38,49 +32,86 @@ class YijiPanel extends StatelessWidget {
   }
 }
 
-class _Column extends StatelessWidget {
-  const _Column({
-    required this.title,
+class _Row extends StatelessWidget {
+  const _Row({
+    required this.label,
     required this.items,
-    required this.titleColor,
-    required this.bgColor,
+    required this.badgeColor,
   });
-  final String title;
+
+  final String label;
   final List<String> items;
-  final Color titleColor;
-  final Color bgColor;
+  final Color badgeColor;
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.all(10),
-      decoration: BoxDecoration(
-        color: bgColor.withOpacity(0.4),
-        border: Border.all(
-          color: titleColor.withOpacity(0.3),
-          width: AntiqueTokens.borderWidthBase,
+    return Row(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Container(
+          width: 24,
+          height: 24,
+          margin: const EdgeInsets.only(top: 1),
+          decoration: BoxDecoration(
+            color: badgeColor,
+            borderRadius: BorderRadius.circular(4),
+          ),
+          alignment: Alignment.center,
+          child: Text(
+            label,
+            style: const TextStyle(
+              fontFamily: AppTextStyles.fontFamilySong,
+              fontFamilyFallback: AppTextStyles.fontFamilyFallback,
+              fontSize: 12,
+              fontWeight: FontWeight.bold,
+              color: Colors.white,
+              height: 1.2,
+            ),
+          ),
         ),
-        borderRadius: BorderRadius.circular(AntiqueTokens.radiusCard),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(title, style: AppTextStyles.antiqueSection.copyWith(
-            color: titleColor,
-            fontWeight: FontWeight.bold,
-          )),
-          const SizedBox(height: 6),
-          if (items.isEmpty)
-            Text('—', style: AppTextStyles.antiqueBody.copyWith(
-              color: AppColors.huiseLight,
-            ))
-          else
-            ...items.map((e) => Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 2),
-                  child: Text('· $e', style: AppTextStyles.antiqueBody),
-                )),
-        ],
-      ),
+        const SizedBox(width: 12),
+        Expanded(
+          child: items.isEmpty
+              ? Padding(
+                  padding: const EdgeInsets.only(top: 3),
+                  child: Text(
+                    '—',
+                    style: AppTextStyles.antiqueBody.copyWith(
+                      color: AppColors.huiseLight,
+                    ),
+                  ),
+                )
+              : Wrap(
+                  spacing: 8,
+                  runSpacing: 6,
+                  children: [
+                    for (final item in items)
+                      Container(
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 6,
+                          vertical: 2,
+                        ),
+                        decoration: BoxDecoration(
+                          color: const Color(0x08000000),
+                          borderRadius: BorderRadius.circular(4),
+                        ),
+                        child: Text(
+                          item,
+                          style: const TextStyle(
+                            fontFamily: AppTextStyles.fontFamilySong,
+                            fontFamilyFallback:
+                                AppTextStyles.fontFamilyFallback,
+                            fontSize: 14,
+                            fontWeight: FontWeight.bold,
+                            color: AppColors.xuanse,
+                            height: 1.4,
+                          ),
+                        ),
+                      ),
+                  ],
+                ),
+        ),
+      ],
     );
   }
 }

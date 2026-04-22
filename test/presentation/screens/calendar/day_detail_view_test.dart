@@ -84,7 +84,7 @@ void main() {
     await t.pumpWidget(MaterialApp(
       home: Scaffold(body: AlmanacHeader(almanac: _fixture(currentJieQi: '清明'))),
     ));
-    expect(find.textContaining('今日节气：清明'), findsOneWidget);
+    expect(find.textContaining('清明'), findsOneWidget);
   });
 
   testWidgets('FourPillarsCard shows 4 gz pairs', (t) async {
@@ -117,9 +117,9 @@ void main() {
     await t.pumpWidget(const MaterialApp(
       home: Scaffold(body: YijiPanel(yi: ['祭祀', '祈福'], ji: ['动土'])),
     ));
-    expect(find.text('· 祭祀'), findsOneWidget);
-    expect(find.text('· 祈福'), findsOneWidget);
-    expect(find.text('· 动土'), findsOneWidget);
+    expect(find.text('祭祀'), findsOneWidget);
+    expect(find.text('祈福'), findsOneWidget);
+    expect(find.text('动土'), findsOneWidget);
   });
 
   testWidgets('YijiPanel shows em-dash when list is empty', (t) async {

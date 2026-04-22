@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import '../../../core/theme/app_colors.dart';
 import 'calendar_viewmodel.dart';
 import 'widgets/almanac_header.dart';
-import 'widgets/festival_banner.dart';
 import 'widgets/four_pillars_card.dart';
 import 'widgets/moon_phase_kongwang.dart';
 import 'widgets/pengzu_card.dart';
@@ -21,25 +21,43 @@ class DayDetailView extends StatelessWidget {
     final almanac = vm.currentAlmanac;
     final hour = vm.currentHourAlmanac;
 
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.stretch,
-      children: [
-        FestivalBanner(festivals: almanac.festivals),
-        AlmanacHeader(almanac: almanac),
-        FourPillarsCard(almanac: almanac, hourGanZhi: hour.ganZhi),
-        YijiPanel(yi: almanac.yi, ji: almanac.ji),
-        TimeHourBar(
-          hours: almanac.twelveHours,
-          selectedZhi: vm.selectedHour ?? hour.zhi,
-          onSelect: vm.selectHour,
-        ),
-        MoonPhaseKongwang(
-          yueXiang: almanac.yueXiang,
-          kongWang: almanac.kongWang,
-        ),
-        PengzuCard(gan: almanac.pengZuGan, zhi: almanac.pengZuZhi),
-        const SizedBox(height: 24),
-      ],
+    return Container(
+      margin: const EdgeInsets.fromLTRB(12, 12, 12, 20),
+      decoration: BoxDecoration(
+        color: Colors.white.withOpacity(0.45),
+        borderRadius: const BorderRadius.vertical(top: Radius.circular(20)),
+        border: Border.all(color: AppColors.danjin.withOpacity(0.3)),
+        boxShadow: const [
+          BoxShadow(
+            color: Color(0x05000000),
+            offset: Offset(0, 4),
+            blurRadius: 16,
+          ),
+        ],
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          const SizedBox(height: 16),
+          AlmanacHeader(almanac: almanac),
+          const SizedBox(height: 16),
+          FourPillarsCard(almanac: almanac, hourGanZhi: hour.ganZhi),
+          const SizedBox(height: 16),
+          YijiPanel(yi: almanac.yi, ji: almanac.ji),
+          const SizedBox(height: 16),
+          TimeHourBar(
+            hours: almanac.twelveHours,
+            selectedZhi: vm.selectedHour ?? hour.zhi,
+            onSelect: vm.selectHour,
+          ),
+          MoonPhaseKongwang(
+            yueXiang: almanac.yueXiang,
+            kongWang: almanac.kongWang,
+          ),
+          PengzuCard(gan: almanac.pengZuGan, zhi: almanac.pengZuZhi),
+          const SizedBox(height: 8),
+        ],
+      ),
     );
   }
 }
