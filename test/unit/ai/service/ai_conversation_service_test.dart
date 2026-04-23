@@ -308,4 +308,97 @@ void main() {
       expect(conv.messages, hasLength(3));
     });
   });
+
+  group('AIConversationService lifecycle', () {
+    late _MockProvider provider;
+    late _MockAssembler assembler;
+    late _MockConfig config;
+    late ChatRepository repo;
+    late _MockSecureStorage storage;
+
+    setUp(() {
+      provider = _MockProvider();
+      assembler = _MockAssembler();
+      config = _MockConfig();
+      storage = _MockSecureStorage();
+      repo = ChatRepository(secureStorage: storage);
+      when(() => provider.id).thenReturn('openai_compatible');
+      when(() => provider.isConfigured).thenReturn(true);
+      when(() => provider.getConfigInfo()).thenReturn({'model': 'gpt-4'});
+      when(() => assembler.assemble(any(),
+              question: any(named: 'question'),
+              analysisType: any(named: 'analysisType'),
+              customVariables: any(named: 'customVariables')))
+          .thenAnswer((_) async => _fakePrompt());
+    });
+
+    test('reset 保留 messages[0]，丢弃其余', () async {
+      when(() => provider.chatStream(any())).thenAnswer(
+        (_) => Stream.fromIterable(['初始']),
+      );
+      final service = _makeService(
+        provider: provider,
+        repo: repo,
+        assembler: assembler,
+        config: config,
+      );
+      await service.startConversation(_FakeResult('r1'));
+
+      when(() => provider.chatStream(any()))
+          .thenAnswer((_) => Stream.fromIterable(['回复']));
+      await service.sendFollowUp('r1', '追问');
+
+      expect(service.conversationOf('r1')!.messages, hasLength(3));
+
+      await service.reset('r1');
+      expect(service.conversationOf('r1')!.messages, hasLength(1));
+      expect(service.conversationOf('r1')!.messages[0].content, '初始');
+    });
+
+    test('delete 清空缓存和存储', () async {
+      when(() => provider.chatStream(any())).thenAnswer(
+        (_) => Stream.fromIterable(['初始']),
+      );
+      final service = _makeService(
+        provider: provider,
+        repo: repo,
+        assembler: assembler,
+        config: config,
+      );
+      await service.startConversation(_FakeResult('r1'));
+
+      await service.delete('r1');
+
+      expect(service.conversationOf('r1'), isNull);
+      expect(await storage.read('conversation_r1'), isNull);
+    });
+
+    test('retry 从失败的 user 消息定位，重发等价文本', () async {
+      when(() => provider.chatStream(any())).thenAnswer(
+        (_) => Stream.fromIterable(['初始']),
+      );
+      final service = _makeService(
+        provider: provider,
+        repo: repo,
+        assembler: assembler,
+        config: config,
+      );
+      await service.startConversation(_FakeResult('r1'));
+
+      when(() => provider.chatStream(any()))
+          .thenAnswer((_) => Stream.error(Exception('fail')));
+      await service.sendFollowUp('r1', '第一次追问');
+      final failedUserId = service.conversationOf('r1')!.messages[1].id;
+
+      when(() => provider.chatStream(any()))
+          .thenAnswer((_) => Stream.fromIterable(['回复']));
+      await service.retry('r1', failedUserId);
+
+      final conv = service.conversationOf('r1');
+      expect(conv!.messages, hasLength(3));
+      expect(conv.messages[1].content, '第一次追问');
+      expect(conv.messages[1].status, ChatMessageStatus.sent);
+      expect(conv.messages[2].content, '回复');
+    });
+  });
 }

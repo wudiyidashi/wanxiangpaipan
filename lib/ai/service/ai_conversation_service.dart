@@ -344,6 +344,76 @@ class AIConversationService extends ChangeNotifier {
     return completer.future;
   }
 
+  // ==================== reset / delete / stop / retry ====================
+
+  Future<void> reset(String resultId) async {
+    await _cancelStream(resultId);
+    final conv = _cache[resultId];
+    if (conv == null || conv.messages.isEmpty) return;
+    final kept = conv.messages.first;
+    final updated = conv.copyWith(
+      messages: [kept],
+      updatedAt: DateTime.now(),
+    );
+    _cache[resultId] = updated;
+    _errors.remove(resultId);
+    await _chatRepository.save(updated);
+    notifyListeners();
+  }
+
+  Future<void> delete(String resultId) async {
+    await _cancelStream(resultId);
+    _cache.remove(resultId);
+    _errors.remove(resultId);
+    await _chatRepository.delete(resultId);
+    notifyListeners();
+  }
+
+  Future<void> stop(String resultId) async {
+    await _cancelStream(resultId);
+    final conv = _cache[resultId];
+    if (conv == null) return;
+    // 把 streaming/sending 的消息冻结为 sent（保留已到达内容）
+    final updated = conv.messages.map((m) {
+      if (m.status == ChatMessageStatus.streaming ||
+          m.status == ChatMessageStatus.sending) {
+        return m.copyWith(status: ChatMessageStatus.sent);
+      }
+      return m;
+    }).toList();
+    final newConv =
+        conv.copyWith(messages: updated, updatedAt: DateTime.now());
+    _cache[resultId] = newConv;
+    await _chatRepository.save(newConv);
+    notifyListeners();
+  }
+
+  Future<void> retry(
+    String resultId,
+    String failedUserMessageId, {
+    DivinationResult? fallbackResult,
+  }) async {
+    final conv = _cache[resultId];
+    if (conv == null) return;
+    final idx = conv.messages.indexWhere((m) => m.id == failedUserMessageId);
+    if (idx < 0) return;
+    if (conv.messages[idx].role != ChatRole.user) return;
+    final originalText = conv.messages[idx].content;
+
+    // 截断到失败消息之前
+    final truncated = conv.messages.sublist(0, idx);
+    final reset = conv.copyWith(
+      messages: truncated,
+      updatedAt: DateTime.now(),
+    );
+    _cache[resultId] = reset;
+    _errors.remove(resultId);
+    notifyListeners();
+
+    await sendFollowUp(resultId, originalText,
+        fallbackResult: fallbackResult);
+  }
+
   // ==================== 辅助 ====================
 
   AIConversation _updateMessage(
