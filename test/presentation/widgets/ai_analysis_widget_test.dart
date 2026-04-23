@@ -309,9 +309,13 @@ void main() {
       await tester.pumpAndSettle();
 
       expect(find.text('结果A分析内容'), findsOneWidget);
+      // 保存职责已移交给 ChatRepository（通过 AIConversationService）；
+      // DivinationRepository 不再被写入 interpretation_<id> 字段。
       expect(
-        repository.encryptedFields['interpretation_${resultA.id}'],
-        '结果A分析内容',
+        repository.encryptedFields.containsKey('interpretation_${resultA.id}'),
+        isFalse,
+        reason: 'Fix 1: AIAnalysisWidget 不再直接写 DivinationRepository，'
+            '写入由 ChatRepository 通过 conversationService.startConversation 完成',
       );
 
       await tester.pumpWidget(

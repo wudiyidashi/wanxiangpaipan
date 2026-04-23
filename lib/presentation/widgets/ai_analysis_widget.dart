@@ -302,7 +302,6 @@ class _AIAnalysisWidgetState extends State<AIAnalysisWidget> {
 
   Future<void> _startAnalysis(
       BuildContext context, AIAnalysisService aiService) async {
-    final repository = _tryReadRepository();
     try {
       final response = await aiService.analyze(
         widget.result,
@@ -310,9 +309,6 @@ class _AIAnalysisWidgetState extends State<AIAnalysisWidget> {
         useStreaming: true,
       );
       final content = response.content.trim();
-      if (repository != null && content.isNotEmpty) {
-        await repository.saveEncryptedField(_interpretationKey, content);
-      }
       if (!mounted) {
         return;
       }
@@ -528,8 +524,6 @@ class _AIAnalysisWidgetState extends State<AIAnalysisWidget> {
       return null;
     }
   }
-
-  String get _interpretationKey => 'interpretation_${widget.result.id}';
 }
 
 /// AI 分析浮动按钮
