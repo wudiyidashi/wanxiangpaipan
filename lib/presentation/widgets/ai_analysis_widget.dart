@@ -568,164 +568,19 @@ class AIAnalysisFAB extends StatelessWidget {
   }
 
   void _showAnalysisSheet(BuildContext context, AIAnalysisService aiService) {
+    final convService = context.read<AIConversationService>();
+    convService.loadIfNeeded(result.id, legacySystemType: result.systemType);
     showModalBottomSheet<void>(
       context: context,
       isScrollControlled: true,
       useSafeArea: true,
-      builder: (sheetContext) {
-        return ChangeNotifierProvider.value(
-          value: aiService,
-          child: _AIAnalysisSheet(
-            result: result,
-            question: question,
-          ),
-        );
-      },
-    );
-  }
-}
-
-/// AI 分析底部抽屉
-class _AIAnalysisSheet extends StatefulWidget {
-  final DivinationResult result;
-  final String? question;
-
-  const _AIAnalysisSheet({
-    required this.result,
-    this.question,
-  });
-
-  @override
-  State<_AIAnalysisSheet> createState() => _AIAnalysisSheetState();
-}
-
-class _AIAnalysisSheetState extends State<_AIAnalysisSheet> {
-  @override
-  void initState() {
-    super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      _startAnalysisIfNeeded();
-    });
-  }
-
-  void _startAnalysisIfNeeded() {
-    final aiService = context.read<AIAnalysisService>();
-    if (!aiService.isAnalyzing && aiService.currentContent.isEmpty) {
-      aiService.analyze(
-        widget.result,
-        question: widget.question,
-        useStreaming: true,
-      );
-    }
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    final aiService = context.watch<AIAnalysisService>();
-
-    return DraggableScrollableSheet(
-      initialChildSize: 0.7,
-      minChildSize: 0.5,
-      maxChildSize: 0.95,
-      expand: false,
-      builder: (context, scrollController) {
-        return Column(
-          children: [
-            Container(
-              margin: const EdgeInsets.only(top: 12),
-              width: 40,
-              height: 4,
-              decoration: BoxDecoration(
-                color: Colors.grey[300], // Material grey[300]: drag handle pill
-                borderRadius: BorderRadius.circular(2),
-              ),
-            ),
-            Padding(
-              padding: const EdgeInsets.all(16),
-              child: Row(
-                children: [
-                  Icon(Icons.smart_toy, color: Theme.of(context).primaryColor),
-                  const SizedBox(width: 12),
-                  Expanded(
-                    child: Text(
-                      'AI 智能分析',
-                      style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                            fontWeight: FontWeight.bold,
-                          ),
-                    ),
-                  ),
-                  if (aiService.isAnalyzing)
-                    const SizedBox(
-                      width: 24,
-                      height: 24,
-                      child: CircularProgressIndicator(strokeWidth: 2),
-                    )
-                  else
-                    IconButton(
-                      icon: const Icon(Icons.close),
-                      onPressed: () => Navigator.pop(context),
-                    ),
-                ],
-              ),
-            ),
-            const Divider(height: 1),
-            Expanded(
-              child: _buildSheetContent(context, aiService, scrollController),
-            ),
-          ],
-        );
-      },
-    );
-  }
-
-  Widget _buildSheetContent(
-    BuildContext context,
-    AIAnalysisService aiService,
-    ScrollController scrollController,
-  ) {
-    if (aiService.error != null) {
-      return Center(
-        child: Padding(
-          padding: const EdgeInsets.all(32),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              const Icon(Icons.info_outline,
-                  size: 48, color: Colors.orange), // domain: warning icon
-              const SizedBox(height: 16),
-              Text(
-                aiService.error!.replaceFirst(RegExp(r'^Exception:\s*'), ''),
-                style: AppTextStyles.antiqueBody.copyWith(
-                    color: Colors
-                        .grey[700]), // Material grey[700]: muted error text
-                textAlign: TextAlign.center,
-              ),
-            ],
-          ),
+      builder: (sheetContext) => ChangeNotifierProvider<
+          AIConversationService>.value(
+        value: convService,
+        child: AIChatSheet(
+          resultId: result.id,
+          fallbackResult: result,
         ),
-      );
-    }
-
-    if (aiService.currentContent.isEmpty && aiService.isAnalyzing) {
-      return const Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            CircularProgressIndicator(),
-            SizedBox(height: 24),
-            Text('正在分析卦象，请稍候...'),
-          ],
-        ),
-      );
-    }
-
-    return Markdown(
-      data: aiService.currentContent,
-      controller: scrollController,
-      selectable: true,
-      styleSheet: MarkdownStyleSheet(
-        p: Theme.of(context).textTheme.bodyMedium?.copyWith(height: 1.8),
-        h3: AppTextStyles.antiqueSection.copyWith(height: 2),
       ),
     );
   }
