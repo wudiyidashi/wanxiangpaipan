@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/scheduler.dart';
+import 'package:uuid/uuid.dart';
 
 import '../config/ai_config_manager.dart';
 import '../llm_provider.dart';
@@ -24,6 +25,8 @@ class AIConversationService extends ChangeNotifier {
   final Map<String, AIConversation> _cache = {};
   final Map<String, String?> _errors = {};
   final Map<String, StreamSubscription<String>> _activeStreams = {};
+
+  static const _uuid = Uuid();
 
   AIConversationService({
     required LLMProviderRegistry providerRegistry,
@@ -217,8 +220,7 @@ class AIConversationService extends ChangeNotifier {
     }
   }
 
-  String _newId() =>
-      '${DateTime.now().microsecondsSinceEpoch}-${identityHashCode(Object())}';
+  String _newId() => _uuid.v4();
 
   void _safeNotify() {
     // SchedulerBinding may not be initialized in unit tests
