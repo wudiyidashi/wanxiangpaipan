@@ -248,7 +248,7 @@ class AIConversationService extends ChangeNotifier {
       return;
     }
 
-    // 追加 user 消息 (sending)
+    // 追加 user 消息 (sending) — 先入列，builder 必须以 user 结尾
     final userMsg = AIChatMessage(
       id: _newId(),
       role: ChatRole.user,
@@ -256,7 +256,17 @@ class AIConversationService extends ChangeNotifier {
       timestamp: DateTime.now(),
       status: ChatMessageStatus.sending,
     );
-    // 追加 assistant 占位 (streaming)
+    conv = conv.copyWith(
+      messages: [...conv.messages, userMsg],
+      updatedAt: DateTime.now(),
+    );
+    _cache[resultId] = conv;
+    notifyListeners();
+
+    // 基于 user 结尾的对话组装请求（不含占位）
+    final chatMessages = ChatRequestBuilder.build(conv);
+
+    // 再追加 assistant 占位 (streaming) — 仅用于 UI 流式展示，不进请求
     final assistantMsg = AIChatMessage(
       id: _newId(),
       role: ChatRole.assistant,
@@ -265,14 +275,12 @@ class AIConversationService extends ChangeNotifier {
       status: ChatMessageStatus.streaming,
     );
     conv = conv.copyWith(
-      messages: [...conv.messages, userMsg, assistantMsg],
+      messages: [...conv.messages, assistantMsg],
       updatedAt: DateTime.now(),
     );
     _cache[resultId] = conv;
     notifyListeners();
 
-    // 组装 messages 发请求
-    final chatMessages = ChatRequestBuilder.build(conv);
     final stream = provider.chatStream(ChatRequest(messages: chatMessages));
 
     if (stream == null) {
