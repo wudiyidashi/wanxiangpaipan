@@ -1,5 +1,7 @@
 import 'dart:convert';
 
+import 'package:flutter/foundation.dart';
+
 import '../../data/secure/secure_storage.dart';
 import '../../domain/divination_system.dart';
 import '../model/ai_chat_message.dart';
@@ -27,7 +29,9 @@ class ChatRepository {
       try {
         return AIConversation.fromJson(
             json.decode(raw) as Map<String, dynamic>);
-      } catch (_) {
+      } catch (e, stackTrace) {
+        debugPrint(
+            'ChatRepository: failed to deserialize conversation_$resultId: $e\n$stackTrace');
         return null; // 反序列化失败不阻塞 UI
       }
     }
