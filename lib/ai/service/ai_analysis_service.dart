@@ -3,10 +3,7 @@
 /// 对外暴露的统一接口，整合所有 AI 分析功能。
 library;
 
-import 'dart:async';
-
 import 'package:flutter/foundation.dart';
-import 'package:flutter/scheduler.dart';
 import '../config/ai_config_manager.dart';
 import '../config/ai_provider_profile.dart';
 import '../llm_provider.dart';
@@ -14,7 +11,6 @@ import '../llm_provider_registry.dart';
 import '../model/ai_chat_message.dart';
 import '../providers/openai_compatible_provider.dart';
 import 'ai_conversation_service.dart';
-import 'prompt_assembler.dart';
 import '../../domain/divination_system.dart';
 
 /// 分析状态
@@ -33,35 +29,26 @@ enum AnalysisState {
 /// - 流式输出
 /// - 自定义模板
 ///
-/// 当提供 [AIConversationService] 时，所有对话状态委托给它管理；
-/// 否则回退到内部状态机（兼容旧的启动路径，待 Task 11 迁移后移除）。
+/// 所有对话状态委托给 [AIConversationService] 管理。
 class AIAnalysisService extends ChangeNotifier {
   final LLMProviderRegistry _providerRegistry;
-  final PromptAssembler _promptAssembler;
   final AIConfigManager _configManager;
-  final AIConversationService? _conversationService;
+  final AIConversationService _conversationService;
 
-  // ---- legacy state (used only when _conversationService == null) ----
-  AnalysisState _legacyState = AnalysisState.idle;
-  String _legacyContent = '';
-  String? _legacyError;
-  StreamSubscription<String>? _streamSubscription;
-  Completer<AnalysisResponse>? _pendingStreamCompleter;
-  // --------------------------------------------------------------------
+  // Brief loading state before the conversation is actually created.
+  AnalysisState _pendingState = AnalysisState.idle;
 
   AnalysisResponse? _lastResponse;
   String? _currentResultId;
 
   AIAnalysisService({
     required LLMProviderRegistry providerRegistry,
-    required PromptAssembler promptAssembler,
     required AIConfigManager configManager,
-    AIConversationService? conversationService,
+    required AIConversationService conversationService,
   })  : _providerRegistry = providerRegistry,
-        _promptAssembler = promptAssembler,
         _configManager = configManager,
         _conversationService = conversationService {
-    _conversationService?.addListener(_onConversationChanged);
+    _conversationService.addListener(_onConversationChanged);
   }
 
   void _onConversationChanged() {
@@ -72,11 +59,9 @@ class AIAnalysisService extends ChangeNotifier {
 
   /// 当前状态
   AnalysisState get state {
-    final cs = _conversationService;
-    if (cs == null) return _legacyState;
-    if (_currentResultId == null) return _legacyState;
-    final conv = cs.conversationOf(_currentResultId!);
-    if (conv == null) return AnalysisState.idle;
+    if (_currentResultId == null) return _pendingState;
+    final conv = _conversationService.conversationOf(_currentResultId!);
+    if (conv == null) return _pendingState;
     final firstStatus = conv.messages.isEmpty
         ? ChatMessageStatus.sent
         : conv.messages.first.status;
@@ -98,20 +83,16 @@ class AIAnalysisService extends ChangeNotifier {
 
   /// 当前分析内容
   String get currentContent {
-    final cs = _conversationService;
-    if (cs == null) return _legacyContent;
     if (_currentResultId == null) return '';
-    final conv = cs.conversationOf(_currentResultId!);
+    final conv = _conversationService.conversationOf(_currentResultId!);
     if (conv == null || conv.messages.isEmpty) return '';
     return conv.messages.first.content;
   }
 
   /// 错误信息
   String? get error {
-    final cs = _conversationService;
-    if (cs == null) return _legacyError;
     if (_currentResultId == null) return null;
-    return cs.errorOf(_currentResultId!);
+    return _conversationService.errorOf(_currentResultId!);
   }
 
   /// 最后一次响应
@@ -127,10 +108,10 @@ class AIAnalysisService extends ChangeNotifier {
   /// 参数：
   /// - [result]: 排盘结果
   /// - [question]: 用户问题（可选）
-  /// - [providerId]: 指定提供者 ID（可选，默认使用默认提供者）
-  /// - [analysisType]: 分析类型
-  /// - [useStreaming]: 是否使用流式输出
-  /// - [customVariables]: 自定义变量
+  /// - [providerId]: 指定提供者 ID（可选，未使用，保留签名兼容）
+  /// - [analysisType]: 分析类型（保留签名兼容）
+  /// - [useStreaming]: 是否使用流式输出（保留签名兼容）
+  /// - [customVariables]: 自定义变量（保留签名兼容）
   Future<AnalysisResponse> analyze(
     DivinationResult result, {
     String? question,
@@ -139,33 +120,14 @@ class AIAnalysisService extends ChangeNotifier {
     bool? useStreaming,
     Map<String, dynamic>? customVariables,
   }) async {
-    final cs = _conversationService;
-    if (cs != null) {
-      return _analyzeViaConversationService(cs, result, question: question);
-    }
-    return _analyzeLegacy(
-      result,
-      question: question,
-      providerId: providerId,
-      analysisType: analysisType,
-      useStreaming: useStreaming,
-      customVariables: customVariables,
-    );
-  }
-
-  Future<AnalysisResponse> _analyzeViaConversationService(
-    AIConversationService cs,
-    DivinationResult result, {
-    String? question,
-  }) async {
     _currentResultId = result.id;
-    _legacyState = AnalysisState.loading;
+    _pendingState = AnalysisState.loading;
     notifyListeners();
 
-    await cs.startConversation(result, question: question);
+    await _conversationService.startConversation(result, question: question);
 
-    final conv = cs.conversationOf(result.id);
-    final errMsg = cs.errorOf(result.id);
+    final conv = _conversationService.conversationOf(result.id);
+    final errMsg = _conversationService.errorOf(result.id);
     if (errMsg != null || conv == null || conv.messages.isEmpty) {
       throw Exception(errMsg ?? '对话启动失败');
     }
@@ -183,144 +145,11 @@ class AIAnalysisService extends ChangeNotifier {
     return resp;
   }
 
-  // ---- Legacy path (used when conversationService is null) ----
-
-  Future<AnalysisResponse> _analyzeLegacy(
-    DivinationResult result, {
-    String? question,
-    String? providerId,
-    AnalysisType analysisType = AnalysisType.comprehensive,
-    bool? useStreaming,
-    Map<String, dynamic>? customVariables,
-  }) async {
-    await _cancelActiveStreamIfNeeded();
-
-    _currentResultId = result.id;
-    _legacyState = AnalysisState.loading;
-    _legacyContent = '';
-    _legacyError = null;
-    notifyListeners();
-
-    try {
-      final provider = _getProvider(providerId);
-      if (provider == null || !provider.isConfigured) {
-        throw StateError('没有可用的 AI 服务，请先配置 API');
-      }
-
-      final prompt = await _promptAssembler.assemble(
-        result,
-        question: question,
-        analysisType: analysisType,
-        customVariables: customVariables,
-      );
-
-      final request = AnalysisRequest(
-        systemPrompt: prompt.systemPrompt,
-        userPrompt: prompt.userPrompt,
-        result: result,
-        userQuestion: question,
-        analysisType: analysisType,
-      );
-
-      final shouldStream =
-          useStreaming ?? await _configManager.isStreamingEnabled();
-
-      if (shouldStream) {
-        return await _analyzeWithStream(provider, request);
-      } else {
-        return await _analyzeSync(provider, request);
-      }
-    } catch (e) {
-      _legacyState = AnalysisState.error;
-      _legacyError = e.toString();
-      notifyListeners();
-      rethrow;
-    }
-  }
-
-  Future<AnalysisResponse> _analyzeSync(
-    LLMProvider provider,
-    AnalysisRequest request,
-  ) async {
-    final response = await provider.analyze(request);
-    _legacyContent = response.content;
-    _lastResponse = response;
-    _legacyState = AnalysisState.completed;
-    notifyListeners();
-    return response;
-  }
-
-  Future<AnalysisResponse> _analyzeWithStream(
-    LLMProvider provider,
-    AnalysisRequest request,
-  ) async {
-    final stream = provider.analyzeStream(request);
-    if (stream == null) {
-      return _analyzeSync(provider, request);
-    }
-
-    _legacyState = AnalysisState.streaming;
-    notifyListeners();
-
-    final stopwatch = Stopwatch()..start();
-    final buffer = StringBuffer();
-    final completer = Completer<AnalysisResponse>();
-    _pendingStreamCompleter = completer;
-
-    _streamSubscription = stream.listen(
-      (chunk) {
-        buffer.write(chunk);
-        _legacyContent = buffer.toString();
-        _safeNotify();
-      },
-      onDone: () {
-        stopwatch.stop();
-        final configModel = provider.getConfigInfo()?['model'];
-        final response = AnalysisResponse(
-          content: buffer.toString(),
-          tokensUsed: 0,
-          latency: stopwatch.elapsed,
-          model: configModel is String ? configModel : '',
-          providerId: provider.id,
-        );
-        _lastResponse = response;
-        _legacyState = AnalysisState.completed;
-        _pendingStreamCompleter = null;
-        _streamSubscription = null;
-        notifyListeners();
-        completer.complete(response);
-      },
-      onError: (Object error) {
-        stopwatch.stop();
-        _legacyState = AnalysisState.error;
-        _legacyError = error.toString();
-        _pendingStreamCompleter = null;
-        _streamSubscription = null;
-        notifyListeners();
-        completer.completeError(error);
-      },
-      cancelOnError: true,
-    );
-
-    return completer.future;
-  }
-
-  // ---- End legacy path ----
-
   /// 取消当前分析
   Future<void> cancelAnalysis() async {
-    final cs = _conversationService;
-    if (cs != null) {
-      final id = _currentResultId;
-      if (id != null) {
-        await cs.stop(id);
-      }
-    } else {
-      await _cancelActiveStreamIfNeeded();
-      if (isAnalyzing) {
-        _legacyState = AnalysisState.idle;
-        notifyListeners();
-      }
+    final id = _currentResultId;
+    if (id != null) {
+      await _conversationService.stop(id);
     }
   }
 
@@ -328,32 +157,11 @@ class AIAnalysisService extends ChangeNotifier {
   void clearResult() {
     _currentResultId = null;
     _lastResponse = null;
-    _legacyState = AnalysisState.idle;
-    _legacyContent = '';
-    _legacyError = null;
+    _pendingState = AnalysisState.idle;
     notifyListeners();
   }
 
   // ==================== Provider 管理 ====================
-
-  void _safeNotify() {
-    final phase = SchedulerBinding.instance.schedulerPhase;
-    if (phase == SchedulerPhase.persistentCallbacks ||
-        phase == SchedulerPhase.midFrameMicrotasks) {
-      SchedulerBinding.instance.addPostFrameCallback((_) {
-        notifyListeners();
-      });
-    } else {
-      notifyListeners();
-    }
-  }
-
-  LLMProvider? _getProvider(String? providerId) {
-    if (providerId != null) {
-      return _providerRegistry.getProvider(providerId);
-    }
-    return _providerRegistry.getAvailableProvider();
-  }
 
   /// 获取所有提供者信息
   List<LLMProviderInfo> getProvidersInfo() {
@@ -498,19 +306,7 @@ class AIAnalysisService extends ChangeNotifier {
 
   @override
   void dispose() {
-    _conversationService?.removeListener(_onConversationChanged);
-    _streamSubscription?.cancel();
+    _conversationService.removeListener(_onConversationChanged);
     super.dispose();
-  }
-
-  Future<void> _cancelActiveStreamIfNeeded() async {
-    await _streamSubscription?.cancel();
-    _streamSubscription = null;
-
-    final completer = _pendingStreamCompleter;
-    if (completer != null && !completer.isCompleted) {
-      completer.completeError(StateError('分析已取消'));
-    }
-    _pendingStreamCompleter = null;
   }
 }

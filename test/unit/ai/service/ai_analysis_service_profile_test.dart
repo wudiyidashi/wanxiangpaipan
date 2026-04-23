@@ -87,7 +87,6 @@ void main() {
       );
       analysisService = AIAnalysisService(
         providerRegistry: providerRegistry,
-        promptAssembler: promptAssembler,
         configManager: configManager,
         conversationService: conversationService,
       );

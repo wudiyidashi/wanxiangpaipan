@@ -8,6 +8,8 @@ import 'package:wanxiang_paipan/ai/llm_provider_registry.dart';
 import 'package:wanxiang_paipan/ai/output/formatters/xiaoliuren_formatter.dart';
 import 'package:wanxiang_paipan/ai/output/structured_output_formatter.dart';
 import 'package:wanxiang_paipan/ai/service/ai_analysis_service.dart';
+import 'package:wanxiang_paipan/ai/service/ai_conversation_service.dart';
+import 'package:wanxiang_paipan/ai/service/chat_repository.dart';
 import 'package:wanxiang_paipan/ai/service/prompt_assembler.dart';
 import 'package:wanxiang_paipan/data/database/app_database.dart';
 import 'package:wanxiang_paipan/divination_systems/xiaoliuren/models/xiaoliuren_result.dart';
@@ -137,9 +139,10 @@ class _FakeRepository implements DivinationRepository {
 }
 
 class _FakeStreamingProvider implements LLMProvider {
-  _FakeStreamingProvider(this.responsesByResultId);
+  _FakeStreamingProvider(this.fixedContent);
 
-  final Map<String, String> responsesByResultId;
+  /// Content returned for every chat/chatStream call.
+  final String fixedContent;
 
   @override
   String get id => 'fake_provider';
@@ -164,9 +167,8 @@ class _FakeStreamingProvider implements LLMProvider {
 
   @override
   Future<AnalysisResponse> analyze(AnalysisRequest request) async {
-    final content = responsesByResultId[request.result.id] ?? '默认分析';
     return AnalysisResponse(
-      content: content,
+      content: fixedContent,
       tokensUsed: 0,
       latency: Duration.zero,
       model: defaultModel,
@@ -176,20 +178,23 @@ class _FakeStreamingProvider implements LLMProvider {
 
   @override
   Stream<String>? analyzeStream(AnalysisRequest request) {
-    final content = responsesByResultId[request.result.id] ?? '默认分析';
-    return Stream<String>.fromIterable([content]);
+    return Stream<String>.fromIterable([fixedContent]);
   }
 
   @override
   Future<ChatResponse> chat(ChatRequest request) async {
-    throw UnimplementedError(
-        '_FakeStreamingProvider only exercises streaming via analyzeStream');
+    return ChatResponse(
+      content: fixedContent,
+      tokensUsed: 0,
+      latency: Duration.zero,
+      model: defaultModel,
+      providerId: id,
+    );
   }
 
   @override
   Stream<String>? chatStream(ChatRequest request) {
-    throw UnimplementedError(
-        '_FakeStreamingProvider only exercises streaming via analyzeStream');
+    return Stream<String>.fromIterable([fixedContent]);
   }
 
   @override
@@ -249,19 +254,26 @@ void main() {
       providerRegistry = LLMProviderRegistry.instance;
       providerRegistry.clear();
       providerRegistry.register(
-        _FakeStreamingProvider({
-          resultA.id: '结果A分析内容',
-          resultB.id: '结果B分析内容',
-        }),
+        _FakeStreamingProvider('结果A分析内容'),
+      );
+
+      final promptAssembler = PromptAssembler(
+        configManager: configManager,
+        formatterRegistry: StructuredOutputFormatterRegistry.instance,
+      );
+      final secureStorageForChat = MockSecureStorage();
+      final chatRepository = ChatRepository(secureStorage: secureStorageForChat);
+      final conversationService = AIConversationService(
+        providerRegistry: providerRegistry,
+        promptAssembler: promptAssembler,
+        configManager: configManager,
+        chatRepository: chatRepository,
       );
 
       analysisService = AIAnalysisService(
         providerRegistry: providerRegistry,
-        promptAssembler: PromptAssembler(
-          configManager: configManager,
-          formatterRegistry: StructuredOutputFormatterRegistry.instance,
-        ),
         configManager: configManager,
+        conversationService: conversationService,
       );
 
       repository = _FakeRepository();
