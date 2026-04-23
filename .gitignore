@@ -112,3 +112,6 @@ package-lock.json
 .bmad-core/
 .claude/
 
+# Git worktrees (isolated subagent workspaces)
+.worktrees/
+
