@@ -307,6 +307,43 @@ void main() {
       expect(conv!.castSnapshot, isNotNull);
       expect(conv.messages, hasLength(3));
     });
+
+    test('并发 sendFollowUp: 第二次调用会取消第一次的流', () async {
+      final service = await _startService();
+
+      final firstController = StreamController<String>();
+      var firstStreamCancelled = false;
+      firstController.onCancel = () {
+        firstStreamCancelled = true;
+      };
+
+      // 第一次 sendFollowUp: 启动但不等待（流保持开启）
+      when(() => provider.chatStream(any()))
+          .thenAnswer((_) => firstController.stream);
+      // 不 await，让第一次流保持 pending
+      unawaited(service.sendFollowUp('r1', '第一条追问'));
+
+      // 给第一次请求时间设置流订阅
+      await Future<void>.delayed(const Duration(milliseconds: 10));
+
+      // 第二次 sendFollowUp: 应该取消第一次订阅
+      when(() => provider.chatStream(any()))
+          .thenAnswer((_) => Stream.fromIterable(['第二次回复']));
+      await service.sendFollowUp('r1', '第二条追问');
+
+      // 第二次 sendFollowUp 内部调用了 _cancelStream，onCancel 应已触发
+      expect(firstStreamCancelled, isTrue,
+          reason: '第二次 sendFollowUp 应该取消第一次的流订阅');
+
+      // 关闭第一个 controller 以释放资源
+      await firstController.close();
+
+      // 验证最终状态反映第二次请求
+      final conv = service.conversationOf('r1');
+      expect(conv, isNotNull);
+      // 第二次应该产生 user + assistant 消息（新增 2 条到列表末尾）
+      expect(conv!.messages.last.content, '第二次回复');
+    });
   });
 
   group('AIConversationService lifecycle', () {
