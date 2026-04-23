@@ -210,4 +210,102 @@ void main() {
       expect(service.errorOf('r3'), isNotNull);
     });
   });
+
+  group('AIConversationService.sendFollowUp', () {
+    late _MockProvider provider;
+    late _MockAssembler assembler;
+    late _MockConfig config;
+    late ChatRepository repo;
+    late _MockSecureStorage storage;
+
+    setUp(() {
+      provider = _MockProvider();
+      assembler = _MockAssembler();
+      config = _MockConfig();
+      storage = _MockSecureStorage();
+      repo = ChatRepository(secureStorage: storage);
+      when(() => provider.id).thenReturn('openai_compatible');
+      when(() => provider.isConfigured).thenReturn(true);
+      when(() => provider.getConfigInfo()).thenReturn({'model': 'gpt-4'});
+      when(() => assembler.assemble(any(),
+              question: any(named: 'question'),
+              analysisType: any(named: 'analysisType'),
+              customVariables: any(named: 'customVariables')))
+          .thenAnswer((_) async => _fakePrompt());
+    });
+
+    Future<AIConversationService> _startService() async {
+      when(() => provider.chatStream(any())).thenAnswer(
+        (_) => Stream.fromIterable(['初始分析']),
+      );
+      final service = _makeService(
+        provider: provider,
+        repo: repo,
+        assembler: assembler,
+        config: config,
+      );
+      await service.startConversation(_FakeResult('r1'));
+      return service;
+    }
+
+    test('正常追问：追加 user + assistant，流式内容累加', () async {
+      final service = await _startService();
+      when(() => provider.chatStream(any())).thenAnswer(
+        (_) => Stream.fromIterable(['回', '复']),
+      );
+
+      await service.sendFollowUp('r1', '为什么？');
+
+      final conv = service.conversationOf('r1');
+      expect(conv!.messages, hasLength(3));
+      expect(conv.messages[1].role, ChatRole.user);
+      expect(conv.messages[1].content, '为什么？');
+      expect(conv.messages[1].status, ChatMessageStatus.sent);
+      expect(conv.messages[2].role, ChatRole.assistant);
+      expect(conv.messages[2].content, '回复');
+      expect(conv.messages[2].status, ChatMessageStatus.sent);
+    });
+
+    test('流式失败：user 和 assistant 都标记 failed', () async {
+      final service = await _startService();
+      when(() => provider.chatStream(any())).thenAnswer(
+        (_) => Stream.error(Exception('boom')),
+      );
+
+      await service.sendFollowUp('r1', '追问');
+
+      final conv = service.conversationOf('r1');
+      expect(conv!.messages[1].status, ChatMessageStatus.failed);
+      expect(conv.messages[2].status, ChatMessageStatus.failed);
+      expect(service.errorOf('r1'), contains('boom'));
+    });
+
+    test('castSnapshot 为 null 时（legacy 恢复）先重新组装再发请求', () async {
+      // 直接注入 legacy 状态
+      storage = _MockSecureStorage();
+      await storage.write('interpretation_r1', 'legacy 初始分析');
+      repo = ChatRepository(secureStorage: storage);
+      final service = _makeService(
+        provider: provider,
+        repo: repo,
+        assembler: assembler,
+        config: config,
+      );
+      await service.loadIfNeeded('r1',
+          legacySystemType: DivinationType.liuYao);
+      // 此时 castSnapshot 为 null
+
+      // 模拟 follow-up
+      when(() => provider.chatStream(any()))
+          .thenAnswer((_) => Stream.fromIterable(['ok']));
+
+      // sendFollowUp 需要 DivinationResult 以便组装 prompt
+      await service.sendFollowUp('r1', '再问',
+          fallbackResult: _FakeResult('r1'));
+
+      final conv = service.conversationOf('r1');
+      expect(conv!.castSnapshot, isNotNull);
+      expect(conv.messages, hasLength(3));
+    });
+  });
 }

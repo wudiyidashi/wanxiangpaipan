@@ -11,6 +11,7 @@ import '../model/ai_chat_message.dart';
 import '../model/ai_conversation.dart';
 import '../model/cast_snapshot.dart';
 import 'chat_repository.dart';
+import 'chat_request_builder.dart';
 import 'prompt_assembler.dart';
 import '../../domain/divination_system.dart';
 
@@ -183,6 +184,156 @@ class AIConversationService extends ChangeNotifier {
         _cache[result.id] = conv;
         _errors[result.id] = err.toString();
         _activeStreams.remove(result.id);
+        await _chatRepository.save(conv);
+        _safeNotify();
+        if (!completer.isCompleted) completer.complete();
+      },
+      cancelOnError: true,
+    );
+
+    return completer.future;
+  }
+
+  // ==================== sendFollowUp ====================
+
+  Future<void> sendFollowUp(
+    String resultId,
+    String userText, {
+    DivinationResult? fallbackResult,
+  }) async {
+    final existing = _cache[resultId];
+    if (existing == null) {
+      _errors[resultId] = '对话不存在';
+      notifyListeners();
+      return;
+    }
+
+    await _cancelStream(resultId);
+    _errors.remove(resultId);
+
+    // 若 legacy 状态：重新组装 castSnapshot
+    var conv = existing;
+    if (conv.castSnapshot == null) {
+      if (fallbackResult == null) {
+        _errors[resultId] =
+            '对话缺少 castSnapshot，需要 fallbackResult 重新组装';
+        notifyListeners();
+        return;
+      }
+      try {
+        final prompt = await _promptAssembler.assemble(fallbackResult);
+        final modelName =
+            (_providerRegistry.getAvailableProvider()?.getConfigInfo()?['model']
+                    as String?) ??
+                '';
+        conv = conv.copyWith(
+          castSnapshot: CastSnapshot(
+            systemPrompt: prompt.systemPrompt,
+            castUserPrompt: prompt.userPrompt,
+            model: modelName,
+            assembledAt: DateTime.now(),
+          ),
+        );
+      } catch (e) {
+        _errors[resultId] = '组装 prompt 失败: $e';
+        notifyListeners();
+        return;
+      }
+    }
+
+    final provider = _providerRegistry.getAvailableProvider();
+    if (provider == null || !provider.isConfigured) {
+      _errors[resultId] = '没有可用的 AI 服务';
+      notifyListeners();
+      return;
+    }
+
+    // 追加 user 消息 (sending)
+    final userMsg = AIChatMessage(
+      id: _newId(),
+      role: ChatRole.user,
+      content: userText,
+      timestamp: DateTime.now(),
+      status: ChatMessageStatus.sending,
+    );
+    // 追加 assistant 占位 (streaming)
+    final assistantMsg = AIChatMessage(
+      id: _newId(),
+      role: ChatRole.assistant,
+      content: '',
+      timestamp: DateTime.now(),
+      status: ChatMessageStatus.streaming,
+    );
+    conv = conv.copyWith(
+      messages: [...conv.messages, userMsg, assistantMsg],
+      updatedAt: DateTime.now(),
+    );
+    _cache[resultId] = conv;
+    notifyListeners();
+
+    // 组装 messages 发请求
+    final chatMessages = ChatRequestBuilder.build(conv);
+    final stream = provider.chatStream(ChatRequest(messages: chatMessages));
+
+    if (stream == null) {
+      try {
+        final resp =
+            await provider.chat(ChatRequest(messages: chatMessages));
+        conv = _updateMessage(conv, userMsg.id,
+            status: ChatMessageStatus.sent);
+        conv = _updateMessage(conv, assistantMsg.id,
+            content: resp.content, status: ChatMessageStatus.sent);
+        _cache[resultId] = conv;
+        await _chatRepository.save(conv);
+        _safeNotify();
+      } catch (e) {
+        conv = _updateMessage(conv, userMsg.id,
+            status: ChatMessageStatus.failed, errorMessage: e.toString());
+        conv = _updateMessage(conv, assistantMsg.id,
+            status: ChatMessageStatus.failed, errorMessage: e.toString());
+        _cache[resultId] = conv;
+        _errors[resultId] = e.toString();
+        await _chatRepository.save(conv);
+        _safeNotify();
+      }
+      return;
+    }
+
+    final completer = Completer<void>();
+    final buffer = StringBuffer();
+
+    _activeStreams[resultId] = stream.listen(
+      (chunk) {
+        buffer.write(chunk);
+        conv = _updateMessage(conv, userMsg.id,
+            status: ChatMessageStatus.sent);
+        conv = _updateMessage(conv, assistantMsg.id,
+            content: buffer.toString(),
+            status: ChatMessageStatus.streaming);
+        _cache[resultId] = conv;
+        _safeNotify();
+      },
+      onDone: () async {
+        conv = _updateMessage(conv, userMsg.id,
+            status: ChatMessageStatus.sent);
+        conv = _updateMessage(conv, assistantMsg.id,
+            content: buffer.toString(), status: ChatMessageStatus.sent);
+        _cache[resultId] = conv;
+        _activeStreams.remove(resultId);
+        await _chatRepository.save(conv);
+        _safeNotify();
+        if (!completer.isCompleted) completer.complete();
+      },
+      onError: (Object err) async {
+        conv = _updateMessage(conv, userMsg.id,
+            status: ChatMessageStatus.failed, errorMessage: err.toString());
+        conv = _updateMessage(conv, assistantMsg.id,
+            content: buffer.toString(),
+            status: ChatMessageStatus.failed,
+            errorMessage: err.toString());
+        _cache[resultId] = conv;
+        _errors[resultId] = err.toString();
+        _activeStreams.remove(resultId);
         await _chatRepository.save(conv);
         _safeNotify();
         if (!completer.isCompleted) completer.complete();
