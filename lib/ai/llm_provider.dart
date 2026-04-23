@@ -163,6 +163,18 @@ abstract class LLMProvider {
   /// 返回 null 表示不支持流式分析
   Stream<String>? analyzeStream(AnalysisRequest request) => null;
 
+  /// 多轮对话（非流式）
+  ///
+  /// 异常：
+  /// - [StateError]: 如果提供者未配置
+  /// - [Exception]: 如果 API 调用失败
+  Future<ChatResponse> chat(ChatRequest request);
+
+  /// 流式多轮对话（可选实现）
+  ///
+  /// 返回 null 表示不支持流式
+  Stream<String>? chatStream(ChatRequest request) => null;
+
   /// 验证配置是否有效
   ///
   /// 返回 true 表示配置有效，API 可用
@@ -199,5 +211,47 @@ class LLMProviderInfo {
     required this.status,
     required this.supportedModels,
     this.currentModel,
+  });
+}
+
+/// Provider 侧的聊天消息（独立于 UI 层的 AIChatMessage，避免循环依赖）
+class ProviderChatMessage {
+  final String role; // 'system' / 'user' / 'assistant'
+  final String content;
+
+  const ProviderChatMessage({required this.role, required this.content});
+
+  const ProviderChatMessage.system(this.content) : role = 'system';
+  const ProviderChatMessage.user(this.content) : role = 'user';
+  const ProviderChatMessage.assistant(this.content) : role = 'assistant';
+}
+
+/// 多轮对话请求
+class ChatRequest {
+  final List<ProviderChatMessage> messages;
+  final double? temperature;
+  final int? maxTokens;
+
+  const ChatRequest({
+    required this.messages,
+    this.temperature,
+    this.maxTokens,
+  });
+}
+
+/// 多轮对话响应
+class ChatResponse {
+  final String content;
+  final int tokensUsed;
+  final Duration latency;
+  final String model;
+  final String providerId;
+
+  const ChatResponse({
+    required this.content,
+    required this.tokensUsed,
+    required this.latency,
+    required this.model,
+    required this.providerId,
   });
 }
