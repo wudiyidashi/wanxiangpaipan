@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_markdown/flutter_markdown.dart';
 import 'package:provider/provider.dart';
 import '../../ai/service/ai_analysis_service.dart';
@@ -120,6 +121,14 @@ class _AIAnalysisWidgetState extends State<AIAnalysisWidget> {
                   ),
             ),
           ),
+          // 复制按钮
+          if (isConfigured && !isAnalyzing)
+            IconButton(
+              icon: const Icon(Icons.copy_outlined, size: 20),
+              tooltip: '复制发送内容',
+              onPressed: () => _copyPrompt(context),
+              visualDensity: VisualDensity.compact,
+            ),
           // 预览按钮
           if (isConfigured && !isAnalyzing)
             IconButton(
@@ -311,8 +320,7 @@ class _AIAnalysisWidgetState extends State<AIAnalysisWidget> {
     });
   }
 
-  Future<void> _showPreview(BuildContext context) async {
-    String previewContent;
+  Future<String> _assemblePromptPreview() async {
     try {
       final assembler = PromptAssembler(
         configManager: AIBootstrap.configManager,
@@ -320,11 +328,27 @@ class _AIAnalysisWidgetState extends State<AIAnalysisWidget> {
       );
       final prompt =
           await assembler.assemble(widget.result, question: widget.question);
-      previewContent =
-          '--- 系统提示词 ---\n${prompt.systemPrompt}\n\n--- 用户提示词 ---\n${prompt.userPrompt}';
+      return '--- 系统提示词 ---\n${prompt.systemPrompt}\n\n--- 用户提示词 ---\n${prompt.userPrompt}';
     } catch (e) {
-      previewContent = '无法生成预览: $e';
+      return '无法生成预览: $e';
     }
+  }
+
+  Future<void> _copyPrompt(BuildContext context) async {
+    final messenger = ScaffoldMessenger.maybeOf(context);
+    final content = await _assemblePromptPreview();
+    await Clipboard.setData(ClipboardData(text: content));
+    if (!mounted) return;
+    messenger?.showSnackBar(
+      const SnackBar(
+        content: Text('已复制发送内容到剪贴板'),
+        duration: Duration(seconds: 2),
+      ),
+    );
+  }
+
+  Future<void> _showPreview(BuildContext context) async {
+    final previewContent = await _assemblePromptPreview();
 
     if (!context.mounted) return;
     showModalBottomSheet<void>(
