@@ -57,4 +57,38 @@ void main() {
     await tester.tap(find.byTooltip('复制本条'));
     expect(copied, isTrue);
   });
+
+  testWidgets('streaming + 空内容：显示思考中的打字点动画', (tester) async {
+    await tester.pumpWidget(_wrap(
+      AIChatBubble(
+        message: _m(ChatRole.assistant, '', ChatMessageStatus.streaming),
+      ),
+    ));
+    await tester.pump(const Duration(milliseconds: 50));
+    expect(find.byKey(const Key('typing_dots')), findsOneWidget);
+    expect(find.byKey(const Key('blinking_cursor')), findsNothing);
+  });
+
+  testWidgets('streaming + 有内容：显示内容 + 闪烁光标', (tester) async {
+    await tester.pumpWidget(_wrap(
+      AIChatBubble(
+        message: _m(ChatRole.assistant, '正在输出…', ChatMessageStatus.streaming),
+      ),
+    ));
+    await tester.pump(const Duration(milliseconds: 50));
+    expect(find.textContaining('正在输出'), findsOneWidget);
+    expect(find.byKey(const Key('blinking_cursor')), findsOneWidget);
+    expect(find.byKey(const Key('typing_dots')), findsNothing);
+  });
+
+  testWidgets('sent 状态：打字点和光标都不显示', (tester) async {
+    await tester.pumpWidget(_wrap(
+      AIChatBubble(
+        message: _m(ChatRole.assistant, '已完成'),
+      ),
+    ));
+    await tester.pump(const Duration(milliseconds: 50));
+    expect(find.byKey(const Key('typing_dots')), findsNothing);
+    expect(find.byKey(const Key('blinking_cursor')), findsNothing);
+  });
 }

@@ -18,6 +18,32 @@ class AIChatBubble extends StatelessWidget {
   });
 
   bool get _isUser => message.role == ChatRole.user;
+  bool get _isStreaming => message.status == ChatMessageStatus.streaming;
+
+  Widget _buildAssistantContent() {
+    if (_isStreaming && message.content.isEmpty) {
+      return const Padding(
+        padding: EdgeInsets.symmetric(vertical: 4),
+        child: _TypingDots(key: Key('typing_dots')),
+      );
+    }
+    final body = MarkdownBody(
+      data: message.content,
+      selectable: true,
+      styleSheet: MarkdownStyleSheet(
+        p: AppTextStyles.antiqueBody.copyWith(height: 1.6),
+      ),
+    );
+    if (!_isStreaming) return body;
+    return Row(
+      crossAxisAlignment: CrossAxisAlignment.end,
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        Flexible(child: body),
+        const _BlinkingCursor(key: Key('blinking_cursor')),
+      ],
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -51,14 +77,7 @@ class AIChatBubble extends StatelessWidget {
                           message.content,
                           style: AppTextStyles.antiqueBody,
                         )
-                      : MarkdownBody(
-                          data: message.content,
-                          selectable: true,
-                          styleSheet: MarkdownStyleSheet(
-                            p: AppTextStyles.antiqueBody
-                                .copyWith(height: 1.6),
-                          ),
-                        ),
+                      : _buildAssistantContent(),
                   if (message.status == ChatMessageStatus.failed)
                     Padding(
                       padding: const EdgeInsets.only(top: 6),
@@ -111,6 +130,107 @@ class AIChatBubble extends StatelessWidget {
             ),
           ),
         ],
+      ),
+    );
+  }
+}
+
+/// 三点呼吸动画：等待首个 chunk 时的"思考中"指示。
+class _TypingDots extends StatefulWidget {
+  const _TypingDots({super.key});
+
+  @override
+  State<_TypingDots> createState() => _TypingDotsState();
+}
+
+class _TypingDotsState extends State<_TypingDots>
+    with SingleTickerProviderStateMixin {
+  late final AnimationController _controller;
+
+  @override
+  void initState() {
+    super.initState();
+    _controller = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 1200),
+    )..repeat();
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final color = Theme.of(context).colorScheme.onSurface.withOpacity(0.55);
+    return AnimatedBuilder(
+      animation: _controller,
+      builder: (context, _) {
+        return Row(
+          mainAxisSize: MainAxisSize.min,
+          children: List.generate(3, (i) {
+            final phase = (_controller.value + i / 3) % 1.0;
+            final opacity = (phase < 0.5
+                    ? 0.25 + phase * 1.5
+                    : 1.0 - (phase - 0.5) * 1.5)
+                .clamp(0.25, 1.0);
+            return Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 2),
+              child: Opacity(
+                opacity: opacity,
+                child: Container(
+                  width: 6,
+                  height: 6,
+                  decoration: BoxDecoration(
+                    color: color,
+                    shape: BoxShape.circle,
+                  ),
+                ),
+              ),
+            );
+          }),
+        );
+      },
+    );
+  }
+}
+
+/// 闪烁光标：流式输出进行中时跟在已到达内容末尾。
+class _BlinkingCursor extends StatefulWidget {
+  const _BlinkingCursor({super.key});
+
+  @override
+  State<_BlinkingCursor> createState() => _BlinkingCursorState();
+}
+
+class _BlinkingCursorState extends State<_BlinkingCursor>
+    with SingleTickerProviderStateMixin {
+  late final AnimationController _controller;
+
+  @override
+  void initState() {
+    super.initState();
+    _controller = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 600),
+    )..repeat(reverse: true);
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return FadeTransition(
+      opacity: _controller,
+      child: Text(
+        '▍',
+        style: AppTextStyles.antiqueBody.copyWith(height: 1.6),
       ),
     );
   }
