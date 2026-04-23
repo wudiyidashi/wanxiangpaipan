@@ -13,6 +13,7 @@
 library;
 
 import '../domain/divination_system.dart';
+import 'model/ai_chat_message.dart' show ChatRole;
 
 /// 分析类型枚举
 enum AnalysisType {
@@ -214,19 +215,21 @@ class LLMProviderInfo {
   });
 }
 
-/// Provider 侧的聊天消息（独立于 UI 层的 AIChatMessage，避免循环依赖）
+/// Provider 侧的聊天消息
 class ProviderChatMessage {
-  final String role; // 'system' / 'user' / 'assistant'
+  final ChatRole role;
   final String content;
 
   const ProviderChatMessage({required this.role, required this.content});
 
-  const ProviderChatMessage.system(this.content) : role = 'system';
-  const ProviderChatMessage.user(this.content) : role = 'user';
-  const ProviderChatMessage.assistant(this.content) : role = 'assistant';
+  const ProviderChatMessage.system(this.content) : role = ChatRole.system;
+  const ProviderChatMessage.user(this.content) : role = ChatRole.user;
+  const ProviderChatMessage.assistant(this.content) : role = ChatRole.assistant;
 }
 
 /// 多轮对话请求
+///
+/// - [temperature] 和 [maxTokens] 为 null 时使用提供者默认配置
 class ChatRequest {
   final List<ProviderChatMessage> messages;
   final double? temperature;
