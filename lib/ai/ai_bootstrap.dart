@@ -12,6 +12,8 @@ import 'output/formatters/daliuren_formatter.dart';
 import 'output/formatters/meihua_formatter.dart';
 import 'output/formatters/xiaoliuren_formatter.dart';
 import 'providers/openai_compatible_provider.dart';
+import 'service/ai_conversation_service.dart';
+import 'service/chat_repository.dart';
 import 'service/prompt_assembler.dart';
 import 'service/ai_analysis_service.dart';
 import '../data/database/app_database.dart';
@@ -31,6 +33,8 @@ class AIBootstrap {
   AIBootstrap._();
 
   static AIConfigManager? _configManager;
+  static ChatRepository? _chatRepository;
+  static AIConversationService? _conversationService;
   static AIAnalysisService? _analysisService;
   static bool _initialized = false;
 
@@ -44,6 +48,24 @@ class AIBootstrap {
           'AI module not initialized. Call AIBootstrap.initialize() first.');
     }
     return _configManager!;
+  }
+
+  /// 获取聊天仓库
+  static ChatRepository get chatRepository {
+    if (_chatRepository == null) {
+      throw StateError(
+          'AI module not initialized. Call AIBootstrap.initialize() first.');
+    }
+    return _chatRepository!;
+  }
+
+  /// 获取对话服务
+  static AIConversationService get conversationService {
+    if (_conversationService == null) {
+      throw StateError(
+          'AI module not initialized. Call AIBootstrap.initialize() first.');
+    }
+    return _conversationService!;
   }
 
   /// 获取分析服务
@@ -94,11 +116,20 @@ class AIBootstrap {
       formatterRegistry: StructuredOutputFormatterRegistry.instance,
     );
 
-    // 7. 创建分析服务
-    _analysisService = AIAnalysisService(
+    // 7. 创建聊天仓库和对话服务
+    _chatRepository = ChatRepository(secureStorage: secureStorage);
+    _conversationService = AIConversationService(
       providerRegistry: LLMProviderRegistry.instance,
       promptAssembler: promptAssembler,
       configManager: _configManager!,
+      chatRepository: _chatRepository!,
+    );
+
+    // 8. 创建分析服务
+    _analysisService = AIAnalysisService(
+      providerRegistry: LLMProviderRegistry.instance,
+      configManager: _configManager!,
+      conversationService: _conversationService!,
     );
 
     _initialized = true;
@@ -170,6 +201,9 @@ class AIBootstrap {
   /// 重置 AI 模块（用于测试）
   static void reset() {
     _configManager = null;
+    _chatRepository = null;
+    _conversationService?.dispose();
+    _conversationService = null;
     _analysisService?.dispose();
     _analysisService = null;
     _initialized = false;

@@ -27,6 +27,7 @@ import 'divination_systems/daliuren/viewmodels/daliuren_viewmodel.dart';
 import 'divination_systems/registry_bootstrap.dart';
 import 'ai/ai_bootstrap.dart';
 import 'ai/service/ai_analysis_service.dart';
+import 'ai/service/ai_conversation_service.dart';
 
 /// 万象排盘应用入口（新架构）
 void main() async {
@@ -138,6 +139,11 @@ class _WanxiangPaipanAppState extends State<WanxiangPaipanApp> {
           ChangeNotifierProvider<AIAnalysisService>.value(
             value: _aiService!,
           ),
+        ChangeNotifierProvider<AIConversationService?>.value(
+          value: AIBootstrap.isInitialized
+              ? AIBootstrap.conversationService
+              : null,
+        ),
 
         // ==================== 六爻系统 ====================
         Provider<LiuYaoSystem>(
