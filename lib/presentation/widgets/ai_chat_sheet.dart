@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 
+import '../../core/theme/app_colors.dart';
+
 import '../../ai/model/ai_chat_message.dart';
 import '../../ai/model/ai_conversation.dart';
 import '../../ai/service/ai_conversation_service.dart';
@@ -26,6 +28,7 @@ class AIChatSheet extends StatefulWidget {
 
 class _AIChatSheetState extends State<AIChatSheet> {
   final _scrollController = ScrollController();
+  int _lastMessageCount = 0;
 
   @override
   void dispose() {
@@ -76,7 +79,11 @@ class _AIChatSheetState extends State<AIChatSheet> {
     final isStreaming = service.isStreaming(widget.resultId);
     final error = service.errorOf(widget.resultId);
 
-    if (conv != null) _scrollToBottom();
+    final currentCount = conv?.messages.length ?? 0;
+    if (currentCount > _lastMessageCount) {
+      _lastMessageCount = currentCount;
+      _scrollToBottom();
+    }
 
     return DraggableScrollableSheet(
       initialChildSize: 0.85,
@@ -114,10 +121,11 @@ class _AIChatSheetState extends State<AIChatSheet> {
             if (error != null)
               Container(
                 padding: const EdgeInsets.all(8),
-                color: Colors.orange.withOpacity(0.1),
+                color: AppColors.warning.withOpacity(0.1), // domain: error/warning tint (警告色 token)
                 width: double.infinity,
                 child: Text(error,
-                    style: const TextStyle(color: Colors.redAccent)),
+                    style: const TextStyle(
+                        color: AppColors.zhusha)), // domain: error/warning text (朱砂 danger color)
               ),
             AIChatInputBar(
               isStreaming: isStreaming,

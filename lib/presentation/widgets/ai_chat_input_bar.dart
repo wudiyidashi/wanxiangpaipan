@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import '../../core/theme/app_colors.dart';
+
 class AIChatInputBar extends StatefulWidget {
   final bool isStreaming;
   final void Function(String text) onSend;
@@ -83,7 +85,7 @@ class _AIChatInputBarState extends State<AIChatInputBar> {
                 key: const Key('stop_btn'),
                 icon: const Icon(Icons.stop_circle_outlined),
                 tooltip: '停止生成',
-                color: Colors.redAccent,
+                color: AppColors.zhusha, // domain: stop/warning action (朱砂 danger color)
                 onPressed: widget.onStop,
               )
             else

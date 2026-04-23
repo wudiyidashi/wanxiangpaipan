@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_markdown/flutter_markdown.dart';
 
 import '../../ai/model/ai_chat_message.dart';
+import '../../core/theme/app_colors.dart';
 import '../../core/theme/app_text_styles.dart';
 
 class AIChatBubble extends StatelessWidget {
@@ -65,12 +66,14 @@ class AIChatBubble extends StatelessWidget {
                         mainAxisSize: MainAxisSize.min,
                         children: [
                           const Icon(Icons.error_outline,
-                              size: 14, color: Colors.redAccent),
+                              size: 14,
+                              color: AppColors.zhusha), // domain: error/failed state
                           const SizedBox(width: 4),
                           Text(
                             message.errorMessage ?? '发送失败',
                             style: const TextStyle(
-                                fontSize: 12, color: Colors.redAccent),
+                                fontSize: 12,
+                                color: AppColors.zhusha), // domain: error/failed state
                           ),
                           if (onRetry != null) ...[
                             const SizedBox(width: 8),
@@ -83,7 +86,7 @@ class AIChatBubble extends StatelessWidget {
                                   '重试',
                                   style: TextStyle(
                                       fontSize: 12,
-                                      color: Colors.blue,
+                                      color: AppColors.dailan, // domain: interactive retry link (黛蓝 primary action)
                                       decoration:
                                           TextDecoration.underline),
                                 ),
