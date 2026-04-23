@@ -133,6 +133,7 @@ class DivinationRepositoryImpl implements DivinationRepository {
       'question_$id',
       'detail_$id',
       'interpretation_$id',
+      'conversation_$id',
     ]);
 
     return count;
@@ -332,6 +333,7 @@ class DivinationRepositoryImpl implements DivinationRepository {
         'question_$id',
         'detail_$id',
         'interpretation_$id',
+        'conversation_$id',
       ]);
     }
     return encryptedKeys;
