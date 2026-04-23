@@ -9,7 +9,6 @@ import '../../ai/service/prompt_assembler.dart';
 import '../../ai/output/structured_output_formatter.dart';
 import '../../core/theme/app_text_styles.dart';
 import '../../domain/divination_system.dart';
-import '../../domain/repositories/divination_repository.dart';
 import 'ai_chat_sheet.dart';
 
 /// AI 分析组件
@@ -239,7 +238,7 @@ class _AIAnalysisWidgetState extends State<AIAnalysisWidget> {
                   (conv?.messages.length ?? 1) - 1;
               final label = followUpCount > 0
                   ? '继续对话 · $followUpCount 条'
-                  : '💬 继续追问';
+                  : '继续追问';
               return Align(
                 alignment: Alignment.centerRight,
                 child: TextButton.icon(
@@ -480,11 +479,9 @@ class _AIAnalysisWidgetState extends State<AIAnalysisWidget> {
       return;
     }
 
-    final repository = _tryReadRepository();
-    if (repository == null) {
-      if (!mounted) {
-        return;
-      }
+    final convService = _tryReadConversationService();
+    if (convService == null) {
+      if (!mounted) return;
       setState(() {
         _persistedContent = '';
         _loadedResultId = widget.result.id;
@@ -500,15 +497,20 @@ class _AIAnalysisWidgetState extends State<AIAnalysisWidget> {
     }
 
     final resultId = widget.result.id;
-    final content = (await repository.readEncryptedField(
-              'interpretation_$resultId',
-            ) ??
-            '')
-        .trim();
+    // 读新 conversation_<id>；ChatRepository 内部会在只有旧 interpretation_<id> 时
+    // 回退构造一个单条 assistant 消息的 legacy 对话。
+    final conv = await convService.loadIfNeeded(
+      resultId,
+      legacySystemType: widget.result.systemType,
+    );
 
     if (!mounted || widget.result.id != resultId) {
       return;
     }
+
+    final content = (conv != null && conv.messages.isNotEmpty)
+        ? conv.messages.first.content.trim()
+        : '';
 
     setState(() {
       _persistedContent = content;
@@ -517,9 +519,9 @@ class _AIAnalysisWidgetState extends State<AIAnalysisWidget> {
     });
   }
 
-  DivinationRepository? _tryReadRepository() {
+  AIConversationService? _tryReadConversationService() {
     try {
-      return context.read<DivinationRepository>();
+      return context.read<AIConversationService>();
     } catch (_) {
       return null;
     }

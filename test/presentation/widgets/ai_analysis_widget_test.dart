@@ -219,6 +219,7 @@ void main() {
     late AIAnalysisService analysisService;
     late AIConversationService conversationService;
     late _FakeRepository repository;
+    late MockSecureStorage secureStorageForChat;
     late XiaoLiuRenResult resultA;
     late XiaoLiuRenResult resultB;
 
@@ -262,7 +263,7 @@ void main() {
         configManager: configManager,
         formatterRegistry: StructuredOutputFormatterRegistry.instance,
       );
-      final secureStorageForChat = MockSecureStorage();
+      secureStorageForChat = MockSecureStorage();
       final chatRepository = ChatRepository(secureStorage: secureStorageForChat);
       conversationService = AIConversationService(
         providerRegistry: providerRegistry,
@@ -278,7 +279,9 @@ void main() {
       );
 
       repository = _FakeRepository();
-      await repository.saveEncryptedField(
+      // 遗留的"interpretation_<id>" blob 必须种到 ChatRepository 读的 secure
+      // storage 里——widget 已改为通过 AIConversationService.loadIfNeeded 读取。
+      await secureStorageForChat.write(
           'interpretation_${resultB.id}', '历史B分析');
     });
 
