@@ -217,6 +217,7 @@ void main() {
     late AIConfigManager configManager;
     late LLMProviderRegistry providerRegistry;
     late AIAnalysisService analysisService;
+    late AIConversationService conversationService;
     late _FakeRepository repository;
     late XiaoLiuRenResult resultA;
     late XiaoLiuRenResult resultB;
@@ -263,7 +264,7 @@ void main() {
       );
       final secureStorageForChat = MockSecureStorage();
       final chatRepository = ChatRepository(secureStorage: secureStorageForChat);
-      final conversationService = AIConversationService(
+      conversationService = AIConversationService(
         providerRegistry: providerRegistry,
         promptAssembler: promptAssembler,
         configManager: configManager,
@@ -283,6 +284,7 @@ void main() {
 
     tearDown(() async {
       analysisService.dispose();
+      conversationService.dispose();
       providerRegistry.clear();
       StructuredOutputFormatterRegistry.instance.clear();
       await database.close();
@@ -292,6 +294,7 @@ void main() {
       await tester.pumpWidget(
         _buildApp(
           analysisService: analysisService,
+          conversationService: conversationService,
           repository: repository,
           result: resultA,
         ),
@@ -314,6 +317,7 @@ void main() {
       await tester.pumpWidget(
         _buildApp(
           analysisService: analysisService,
+          conversationService: conversationService,
           repository: repository,
           result: resultB,
         ),
@@ -326,6 +330,7 @@ void main() {
       await tester.pumpWidget(
         _buildApp(
           analysisService: analysisService,
+          conversationService: conversationService,
           repository: repository,
           result: resultA,
         ),
@@ -340,12 +345,15 @@ void main() {
 
 Widget _buildApp({
   required AIAnalysisService analysisService,
+  required AIConversationService conversationService,
   required DivinationRepository repository,
   required DivinationResult result,
 }) {
   return MultiProvider(
     providers: [
       ChangeNotifierProvider<AIAnalysisService>.value(value: analysisService),
+      ChangeNotifierProvider<AIConversationService>.value(
+          value: conversationService),
       Provider<DivinationRepository>.value(value: repository),
     ],
     child: MaterialApp(

@@ -3,12 +3,14 @@ import 'package:flutter/services.dart';
 import 'package:flutter_markdown/flutter_markdown.dart';
 import 'package:provider/provider.dart';
 import '../../ai/service/ai_analysis_service.dart';
+import '../../ai/service/ai_conversation_service.dart';
 import '../../ai/ai_bootstrap.dart';
 import '../../ai/service/prompt_assembler.dart';
 import '../../ai/output/structured_output_formatter.dart';
 import '../../core/theme/app_text_styles.dart';
 import '../../domain/divination_system.dart';
 import '../../domain/repositories/divination_repository.dart';
+import 'ai_chat_sheet.dart';
 
 /// AI 分析组件
 ///
@@ -145,7 +147,7 @@ class _AIAnalysisWidgetState extends State<AIAnalysisWidget> {
                 size: 20,
               ),
               tooltip: hasContent ? '重新分析' : '开始分析',
-              onPressed: () => _startAnalysis(context, aiService),
+              onPressed: () => _startOrRestart(context, aiService),
               visualDensity: VisualDensity.compact,
             ),
           // 加载指示器
@@ -228,12 +230,35 @@ class _AIAnalysisWidgetState extends State<AIAnalysisWidget> {
               ),
             ),
 
+          // 继续追问入口
+          if (!isAnalyzing && error == null && content.isNotEmpty)
+            Builder(builder: (context) {
+              final convService = context.watch<AIConversationService?>();
+              final conv = convService?.conversationOf(widget.result.id);
+              final followUpCount =
+                  (conv?.messages.length ?? 1) - 1;
+              final label = followUpCount > 0
+                  ? '继续对话 · $followUpCount 条'
+                  : '💬 继续追问';
+              return Align(
+                alignment: Alignment.centerRight,
+                child: TextButton.icon(
+                  onPressed: () => _openChatSheet(context),
+                  icon: const Icon(Icons.chat_bubble_outline, size: 16),
+                  label: Text(
+                    label,
+                    style: AppTextStyles.antiqueLabel.copyWith(fontSize: 12),
+                  ),
+                ),
+              );
+            }),
+
           // 清除按钮
           if (!isAnalyzing && error == null && content.isNotEmpty)
             Align(
               alignment: Alignment.centerRight,
               child: TextButton.icon(
-                onPressed: () => _clearAnalysis(aiService, isCurrentResult),
+                onPressed: () => _clearAnalysisFull(context),
                 icon: const Icon(Icons.clear, size: 16),
                 label: Text('清除',
                     style: AppTextStyles.antiqueLabel.copyWith(fontSize: 12)),
@@ -300,20 +325,59 @@ class _AIAnalysisWidgetState extends State<AIAnalysisWidget> {
     }
   }
 
-  Future<void> _clearAnalysis(
-    AIAnalysisService aiService,
-    bool isCurrentResult,
-  ) async {
-    final repository = _tryReadRepository();
-    if (isCurrentResult) {
-      aiService.clearResult();
+  void _openChatSheet(BuildContext context) {
+    final convService = context.read<AIConversationService>();
+    // 确保先载入（支持老数据恢复）
+    convService.loadIfNeeded(widget.result.id,
+        legacySystemType: widget.result.systemType);
+    showModalBottomSheet<void>(
+      context: context,
+      isScrollControlled: true,
+      useSafeArea: true,
+      builder: (ctx) => ChangeNotifierProvider<AIConversationService>.value(
+        value: convService,
+        child: AIChatSheet(
+          resultId: widget.result.id,
+          fallbackResult: widget.result,
+        ),
+      ),
+    );
+  }
+
+  Future<void> _startOrRestart(
+      BuildContext context, AIAnalysisService aiService) async {
+    final convService = context.read<AIConversationService>();
+    final conv = convService.conversationOf(widget.result.id);
+    if (conv != null && conv.messages.length > 1) {
+      final ok = await showDialog<bool>(
+        context: context,
+        builder: (ctx) => AlertDialog(
+          title: const Text('重新分析'),
+          content: const Text('重新分析会清空当前对话的所有追问内容。确定吗？'),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(ctx, false),
+              child: const Text('取消'),
+            ),
+            TextButton(
+              onPressed: () => Navigator.pop(ctx, true),
+              child: const Text('确认'),
+            ),
+          ],
+        ),
+      );
+      if (ok != true) return;
     }
-    if (repository != null) {
-      await repository.deleteEncryptedField(_interpretationKey);
-    }
-    if (!mounted) {
-      return;
-    }
+    await convService.delete(widget.result.id);
+    if (!mounted) return;
+    // ignore: use_build_context_synchronously
+    await _startAnalysis(context, aiService);
+  }
+
+  Future<void> _clearAnalysisFull(BuildContext context) async {
+    final convService = context.read<AIConversationService>();
+    await convService.delete(widget.result.id);
+    if (!mounted) return;
     setState(() {
       _persistedContent = '';
       _loadedResultId = widget.result.id;
