@@ -181,6 +181,18 @@ class _FakeStreamingProvider implements LLMProvider {
   }
 
   @override
+  Future<ChatResponse> chat(ChatRequest request) async {
+    throw UnimplementedError(
+        '_FakeStreamingProvider only exercises streaming via analyzeStream');
+  }
+
+  @override
+  Stream<String>? chatStream(ChatRequest request) {
+    throw UnimplementedError(
+        '_FakeStreamingProvider only exercises streaming via analyzeStream');
+  }
+
+  @override
   void clearConfig() {}
 
   @override
