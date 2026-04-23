@@ -26,6 +26,8 @@ class AIChatMessage with _$AIChatMessage {
     String? errorMessage,
   }) = _AIChatMessage;
 
+  const AIChatMessage._();
+
   factory AIChatMessage.fromJson(Map<String, dynamic> json) =>
       _$AIChatMessageFromJson(json);
 }
