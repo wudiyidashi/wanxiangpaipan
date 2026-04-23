@@ -10,6 +10,7 @@ library;
 import 'dart:async';
 import 'package:openai_dart/openai_dart.dart';
 import '../llm_provider.dart';
+import '../model/ai_chat_message.dart';
 
 /// OpenAI 兼容配置
 class OpenAICompatibleConfig implements LLMConfig {
@@ -193,6 +194,25 @@ class OpenAICompatibleProvider implements LLMProvider {
 
   @override
   Future<AnalysisResponse> analyze(AnalysisRequest request) async {
+    final chatResponse = await chat(
+      ChatRequest(
+        messages: [
+          ProviderChatMessage.system(request.systemPrompt),
+          ProviderChatMessage.user(request.userPrompt),
+        ],
+      ),
+    );
+    return AnalysisResponse(
+      content: chatResponse.content,
+      tokensUsed: chatResponse.tokensUsed,
+      latency: chatResponse.latency,
+      model: chatResponse.model,
+      providerId: chatResponse.providerId,
+    );
+  }
+
+  @override
+  Future<ChatResponse> chat(ChatRequest request) async {
     if (!isConfigured || _client == null) {
       throw StateError('请先在设置中配置 API');
     }
@@ -203,12 +223,9 @@ class OpenAICompatibleProvider implements LLMProvider {
       final response = await _client!.chat.completions.create(
         ChatCompletionCreateRequest(
           model: _config!.model,
-          messages: [
-            ChatMessage.system(request.systemPrompt),
-            ChatMessage.user(request.userPrompt),
-          ],
-          temperature: _config!.temperature,
-          maxCompletionTokens: _config!.maxOutputTokens,
+          messages: request.messages.map(_toOpenAIMessage).toList(),
+          temperature: request.temperature ?? _config!.temperature,
+          maxCompletionTokens: request.maxTokens ?? _config!.maxOutputTokens,
         ),
       );
 
@@ -217,7 +234,7 @@ class OpenAICompatibleProvider implements LLMProvider {
       final content = response.choices.firstOrNull?.message.content ?? '';
       final tokensUsed = response.usage?.totalTokens ?? 0;
 
-      return AnalysisResponse(
+      return ChatResponse(
         content: content,
         tokensUsed: tokensUsed,
         latency: stopwatch.elapsed,
@@ -231,24 +248,33 @@ class OpenAICompatibleProvider implements LLMProvider {
 
   @override
   Stream<String>? analyzeStream(AnalysisRequest request) {
+    return chatStream(
+      ChatRequest(
+        messages: [
+          ProviderChatMessage.system(request.systemPrompt),
+          ProviderChatMessage.user(request.userPrompt),
+        ],
+      ),
+    );
+  }
+
+  @override
+  Stream<String>? chatStream(ChatRequest request) {
     if (!isConfigured || _client == null) {
       throw StateError('请先在设置中配置 API');
     }
 
-    return _streamGenerate(request);
+    return _chatStreamGenerate(request);
   }
 
-  Stream<String> _streamGenerate(AnalysisRequest request) async* {
+  Stream<String> _chatStreamGenerate(ChatRequest request) async* {
     try {
       final stream = _client!.chat.completions.createStream(
         ChatCompletionCreateRequest(
           model: _config!.model,
-          messages: [
-            ChatMessage.system(request.systemPrompt),
-            ChatMessage.user(request.userPrompt),
-          ],
-          temperature: _config!.temperature,
-          maxCompletionTokens: _config!.maxOutputTokens,
+          messages: request.messages.map(_toOpenAIMessage).toList(),
+          temperature: request.temperature ?? _config!.temperature,
+          maxCompletionTokens: request.maxTokens ?? _config!.maxOutputTokens,
         ),
       );
 
@@ -262,6 +288,17 @@ class OpenAICompatibleProvider implements LLMProvider {
       }
     } catch (e) {
       throw Exception(_friendlyError(e));
+    }
+  }
+
+  ChatMessage _toOpenAIMessage(ProviderChatMessage m) {
+    switch (m.role) {
+      case ChatRole.system:
+        return ChatMessage.system(m.content);
+      case ChatRole.assistant:
+        return ChatMessage.assistant(content: m.content);
+      case ChatRole.user:
+        return ChatMessage.user(m.content);
     }
   }
 

@@ -8,6 +8,8 @@ import 'package:wanxiang_paipan/ai/llm_provider_registry.dart';
 import 'package:wanxiang_paipan/ai/output/formatters/xiaoliuren_formatter.dart';
 import 'package:wanxiang_paipan/ai/output/structured_output_formatter.dart';
 import 'package:wanxiang_paipan/ai/service/ai_analysis_service.dart';
+import 'package:wanxiang_paipan/ai/service/ai_conversation_service.dart';
+import 'package:wanxiang_paipan/ai/service/chat_repository.dart';
 import 'package:wanxiang_paipan/ai/service/prompt_assembler.dart';
 import 'package:wanxiang_paipan/data/database/app_database.dart';
 import 'package:wanxiang_paipan/divination_systems/xiaoliuren/models/xiaoliuren_result.dart';
@@ -137,9 +139,10 @@ class _FakeRepository implements DivinationRepository {
 }
 
 class _FakeStreamingProvider implements LLMProvider {
-  _FakeStreamingProvider(this.responsesByResultId);
+  _FakeStreamingProvider(this.fixedContent);
 
-  final Map<String, String> responsesByResultId;
+  /// Content returned for every chat/chatStream call.
+  final String fixedContent;
 
   @override
   String get id => 'fake_provider';
@@ -164,9 +167,8 @@ class _FakeStreamingProvider implements LLMProvider {
 
   @override
   Future<AnalysisResponse> analyze(AnalysisRequest request) async {
-    final content = responsesByResultId[request.result.id] ?? '默认分析';
     return AnalysisResponse(
-      content: content,
+      content: fixedContent,
       tokensUsed: 0,
       latency: Duration.zero,
       model: defaultModel,
@@ -176,8 +178,23 @@ class _FakeStreamingProvider implements LLMProvider {
 
   @override
   Stream<String>? analyzeStream(AnalysisRequest request) {
-    final content = responsesByResultId[request.result.id] ?? '默认分析';
-    return Stream<String>.fromIterable([content]);
+    return Stream<String>.fromIterable([fixedContent]);
+  }
+
+  @override
+  Future<ChatResponse> chat(ChatRequest request) async {
+    return ChatResponse(
+      content: fixedContent,
+      tokensUsed: 0,
+      latency: Duration.zero,
+      model: defaultModel,
+      providerId: id,
+    );
+  }
+
+  @override
+  Stream<String>? chatStream(ChatRequest request) {
+    return Stream<String>.fromIterable([fixedContent]);
   }
 
   @override
@@ -200,6 +217,7 @@ void main() {
     late AIConfigManager configManager;
     late LLMProviderRegistry providerRegistry;
     late AIAnalysisService analysisService;
+    late AIConversationService conversationService;
     late _FakeRepository repository;
     late XiaoLiuRenResult resultA;
     late XiaoLiuRenResult resultB;
@@ -237,19 +255,26 @@ void main() {
       providerRegistry = LLMProviderRegistry.instance;
       providerRegistry.clear();
       providerRegistry.register(
-        _FakeStreamingProvider({
-          resultA.id: '结果A分析内容',
-          resultB.id: '结果B分析内容',
-        }),
+        _FakeStreamingProvider('结果A分析内容'),
+      );
+
+      final promptAssembler = PromptAssembler(
+        configManager: configManager,
+        formatterRegistry: StructuredOutputFormatterRegistry.instance,
+      );
+      final secureStorageForChat = MockSecureStorage();
+      final chatRepository = ChatRepository(secureStorage: secureStorageForChat);
+      conversationService = AIConversationService(
+        providerRegistry: providerRegistry,
+        promptAssembler: promptAssembler,
+        configManager: configManager,
+        chatRepository: chatRepository,
       );
 
       analysisService = AIAnalysisService(
         providerRegistry: providerRegistry,
-        promptAssembler: PromptAssembler(
-          configManager: configManager,
-          formatterRegistry: StructuredOutputFormatterRegistry.instance,
-        ),
         configManager: configManager,
+        conversationService: conversationService,
       );
 
       repository = _FakeRepository();
@@ -259,6 +284,7 @@ void main() {
 
     tearDown(() async {
       analysisService.dispose();
+      conversationService.dispose();
       providerRegistry.clear();
       StructuredOutputFormatterRegistry.instance.clear();
       await database.close();
@@ -268,6 +294,7 @@ void main() {
       await tester.pumpWidget(
         _buildApp(
           analysisService: analysisService,
+          conversationService: conversationService,
           repository: repository,
           result: resultA,
         ),
@@ -282,14 +309,19 @@ void main() {
       await tester.pumpAndSettle();
 
       expect(find.text('结果A分析内容'), findsOneWidget);
+      // 保存职责已移交给 ChatRepository（通过 AIConversationService）；
+      // DivinationRepository 不再被写入 interpretation_<id> 字段。
       expect(
-        repository.encryptedFields['interpretation_${resultA.id}'],
-        '结果A分析内容',
+        repository.encryptedFields.containsKey('interpretation_${resultA.id}'),
+        isFalse,
+        reason: 'Fix 1: AIAnalysisWidget 不再直接写 DivinationRepository，'
+            '写入由 ChatRepository 通过 conversationService.startConversation 完成',
       );
 
       await tester.pumpWidget(
         _buildApp(
           analysisService: analysisService,
+          conversationService: conversationService,
           repository: repository,
           result: resultB,
         ),
@@ -302,6 +334,7 @@ void main() {
       await tester.pumpWidget(
         _buildApp(
           analysisService: analysisService,
+          conversationService: conversationService,
           repository: repository,
           result: resultA,
         ),
@@ -316,12 +349,15 @@ void main() {
 
 Widget _buildApp({
   required AIAnalysisService analysisService,
+  required AIConversationService conversationService,
   required DivinationRepository repository,
   required DivinationResult result,
 }) {
   return MultiProvider(
     providers: [
       ChangeNotifierProvider<AIAnalysisService>.value(value: analysisService),
+      ChangeNotifierProvider<AIConversationService>.value(
+          value: conversationService),
       Provider<DivinationRepository>.value(value: repository),
     ],
     child: MaterialApp(

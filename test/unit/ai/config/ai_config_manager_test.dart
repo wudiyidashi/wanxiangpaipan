@@ -40,6 +40,9 @@ class MockSecureStorage implements SecureStorage {
   }
 
   @override
+  Future<Map<String, String>> readAll() async => Map.unmodifiable(_storage);
+
+  @override
   Future<void> write(String key, String value) async {
     _storage[key] = value;
   }

@@ -56,6 +56,9 @@ class MockSecureStorage implements SecureStorage {
   Future<bool> containsKey(String key) async {
     return _storage.containsKey(key);
   }
+
+  @override
+  Future<Map<String, String>> readAll() async => Map.unmodifiable(_storage);
 }
 
 void main() {
@@ -374,6 +377,7 @@ void main() {
         // 保存加密字段
         await repository.saveEncryptedField('question_test-id', '测试问题');
         await repository.saveEncryptedField('detail_test-id', '测试详情');
+        await repository.saveEncryptedField('conversation_test-id', '{"messages":[]}');
 
         // 删除记录
         await repository.deleteRecord('test-id');
@@ -381,6 +385,7 @@ void main() {
         // 验证加密字段也被删除
         expect(await repository.readEncryptedField('question_test-id'), isNull);
         expect(await repository.readEncryptedField('detail_test-id'), isNull);
+        expect(await repository.readEncryptedField('conversation_test-id'), isNull);
       });
 
       test('应该根据系统类型删除记录', () async {

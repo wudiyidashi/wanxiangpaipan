@@ -6,6 +6,8 @@ import 'package:wanxiang_paipan/ai/llm_provider_registry.dart';
 import 'package:wanxiang_paipan/ai/output/structured_output_formatter.dart';
 import 'package:wanxiang_paipan/ai/providers/openai_compatible_provider.dart';
 import 'package:wanxiang_paipan/ai/service/ai_analysis_service.dart';
+import 'package:wanxiang_paipan/ai/service/ai_conversation_service.dart';
+import 'package:wanxiang_paipan/ai/service/chat_repository.dart';
 import 'package:wanxiang_paipan/ai/service/prompt_assembler.dart';
 import 'package:wanxiang_paipan/data/database/app_database.dart';
 import 'package:wanxiang_paipan/data/secure/secure_storage.dart';
@@ -42,6 +44,9 @@ class _MockSecureStorage implements SecureStorage {
   }
 
   @override
+  Future<Map<String, String>> readAll() async => Map.unmodifiable(_storage);
+
+  @override
   Future<void> write(String key, String value) async {
     _storage[key] = value;
   }
@@ -69,13 +74,21 @@ void main() {
       providerRegistry.register(OpenAICompatibleProvider());
       StructuredOutputFormatterRegistry.instance.clear();
 
+      final promptAssembler = PromptAssembler(
+        configManager: configManager,
+        formatterRegistry: StructuredOutputFormatterRegistry.instance,
+      );
+      final chatRepository = ChatRepository(secureStorage: secureStorage);
+      final conversationService = AIConversationService(
+        providerRegistry: providerRegistry,
+        promptAssembler: promptAssembler,
+        configManager: configManager,
+        chatRepository: chatRepository,
+      );
       analysisService = AIAnalysisService(
         providerRegistry: providerRegistry,
-        promptAssembler: PromptAssembler(
-          configManager: configManager,
-          formatterRegistry: StructuredOutputFormatterRegistry.instance,
-        ),
         configManager: configManager,
+        conversationService: conversationService,
       );
     });
 

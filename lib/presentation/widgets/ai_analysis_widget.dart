@@ -3,12 +3,14 @@ import 'package:flutter/services.dart';
 import 'package:flutter_markdown/flutter_markdown.dart';
 import 'package:provider/provider.dart';
 import '../../ai/service/ai_analysis_service.dart';
+import '../../ai/service/ai_conversation_service.dart';
 import '../../ai/ai_bootstrap.dart';
 import '../../ai/service/prompt_assembler.dart';
 import '../../ai/output/structured_output_formatter.dart';
 import '../../core/theme/app_text_styles.dart';
 import '../../domain/divination_system.dart';
 import '../../domain/repositories/divination_repository.dart';
+import 'ai_chat_sheet.dart';
 
 /// AI 分析组件
 ///
@@ -145,7 +147,7 @@ class _AIAnalysisWidgetState extends State<AIAnalysisWidget> {
                 size: 20,
               ),
               tooltip: hasContent ? '重新分析' : '开始分析',
-              onPressed: () => _startAnalysis(context, aiService),
+              onPressed: () => _startOrRestart(context, aiService),
               visualDensity: VisualDensity.compact,
             ),
           // 加载指示器
@@ -228,12 +230,35 @@ class _AIAnalysisWidgetState extends State<AIAnalysisWidget> {
               ),
             ),
 
+          // 继续追问入口
+          if (!isAnalyzing && error == null && content.isNotEmpty)
+            Builder(builder: (context) {
+              final convService = context.watch<AIConversationService?>();
+              final conv = convService?.conversationOf(widget.result.id);
+              final followUpCount =
+                  (conv?.messages.length ?? 1) - 1;
+              final label = followUpCount > 0
+                  ? '继续对话 · $followUpCount 条'
+                  : '💬 继续追问';
+              return Align(
+                alignment: Alignment.centerRight,
+                child: TextButton.icon(
+                  onPressed: () => _openChatSheet(context),
+                  icon: const Icon(Icons.chat_bubble_outline, size: 16),
+                  label: Text(
+                    label,
+                    style: AppTextStyles.antiqueLabel.copyWith(fontSize: 12),
+                  ),
+                ),
+              );
+            }),
+
           // 清除按钮
           if (!isAnalyzing && error == null && content.isNotEmpty)
             Align(
               alignment: Alignment.centerRight,
               child: TextButton.icon(
-                onPressed: () => _clearAnalysis(aiService, isCurrentResult),
+                onPressed: () => _clearAnalysisFull(context),
                 icon: const Icon(Icons.clear, size: 16),
                 label: Text('清除',
                     style: AppTextStyles.antiqueLabel.copyWith(fontSize: 12)),
@@ -277,7 +302,6 @@ class _AIAnalysisWidgetState extends State<AIAnalysisWidget> {
 
   Future<void> _startAnalysis(
       BuildContext context, AIAnalysisService aiService) async {
-    final repository = _tryReadRepository();
     try {
       final response = await aiService.analyze(
         widget.result,
@@ -285,9 +309,6 @@ class _AIAnalysisWidgetState extends State<AIAnalysisWidget> {
         useStreaming: true,
       );
       final content = response.content.trim();
-      if (repository != null && content.isNotEmpty) {
-        await repository.saveEncryptedField(_interpretationKey, content);
-      }
       if (!mounted) {
         return;
       }
@@ -300,20 +321,59 @@ class _AIAnalysisWidgetState extends State<AIAnalysisWidget> {
     }
   }
 
-  Future<void> _clearAnalysis(
-    AIAnalysisService aiService,
-    bool isCurrentResult,
-  ) async {
-    final repository = _tryReadRepository();
-    if (isCurrentResult) {
-      aiService.clearResult();
+  void _openChatSheet(BuildContext context) {
+    final convService = context.read<AIConversationService>();
+    // 确保先载入（支持老数据恢复）
+    convService.loadIfNeeded(widget.result.id,
+        legacySystemType: widget.result.systemType);
+    showModalBottomSheet<void>(
+      context: context,
+      isScrollControlled: true,
+      useSafeArea: true,
+      builder: (ctx) => ChangeNotifierProvider<AIConversationService>.value(
+        value: convService,
+        child: AIChatSheet(
+          resultId: widget.result.id,
+          fallbackResult: widget.result,
+        ),
+      ),
+    );
+  }
+
+  Future<void> _startOrRestart(
+      BuildContext context, AIAnalysisService aiService) async {
+    final convService = context.read<AIConversationService>();
+    final conv = convService.conversationOf(widget.result.id);
+    if (conv != null && conv.messages.length > 1) {
+      final ok = await showDialog<bool>(
+        context: context,
+        builder: (ctx) => AlertDialog(
+          title: const Text('重新分析'),
+          content: const Text('重新分析会清空当前对话的所有追问内容。确定吗？'),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(ctx, false),
+              child: const Text('取消'),
+            ),
+            TextButton(
+              onPressed: () => Navigator.pop(ctx, true),
+              child: const Text('确认'),
+            ),
+          ],
+        ),
+      );
+      if (ok != true) return;
     }
-    if (repository != null) {
-      await repository.deleteEncryptedField(_interpretationKey);
-    }
-    if (!mounted) {
-      return;
-    }
+    await convService.delete(widget.result.id);
+    if (!mounted) return;
+    // ignore: use_build_context_synchronously
+    await _startAnalysis(context, aiService);
+  }
+
+  Future<void> _clearAnalysisFull(BuildContext context) async {
+    final convService = context.read<AIConversationService>();
+    await convService.delete(widget.result.id);
+    if (!mounted) return;
     setState(() {
       _persistedContent = '';
       _loadedResultId = widget.result.id;
@@ -464,8 +524,6 @@ class _AIAnalysisWidgetState extends State<AIAnalysisWidget> {
       return null;
     }
   }
-
-  String get _interpretationKey => 'interpretation_${widget.result.id}';
 }
 
 /// AI 分析浮动按钮
@@ -504,164 +562,19 @@ class AIAnalysisFAB extends StatelessWidget {
   }
 
   void _showAnalysisSheet(BuildContext context, AIAnalysisService aiService) {
+    final convService = context.read<AIConversationService>();
+    convService.loadIfNeeded(result.id, legacySystemType: result.systemType);
     showModalBottomSheet<void>(
       context: context,
       isScrollControlled: true,
       useSafeArea: true,
-      builder: (sheetContext) {
-        return ChangeNotifierProvider.value(
-          value: aiService,
-          child: _AIAnalysisSheet(
-            result: result,
-            question: question,
-          ),
-        );
-      },
-    );
-  }
-}
-
-/// AI 分析底部抽屉
-class _AIAnalysisSheet extends StatefulWidget {
-  final DivinationResult result;
-  final String? question;
-
-  const _AIAnalysisSheet({
-    required this.result,
-    this.question,
-  });
-
-  @override
-  State<_AIAnalysisSheet> createState() => _AIAnalysisSheetState();
-}
-
-class _AIAnalysisSheetState extends State<_AIAnalysisSheet> {
-  @override
-  void initState() {
-    super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      _startAnalysisIfNeeded();
-    });
-  }
-
-  void _startAnalysisIfNeeded() {
-    final aiService = context.read<AIAnalysisService>();
-    if (!aiService.isAnalyzing && aiService.currentContent.isEmpty) {
-      aiService.analyze(
-        widget.result,
-        question: widget.question,
-        useStreaming: true,
-      );
-    }
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    final aiService = context.watch<AIAnalysisService>();
-
-    return DraggableScrollableSheet(
-      initialChildSize: 0.7,
-      minChildSize: 0.5,
-      maxChildSize: 0.95,
-      expand: false,
-      builder: (context, scrollController) {
-        return Column(
-          children: [
-            Container(
-              margin: const EdgeInsets.only(top: 12),
-              width: 40,
-              height: 4,
-              decoration: BoxDecoration(
-                color: Colors.grey[300], // Material grey[300]: drag handle pill
-                borderRadius: BorderRadius.circular(2),
-              ),
-            ),
-            Padding(
-              padding: const EdgeInsets.all(16),
-              child: Row(
-                children: [
-                  Icon(Icons.smart_toy, color: Theme.of(context).primaryColor),
-                  const SizedBox(width: 12),
-                  Expanded(
-                    child: Text(
-                      'AI 智能分析',
-                      style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                            fontWeight: FontWeight.bold,
-                          ),
-                    ),
-                  ),
-                  if (aiService.isAnalyzing)
-                    const SizedBox(
-                      width: 24,
-                      height: 24,
-                      child: CircularProgressIndicator(strokeWidth: 2),
-                    )
-                  else
-                    IconButton(
-                      icon: const Icon(Icons.close),
-                      onPressed: () => Navigator.pop(context),
-                    ),
-                ],
-              ),
-            ),
-            const Divider(height: 1),
-            Expanded(
-              child: _buildSheetContent(context, aiService, scrollController),
-            ),
-          ],
-        );
-      },
-    );
-  }
-
-  Widget _buildSheetContent(
-    BuildContext context,
-    AIAnalysisService aiService,
-    ScrollController scrollController,
-  ) {
-    if (aiService.error != null) {
-      return Center(
-        child: Padding(
-          padding: const EdgeInsets.all(32),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              const Icon(Icons.info_outline,
-                  size: 48, color: Colors.orange), // domain: warning icon
-              const SizedBox(height: 16),
-              Text(
-                aiService.error!.replaceFirst(RegExp(r'^Exception:\s*'), ''),
-                style: AppTextStyles.antiqueBody.copyWith(
-                    color: Colors
-                        .grey[700]), // Material grey[700]: muted error text
-                textAlign: TextAlign.center,
-              ),
-            ],
-          ),
+      builder: (sheetContext) => ChangeNotifierProvider<
+          AIConversationService>.value(
+        value: convService,
+        child: AIChatSheet(
+          resultId: result.id,
+          fallbackResult: result,
         ),
-      );
-    }
-
-    if (aiService.currentContent.isEmpty && aiService.isAnalyzing) {
-      return const Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            CircularProgressIndicator(),
-            SizedBox(height: 24),
-            Text('正在分析卦象，请稍候...'),
-          ],
-        ),
-      );
-    }
-
-    return Markdown(
-      data: aiService.currentContent,
-      controller: scrollController,
-      selectable: true,
-      styleSheet: MarkdownStyleSheet(
-        p: Theme.of(context).textTheme.bodyMedium?.copyWith(height: 1.8),
-        h3: AppTextStyles.antiqueSection.copyWith(height: 2),
       ),
     );
   }
