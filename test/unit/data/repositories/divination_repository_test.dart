@@ -56,6 +56,9 @@ class MockSecureStorage implements SecureStorage {
   Future<bool> containsKey(String key) async {
     return _storage.containsKey(key);
   }
+
+  @override
+  Future<Map<String, String>> readAll() async => Map.unmodifiable(_storage);
 }
 
 void main() {

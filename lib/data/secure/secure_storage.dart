@@ -26,6 +26,11 @@ class SecureStorage {
     return results;
   }
 
+  /// 读取所有加密数据
+  Future<Map<String, String>> readAll() async {
+    return await _storage.readAll();
+  }
+
   /// 删除加密数据
   Future<void> delete(String key) async {
     await _storage.delete(key: key);
