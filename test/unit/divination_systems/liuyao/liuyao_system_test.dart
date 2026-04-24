@@ -4,6 +4,7 @@ import 'package:wanxiang_paipan/divination_systems/liuyao/liuyao_system.dart';
 import 'package:wanxiang_paipan/divination_systems/liuyao/models/gua.dart';
 import 'package:wanxiang_paipan/divination_systems/liuyao/models/yao.dart';
 import 'package:wanxiang_paipan/domain/divination_system.dart';
+import 'package:wanxiang_paipan/domain/services/fushen_service.dart';
 import 'package:wanxiang_paipan/domain/services/qigua_service.dart';
 import 'package:wanxiang_paipan/domain/services/shared/liuqin_service.dart';
 import 'package:wanxiang_paipan/domain/services/shared/wuxing_service.dart';
@@ -95,6 +96,97 @@ void main() {
 
       expect(result.castMethod, CastMethod.manual);
       expect(result.mainGua.name, isNotEmpty);
+    });
+
+    test('time 起卦应匹配元亨利贞参考盘', () async {
+      final result = await system.cast(
+        method: CastMethod.time,
+        input: const <String, dynamic>{},
+        castTime: DateTime(2026, 4, 24, 11, 30),
+      ) as LiuYaoResult;
+
+      expect(result.lunarInfo.yearGanZhi, '丙午');
+      expect(result.lunarInfo.monthGanZhi, '壬辰');
+      expect(result.lunarInfo.riGanZhi, '戊辰');
+      expect(result.lunarInfo.hourGanZhi, '戊午');
+      expect(result.liuShen, <String>['勾陈', '腾蛇', '白虎', '玄武', '青龙', '朱雀']);
+
+      expect(result.mainGua.id, '111110');
+      expect(result.mainGua.name, '泽天夬');
+      expect(result.mainGua.baGong, BaGong.kun);
+      expect(result.mainGua.seYaoPosition, 5);
+      expect(result.mainGua.yingYaoPosition, 2);
+      expect(result.mainGua.movingYaos.map((yao) => yao.position), <int>[1]);
+      expect(
+        result.mainGua.yaos
+            .map((yao) =>
+                '${yao.liuQin.name}${yao.stem}${yao.branch}${yao.wuXing.name}')
+            .toList(),
+        <String>['妻财甲子水', '官鬼甲寅木', '兄弟甲辰土', '妻财丁亥水', '子孙丁酉金', '兄弟丁未土'],
+      );
+      final fuShenByPosition = FuShenService.calculateFuShen(result.mainGua);
+      expect(fuShenByPosition.keys, <int>[2]);
+      expect(fuShenByPosition[2]!.displayText, '父母乙巳火');
+
+      expect(result.changingGua, isNotNull);
+      expect(result.changingGua!.id, '011110');
+      expect(result.changingGua!.name, '泽风大过');
+      expect(result.changingGua!.baGong, BaGong.zhen);
+      expect(result.changingGua!.specialType, GuaSpecialType.youHun);
+      expect(result.changingGua!.seYaoPosition, 4);
+      expect(result.changingGua!.yingYaoPosition, 1);
+      expect(
+        result.changingGua!.yaos
+            .map((yao) =>
+                '${yao.liuQin.name}${yao.stem}${yao.branch}${yao.wuXing.name}')
+            .toList(),
+        <String>['兄弟辛丑土', '妻财辛亥水', '子孙辛酉金', '妻财丁亥水', '子孙丁酉金', '兄弟丁未土'],
+      );
+    });
+
+    test('time 起卦卯时应匹配元亨利贞参考盘', () async {
+      final result = await system.cast(
+        method: CastMethod.time,
+        input: const <String, dynamic>{},
+        castTime: DateTime(2026, 4, 24, 5, 30),
+      ) as LiuYaoResult;
+
+      expect(result.lunarInfo.yearGanZhi, '丙午');
+      expect(result.lunarInfo.monthGanZhi, '壬辰');
+      expect(result.lunarInfo.riGanZhi, '戊辰');
+      expect(result.lunarInfo.hourGanZhi, '乙卯');
+      expect(result.liuShen, <String>['勾陈', '腾蛇', '白虎', '玄武', '青龙', '朱雀']);
+
+      expect(result.mainGua.id, '010110');
+      expect(result.mainGua.name, '泽水困');
+      expect(result.mainGua.baGong, BaGong.dui);
+      expect(result.mainGua.specialType, GuaSpecialType.liuHe);
+      expect(result.mainGua.seYaoPosition, 1);
+      expect(result.mainGua.yingYaoPosition, 4);
+      expect(result.mainGua.movingYaos.map((yao) => yao.position), <int>[4]);
+      expect(
+        result.mainGua.yaos
+            .map((yao) =>
+                '${yao.liuQin.name}${yao.stem}${yao.branch}${yao.wuXing.name}')
+            .toList(),
+        <String>['妻财戊寅木', '父母戊辰土', '官鬼戊午火', '子孙丁亥水', '兄弟丁酉金', '父母丁未土'],
+      );
+      expect(FuShenService.calculateFuShen(result.mainGua), isEmpty);
+
+      expect(result.changingGua, isNotNull);
+      expect(result.changingGua!.id, '010010');
+      expect(result.changingGua!.name, '坎为水');
+      expect(result.changingGua!.baGong, BaGong.kan);
+      expect(result.changingGua!.specialType, GuaSpecialType.liuChong);
+      expect(result.changingGua!.seYaoPosition, 6);
+      expect(result.changingGua!.yingYaoPosition, 3);
+      expect(
+        result.changingGua!.yaos
+            .map((yao) =>
+                '${yao.liuQin.name}${yao.stem}${yao.branch}${yao.wuXing.name}')
+            .toList(),
+        <String>['妻财戊寅木', '父母戊辰土', '官鬼戊午火', '兄弟戊申金', '父母戊戌土', '子孙戊子水'],
+      );
     });
   });
 }

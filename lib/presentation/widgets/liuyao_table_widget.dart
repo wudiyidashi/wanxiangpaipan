@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import '../../core/theme/app_text_styles.dart';
 import '../../divination_systems/liuyao/models/gua.dart';
 import '../../divination_systems/liuyao/models/yao.dart';
+import '../../domain/services/fushen_service.dart';
 
 /// 六爻紧凑表格组件
 ///
@@ -105,6 +106,8 @@ class LiuYaoTableWidget extends StatelessWidget {
 
   /// 构建单表体
   Widget _buildSingleTableBody(BuildContext context) {
+    final fuShenByPosition = FuShenService.calculateFuShen(gua);
+
     return Container(
       decoration: BoxDecoration(
         border: Border.all(color: Colors.grey.shade300),
@@ -122,6 +125,7 @@ class LiuYaoTableWidget extends StatelessWidget {
             return _buildSegmentDataRow(
               context,
               yao: yao,
+              fuShenText: fuShenByPosition[yao.position]?.displayText,
               liuShenName: liuShenName,
               showWorldResponse: showWorldResponse,
               isLastRow: isLastRow,
@@ -135,6 +139,8 @@ class LiuYaoTableWidget extends StatelessWidget {
   /// 构建对比表体（本卦 + 动爻 + 变卦）
   Widget _buildComparisonTableBody(BuildContext context) {
     final borderColor = Colors.grey.shade300;
+    final fuShenByPosition = FuShenService.calculateFuShen(gua);
+
     return Container(
       decoration: BoxDecoration(
         border: Border.all(color: borderColor),
@@ -165,29 +171,41 @@ class LiuYaoTableWidget extends StatelessWidget {
                 liuShen.length > yaoIndex ? liuShen[yaoIndex] : '';
             final isLastRow = i == 5;
 
-            return Container(
-              decoration: BoxDecoration(
-                border: isLastRow
-                    ? null
-                    : Border(
-                        bottom: BorderSide(color: Colors.grey.shade200),
+            return Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Container(
+                  decoration: BoxDecoration(
+                    border: isLastRow
+                        ? null
+                        : Border(
+                            bottom: BorderSide(color: Colors.grey.shade200),
+                          ),
+                  ),
+                  child: Row(
+                    children: [
+                      ..._buildSegmentRowCells(
+                        yao: mainYao,
+                        liuShenName: liuShenName,
+                        showWorldResponse: showWorldResponse,
                       ),
-              ),
-              child: Row(
-                children: [
-                  ..._buildSegmentRowCells(
-                    yao: mainYao,
-                    liuShenName: liuShenName,
-                    showWorldResponse: showWorldResponse,
+                      _buildMovingCell(mainYao.isMoving),
+                      ..._buildSegmentRowCells(
+                        yao: secondaryYao,
+                        liuShenName: liuShenName,
+                        showWorldResponse: secondaryShowWorldResponse,
+                      ),
+                    ],
                   ),
-                  _buildMovingCell(mainYao.isMoving),
-                  ..._buildSegmentRowCells(
-                    yao: secondaryYao,
-                    liuShenName: liuShenName,
-                    showWorldResponse: secondaryShowWorldResponse,
-                  ),
-                ],
-              ),
+                ),
+                _buildFuShenNote(
+                  fuShenByPosition[mainYao.position]?.displayText,
+                  showWorldResponse: showWorldResponse,
+                  includeMovingColumn: true,
+                  includeSecondarySegment: true,
+                  secondaryShowWorldResponse: secondaryShowWorldResponse,
+                ),
+              ],
             );
           }),
         ],
@@ -314,8 +332,8 @@ class LiuYaoTableWidget extends StatelessWidget {
   }
 
   List<Widget> _buildSegmentHeader(bool showWorld) {
-    // 本卦列：六神 | 六亲地支 | 世应
-    // 变卦列：六亲地支 | 世应（可选）
+    // 本卦列：六神 | 六亲 | 世应
+    // 变卦列：六亲 | 世应（可选）
     final widgets = <Widget>[];
 
     // 六神列（仅本卦显示）
@@ -323,8 +341,8 @@ class LiuYaoTableWidget extends StatelessWidget {
       widgets.add(_buildCell('六神', flex: 2, isHeader: true));
     }
 
-    // 六亲地支列
-    widgets.add(_buildCell('六亲地支', flex: 3, isHeader: true));
+    // 六亲列
+    widgets.add(_buildCell('六亲', flex: 3, isHeader: true));
 
     // 世应列
     if (showWorld) {
@@ -337,13 +355,11 @@ class LiuYaoTableWidget extends StatelessWidget {
   Widget _buildSegmentDataRow(
     BuildContext context, {
     required Yao yao,
+    String? fuShenText,
     required String liuShenName,
     required bool showWorldResponse,
     bool isLastRow = false,
   }) {
-    // TODO: 从数据源获取伏神信息
-    final fuShenText = _getFuShenText(yao);
-
     return Container(
       decoration: BoxDecoration(
         border: isLastRow
@@ -363,32 +379,69 @@ class LiuYaoTableWidget extends StatelessWidget {
               showWorldResponse: showWorldResponse,
             ),
           ),
-
-          // 伏神行（如果有）
-          if (fuShenText != null)
-            Padding(
-              padding: const EdgeInsets.only(left: 8, bottom: 4),
-              child: Text(
-                '（$fuShenText）',
-                // 伏神注记（领域色：朱砂系，保留内联）
-                style: TextStyle(
-                  fontSize: 9,
-                  color: Colors.red.shade600,
-                  fontStyle: FontStyle.italic,
-                ),
-              ),
-            ),
+          _buildFuShenNote(
+            fuShenText,
+            showWorldResponse: showWorldResponse,
+          ),
         ],
       ),
     );
   }
 
-  /// 获取伏神文本
-  /// TODO: 实现伏神计算逻辑，从数据源获取伏神信息
-  String? _getFuShenText(Yao yao) {
-    // 临时示例：仅用于演示伏神显示效果
-    // 实际应该从卦象计算逻辑中获取
-    return null;
+  Widget _buildFuShenNote(
+    String? fuShenText, {
+    required bool showWorldResponse,
+    bool includeMovingColumn = false,
+    bool includeSecondarySegment = false,
+    bool secondaryShowWorldResponse = false,
+  }) {
+    if (fuShenText == null) {
+      return const SizedBox.shrink();
+    }
+
+    return _buildFuShenRow(
+      fuShenText,
+      showWorldResponse: showWorldResponse,
+      includeMovingColumn: includeMovingColumn,
+      includeSecondarySegment: includeSecondarySegment,
+      secondaryShowWorldResponse: secondaryShowWorldResponse,
+    );
+  }
+
+  Widget _buildFuShenRow(
+    String fuShenText, {
+    required bool showWorldResponse,
+    required bool includeMovingColumn,
+    required bool includeSecondarySegment,
+    required bool secondaryShowWorldResponse,
+  }) {
+    return Row(
+      children: [
+        if (showWorldResponse) const Spacer(flex: 2),
+        Expanded(
+          flex: 3,
+          child: Padding(
+            padding: const EdgeInsets.only(left: 4, bottom: 4),
+            child: Text(
+              '伏神：$fuShenText',
+              // 伏神注记（领域色：朱砂系，保留内联）
+              style: TextStyle(
+                fontSize: 9,
+                color: Colors.red.shade600,
+                fontStyle: FontStyle.italic,
+              ),
+            ),
+          ),
+        ),
+        if (showWorldResponse) const Spacer(flex: 2),
+        if (includeMovingColumn) const SizedBox(width: 48),
+        if (includeSecondarySegment) ...[
+          if (secondaryShowWorldResponse) const Spacer(flex: 2),
+          const Expanded(flex: 3, child: SizedBox.shrink()),
+          if (secondaryShowWorldResponse) const Spacer(flex: 2),
+        ],
+      ],
+    );
   }
 
   List<Widget> _buildSegmentRowCells({
@@ -410,12 +463,12 @@ class LiuYaoTableWidget extends StatelessWidget {
       );
     }
 
-    // 六亲地支列（合并）
+    // 六亲列（合并）
     widgets.add(
       _buildCell(
-        '${yao.liuQin.name}${yao.branch}${yao.wuXing.name}',
+        _formatYaoRelation(yao),
         flex: 3,
-        // 六亲地支（结构性正文）
+        // 六亲（结构性正文）
         textStyle: AppTextStyles.antiqueLabel.copyWith(
           fontWeight: FontWeight.w500,
         ),
@@ -448,6 +501,9 @@ class LiuYaoTableWidget extends StatelessWidget {
 
     return widgets;
   }
+
+  String _formatYaoRelation(Yao yao) =>
+      '${yao.liuQin.name}${yao.stem}${yao.branch}${yao.wuXing.name}';
 
   /// 获取爻的符号表示
   String _getYaoSymbol(Yao yao) {

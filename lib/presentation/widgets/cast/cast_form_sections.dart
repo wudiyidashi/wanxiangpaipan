@@ -70,47 +70,167 @@ class CastTimeSummaryCard extends StatelessWidget {
   const CastTimeSummaryCard({
     super.key,
     required this.ganZhiText,
-    required this.lunarText,
+    required this.dateTimeText,
     required this.note,
     required this.accentColor,
-    this.title = '当前时辰',
+    this.title = '起卦时间',
+    this.isLoading = false,
+    this.onPickDate,
+    this.onPickTime,
+    this.onUseCurrentTime,
   });
 
   final String title;
   final String ganZhiText;
-  final String lunarText;
+  final String dateTimeText;
   final String note;
   final Color accentColor;
+  final bool isLoading;
+  final VoidCallback? onPickDate;
+  final VoidCallback? onPickTime;
+  final VoidCallback? onUseCurrentTime;
 
   @override
   Widget build(BuildContext context) {
+    final hasActions =
+        onPickDate != null || onPickTime != null || onUseCurrentTime != null;
+    final actionStyle = TextButton.styleFrom(
+      foregroundColor: accentColor,
+      visualDensity: VisualDensity.compact,
+      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+    );
+
     return AntiqueCard(
       child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           AntiqueSectionTitle(title: title),
           const AntiqueDivider(),
-          const SizedBox(height: 8),
-          Text(
-            ganZhiText,
-            style: AppTextStyles.antiqueTitle.copyWith(
-              fontSize: 15,
-              color: accentColor,
-              letterSpacing: 1,
+          const SizedBox(height: 10),
+          Center(
+            child: FittedBox(
+              fit: BoxFit.scaleDown,
+              child: Text(
+                ganZhiText,
+                maxLines: 1,
+                textAlign: TextAlign.center,
+                style: AppTextStyles.antiqueTitle.copyWith(
+                  fontSize: 16,
+                  color: accentColor,
+                  letterSpacing: 1,
+                ),
+              ),
             ),
           ),
           const SizedBox(height: 4),
           Text(
-            lunarText,
-            style: AppTextStyles.antiqueBody.copyWith(color: AppColors.guhe),
+            dateTimeText,
+            textAlign: TextAlign.center,
+            style: AppTextStyles.antiqueLabel.copyWith(
+              color: AppColors.guhe,
+              fontSize: 12,
+            ),
           ),
+          if (hasActions) ...[
+            const SizedBox(height: 8),
+            Wrap(
+              spacing: 8,
+              runSpacing: 4,
+              alignment: WrapAlignment.center,
+              children: [
+                if (onPickDate != null)
+                  TextButton.icon(
+                    onPressed: isLoading ? null : onPickDate,
+                    style: actionStyle,
+                    icon: const Icon(Icons.calendar_today, size: 14),
+                    label: const Text('改日期'),
+                  ),
+                if (onPickTime != null)
+                  TextButton.icon(
+                    onPressed: isLoading ? null : onPickTime,
+                    style: actionStyle,
+                    icon: const Icon(Icons.access_time, size: 14),
+                    label: const Text('改时间'),
+                  ),
+                if (onUseCurrentTime != null)
+                  TextButton(
+                    onPressed: isLoading ? null : onUseCurrentTime,
+                    style: actionStyle,
+                    child: const Text('当前'),
+                  ),
+              ],
+            ),
+          ],
           const SizedBox(height: 6),
           Text(
             note,
-            style: AppTextStyles.antiqueLabel.copyWith(fontSize: 11),
+            textAlign: TextAlign.center,
+            style: AppTextStyles.antiqueLabel.copyWith(
+              color: AppColors.guhe.withOpacity(0.75),
+              fontSize: 11,
+            ),
           ),
         ],
       ),
+    );
+  }
+}
+
+class CastTimeActionSection extends StatelessWidget {
+  const CastTimeActionSection({
+    super.key,
+    required this.ganZhiText,
+    required this.dateTimeText,
+    required this.note,
+    required this.accentColor,
+    required this.isLoading,
+    required this.onCast,
+    required this.onPickDate,
+    required this.onPickTime,
+    required this.onUseCurrentTime,
+    this.title = '起卦时间',
+    this.buttonLabel = '起卦',
+    this.loadingLabel = '起卦中...',
+  });
+
+  final String title;
+  final String ganZhiText;
+  final String dateTimeText;
+  final String note;
+  final Color accentColor;
+  final bool isLoading;
+  final VoidCallback? onCast;
+  final VoidCallback onPickDate;
+  final VoidCallback onPickTime;
+  final VoidCallback onUseCurrentTime;
+  final String buttonLabel;
+  final String loadingLabel;
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        CastTimeSummaryCard(
+          title: title,
+          ganZhiText: ganZhiText,
+          dateTimeText: dateTimeText,
+          note: note,
+          accentColor: accentColor,
+          isLoading: isLoading,
+          onPickDate: onPickDate,
+          onPickTime: onPickTime,
+          onUseCurrentTime: onUseCurrentTime,
+        ),
+        const SizedBox(height: 24),
+        AntiqueButton(
+          label: isLoading ? loadingLabel : buttonLabel,
+          onPressed: isLoading ? null : onCast,
+          variant: AntiqueButtonVariant.primary,
+          fullWidth: true,
+        ),
+      ],
     );
   }
 }

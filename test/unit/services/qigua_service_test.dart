@@ -44,6 +44,26 @@ void main() {
       }
     });
 
+    test('timeCast should match lunar time casting reference case', () {
+      // 元亨利贞：公历 2026-04-24 11:30，农历丙午年三月初八午时
+      // 年支午=7、月=3、日=8、时支午=7：上卦兑、下卦乾、初爻动
+      final DateTime time = DateTime(2026, 4, 24, 11, 30);
+
+      final List<int> yaoNumbers = QiGuaService.timeCast(time);
+
+      expect(yaoNumbers, <int>[9, 7, 7, 7, 7, 8]);
+    });
+
+    test('timeCast should match Mao hour reference case', () {
+      // 元亨利贞：公历 2026-04-24 05:30，农历丙午年三月初八卯时
+      // 年支午=7、月=3、日=8、时支卯=4：上卦兑、下卦坎、四爻动
+      final DateTime time = DateTime(2026, 4, 24, 5, 30);
+
+      final List<int> yaoNumbers = QiGuaService.timeCast(time);
+
+      expect(yaoNumbers, <int>[8, 7, 8, 9, 7, 8]);
+    });
+
     test('manualCastOnce should convert 3 front to 9', () {
       final List<CoinFace> faces = <CoinFace>[
         CoinFace.front,

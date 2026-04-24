@@ -59,6 +59,7 @@ class _MeiHuaCastScreenState extends State<MeiHuaCastScreen> {
   String _manualUpperTrigram = '乾';
   String _manualLowerTrigram = '坤';
   int _manualMovingLine = 1;
+  DateTime _timeCastTime = DateTime.now();
   bool _isLoading = false;
 
   @override
@@ -101,7 +102,7 @@ class _MeiHuaCastScreenState extends State<MeiHuaCastScreen> {
       final viewModel = context.read<MeiHuaViewModel>();
       switch (_selectedMethod) {
         case CastMethod.time:
-          await viewModel.castByTime(castTime: DateTime.now());
+          await viewModel.castByTime(castTime: _timeCastTime);
         case CastMethod.number:
           final upper = int.tryParse(_upperNumberController.text.trim());
           final lower = int.tryParse(_lowerNumberController.text.trim());
@@ -234,22 +235,73 @@ class _MeiHuaCastScreenState extends State<MeiHuaCastScreen> {
   }
 
   Widget _buildTimeBody() {
-    final now = DateTime.now();
-    final lunar = Lunar.fromDate(now);
+    final lunar = Lunar.fromDate(_timeCastTime);
     final ganZhi = '${lunar.getYearInGanZhi()}年 '
         '${lunar.getMonthInGanZhi()}月 '
         '${lunar.getDayInGanZhi()}日 '
         '${lunar.getTimeInGanZhi()}时';
-    final lunarText =
-        '农历${lunar.getMonthInChinese()}月${lunar.getDayInChinese()} ${lunar.getTimeZhi()}时';
 
     return CastTimeSummaryCard(
+      title: '起卦时间',
       ganZhiText: ganZhi,
-      lunarText: lunarText,
+      dateTimeText: _formatDateTime(_timeCastTime),
       note: '取农历年支数、月数、日数、时支数推上下卦与动爻',
       accentColor: AppColors.meihuaColor,
+      isLoading: _isLoading,
+      onPickDate: _pickTimeCastDate,
+      onPickTime: _pickTimeCastTime,
+      onUseCurrentTime: _useCurrentTimeCastTime,
     );
   }
+
+  Future<void> _pickTimeCastDate() async {
+    final picked = await showDatePicker(
+      context: context,
+      initialDate: _timeCastTime,
+      firstDate: DateTime(1900),
+      lastDate: DateTime(2100),
+    );
+    if (picked != null) {
+      setState(() {
+        _timeCastTime = DateTime(
+          picked.year,
+          picked.month,
+          picked.day,
+          _timeCastTime.hour,
+          _timeCastTime.minute,
+        );
+      });
+    }
+  }
+
+  Future<void> _pickTimeCastTime() async {
+    final picked = await showTimePicker(
+      context: context,
+      initialTime: TimeOfDay.fromDateTime(_timeCastTime),
+    );
+    if (picked != null) {
+      setState(() {
+        _timeCastTime = DateTime(
+          _timeCastTime.year,
+          _timeCastTime.month,
+          _timeCastTime.day,
+          picked.hour,
+          picked.minute,
+        );
+      });
+    }
+  }
+
+  void _useCurrentTimeCastTime() {
+    setState(() => _timeCastTime = DateTime.now());
+  }
+
+  String _formatDateTime(DateTime value) {
+    return '${value.year}年${_two(value.month)}月${_two(value.day)}日 '
+        '${_two(value.hour)}时${_two(value.minute)}分';
+  }
+
+  String _two(int value) => value.toString().padLeft(2, '0');
 
   Widget _buildNumberBody() {
     return CastNumberPairCard(

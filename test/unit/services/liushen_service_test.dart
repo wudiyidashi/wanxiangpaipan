@@ -28,9 +28,9 @@ void main() {
       expect(liuShen, <String>['朱雀', '勾陈', '腾蛇', '白虎', '玄武', '青龙']);
     });
 
-    test('calculateLiuShen for 戊日 should start with 腾蛇', () {
+    test('calculateLiuShen for 戊日 should start with 勾陈', () {
       final List<String> liuShen = LiuShenService.calculateLiuShen('戊');
-      expect(liuShen, <String>['腾蛇', '白虎', '玄武', '青龙', '朱雀', '勾陈']);
+      expect(liuShen, <String>['勾陈', '腾蛇', '白虎', '玄武', '青龙', '朱雀']);
     });
 
     test('calculateLiuShen for 己日 should start with 腾蛇', () {

@@ -41,6 +41,7 @@ class _XiaoLiuRenCastScreenState extends State<XiaoLiuRenCastScreen> {
 
   CastMethod _selectedMethod = CastMethod.time;
   XiaoLiuRenPalaceMode _palaceMode = XiaoLiuRenPalaceMode.sixPalaces;
+  DateTime _timeCastTime = DateTime.now();
   bool _isLoading = false;
 
   @override
@@ -89,7 +90,7 @@ class _XiaoLiuRenCastScreenState extends State<XiaoLiuRenCastScreen> {
         case CastMethod.time:
           await viewModel.castByTime(
             palaceMode: _palaceMode,
-            castTime: DateTime.now(),
+            castTime: _timeCastTime,
           );
         case CastMethod.reportNumber:
           final first = int.tryParse(_firstNumberController.text.trim());
@@ -291,22 +292,73 @@ class _XiaoLiuRenCastScreenState extends State<XiaoLiuRenCastScreen> {
   }
 
   Widget _buildTimeBody() {
-    final now = DateTime.now();
-    final lunar = Lunar.fromDate(now);
+    final lunar = Lunar.fromDate(_timeCastTime);
     final ganZhi = '${lunar.getYearInGanZhi()}年 '
         '${lunar.getMonthInGanZhi()}月 '
         '${lunar.getDayInGanZhi()}日 '
         '${lunar.getTimeInGanZhi()}时';
-    final lunarDate = '农历${lunar.getMonthInChinese()}月'
-        '${lunar.getDayInChinese()} ${lunar.getTimeZhi()}时';
 
     return CastTimeSummaryCard(
+      title: '起课时间',
       ganZhiText: ganZhi,
-      lunarText: lunarDate,
+      dateTimeText: _formatDateTime(_timeCastTime),
       note: '取农历月数、农历日数、时支序数作为三段起数',
       accentColor: AppColors.xiaoliurenColor,
+      isLoading: _isLoading,
+      onPickDate: _pickTimeCastDate,
+      onPickTime: _pickTimeCastTime,
+      onUseCurrentTime: _useCurrentTimeCastTime,
     );
   }
+
+  Future<void> _pickTimeCastDate() async {
+    final picked = await showDatePicker(
+      context: context,
+      initialDate: _timeCastTime,
+      firstDate: DateTime(1900),
+      lastDate: DateTime(2100),
+    );
+    if (picked != null) {
+      setState(() {
+        _timeCastTime = DateTime(
+          picked.year,
+          picked.month,
+          picked.day,
+          _timeCastTime.hour,
+          _timeCastTime.minute,
+        );
+      });
+    }
+  }
+
+  Future<void> _pickTimeCastTime() async {
+    final picked = await showTimePicker(
+      context: context,
+      initialTime: TimeOfDay.fromDateTime(_timeCastTime),
+    );
+    if (picked != null) {
+      setState(() {
+        _timeCastTime = DateTime(
+          _timeCastTime.year,
+          _timeCastTime.month,
+          _timeCastTime.day,
+          picked.hour,
+          picked.minute,
+        );
+      });
+    }
+  }
+
+  void _useCurrentTimeCastTime() {
+    setState(() => _timeCastTime = DateTime.now());
+  }
+
+  String _formatDateTime(DateTime value) {
+    return '${value.year}年${_two(value.month)}月${_two(value.day)}日 '
+        '${_two(value.hour)}时${_two(value.minute)}分';
+  }
+
+  String _two(int value) => value.toString().padLeft(2, '0');
 
   Widget _buildNumberTripleBody({
     required String title,

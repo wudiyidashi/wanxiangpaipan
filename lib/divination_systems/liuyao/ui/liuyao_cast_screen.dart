@@ -134,14 +134,14 @@ class _LiuYaoCastScreenState extends State<LiuYaoCastScreen> {
     }
   }
 
-  Future<void> _handleTimeCast() async {
+  Future<void> _handleTimeCast(DateTime castTime) async {
     if (_isProcessing) {
       return;
     }
     setState(() => _isProcessing = true);
     try {
       final viewModel = context.read<LiuYaoViewModel>();
-      await viewModel.castByTime(castTime: DateTime.now());
+      await viewModel.castByTime(castTime: castTime);
       if (viewModel.hasError) {
         _showError(viewModel.errorMessage ?? '起卦失败');
         return;

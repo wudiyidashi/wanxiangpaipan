@@ -1,5 +1,7 @@
 import 'dart:math';
 
+import 'package:lunar/lunar.dart';
+
 /// 硬币面
 enum CoinFace {
   front('正面'),
@@ -14,6 +16,21 @@ class QiGuaService {
   QiGuaService._();
 
   static final _random = Random();
+
+  static const List<String> _earthlyBranches = <String>[
+    '子',
+    '丑',
+    '寅',
+    '卯',
+    '辰',
+    '巳',
+    '午',
+    '未',
+    '申',
+    '酉',
+    '戌',
+    '亥',
+  ];
 
   /// 摇钱法：模拟三枚硬币投掷，返回一个爻数
   static int coinCastOnce() {
@@ -43,15 +60,17 @@ class QiGuaService {
 
   /// 时间起卦法：根据时间计算卦象
   static List<int> timeCast(DateTime time) {
-    final year = time.year % 12 + 1;
-    final month = time.month;
-    final day = time.day;
-    final hour = _getShiChen(time.hour);
-    final sum = year + month + day + hour;
+    final lunar = Solar.fromDate(time).getLunar();
+    final year = _branchNumber(lunar.getYearZhi());
+    final month = lunar.getMonth().abs();
+    final day = lunar.getDay();
+    final hour = _branchNumber(lunar.getTimeZhi());
+    final baseSum = year + month + day;
+    final fullSum = baseSum + hour;
 
-    final upperGua = ((sum - 1) % 8) + 1;
-    final lowerGua = ((sum + hour - 1) % 8) + 1;
-    final movingYao = ((sum - 1) % 6) + 1;
+    final upperGua = _modToOneBased(baseSum, 8);
+    final lowerGua = _modToOneBased(fullSum, 8);
+    final movingYao = _modToOneBased(fullSum, 6);
 
     return _generateYaoNumbersFromGua(upperGua, lowerGua, movingYao);
   }
@@ -117,10 +136,18 @@ class QiGuaService {
     return List.generate(6, (_) => coinCastOnce());
   }
 
-  /// 获取时辰数（1-12）
-  static int _getShiChen(int hour) {
-    if (hour == 23 || hour == 0) return 1;
-    return ((hour + 1) ~/ 2) + 1;
+  /// 正数取模转为 1..modulus，余数为 0 时取 modulus。
+  static int _modToOneBased(int value, int modulus) {
+    return ((value - 1) % modulus) + 1;
+  }
+
+  /// 地支序号：子=1、丑=2、...、亥=12。
+  static int _branchNumber(String branch) {
+    final index = _earthlyBranches.indexOf(branch);
+    if (index < 0) {
+      throw StateError('未知地支：$branch');
+    }
+    return index + 1;
   }
 
   /// 根据上下卦和动爻生成爻数
@@ -140,12 +167,12 @@ class QiGuaService {
   static List<int> _guaNumberToYaos(int guaNum) {
     const Map<int, List<int>> guaToYaos = {
       1: [7, 7, 7], // 乾
-      2: [8, 7, 7], // 兑
+      2: [7, 7, 8], // 兑
       3: [7, 8, 7], // 离
-      4: [8, 8, 7], // 震
-      5: [7, 7, 8], // 巽
+      4: [7, 8, 8], // 震
+      5: [8, 7, 7], // 巽
       6: [8, 7, 8], // 坎
-      7: [7, 8, 8], // 艮
+      7: [8, 8, 7], // 艮
       8: [8, 8, 8], // 坤
     };
     return guaToYaos[guaNum] ?? [7, 7, 7];

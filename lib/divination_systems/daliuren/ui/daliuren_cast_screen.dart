@@ -65,6 +65,7 @@ class _DaLiuRenCastScreenState extends State<DaLiuRenCastScreen> {
 
   CastMethod _selectedMethod = CastMethod.time;
   bool _isLoading = false;
+  DateTime _timeCastTime = DateTime.now();
 
   final TextEditingController _questionController = TextEditingController();
   final TextEditingController _numberController = TextEditingController();
@@ -138,7 +139,7 @@ class _DaLiuRenCastScreenState extends State<DaLiuRenCastScreen> {
 
       switch (_selectedMethod) {
         case CastMethod.time:
-          await viewModel.castByTime(castTime: now, params: params);
+          await viewModel.castByTime(castTime: _timeCastTime, params: params);
         case CastMethod.reportNumber:
           final number = int.tryParse(_numberController.text.trim());
           if (number == null) {
@@ -233,6 +234,55 @@ class _DaLiuRenCastScreenState extends State<DaLiuRenCastScreen> {
     );
   }
 
+  Future<void> _pickTimeCastDate() async {
+    final picked = await showDatePicker(
+      context: context,
+      initialDate: _timeCastTime,
+      firstDate: DateTime(1900),
+      lastDate: DateTime(2100),
+    );
+    if (picked != null) {
+      setState(() {
+        _timeCastTime = DateTime(
+          picked.year,
+          picked.month,
+          picked.day,
+          _timeCastTime.hour,
+          _timeCastTime.minute,
+        );
+      });
+    }
+  }
+
+  Future<void> _pickTimeCastTime() async {
+    final picked = await showTimePicker(
+      context: context,
+      initialTime: TimeOfDay.fromDateTime(_timeCastTime),
+    );
+    if (picked != null) {
+      setState(() {
+        _timeCastTime = DateTime(
+          _timeCastTime.year,
+          _timeCastTime.month,
+          _timeCastTime.day,
+          picked.hour,
+          picked.minute,
+        );
+      });
+    }
+  }
+
+  void _useCurrentTimeCastTime() {
+    setState(() => _timeCastTime = DateTime.now());
+  }
+
+  String _formatDateTime(DateTime value) {
+    return '${value.year}年${_two(value.month)}月${_two(value.day)}日 '
+        '${_two(value.hour)}时${_two(value.minute)}分';
+  }
+
+  String _two(int value) => value.toString().padLeft(2, '0');
+
   @override
   Widget build(BuildContext context) {
     return AntiqueScaffold(
@@ -307,15 +357,18 @@ class _DaLiuRenCastScreenState extends State<DaLiuRenCastScreen> {
   Widget _buildCastSection() {
     switch (_selectedMethod) {
       case CastMethod.time:
-        final now = DateTime.now();
-        final lunar = Lunar.fromDate(now);
+        final lunar = Lunar.fromDate(_timeCastTime);
         return DaLiuRenTimeCastSection(
           yearGanZhi: '${lunar.getYearGan()}${lunar.getYearZhi()}',
           monthGanZhi: '${lunar.getMonthGan()}${lunar.getMonthZhi()}',
           dayGanZhi: '${lunar.getDayGan()}${lunar.getDayZhi()}',
           timeGanZhi: '${lunar.getTimeGan()}${lunar.getTimeZhi()}',
+          dateTimeText: _formatDateTime(_timeCastTime),
           isLoading: _isLoading,
           onCast: _isLoading ? null : _handleCast,
+          onPickDate: _pickTimeCastDate,
+          onPickTime: _pickTimeCastTime,
+          onUseCurrentTime: _useCurrentTimeCastTime,
         );
       case CastMethod.reportNumber:
         return DaLiuRenReportNumberCastSection(

@@ -4,6 +4,7 @@ import 'package:flutter/services.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_text_styles.dart';
 import '../../../presentation/widgets/antique/antique.dart';
+import '../../../presentation/widgets/cast/cast_form_sections.dart';
 import 'daliuren_cast_shared.dart';
 
 class DaLiuRenTimeCastSection extends StatelessWidget {
@@ -13,56 +14,40 @@ class DaLiuRenTimeCastSection extends StatelessWidget {
     required this.monthGanZhi,
     required this.dayGanZhi,
     required this.timeGanZhi,
+    required this.dateTimeText,
     required this.isLoading,
     required this.onCast,
+    required this.onPickDate,
+    required this.onPickTime,
+    required this.onUseCurrentTime,
   });
 
   final String yearGanZhi;
   final String monthGanZhi;
   final String dayGanZhi;
   final String timeGanZhi;
+  final String dateTimeText;
   final bool isLoading;
   final VoidCallback? onCast;
+  final VoidCallback onPickDate;
+  final VoidCallback onPickTime;
+  final VoidCallback onUseCurrentTime;
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: [
-        Container(
-          width: double.infinity,
-          padding: const EdgeInsets.all(16),
-          decoration: BoxDecoration(
-            color: Colors.white.withOpacity(0.5),
-            border: Border.all(color: AppColors.danjin.withOpacity(0.5)),
-            borderRadius: BorderRadius.circular(8),
-          ),
-          child: Column(
-            children: [
-              Text(
-                '当前干支',
-                style: AppTextStyles.antiqueLabel.copyWith(fontSize: 12),
-              ),
-              const SizedBox(height: 12),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: [
-                  DaLiuRenGanZhiItem(label: '年', ganZhi: yearGanZhi),
-                  DaLiuRenGanZhiItem(label: '月', ganZhi: monthGanZhi),
-                  DaLiuRenGanZhiItem(label: '日', ganZhi: dayGanZhi),
-                  DaLiuRenGanZhiItem(label: '时', ganZhi: timeGanZhi),
-                ],
-              ),
-            ],
-          ),
-        ),
-        const SizedBox(height: 24),
-        AntiqueButton(
-          label: isLoading ? '起课中...' : '起课',
-          onPressed: onCast,
-          variant: AntiqueButtonVariant.primary,
-          fullWidth: true,
-        ),
-      ],
+    return CastTimeActionSection(
+      title: '起课时间',
+      ganZhiText: '$yearGanZhi年 $monthGanZhi月 $dayGanZhi日 $timeGanZhi时',
+      dateTimeText: dateTimeText,
+      note: '按所选年月日时四柱排大六壬课盘',
+      accentColor: AppColors.daliurenColor,
+      isLoading: isLoading,
+      onCast: onCast,
+      onPickDate: onPickDate,
+      onPickTime: onPickTime,
+      onUseCurrentTime: onUseCurrentTime,
+      buttonLabel: '起课',
+      loadingLabel: '起课中...',
     );
   }
 }
