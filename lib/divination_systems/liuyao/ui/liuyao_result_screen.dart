@@ -16,6 +16,7 @@ import '../liuyao_result.dart';
 import '../models/gua.dart';
 import '../viewmodels/liuyao_analysis_controller.dart';
 import 'widgets/analysis_overview_card.dart';
+import 'widgets/relation_graph_dialog.dart';
 import 'widgets/yao_detail_sheet.dart';
 import 'widgets/ying_qi_card.dart';
 
@@ -72,6 +73,20 @@ class _LiuYaoResultView extends StatelessWidget {
                 controller.selectYongShen(position, isFuShen: isFuShen),
             onClearYongShen: controller.clearYongShen,
             onViewCalendar: () => _openYingQiCalendar(context, controller),
+          ),
+        ),
+        Align(
+          alignment: Alignment.centerRight,
+          child: TextButton.icon(
+            icon: const Icon(Icons.account_tree_outlined, size: 16),
+            label: const Text('生克关系图'),
+            onPressed: () => showRelationGraphDialog(
+              context,
+              mainGua: result.mainGua,
+              lunarInfo: result.lunarInfo,
+              report: report,
+              yongShenPosition: controller.yongShenPosition,
+            ),
           ),
         ),
         DiagramComparisonRow(
