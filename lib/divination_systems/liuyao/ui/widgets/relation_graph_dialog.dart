@@ -527,9 +527,10 @@ class _RelationGraphPainter extends CustomPainter {
       text: TextSpan(
         text: text,
         style: TextStyle(
-          fontSize: 9,
+          fontSize: 11,
+          fontWeight: FontWeight.w500,
           color: color,
-          backgroundColor: AppColors.xiangse.withOpacity(0.85),
+          backgroundColor: AppColors.xiangse.withOpacity(0.9),
         ),
       ),
       textDirection: ui.TextDirection.ltr,
