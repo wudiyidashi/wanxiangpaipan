@@ -40,7 +40,33 @@ Future<void> showRelationGraphDialog(
   );
 }
 
-class RelationGraphView extends StatelessWidget {
+/// 连线分组（过滤维度）：结构优先（化变/日月），其余按线型
+enum EdgeGroup {
+  shengFu('生扶', AppColors.jishenGreen),
+  keChong('克冲刑害', AppColors.zhusha),
+  he('合', AppColors.danjinDeep),
+  bian('化变', AppColors.huise),
+  riYue('日月', AppColors.dailan);
+
+  const EdgeGroup(this.label, this.color);
+  final String label;
+  final Color color;
+
+  static EdgeGroup of(RelationEdge edge) {
+    if (edge.isBianEdge) return EdgeGroup.bian;
+    if (edge.from == RelationEdge.yueNode ||
+        edge.from == RelationEdge.riNode) {
+      return EdgeGroup.riYue;
+    }
+    return switch (edge.kind) {
+      RelationKind.sheng => EdgeGroup.shengFu,
+      RelationKind.ke => EdgeGroup.keChong,
+      RelationKind.he || RelationKind.neutral => EdgeGroup.he,
+    };
+  }
+}
+
+class RelationGraphView extends StatefulWidget {
   const RelationGraphView({
     super.key,
     required this.mainGua,
@@ -57,12 +83,31 @@ class RelationGraphView extends StatelessWidget {
   final int? yongShenPosition;
 
   @override
+  State<RelationGraphView> createState() => _RelationGraphViewState();
+}
+
+class _RelationGraphViewState extends State<RelationGraphView> {
+  final Set<EdgeGroup> _visibleGroups = {...EdgeGroup.values};
+
+  Gua get mainGua => widget.mainGua;
+  Gua? get changingGua => widget.changingGua;
+  LunarInfo get lunarInfo => widget.lunarInfo;
+  int? get yongShenPosition => widget.yongShenPosition;
+
+  @override
   Widget build(BuildContext context) {
     final movingPositions = changingGua == null
         ? const <int>{}
         : mainGua.movingYaos.map((y) => y.position).toSet();
-    final edges =
-        buildRelationEdges(report, movingPositions: movingPositions);
+    final allEdges =
+        buildRelationEdges(widget.report, movingPositions: movingPositions);
+    // 只提供实际存在的分组作为开关
+    final availableGroups =
+        allEdges.map(EdgeGroup.of).toSet().toList()
+          ..sort((a, b) => a.index.compareTo(b.index));
+    final edges = allEdges
+        .where((e) => _visibleGroups.contains(EdgeGroup.of(e)))
+        .toList();
     final width =
         math.min(MediaQuery.of(context).size.width - 20, 430).toDouble();
     final layout = _GraphLayout(width: width);
@@ -91,6 +136,21 @@ class RelationGraphView extends StatelessWidget {
               ],
             ),
           ),
+          if (allEdges.isNotEmpty)
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16),
+              child: Align(
+                alignment: Alignment.centerLeft,
+                child: Wrap(
+                  spacing: 6,
+                  runSpacing: 4,
+                  children: [
+                    for (final group in availableGroups)
+                      _buildFilterChip(group),
+                  ],
+                ),
+              ),
+            ),
           SizedBox(
             width: width,
             height: layout.graphHeight,
@@ -114,15 +174,49 @@ class RelationGraphView extends StatelessWidget {
           ),
           Padding(
             padding: const EdgeInsets.fromLTRB(16, 4, 16, 12),
-            child: edges.isEmpty
+            child: allEdges.isEmpty
                 ? Text(
                     '本卦当前无跨爻生克合冲关系',
                     style: AppTextStyles.antiqueLabel
                         .copyWith(color: AppColors.huise),
                   )
-                : _buildLegend(),
+                : Text(
+                    '点击上方分类可切换连线显隐',
+                    style: AppTextStyles.antiqueLabel
+                        .copyWith(color: AppColors.huiseLight),
+                  ),
           ),
         ],
+      ),
+    );
+  }
+
+  /// 分类显隐开关：选中实底、未选空心置灰
+  Widget _buildFilterChip(EdgeGroup group) {
+    final selected = _visibleGroups.contains(group);
+    return GestureDetector(
+      onTap: () => setState(() {
+        if (!_visibleGroups.remove(group)) _visibleGroups.add(group);
+      }),
+      child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+        decoration: BoxDecoration(
+          color: selected ? group.color.withOpacity(0.14) : Colors.transparent,
+          border: Border.all(
+            color: selected
+                ? group.color
+                : AppColors.huiseLight.withOpacity(0.6),
+          ),
+          borderRadius: BorderRadius.circular(12),
+        ),
+        child: Text(
+          group.label,
+          style: TextStyle(
+            fontSize: 11,
+            color: selected ? group.color : AppColors.huiseLight,
+            fontWeight: selected ? FontWeight.w600 : FontWeight.normal,
+          ),
+        ),
       ),
     );
   }
@@ -209,30 +303,6 @@ class RelationGraphView extends StatelessWidget {
     );
   }
 
-  Widget _buildLegend() {
-    Widget item(Color color, String label, {bool dashed = false}) => Row(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            CustomPaint(
-              size: const Size(22, 2),
-              painter: _LegendLinePainter(color: color, dashed: dashed),
-            ),
-            const SizedBox(width: 4),
-            Text(label, style: TextStyle(fontSize: 10, color: color)),
-          ],
-        );
-
-    return Wrap(
-      spacing: 14,
-      runSpacing: 4,
-      children: [
-        item(AppColors.jishenGreen, '生扶'),
-        item(AppColors.zhusha, '克冲刑害', dashed: true),
-        item(AppColors.danjinDeep, '合'),
-        if (changingGua != null) item(AppColors.huise, '化变'),
-      ],
-    );
-  }
 }
 
 /// 固定坐标布局：本卦列偏右，左侧留弧线区，最右为变爻列
@@ -437,32 +507,3 @@ class _RelationGraphPainter extends CustomPainter {
 }
 
 enum _LabelAlign { center }
-
-class _LegendLinePainter extends CustomPainter {
-  const _LegendLinePainter({required this.color, required this.dashed});
-
-  final Color color;
-  final bool dashed;
-
-  @override
-  void paint(Canvas canvas, Size size) {
-    final paint = Paint()
-      ..color = color
-      ..strokeWidth = 2;
-    if (!dashed) {
-      canvas.drawLine(Offset(0, size.height / 2),
-          Offset(size.width, size.height / 2), paint);
-      return;
-    }
-    var x = 0.0;
-    while (x < size.width) {
-      canvas.drawLine(Offset(x, size.height / 2),
-          Offset(math.min(x + 4, size.width), size.height / 2), paint);
-      x += 7;
-    }
-  }
-
-  @override
-  bool shouldRepaint(_LegendLinePainter oldDelegate) =>
-      oldDelegate.color != color || oldDelegate.dashed != dashed;
-}

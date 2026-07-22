@@ -47,6 +47,33 @@ void main() {
     // 图例
     expect(find.text('生扶'), findsOneWidget);
     expect(find.text('克冲刑害'), findsOneWidget);
+    expect(find.text('点击上方分类可切换连线显隐'), findsOneWidget);
+  });
+
+  testWidgets('点击分类开关切换显隐不崩溃', (tester) async {
+    final qian = GuaCalculator.calculateGua([9, 7, 7, 7, 7, 7]);
+    final lunar = _lunar();
+    final report = LiuYaoAnalyzer.analyze(qian, null, lunar);
+
+    await tester.pumpWidget(MaterialApp(
+      home: Scaffold(
+        body: RelationGraphView(
+          mainGua: qian,
+          lunarInfo: lunar,
+          report: report,
+        ),
+      ),
+    ));
+
+    await tester.tap(find.text('克冲刑害'));
+    await tester.pump();
+    await tester.tap(find.text('生扶'));
+    await tester.pump();
+    // 全部关闭后节点仍在、开关仍可用
+    expect(find.textContaining('初爻'), findsOneWidget);
+    await tester.tap(find.text('克冲刑害'));
+    await tester.pump();
+    expect(find.text('克冲刑害'), findsOneWidget);
   });
 
   testWidgets('有变卦时渲染变爻节点', (tester) async {
