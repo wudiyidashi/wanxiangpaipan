@@ -39,3 +39,36 @@
 ### Next Steps
 
 - None - task complete
+
+
+## Session 2: 六爻生克关系连线图弹窗
+
+**Date**: 2026-07-22
+**Task**: 六爻生克关系连线图弹窗
+**Branch**: `main`
+
+### Summary
+
+以弹窗简化示意图实现生克关系可视化（上一任务排除项）：buildRelationEdges 纯函数从 AnalysisReport 提取边（生克扶有向/合冲刑害墓无向归一去重/日月边），CustomPainter 固定坐标绘制（六爻纵列+月建日辰节点，生扶绿实线/克冲朱砂虚线箭头/合金弧，lane 错开+术语标注+图例+空态）。结果页表格上方入口，不依赖用神。引擎表格数据层零改动。新增 8 测试全量 653 绿，实机验证通过。轻量任务（PRD-only），验证由自动测试+实机截图覆盖，未派独立 check 代理。
+
+### Main Changes
+
+- Detailed change bullets were not supplied; see the summary above.
+
+### Git Commits
+
+| Hash | Message |
+|------|---------|
+| `f2aecce` | (see git log) |
+
+### Testing
+
+- Validation was not recorded for this session.
+
+### Status
+
+[OK] **Completed**
+
+### Next Steps
+
+- None - task complete
