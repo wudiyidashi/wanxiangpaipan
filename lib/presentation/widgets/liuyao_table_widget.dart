@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
+import '../../core/theme/app_colors.dart';
 import '../../core/theme/app_text_styles.dart';
 import '../../divination_systems/liuyao/models/gua.dart';
 import '../../divination_systems/liuyao/models/yao.dart';
 import '../../domain/services/fushen_service.dart';
+import '../../domain/services/liuyao/analysis/models/analysis_tag.dart';
+import 'yao_tag_badge.dart';
 
 /// 六爻紧凑表格组件
 ///
@@ -30,6 +33,18 @@ class LiuYaoTableWidget extends StatelessWidget {
   /// 变卦是否显示世应列（默认 false）
   final bool secondaryShowWorldResponse;
 
+  /// 各爻分析徽标（key 为爻位 1-6，已按优先级排序）；null 时不渲染徽标
+  final Map<int, List<YaoAnalysisTag>>? yaoTags;
+
+  /// 点击本卦爻行回调（爻位 1-6）；null 时行不可点击
+  final ValueChanged<int>? onYaoTap;
+
+  /// 当前选定的用神爻位；用于爻行高亮
+  final int? yongShenPosition;
+
+  /// 每爻内联徽标上限
+  static const int maxInlineBadges = 3;
+
   const LiuYaoTableWidget({
     super.key,
     required this.gua,
@@ -39,6 +54,9 @@ class LiuYaoTableWidget extends StatelessWidget {
     this.secondaryTitle,
     this.showWorldResponse = true,
     this.secondaryShowWorldResponse = false,
+    this.yaoTags,
+    this.onYaoTap,
+    this.yongShenPosition,
   });
 
   @override
@@ -171,41 +189,55 @@ class LiuYaoTableWidget extends StatelessWidget {
                 liuShen.length > yaoIndex ? liuShen[yaoIndex] : '';
             final isLastRow = i == 5;
 
-            return Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Container(
-                  decoration: BoxDecoration(
-                    border: isLastRow
-                        ? null
-                        : Border(
-                            bottom: BorderSide(color: Colors.grey.shade200),
-                          ),
+            return _wrapYaoRow(
+              mainYao.position,
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Container(
+                    decoration: BoxDecoration(
+                      color: mainYao.position == yongShenPosition
+                          ? AppColors.danjin.withOpacity(0.15)
+                          : null,
+                      border: isLastRow
+                          ? null
+                          : Border(
+                              bottom: BorderSide(color: Colors.grey.shade200),
+                            ),
+                    ),
+                    child: Row(
+                      children: [
+                        ..._buildSegmentRowCells(
+                          yao: mainYao,
+                          liuShenName: liuShenName,
+                          showWorldResponse: showWorldResponse,
+                        ),
+                        _buildMovingCell(mainYao.isMoving),
+                        ..._buildSegmentRowCells(
+                          yao: secondaryYao,
+                          liuShenName: liuShenName,
+                          showWorldResponse: secondaryShowWorldResponse,
+                        ),
+                      ],
+                    ),
                   ),
-                  child: Row(
-                    children: [
-                      ..._buildSegmentRowCells(
-                        yao: mainYao,
-                        liuShenName: liuShenName,
-                        showWorldResponse: showWorldResponse,
-                      ),
-                      _buildMovingCell(mainYao.isMoving),
-                      ..._buildSegmentRowCells(
-                        yao: secondaryYao,
-                        liuShenName: liuShenName,
-                        showWorldResponse: secondaryShowWorldResponse,
-                      ),
-                    ],
+                  _buildTagNote(
+                    mainYao.position,
+                    mainSegmentFlex: showWorldResponse ? 7 : 3,
+                    includeMovingColumn: true,
+                    includeSecondarySegment: true,
+                    secondarySegmentFlex:
+                        secondaryShowWorldResponse ? 7 : 3,
                   ),
-                ),
-                _buildFuShenNote(
-                  fuShenByPosition[mainYao.position]?.displayText,
-                  showWorldResponse: showWorldResponse,
-                  includeMovingColumn: true,
-                  includeSecondarySegment: true,
-                  secondaryShowWorldResponse: secondaryShowWorldResponse,
-                ),
-              ],
+                  _buildFuShenNote(
+                    fuShenByPosition[mainYao.position]?.displayText,
+                    showWorldResponse: showWorldResponse,
+                    includeMovingColumn: true,
+                    includeSecondarySegment: true,
+                    secondaryShowWorldResponse: secondaryShowWorldResponse,
+                  ),
+                ],
+              ),
             );
           }),
         ],
@@ -360,31 +392,84 @@ class LiuYaoTableWidget extends StatelessWidget {
     required bool showWorldResponse,
     bool isLastRow = false,
   }) {
-    return Container(
-      decoration: BoxDecoration(
-        border: isLastRow
-            ? null
-            : Border(
-                bottom: BorderSide(color: Colors.grey.shade200),
+    return _wrapYaoRow(
+      yao.position,
+      Container(
+        decoration: BoxDecoration(
+          color: yao.position == yongShenPosition
+              ? AppColors.danjin.withOpacity(0.15)
+              : null,
+          border: isLastRow
+              ? null
+              : Border(
+                  bottom: BorderSide(color: Colors.grey.shade200),
+                ),
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            // 主行：爻的信息
+            Row(
+              children: _buildSegmentRowCells(
+                yao: yao,
+                liuShenName: liuShenName,
+                showWorldResponse: showWorldResponse,
               ),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          // 主行：爻的信息
-          Row(
-            children: _buildSegmentRowCells(
-              yao: yao,
-              liuShenName: liuShenName,
+            ),
+            _buildTagNote(
+              yao.position,
+              mainSegmentFlex: showWorldResponse ? 7 : 3,
+            ),
+            _buildFuShenNote(
+              fuShenText,
               showWorldResponse: showWorldResponse,
             ),
-          ),
-          _buildFuShenNote(
-            fuShenText,
-            showWorldResponse: showWorldResponse,
-          ),
-        ],
+          ],
+        ),
       ),
+    );
+  }
+
+  /// 爻行点击包装：onYaoTap 为空时保持原样
+  Widget _wrapYaoRow(int position, Widget row) {
+    if (onYaoTap == null) return row;
+    return InkWell(
+      onTap: () => onYaoTap!(position),
+      child: row,
+    );
+  }
+
+  /// 爻行内联分析徽标（最多 [maxInlineBadges] 个）
+  Widget _buildTagNote(
+    int position, {
+    required int mainSegmentFlex,
+    bool includeMovingColumn = false,
+    bool includeSecondarySegment = false,
+    int secondarySegmentFlex = 3,
+  }) {
+    final tags = yaoTags?[position];
+    if (tags == null || tags.isEmpty) return const SizedBox.shrink();
+
+    return Row(
+      children: [
+        Expanded(
+          flex: mainSegmentFlex,
+          child: Padding(
+            padding: const EdgeInsets.only(left: 8, right: 4, bottom: 4),
+            child: Wrap(
+              spacing: 3,
+              runSpacing: 2,
+              children: [
+                for (final tag in tags.take(maxInlineBadges))
+                  YaoTagBadge(tag: tag),
+              ],
+            ),
+          ),
+        ),
+        if (includeMovingColumn) const SizedBox(width: 48),
+        if (includeSecondarySegment)
+          Expanded(flex: secondarySegmentFlex, child: const SizedBox.shrink()),
+      ],
     );
   }
 

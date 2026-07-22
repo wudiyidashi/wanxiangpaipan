@@ -7,6 +7,7 @@ import '../../../domain/divination_system.dart';
 import '../../../divination_systems/liuyao/liuyao_result.dart';
 import '../../../divination_systems/liuyao/models/gua.dart';
 import '../../../divination_systems/liuyao/models/yao.dart';
+import '../../../domain/services/liuyao/analysis/liuyao_analyzer.dart';
 import '../structured_output.dart';
 import '../structured_output_formatter.dart';
 
@@ -117,7 +118,63 @@ class LiuYaoStructuredFormatter
       priority: 6,
     ));
 
+    // 确定性断卦分析（旺衰/空破/合冲/动变/用神链/应期）
+    sections.add(StructuredSection(
+      key: 'analysis',
+      title: '断卦分析（引擎判定）',
+      content: _formatAnalysis(result),
+      priority: 7,
+    ));
+
     return sections;
+  }
+
+  /// 将 LiuYaoAnalyzer 的确定性分析报告渲染为提示词文本
+  String _formatAnalysis(LiuYaoResult result) {
+    final report = LiuYaoAnalyzer.analyze(
+      result.mainGua,
+      result.changingGua,
+      result.lunarInfo,
+      yongShenPosition: result.yongShenPosition,
+      yongShenIsFuShen: result.yongShenIsFuShen,
+    );
+
+    final buffer = StringBuffer();
+    buffer.writeln('以下判定由程序按《增删卜易》规则确定性推得，解读时请以此为准：');
+
+    if (report.guaTags.isNotEmpty) {
+      buffer.writeln('卦象: ${report.guaTags.map((t) => t.term).join('、')}');
+    }
+
+    final positions = report.yaoTags.keys.toList()
+      ..sort((a, b) => b.compareTo(a));
+    for (final position in positions) {
+      final yao = result.mainGua.yaos[position - 1];
+      final tags = report.yaoTags[position]!
+          .map((t) => '${t.term}(${t.reason})')
+          .join('、');
+      buffer.writeln(
+          '${_positionName(position)}爻${yao.liuQin.name}${yao.branch}: $tags');
+    }
+
+    final chain = report.yongShen;
+    if (chain == null) {
+      buffer.writeln(
+          '用户未指定用神：请先根据所占之事建议合适的用神，再依上述分析解读。');
+    } else {
+      buffer.writeln(
+          '用户指定用神: ${_positionName(chain.position)}爻'
+          '${chain.isFuShen ? '（伏神取用）' : ''}');
+      if (report.yingQi != null && report.yingQi!.isNotEmpty) {
+        buffer.writeln(
+            '应期候选: ${report.yingQi!.map((c) => c.label).join('、')}');
+      }
+      if (report.verdictSummary != null) {
+        buffer.writeln('引擎结论: ${report.verdictSummary}');
+      }
+    }
+
+    return buffer.toString();
   }
 
   String _buildSummary(LiuYaoResult result) {
@@ -173,11 +230,12 @@ class LiuYaoStructuredFormatter
   String _formatMovingYaos(LiuYaoResult result) {
     final buffer = StringBuffer();
     for (final yao in result.movingYaos) {
-      final changed = yao.toChangedYao();
+      final changed = result.changingGua!.yaos[yao.position - 1];
       buffer.writeln(
         '${_positionName(yao.position)}爻动: '
-        '${yao.liuQin.name}${yao.branch}(${yao.wuXing.name}) '
-        '→ ${changed.branch}',
+        '${yao.liuQin.name}${yao.stem}${yao.branch}(${yao.wuXing.name}) '
+        '→ ${changed.liuQin.name}${changed.stem}${changed.branch}'
+        '(${changed.wuXing.name})',
       );
     }
     return buffer.toString();

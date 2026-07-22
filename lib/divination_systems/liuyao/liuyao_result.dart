@@ -23,6 +23,12 @@ class LiuYaoResult with _$LiuYaoResult implements DivinationResult {
     @Default('') String questionId,
     @Default('') String detailId,
     @Default('') String interpretationId,
+
+    /// 用户选定的用神爻位（1-6）；null 表示未选
+    int? yongShenPosition,
+
+    /// 用神是否为伏神（伏神取用时飞神所在爻位记于 yongShenPosition）
+    @Default(false) bool yongShenIsFuShen,
   }) = _LiuYaoResult;
 
   factory LiuYaoResult.fromJson(Map<String, dynamic> json) =>

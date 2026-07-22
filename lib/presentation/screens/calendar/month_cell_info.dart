@@ -10,12 +10,16 @@ class MonthCellInfo {
   final bool hasMoonPhase;
   final bool hasFestival;
 
+  /// 当日干支（应期模式角标用）
+  final String dayGanZhi;
+
   const MonthCellInfo({
     required this.solarDay,
     required this.label,
     required this.hasJieQi,
     required this.hasMoonPhase,
     required this.hasFestival,
+    required this.dayGanZhi,
   });
 
   static const _moonMilestones = {'朔', '望', '上弦', '下弦'};
@@ -39,6 +43,7 @@ class MonthCellInfo {
       hasJieQi: jieQi.isNotEmpty,
       hasMoonPhase: _moonMilestones.contains(yueXiang),
       hasFestival: hasFestival,
+      dayGanZhi: lunar.getDayInGanZhi(),
     );
   }
 }

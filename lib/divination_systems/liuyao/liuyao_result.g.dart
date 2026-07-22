@@ -21,6 +21,8 @@ _$LiuYaoResultImpl _$$LiuYaoResultImplFromJson(Map<String, dynamic> json) =>
       questionId: json['questionId'] as String? ?? '',
       detailId: json['detailId'] as String? ?? '',
       interpretationId: json['interpretationId'] as String? ?? '',
+      yongShenPosition: (json['yongShenPosition'] as num?)?.toInt(),
+      yongShenIsFuShen: json['yongShenIsFuShen'] as bool? ?? false,
     );
 
 Map<String, dynamic> _$$LiuYaoResultImplToJson(_$LiuYaoResultImpl instance) =>
@@ -35,6 +37,8 @@ Map<String, dynamic> _$$LiuYaoResultImplToJson(_$LiuYaoResultImpl instance) =>
       'questionId': instance.questionId,
       'detailId': instance.detailId,
       'interpretationId': instance.interpretationId,
+      'yongShenPosition': instance.yongShenPosition,
+      'yongShenIsFuShen': instance.yongShenIsFuShen,
     };
 
 const _$CastMethodEnumMap = {
@@ -42,6 +46,8 @@ const _$CastMethodEnumMap = {
   CastMethod.manual: 'manual',
   CastMethod.number: 'number',
   CastMethod.reportNumber: 'reportNumber',
+  CastMethod.characterStroke: 'characterStroke',
+  CastMethod.objectSound: 'objectSound',
   CastMethod.time: 'time',
   CastMethod.computer: 'computer',
 };

@@ -4,6 +4,7 @@ import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_text_styles.dart';
 import '../../../domain/services/shared/almanac_service.dart';
 import '../../widgets/antique/antique.dart';
+import 'calendar_gua_context.dart';
 import 'calendar_viewmodel.dart';
 import 'day_detail_view.dart';
 import 'month_grid_view.dart';
@@ -15,12 +16,16 @@ class CalendarScreen extends StatefulWidget {
     this.viewModel,
     this.almanacService,
     this.now,
+    this.guaContext,
   });
 
   final bool chromeless;
   final CalendarViewModel? viewModel;
   final AlmanacService? almanacService;
   final DateTime Function()? now;
+
+  /// 应期模式卦上下文；null 时为通用黄历（与原行为一致）
+  final CalendarGuaContext? guaContext;
 
   @override
   State<CalendarScreen> createState() => _CalendarScreenState();
@@ -69,39 +74,103 @@ class _CalendarScreenState extends State<CalendarScreen> {
   Widget build(BuildContext context) {
     final body = ChangeNotifierProvider<CalendarViewModel>.value(
       value: _vm,
-      child: _CalendarBody(scrollController: _scroll),
+      child: _CalendarBody(
+        scrollController: _scroll,
+        guaContext: widget.guaContext,
+      ),
     );
     if (widget.chromeless) return body;
     return AntiqueScaffold(
-      appBar: const AntiqueAppBar(title: '历法'),
+      appBar: AntiqueAppBar(
+        title: widget.guaContext == null ? '历法' : '应期日历',
+      ),
       body: body,
     );
   }
 }
 
 class _CalendarBody extends StatelessWidget {
-  const _CalendarBody({required this.scrollController});
+  const _CalendarBody({required this.scrollController, this.guaContext});
   final ScrollController scrollController;
+  final CalendarGuaContext? guaContext;
 
   @override
   Widget build(BuildContext context) {
     return Column(
       children: [
+        if (guaContext != null) _GuaContextBanner(guaContext: guaContext!),
         const _Topbar(),
         const AntiqueDivider(),
         Expanded(
           child: SingleChildScrollView(
             controller: scrollController,
-            child: const Column(
+            child: Column(
               children: [
-                MonthGridView(),
-                AntiqueDivider(),
-                DayDetailView(),
+                MonthGridView(guaContext: guaContext),
+                const AntiqueDivider(),
+                DayDetailView(guaContext: guaContext),
               ],
             ),
           ),
         ),
       ],
+    );
+  }
+}
+
+/// 应期模式横幅：关联卦信息 + 角标图例 + 退出
+class _GuaContextBanner extends StatelessWidget {
+  const _GuaContextBanner({required this.guaContext});
+  final CalendarGuaContext guaContext;
+
+  static const Map<GuaDayMarkerType, String> _legends = {
+    GuaDayMarkerType.ying: '应期',
+    GuaDayMarkerType.chong: '冲用神',
+    GuaDayMarkerType.he: '合用神',
+    GuaDayMarkerType.kong: '用神空',
+  };
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      width: double.infinity,
+      color: AppColors.danjin.withOpacity(0.15),
+      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+      child: Row(
+        children: [
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  guaContext.title,
+                  style: AppTextStyles.antiqueLabel.copyWith(
+                    color: AppColors.gutong,
+                    fontWeight: FontWeight.bold,
+                  ),
+                  overflow: TextOverflow.ellipsis,
+                ),
+                const SizedBox(height: 2),
+                Wrap(
+                  spacing: 8,
+                  children: [
+                    for (final marker in GuaDayMarkerType.values)
+                      Text(
+                        '${marker.label}=${_legends[marker]}',
+                        style: TextStyle(fontSize: 9, color: marker.color),
+                      ),
+                  ],
+                ),
+              ],
+            ),
+          ),
+          if (Navigator.of(context).canPop())
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(),
+              child: const Text('退出'),
+            ),
+        ],
+      ),
     );
   }
 }

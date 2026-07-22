@@ -2,11 +2,15 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_text_styles.dart';
+import 'calendar_gua_context.dart';
 import 'calendar_viewmodel.dart';
 import 'month_cell_info.dart';
 
 class MonthGridView extends StatelessWidget {
-  const MonthGridView({super.key});
+  const MonthGridView({super.key, this.guaContext});
+
+  /// 应期模式卦上下文；null 时无角标（原行为）
+  final CalendarGuaContext? guaContext;
 
   static const _weekdayHeaders = ['日', '一', '二', '三', '四', '五', '六'];
 
@@ -43,6 +47,7 @@ class MonthGridView extends StatelessWidget {
                       date: days[row * 7 + col],
                       inMonth:
                           days[row * 7 + col].month == vm.displayedMonth.month,
+                      guaContext: guaContext,
                     ),
                   ),
               ],
@@ -63,9 +68,10 @@ class MonthGridView extends StatelessWidget {
 }
 
 class _Cell extends StatelessWidget {
-  const _Cell({required this.date, required this.inMonth});
+  const _Cell({required this.date, required this.inMonth, this.guaContext});
   final DateTime date;
   final bool inMonth;
+  final CalendarGuaContext? guaContext;
 
   bool _sameDay(DateTime a, DateTime b) =>
       a.year == b.year && a.month == b.month && a.day == b.day;
@@ -74,6 +80,7 @@ class _Cell extends StatelessWidget {
   Widget build(BuildContext context) {
     final vm = context.watch<CalendarViewModel>();
     final info = MonthCellInfo.of(date);
+    final marker = guaContext?.markerFor(info.dayGanZhi);
     final today = DateTime.now();
     final isToday = _sameDay(date, today);
     final isSelected = _sameDay(date, vm.selectedDate);
@@ -98,24 +105,43 @@ class _Cell extends StatelessWidget {
           border: border,
           borderRadius: BorderRadius.circular(4),
         ),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
+        child: Stack(
           children: [
-            Text(
-              '${date.day}',
-              style: AppTextStyles.antiqueSection.copyWith(
-                color: inMonth ? AppColors.xuanse : AppColors.huiseLight,
-              ),
+            Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Text(
+                  '${date.day}',
+                  style: AppTextStyles.antiqueSection.copyWith(
+                    color: inMonth ? AppColors.xuanse : AppColors.huiseLight,
+                  ),
+                ),
+                Text(
+                  info.label,
+                  style: AppTextStyles.antiqueLabel.copyWith(
+                    color: inMonth ? AppColors.huise : AppColors.huiseLight,
+                    fontSize: 9,
+                  ),
+                  overflow: TextOverflow.ellipsis,
+                ),
+                _Dots(info: info),
+              ],
             ),
-            Text(
-              info.label,
-              style: AppTextStyles.antiqueLabel.copyWith(
-                color: inMonth ? AppColors.huise : AppColors.huiseLight,
-                fontSize: 9,
+            if (marker != null)
+              Positioned(
+                top: 1,
+                right: 2,
+                child: Text(
+                  marker.label,
+                  style: TextStyle(
+                    fontSize: 8,
+                    fontWeight: FontWeight.bold,
+                    color: inMonth
+                        ? marker.color
+                        : marker.color.withOpacity(0.4),
+                  ),
+                ),
               ),
-              overflow: TextOverflow.ellipsis,
-            ),
-            _Dots(info: info),
           ],
         ),
       ),

@@ -12,6 +12,8 @@ import 'domain/services/data_management_service.dart';
 import 'domain/services/last_cast_method_service.dart';
 import 'presentation/screens/home/home_screen.dart';
 import 'presentation/screens/history/history_list_screen.dart';
+import 'presentation/screens/calendar/calendar_gua_context.dart';
+import 'presentation/screens/calendar/calendar_screen.dart';
 import 'presentation/screens/settings/settings_screen.dart';
 import 'presentation/screens/settings/ai_settings_screen.dart';
 import 'presentation/screens/settings/data_management_screen.dart';
@@ -228,6 +230,12 @@ class _WanxiangPaipanAppState extends State<WanxiangPaipanApp> {
         navigatorObservers: [appRouteObserver],
         home: const HomeScreen(),
         routes: {
+          '/calendar': (context) {
+            final args = ModalRoute.of(context)?.settings.arguments;
+            return CalendarScreen(
+              guaContext: args is CalendarGuaContext ? args : null,
+            );
+          },
           '/history': (context) => const HistoryListScreen(),
           '/settings': (context) => const SettingsScreen(),
           '/ai-settings': (context) => const AISettingsScreen(),
