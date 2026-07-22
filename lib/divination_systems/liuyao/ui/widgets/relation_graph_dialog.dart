@@ -12,11 +12,13 @@ import 'relation_edges.dart';
 
 /// 生克关系连线图弹窗。
 ///
-/// 采用固定坐标的简化示意图（六爻纵列 + 日月外部节点），
-/// 不复用真实排盘表格，连线由 [_RelationGraphPainter] 绘制。
+/// 固定坐标简化示意图：本卦六爻纵列 + 右侧变爻列（动爻的化变关系）+
+/// 月建/日辰外部节点；爻间及日月弧线统一走左侧（短跨度在内圈），
+/// 右侧仅本爻↔变爻短线，避免交叉。
 Future<void> showRelationGraphDialog(
   BuildContext context, {
   required Gua mainGua,
+  Gua? changingGua,
   required LunarInfo lunarInfo,
   required AnalysisReport report,
   int? yongShenPosition,
@@ -25,10 +27,11 @@ Future<void> showRelationGraphDialog(
     context: context,
     builder: (context) => Dialog(
       backgroundColor: AppColors.xiangse,
-      insetPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 24),
+      insetPadding: const EdgeInsets.symmetric(horizontal: 10, vertical: 24),
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
       child: RelationGraphView(
         mainGua: mainGua,
+        changingGua: changingGua,
         lunarInfo: lunarInfo,
         report: report,
         yongShenPosition: yongShenPosition,
@@ -41,26 +44,28 @@ class RelationGraphView extends StatelessWidget {
   const RelationGraphView({
     super.key,
     required this.mainGua,
+    this.changingGua,
     required this.lunarInfo,
     required this.report,
     this.yongShenPosition,
   });
 
   final Gua mainGua;
+  final Gua? changingGua;
   final LunarInfo lunarInfo;
   final AnalysisReport report;
   final int? yongShenPosition;
 
-  static const double _rowHeight = 54;
-  static const double _topNodesHeight = 52;
-  static const double _nodeWidth = 148;
-
   @override
   Widget build(BuildContext context) {
-    final edges = buildRelationEdges(report);
+    final movingPositions = changingGua == null
+        ? const <int>{}
+        : mainGua.movingYaos.map((y) => y.position).toSet();
+    final edges =
+        buildRelationEdges(report, movingPositions: movingPositions);
     final width =
-        math.min(MediaQuery.of(context).size.width - 24, 420).toDouble();
-    final graphHeight = _topNodesHeight + 6 * _rowHeight;
+        math.min(MediaQuery.of(context).size.width - 20, 430).toDouble();
+    final layout = _GraphLayout(width: width);
 
     return SizedBox(
       width: width,
@@ -88,25 +93,22 @@ class RelationGraphView extends StatelessWidget {
           ),
           SizedBox(
             width: width,
-            height: graphHeight,
+            height: layout.graphHeight,
             child: Stack(
               children: [
                 Positioned.fill(
                   child: CustomPaint(
-                    painter: _RelationGraphPainter(
-                      edges: edges,
-                      layout: _GraphLayout(
-                        width: width,
-                        topNodesHeight: _topNodesHeight,
-                        rowHeight: _rowHeight,
-                        nodeWidth: _nodeWidth,
-                      ),
-                    ),
+                    painter:
+                        _RelationGraphPainter(edges: edges, layout: layout),
                   ),
                 ),
-                _buildTopNodes(width),
+                _topChip('月建 ${lunarInfo.yueJian}', layout.yueCenter),
+                _topChip('日辰 ${lunarInfo.riZhi}', layout.riCenter),
                 for (var position = 1; position <= 6; position++)
-                  _buildYaoNode(width, position),
+                  _buildYaoNode(layout, position),
+                if (changingGua != null)
+                  for (final yao in mainGua.movingYaos)
+                    _buildBianNode(layout, yao.position),
               ],
             ),
           ),
@@ -125,56 +127,37 @@ class RelationGraphView extends StatelessWidget {
     );
   }
 
-  Widget _buildTopNodes(double width) {
-    final layout = _GraphLayout(
-      width: width,
-      topNodesHeight: _topNodesHeight,
-      rowHeight: _rowHeight,
-      nodeWidth: _nodeWidth,
+  Widget _topChip(String label, Offset center) {
+    return Positioned(
+      left: center.dx - 40,
+      top: center.dy - 14,
+      child: Container(
+        width: 80,
+        height: 28,
+        alignment: Alignment.center,
+        decoration: BoxDecoration(
+          color: AppColors.dailan.withOpacity(0.08),
+          border: Border.all(color: AppColors.dailan.withOpacity(0.4)),
+          borderRadius: BorderRadius.circular(14),
+        ),
+        child: Text(
+          label,
+          style: AppTextStyles.antiqueLabel.copyWith(color: AppColors.dailan),
+        ),
+      ),
     );
-    Widget chip(String label, Offset center) => Positioned(
-          left: center.dx - 40,
-          top: center.dy - 14,
-          child: Container(
-            width: 80,
-            height: 28,
-            alignment: Alignment.center,
-            decoration: BoxDecoration(
-              color: AppColors.dailan.withOpacity(0.08),
-              border: Border.all(color: AppColors.dailan.withOpacity(0.4)),
-              borderRadius: BorderRadius.circular(14),
-            ),
-            child: Text(
-              label,
-              style: AppTextStyles.antiqueLabel
-                  .copyWith(color: AppColors.dailan),
-            ),
-          ),
-        );
-
-    return Stack(children: [
-      chip('月建 ${lunarInfo.yueJian}', layout.yueCenter),
-      chip('日辰 ${lunarInfo.riZhi}', layout.riCenter),
-    ]);
   }
 
-  Widget _buildYaoNode(double width, int position) {
+  Widget _buildYaoNode(_GraphLayout layout, int position) {
     const positionNames = ['初', '二', '三', '四', '五', '上'];
     final yao = mainGua.yaos[position - 1];
     final isYongShen = position == yongShenPosition;
-    final layout = _GraphLayout(
-      width: width,
-      topNodesHeight: _topNodesHeight,
-      rowHeight: _rowHeight,
-      nodeWidth: _nodeWidth,
-    );
-    final y = layout.yaoY(position);
 
     return Positioned(
       left: layout.nodeLeft,
-      top: y - 18,
+      top: layout.yaoY(position) - 18,
       child: Container(
-        width: _nodeWidth,
+        width: _GraphLayout.nodeWidth,
         height: 36,
         alignment: Alignment.center,
         decoration: BoxDecoration(
@@ -204,6 +187,28 @@ class RelationGraphView extends StatelessWidget {
     );
   }
 
+  Widget _buildBianNode(_GraphLayout layout, int position) {
+    final changed = changingGua!.yaos[position - 1];
+    return Positioned(
+      left: layout.bianLeft,
+      top: layout.yaoY(position) - 15,
+      child: Container(
+        width: _GraphLayout.bianWidth,
+        height: 30,
+        alignment: Alignment.center,
+        decoration: BoxDecoration(
+          color: AppColors.xiangseDeep.withOpacity(0.8),
+          border: Border.all(color: AppColors.qianhe.withOpacity(0.7)),
+          borderRadius: BorderRadius.circular(6),
+        ),
+        child: Text(
+          '${changed.liuQin.name}${changed.branch}${changed.wuXing.name}',
+          style: AppTextStyles.antiqueLabel.copyWith(color: AppColors.guhe),
+        ),
+      ),
+    );
+  }
+
   Widget _buildLegend() {
     Widget item(Color color, String label, {bool dashed = false}) => Row(
           mainAxisSize: MainAxisSize.min,
@@ -213,45 +218,45 @@ class RelationGraphView extends StatelessWidget {
               painter: _LegendLinePainter(color: color, dashed: dashed),
             ),
             const SizedBox(width: 4),
-            Text(label,
-                style: TextStyle(fontSize: 10, color: color)),
+            Text(label, style: TextStyle(fontSize: 10, color: color)),
           ],
         );
 
     return Wrap(
       spacing: 14,
+      runSpacing: 4,
       children: [
         item(AppColors.jishenGreen, '生扶'),
         item(AppColors.zhusha, '克冲刑害', dashed: true),
         item(AppColors.danjinDeep, '合'),
+        if (changingGua != null) item(AppColors.huise, '化变'),
       ],
     );
   }
 }
 
-/// 固定坐标布局：所有锚点由尺寸参数推得
+/// 固定坐标布局：本卦列偏右，左侧留弧线区，最右为变爻列
 class _GraphLayout {
-  const _GraphLayout({
-    required this.width,
-    required this.topNodesHeight,
-    required this.rowHeight,
-    required this.nodeWidth,
-  });
+  const _GraphLayout({required this.width});
 
   final double width;
-  final double topNodesHeight;
-  final double rowHeight;
-  final double nodeWidth;
 
-  double get nodeLeft => (width - nodeWidth) / 2;
+  static const double nodeWidth = 140;
+  static const double bianWidth = 88;
+  static const double rowHeight = 54;
+  static const double topHeight = 52;
+
+  double get bianLeft => width - 10 - bianWidth;
+  double get nodeLeft => bianLeft - 18 - nodeWidth;
   double get nodeRight => nodeLeft + nodeWidth;
+  double get graphHeight => topHeight + 6 * rowHeight;
 
   /// 爻位 1-6 → 纵坐标（上爻在最上）
   double yaoY(int position) =>
-      topNodesHeight + (6 - position) * rowHeight + rowHeight / 2;
+      topHeight + (6 - position) * rowHeight + rowHeight / 2;
 
-  Offset get yueCenter => Offset(width * 0.30, topNodesHeight / 2);
-  Offset get riCenter => Offset(width * 0.70, topNodesHeight / 2);
+  Offset get yueCenter => Offset(width * 0.14 + 20, topHeight / 2);
+  Offset get riCenter => Offset(width * 0.14 + 110, topHeight / 2);
 }
 
 class _RelationGraphPainter extends CustomPainter {
@@ -262,54 +267,88 @@ class _RelationGraphPainter extends CustomPainter {
 
   @override
   void paint(Canvas canvas, Size size) {
-    var leftLane = 0;
-    var rightLane = 0;
+    final bianEdges = edges.where((e) => e.isBianEdge).toList();
+    final leftEdges = edges.where((e) => !e.isBianEdge).toList()
+      // 短跨度在内圈：先爻间边按跨度升序，日月边固定在外圈
+      ..sort((a, b) {
+        final aExternal = a.from > 6 ? 1 : 0;
+        final bExternal = b.from > 6 ? 1 : 0;
+        if (aExternal != bExternal) return aExternal - bExternal;
+        return _span(a).compareTo(_span(b));
+      });
 
-    for (final edge in edges) {
-      final color = switch (edge.kind) {
-        RelationKind.sheng => AppColors.jishenGreen,
-        RelationKind.ke => AppColors.zhusha,
-        RelationKind.he => AppColors.danjinDeep,
-      };
+    for (var lane = 0; lane < leftEdges.length; lane++) {
+      final edge = leftEdges[lane];
+      final color = _colorOf(edge.kind);
       final dashed = edge.kind == RelationKind.ke;
-
-      final Path path;
-      if (edge.from > 6 || edge.to > 6) {
-        path = _dayMonthPath(edge);
-      } else if (edge.kind == RelationKind.he) {
-        path = _sideArc(edge, left: true, lane: leftLane++);
-      } else {
-        path = _sideArc(edge, left: false, lane: rightLane++);
-      }
-
+      final path = edge.from > 6
+          ? _dayMonthPath(edge, lane)
+          : _leftArc(edge, lane);
       _drawPath(canvas, path, color, dashed: dashed);
       if (edge.directed) _drawArrowhead(canvas, path, color);
-      _drawLabel(canvas, path, edge.term, color);
+      _drawLabel(canvas, path, edge.term, color, lane);
+    }
+
+    for (final edge in bianEdges) {
+      final color = _colorOf(edge.kind);
+      final path = _bianPath(edge);
+      _drawPath(canvas, path, color,
+          dashed: edge.kind == RelationKind.ke);
+      if (edge.directed) _drawArrowhead(canvas, path, color);
+      _drawBianLabel(canvas, edge, color);
     }
   }
 
-  /// 爻-爻侧边弧线；lane 递增错开避免重叠
-  Path _sideArc(RelationEdge edge, {required bool left, required int lane}) {
+  double _span(RelationEdge e) =>
+      (layout.yaoY(e.from.clamp(1, 6)) - layout.yaoY(e.to.clamp(1, 6))).abs();
+
+  Color _colorOf(RelationKind kind) => switch (kind) {
+        RelationKind.sheng => AppColors.jishenGreen,
+        RelationKind.ke => AppColors.zhusha,
+        RelationKind.he => AppColors.danjinDeep,
+        RelationKind.neutral => AppColors.huise,
+      };
+
+  /// 爻间左侧弧线；lane 递增外扩
+  Path _leftArc(RelationEdge edge, int lane) {
     final y1 = layout.yaoY(edge.from);
     final y2 = layout.yaoY(edge.to);
-    final x = left ? layout.nodeLeft : layout.nodeRight;
-    final bulge = 26.0 + lane * 16;
-    final controlX = left ? x - bulge : x + bulge;
+    final x = layout.nodeLeft;
+    final controlX = x - 24 - lane * 13;
     return Path()
       ..moveTo(x, y1)
       ..quadraticBezierTo(controlX, (y1 + y2) / 2, x, y2);
   }
 
-  /// 日月节点 → 爻节点连线
-  Path _dayMonthPath(RelationEdge edge) {
-    final isYue = edge.from == RelationEdge.yueNode;
-    final start = isYue ? layout.yueCenter : layout.riCenter;
+  /// 日月节点 → 爻节点（同样走左侧，外圈）
+  Path _dayMonthPath(RelationEdge edge, int lane) {
+    final start = edge.from == RelationEdge.yueNode
+        ? layout.yueCenter
+        : layout.riCenter;
     final targetY = layout.yaoY(edge.to);
-    final endX = isYue ? layout.nodeLeft : layout.nodeRight;
-    final controlX = isYue ? layout.nodeLeft - 34 : layout.nodeRight + 34;
+    final controlX = layout.nodeLeft - 24 - lane * 13;
     return Path()
       ..moveTo(start.dx, start.dy + 14)
-      ..quadraticBezierTo(controlX, (start.dy + targetY) / 2, endX, targetY);
+      ..quadraticBezierTo(
+          controlX, (start.dy + targetY) / 2, layout.nodeLeft, targetY);
+  }
+
+  /// 本爻 ↔ 变爻 短横线
+  Path _bianPath(RelationEdge edge) {
+    final position = (edge.from > RelationEdge.bianNodeOffset
+            ? edge.from - RelationEdge.bianNodeOffset
+            : edge.from)
+        .clamp(1, 6);
+    final y = layout.yaoY(position);
+    final fromBian = edge.from > RelationEdge.bianNodeOffset;
+    // 回头类从变爻指向本爻，其余从本爻指向变爻
+    return fromBian
+        ? (Path()
+          ..moveTo(layout.bianLeft, y)
+          ..lineTo(layout.nodeRight, y))
+        : (Path()
+          ..moveTo(layout.nodeRight, y)
+          ..lineTo(layout.bianLeft, y));
   }
 
   void _drawPath(Canvas canvas, Path path, Color color,
@@ -325,8 +364,7 @@ class _RelationGraphPainter extends CustomPainter {
     for (final metric in path.computeMetrics()) {
       var distance = 0.0;
       while (distance < metric.length) {
-        canvas.drawPath(
-            metric.extractPath(distance, distance + 5), paint);
+        canvas.drawPath(metric.extractPath(distance, distance + 5), paint);
         distance += 9;
       }
     }
@@ -353,13 +391,34 @@ class _RelationGraphPainter extends CustomPainter {
     );
   }
 
-  void _drawLabel(Canvas canvas, Path path, String term, Color color) {
+  /// 弧线标签：置于弧中点，按 lane 纵向错位避让
+  void _drawLabel(
+      Canvas canvas, Path path, String term, Color color, int lane) {
     final metric = path.computeMetrics().first;
     final middle = metric.getTangentForOffset(metric.length / 2)?.position;
     if (middle == null) return;
+    final staggerY = ((lane % 3) - 1) * 10.0;
+    _paintText(canvas, term, color,
+        middle + Offset(0, staggerY), align: _LabelAlign.center);
+  }
+
+  /// 变爻线标签：置于横线上方中点
+  void _drawBianLabel(Canvas canvas, RelationEdge edge, Color color) {
+    final position = (edge.from > RelationEdge.bianNodeOffset
+            ? edge.from - RelationEdge.bianNodeOffset
+            : edge.from)
+        .clamp(1, 6);
+    final midX = (layout.nodeRight + layout.bianLeft) / 2;
+    final y = layout.yaoY(position) - 8;
+    _paintText(canvas, edge.term, color, Offset(midX, y),
+        align: _LabelAlign.center);
+  }
+
+  void _paintText(Canvas canvas, String text, Color color, Offset center,
+      {required _LabelAlign align}) {
     final painter = TextPainter(
       text: TextSpan(
-        text: term,
+        text: text,
         style: TextStyle(
           fontSize: 9,
           color: color,
@@ -369,13 +428,15 @@ class _RelationGraphPainter extends CustomPainter {
       textDirection: ui.TextDirection.ltr,
     )..layout();
     painter.paint(
-        canvas, middle - Offset(painter.width / 2, painter.height / 2));
+        canvas, center - Offset(painter.width / 2, painter.height / 2));
   }
 
   @override
   bool shouldRepaint(_RelationGraphPainter oldDelegate) =>
       oldDelegate.edges != edges;
 }
+
+enum _LabelAlign { center }
 
 class _LegendLinePainter extends CustomPainter {
   const _LegendLinePainter({required this.color, required this.dashed});
@@ -389,8 +450,8 @@ class _LegendLinePainter extends CustomPainter {
       ..color = color
       ..strokeWidth = 2;
     if (!dashed) {
-      canvas.drawLine(
-          Offset(0, size.height / 2), Offset(size.width, size.height / 2), paint);
+      canvas.drawLine(Offset(0, size.height / 2),
+          Offset(size.width, size.height / 2), paint);
       return;
     }
     var x = 0.0;

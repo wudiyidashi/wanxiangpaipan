@@ -49,6 +49,28 @@ void main() {
     expect(find.text('克冲刑害'), findsOneWidget);
   });
 
+  testWidgets('有变卦时渲染变爻节点', (tester) async {
+    final qian = GuaCalculator.calculateGua([9, 7, 7, 7, 7, 7]);
+    final changing = GuaCalculator.generateChangingGua(qian);
+    final lunar = _lunar();
+    final report = LiuYaoAnalyzer.analyze(qian, changing, lunar);
+
+    await tester.pumpWidget(MaterialApp(
+      home: Scaffold(
+        body: RelationGraphView(
+          mainGua: qian,
+          changingGua: changing,
+          lunarInfo: lunar,
+          report: report,
+        ),
+      ),
+    ));
+
+    // 乾初爻子动化丑：变爻节点含丑
+    expect(find.textContaining('丑'), findsOneWidget);
+    expect(find.text('化变'), findsOneWidget);
+  });
+
   testWidgets('无跨爻关系时显示空态文案', (tester) async {
     // 丰卦全静（卯丑亥午申戌），丑月乙丑日：丑之冲（未）合（子）皆不在卦中
     final feng = GuaCalculator.calculateGua([7, 8, 7, 7, 8, 8]);

@@ -83,6 +83,7 @@ class _LiuYaoResultView extends StatelessWidget {
             onPressed: () => showRelationGraphDialog(
               context,
               mainGua: result.mainGua,
+              changingGua: result.changingGua,
               lunarInfo: result.lunarInfo,
               report: report,
               yongShenPosition: controller.yongShenPosition,
