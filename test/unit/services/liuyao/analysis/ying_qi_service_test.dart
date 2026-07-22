@@ -1,4 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
+import 'package:wanxiang_paipan/domain/services/liuyao/analysis/models/analysis_report.dart';
 import 'package:wanxiang_paipan/domain/services/liuyao/analysis/models/analysis_tag.dart';
 import 'package:wanxiang_paipan/domain/services/liuyao/analysis/ying_qi_service.dart';
 
@@ -28,6 +29,7 @@ void main() {
       expect(branches, contains('辰')); // 冲空
       expect(
           candidates.firstWhere((c) => c.branch == '戌').reason, contains('填实'));
+      expect(candidates.map((c) => c.reason), isNot(contains('出空填实')));
     });
 
     test('用神月破：实破日与合破日', () {
@@ -39,6 +41,15 @@ void main() {
       final branches = candidates.map((c) => c.branch).toList();
       expect(branches, contains('子')); // 值日实破
       expect(branches, contains('丑')); // 合破
+      final outOfMonth = candidates.firstWhere(
+        (candidate) => candidate.reason.contains('出月'),
+      );
+      expect(outOfMonth.branch, '未'); // 午月之后为未月
+      expect(outOfMonth.scale, YingQiScale.yue);
+      expect(
+        candidates.firstWhere((candidate) => candidate.branch == '子').scale,
+        YingQiScale.ri,
+      );
     });
 
     test('用神入墓：冲开墓库之日', () {
@@ -59,7 +70,48 @@ void main() {
         lunarInfo: lunar,
       );
       expect(candidates.any((c) => c.branch == '午' && c.reason.contains('冲开')),
+          isFalse);
+      expect(candidates.any((c) => c.branch == '午' && c.reason.contains('冲用神')),
           isTrue);
+      expect(candidates.any((c) => c.branch == '未' && c.reason.contains('冲合神')),
+          isTrue);
+    });
+
+    test('合处已经冲开时不再生成未来冲开候选', () {
+      final candidates = YingQiService.calculate(
+        yongShen: makeYao(position: 1, branch: '子'),
+        yongShenTags: [tagOf('合住'), tagOf('冲开')],
+        lunarInfo: lunar,
+      );
+
+      expect(candidates.any((candidate) => candidate.reason.contains('解合')),
+          isFalse);
+    });
+
+    test('化空化破化墓按变爻状态生成候选', () {
+      final candidates = YingQiService.calculate(
+        yongShen: makeYao(position: 1, branch: '卯', moving: true),
+        changedYao: makeYao(position: 1, branch: '戌'),
+        yongShenTags: [tagOf('化空'), tagOf('化破'), tagOf('化墓')],
+        lunarInfo: lunar,
+      );
+
+      expect(
+        candidates.any((candidate) =>
+            candidate.branch == '戌' && candidate.reason.contains('化空')),
+        isTrue,
+      );
+      expect(
+        candidates.any((candidate) =>
+            candidate.scale == YingQiScale.yue &&
+            candidate.reason.contains('化破')),
+        isTrue,
+      );
+      expect(
+        candidates.any((candidate) =>
+            candidate.branch == '辰' && candidate.reason.contains('化墓')),
+        isTrue,
+      );
     });
 
     test('静而无事：值日或冲动之日', () {

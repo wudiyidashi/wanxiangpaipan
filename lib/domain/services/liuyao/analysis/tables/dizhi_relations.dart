@@ -9,22 +9,34 @@ class DiZhiRelations {
 
   /// 六合对（双向收录）
   static const Map<String, String> liuHe = {
-    '子': '丑', '丑': '子',
-    '寅': '亥', '亥': '寅',
-    '卯': '戌', '戌': '卯',
-    '辰': '酉', '酉': '辰',
-    '巳': '申', '申': '巳',
-    '午': '未', '未': '午',
+    '子': '丑',
+    '丑': '子',
+    '寅': '亥',
+    '亥': '寅',
+    '卯': '戌',
+    '戌': '卯',
+    '辰': '酉',
+    '酉': '辰',
+    '巳': '申',
+    '申': '巳',
+    '午': '未',
+    '未': '午',
   };
 
   /// 六冲对（双向收录）
   static const Map<String, String> liuChong = {
-    '子': '午', '午': '子',
-    '丑': '未', '未': '丑',
-    '寅': '申', '申': '寅',
-    '卯': '酉', '酉': '卯',
-    '辰': '戌', '戌': '辰',
-    '巳': '亥', '亥': '巳',
+    '子': '午',
+    '午': '子',
+    '丑': '未',
+    '未': '丑',
+    '寅': '申',
+    '申': '寅',
+    '卯': '酉',
+    '酉': '卯',
+    '辰': '戌',
+    '戌': '辰',
+    '巳': '亥',
+    '亥': '巳',
   };
 
   /// 三合局：[长生, 帝旺, 墓] → 局五行。土无三合局。
@@ -47,12 +59,18 @@ class DiZhiRelations {
 
   /// 相害对（双向收录）
   static const Map<String, String> xiangHai = {
-    '子': '未', '未': '子',
-    '丑': '午', '午': '丑',
-    '寅': '巳', '巳': '寅',
-    '卯': '辰', '辰': '卯',
-    '申': '亥', '亥': '申',
-    '酉': '戌', '戌': '酉',
+    '子': '未',
+    '未': '子',
+    '丑': '午',
+    '午': '丑',
+    '寅': '巳',
+    '巳': '寅',
+    '卯': '辰',
+    '辰': '卯',
+    '申': '亥',
+    '亥': '申',
+    '酉': '戌',
+    '戌': '酉',
   };
 
   /// 六合化气：子丑化土、寅亥化木、卯戌化火、辰酉化金、巳申化水、午未化土
@@ -101,9 +119,7 @@ class DiZhiRelations {
     for (final entry in sanHeJu.entries) {
       final group = entry.value;
       final wang = group[1];
-      if ((a == wang || b == wang) &&
-          group.contains(a) &&
-          group.contains(b)) {
+      if ((a == wang || b == wang) && group.contains(a) && group.contains(b)) {
         return entry.key;
       }
     }
@@ -112,13 +128,22 @@ class DiZhiRelations {
 
   static bool isBanHe(String a, String b) => getBanHeElement(a, b) != null;
 
-  /// 两支是否构成相刑（三刑组内任意两支，或自刑支同支）
+  /// 两支是否构成独立相刑。
+  ///
+  /// 寅巳申、丑戌未须三支齐全才论三刑，不能把其中任意两支直接
+  /// 标成相刑；两支层面只保留子卯刑与辰午酉亥同支自刑。
   static bool isXing(String a, String b) {
     if (a == b) return ziXing.contains(a);
-    for (final group in sanXingGroups) {
-      if (group.contains(a) && group.contains(b)) return true;
-    }
-    return false;
+    return (a == '子' && b == '卯') || (a == '卯' && b == '子');
+  }
+
+  /// 三支是否完整构成寅巳申或丑戌未三刑，与输入顺序无关。
+  static bool isSanXing(String a, String b, String c) {
+    final input = {a, b, c};
+    if (input.length != 3) return false;
+    return sanXingGroups
+        .where((group) => group.length == 3)
+        .any(input.containsAll);
   }
 
   /// 是否为自刑支（辰午酉亥）

@@ -102,12 +102,18 @@ void main() {
   });
 
   group('DiZhiRelations 三刑与相害', () {
-    test('三刑组：寅巳申、丑戌未、子卯', () {
-      expect(DiZhiRelations.isXing('寅', '巳'), isTrue);
-      expect(DiZhiRelations.isXing('巳', '申'), isTrue);
-      expect(DiZhiRelations.isXing('寅', '申'), isTrue);
-      expect(DiZhiRelations.isXing('丑', '戌'), isTrue);
-      expect(DiZhiRelations.isXing('戌', '未'), isTrue);
+    test('寅巳申、丑戌未须三支齐全才成三刑', () {
+      expect(DiZhiRelations.isXing('寅', '巳'), isFalse);
+      expect(DiZhiRelations.isXing('巳', '申'), isFalse);
+      expect(DiZhiRelations.isXing('寅', '申'), isFalse);
+      expect(DiZhiRelations.isXing('丑', '戌'), isFalse);
+      expect(DiZhiRelations.isXing('戌', '未'), isFalse);
+      expect(DiZhiRelations.isSanXing('寅', '巳', '申'), isTrue);
+      expect(DiZhiRelations.isSanXing('未', '丑', '戌'), isTrue);
+      expect(DiZhiRelations.isSanXing('寅', '巳', '卯'), isFalse);
+    });
+
+    test('子卯可独立论刑', () {
       expect(DiZhiRelations.isXing('子', '卯'), isTrue);
       expect(DiZhiRelations.isXing('卯', '子'), isTrue);
     });

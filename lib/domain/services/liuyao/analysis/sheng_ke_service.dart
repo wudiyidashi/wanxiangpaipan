@@ -37,64 +37,76 @@ class ShengKeService {
         if (t.position == m.position) continue;
         if (WuXingService.isSheng(m.wuXing, t.wuXing)) {
           if (hePartner != null) {
-            add(t.position, YaoAnalysisTag(
-              term: '贪合忘生',
-              category: TagCategory.shengKe,
-              polarity: Polarity.neutral,
-              priority: 34,
-              reason: '${m.position}爻${m.branch}被$hePartner合住，忘生本爻',
-              relatedYao: [m.position],
-            ));
+            add(
+                t.position,
+                YaoAnalysisTag(
+                  term: '贪合忘生',
+                  category: TagCategory.shengKe,
+                  polarity: Polarity.neutral,
+                  priority: 34,
+                  reason: '${m.position}爻${m.branch}被$hePartner合住，忘生本爻',
+                  relatedYao: [m.position],
+                ));
           } else {
-            add(t.position, YaoAnalysisTag(
-              term: '动爻生',
-              category: TagCategory.shengKe,
-              polarity: Polarity.ji,
-              priority: 38,
-              reason: '${m.position}爻${m.branch}动来生本爻',
-              relatedYao: [m.position],
-            ));
+            add(
+                t.position,
+                YaoAnalysisTag(
+                  term: '动爻生',
+                  category: TagCategory.shengKe,
+                  polarity: Polarity.ji,
+                  priority: 38,
+                  reason: '${m.position}爻${m.branch}动来生本爻',
+                  relatedYao: [m.position],
+                ));
           }
         } else if (WuXingService.isKe(m.wuXing, t.wuXing)) {
           if (hePartner != null) {
-            add(t.position, YaoAnalysisTag(
-              term: '贪合忘克',
-              category: TagCategory.shengKe,
-              polarity: Polarity.ji,
-              priority: 34,
-              reason: '${m.position}爻${m.branch}被$hePartner合住，忘克本爻',
-              relatedYao: [m.position],
-            ));
+            add(
+                t.position,
+                YaoAnalysisTag(
+                  term: '贪合忘克',
+                  category: TagCategory.shengKe,
+                  polarity: Polarity.ji,
+                  priority: 34,
+                  reason: '${m.position}爻${m.branch}被$hePartner合住，忘克本爻',
+                  relatedYao: [m.position],
+                ));
           } else if (tanSheng.isNotEmpty) {
-            add(t.position, YaoAnalysisTag(
-              term: '贪生忘克',
-              category: TagCategory.shengKe,
-              polarity: Polarity.ji,
-              priority: 21,
-              reason:
-                  '${m.position}爻${m.branch}贪生${tanSheng.first.position}爻'
-                  '${tanSheng.first.branch}，忘克本爻',
-              relatedYao: [m.position, tanSheng.first.position],
-            ));
+            add(
+                t.position,
+                YaoAnalysisTag(
+                  term: '贪生忘克',
+                  category: TagCategory.shengKe,
+                  polarity: Polarity.ji,
+                  priority: 21,
+                  reason:
+                      '${m.position}爻${m.branch}贪生${tanSheng.first.position}爻'
+                      '${tanSheng.first.branch}，忘克本爻',
+                  relatedYao: [m.position, tanSheng.first.position],
+                ));
           } else {
-            add(t.position, YaoAnalysisTag(
-              term: '动爻克',
-              category: TagCategory.shengKe,
-              polarity: Polarity.xiong,
-              priority: 37,
-              reason: '${m.position}爻${m.branch}动来克本爻',
-              relatedYao: [m.position],
-            ));
+            add(
+                t.position,
+                YaoAnalysisTag(
+                  term: '动爻克',
+                  category: TagCategory.shengKe,
+                  polarity: Polarity.xiong,
+                  priority: 37,
+                  reason: '${m.position}爻${m.branch}动来克本爻',
+                  relatedYao: [m.position],
+                ));
           }
         } else if (m.wuXing == t.wuXing && hePartner == null) {
-          add(t.position, YaoAnalysisTag(
-            term: '动爻扶',
-            category: TagCategory.shengKe,
-            polarity: Polarity.ji,
-            priority: 39,
-            reason: '${m.position}爻${m.branch}动来拱扶本爻',
-            relatedYao: [m.position],
-          ));
+          add(
+              t.position,
+              YaoAnalysisTag(
+                term: '动爻扶',
+                category: TagCategory.shengKe,
+                polarity: Polarity.ji,
+                priority: 39,
+                reason: '${m.position}爻${m.branch}动来拱扶本爻',
+                relatedYao: [m.position],
+              ));
         }
       }
     }
@@ -108,6 +120,12 @@ class ShengKeService {
     for (final o in gua.yaos) {
       if (o.position != m.position &&
           DiZhiRelations.isLiuHe(m.branch, o.branch)) {
+        final isOpened = DiZhiRelations.isLiuChong(
+              lunarInfo.riZhi,
+              m.branch,
+            ) ||
+            DiZhiRelations.isLiuChong(lunarInfo.riZhi, o.branch);
+        if (isOpened) continue;
         return '${o.position}爻${o.branch}';
       }
     }
@@ -155,24 +173,28 @@ class ShengKeService {
     }
 
     shengMembers.forEach((position, related) {
-      add(position, YaoAnalysisTag(
-        term: '连续相生',
-        category: TagCategory.shengKe,
-        polarity: Polarity.ji,
-        priority: 13,
-        reason: '动爻递相生，气脉相连',
-        relatedYao: related.toSet().toList()..sort(),
-      ));
+      add(
+          position,
+          YaoAnalysisTag(
+            term: '连续相生',
+            category: TagCategory.shengKe,
+            polarity: Polarity.ji,
+            priority: 13,
+            reason: '动爻递相生，气脉相连',
+            relatedYao: related.toSet().toList()..sort(),
+          ));
     });
     keMembers.forEach((position, related) {
-      add(position, YaoAnalysisTag(
-        term: '连续相克',
-        category: TagCategory.shengKe,
-        polarity: Polarity.xiong,
-        priority: 13,
-        reason: '动爻递相克，祸患相连',
-        relatedYao: related.toSet().toList()..sort(),
-      ));
+      add(
+          position,
+          YaoAnalysisTag(
+            term: '连续相克',
+            category: TagCategory.shengKe,
+            polarity: Polarity.xiong,
+            priority: 13,
+            reason: '动爻递相克，祸患相连',
+            relatedYao: related.toSet().toList()..sort(),
+          ));
     });
   }
 }

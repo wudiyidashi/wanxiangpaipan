@@ -34,7 +34,7 @@ class TermGlossary {
     '月破': TermEntry(
         definition: '爻被月建所冲',
         condition: '月建与爻支六冲',
-        implication: '大凶之象，破而无用；出月实破、逢合之日可解'),
+        implication: '受月令冲破而力弱；出月、值日填实或逢合时可解'),
     '月生': TermEntry(
         definition: '月建五行生爻',
         condition: '月建之五行生爻之五行',
@@ -60,9 +60,7 @@ class TermGlossary {
         condition: '爻五行克月令（逆令而战）',
         implication: '力竭被囚，难有作为'),
     '死': TermEntry(
-        definition: '衰绝之位',
-        condition: '月令五行克爻',
-        implication: '受克至衰，最弱之地'),
+        definition: '衰绝之位', condition: '月令五行克爻', implication: '受克至衰，最弱之地'),
     '临日建': TermEntry(
         definition: '爻支与日辰相同',
         condition: '爻之地支即当日日支',
@@ -80,13 +78,9 @@ class TermGlossary {
         condition: '日支之五行克爻之五行',
         implication: '受日辰之克，爻力受损'),
     '得月令': TermEntry(
-        definition: '即临月建、当令而旺',
-        condition: '见「临月建」「旺」',
-        implication: '同临月建'),
+        definition: '即临月建、当令而旺', condition: '见「临月建」「旺」', implication: '同临月建'),
     '得日扶': TermEntry(
-        definition: '即临日建或日扶',
-        condition: '见「临日建」「日扶」',
-        implication: '同日扶'),
+        definition: '即临日建或日扶', condition: '见「临日建」「日扶」', implication: '同日扶'),
 
     // ── 空亡 ──
     '旬空': TermEntry(
@@ -119,7 +113,7 @@ class TermGlossary {
         implication: '空爻填实则有用，常为应期'),
     '出空': TermEntry(
         definition: '出了旬空的时段',
-        condition: '过本旬之后或值本支之日',
+        condition: '当前旬结束；值本支属于填实，不与出空混称',
         implication: '假空出空即有用，常为应期'),
 
     // ── 墓绝 ──
@@ -136,9 +130,7 @@ class TermGlossary {
         condition: '卦中动爻之支为本爻五行之墓',
         implication: '被动爻收入墓库，受制难展'),
     '入变墓': TermEntry(
-        definition: '动爻化出之变爻为其墓库，即化墓',
-        condition: '见「化墓」',
-        implication: '同化墓'),
+        definition: '动爻化出之变爻为其墓库，即化墓', condition: '见「化墓」', implication: '同化墓'),
     '出墓': TermEntry(
         definition: '墓库被冲开',
         condition: '入墓之爻逢日辰冲其墓库',
@@ -182,13 +174,13 @@ class TermGlossary {
         condition: '如申子、子辰（含旺支子）且有动爻',
         implication: '合力次于三合局，待全局之日更佳'),
     '三刑': TermEntry(
-        definition: '寅巳申、丑戌未、子卯相刑（《卜筮正宗》）',
-        condition: '刑组之支两两相遇且有动爻',
+        definition: '寅巳申、丑戌未三支齐全成刑（《卜筮正宗》）',
+        condition: '三支齐备且至少一爻发动；任意两支不直接按三刑处理',
         implication: '主刑伤官非，参考为辅不作主断'),
     '相刑': TermEntry(
-        definition: '两支相刑',
-        condition: '同三刑组内两支，或辰午酉亥自刑',
-        implication: '同三刑，低权重参考'),
+        definition: '子卯刑，或辰午酉亥同支自刑',
+        condition: '两支为子卯，或自刑支同支相遇；寅申两支只优先论冲克',
+        implication: '低权重参考，不覆盖生克与冲合主关系'),
     '相害': TermEntry(
         definition: '六害（《卜筮正宗》）',
         condition: '子未、丑午、寅巳、卯辰、申亥、酉戌相遇且有动爻',
@@ -200,9 +192,7 @@ class TermGlossary {
         condition: '旺相之静爻逢日辰六冲',
         implication: '如人暗中行事，吉者暗中得助，凶者暗里生患'),
     '日破': TermEntry(
-        definition: '休囚静爻被日冲散',
-        condition: '休囚之静爻逢日辰六冲',
-        implication: '冲散无用，凶'),
+        definition: '休囚静爻被日冲散', condition: '休囚之静爻逢日辰六冲', implication: '冲散无用，凶'),
     '日冲': TermEntry(
         definition: '日辰冲爻之统称',
         condition: '日支与爻支六冲',
@@ -211,18 +201,14 @@ class TermGlossary {
         definition: '爻因冲而起用之统称',
         condition: '见「暗动」「冲空」',
         implication: '同暗动、冲空则起'),
-    '冲实': TermEntry(
-        definition: '空爻被冲而实',
-        condition: '见「冲空」',
-        implication: '同冲空'),
+    '冲实':
+        TermEntry(definition: '空爻被冲而实', condition: '见「冲空」', implication: '同冲空'),
     '冲散': TermEntry(
         definition: '休囚动爻被日冲散',
         condition: '休囚之动爻逢日辰六冲',
         implication: '动而被散，事有始无终'),
     '冲脱': TermEntry(
-        definition: '合处逢冲而脱之别称',
-        condition: '见「冲开」',
-        implication: '同冲开'),
+        definition: '合处逢冲而脱之别称', condition: '见「冲开」', implication: '同冲开'),
     '独发': TermEntry(
         definition: '六爻中唯一爻动',
         condition: '卦中仅一个动爻',
@@ -286,13 +272,9 @@ class TermGlossary {
 
     // ── 生克 ──
     '动爻生': TermEntry(
-        definition: '动爻来生本爻',
-        condition: '动爻五行生本爻五行',
-        implication: '得动爻生扶，吉'),
+        definition: '动爻来生本爻', condition: '动爻五行生本爻五行', implication: '得动爻生扶，吉'),
     '动爻克': TermEntry(
-        definition: '动爻来克本爻',
-        condition: '动爻五行克本爻五行',
-        implication: '受动爻克制，凶'),
+        definition: '动爻来克本爻', condition: '动爻五行克本爻五行', implication: '受动爻克制，凶'),
     '动爻扶': TermEntry(
         definition: '同五行动爻拱扶',
         condition: '动爻与本爻五行相同',
@@ -306,25 +288,15 @@ class TermGlossary {
         condition: '金克木、木克土、土克水、水克火、火克金',
         implication: '克我者为制'),
     '泄': TermEntry(
-        definition: '我生者泄我之气',
-        condition: '本爻生他爻',
-        implication: '气泄而力减'),
+        definition: '我生者泄我之气', condition: '本爻生他爻', implication: '气泄而力减'),
     '耗': TermEntry(
-        definition: '我克者耗我之力',
-        condition: '本爻克他爻',
-        implication: '战而耗力'),
+        definition: '我克者耗我之力', condition: '本爻克他爻', implication: '战而耗力'),
     '扶': TermEntry(
-        definition: '同五行相帮',
-        condition: '两爻五行相同',
-        implication: '比和相扶'),
+        definition: '同五行相帮', condition: '两爻五行相同', implication: '比和相扶'),
     '拱': TermEntry(
-        definition: '扶之别称',
-        condition: '见「扶」「动爻扶」',
-        implication: '同扶'),
+        definition: '扶之别称', condition: '见「扶」「动爻扶」', implication: '同扶'),
     '制': TermEntry(
-        definition: '克之受制表述',
-        condition: '见「克」「动爻克」',
-        implication: '被克则受制'),
+        definition: '克之受制表述', condition: '见「克」「动爻克」', implication: '被克则受制'),
     '贪生忘克': TermEntry(
         definition: '动爻贪生而忘克',
         condition: '动爻既克本爻又生另一动爻',
@@ -342,9 +314,7 @@ class TermGlossary {
         condition: '三个及以上动爻依次相生',
         implication: '气脉相连，生生不息，大吉'),
     '连续相克': TermEntry(
-        definition: '动爻递相克',
-        condition: '三个及以上动爻依次相克',
-        implication: '祸患相连，大凶'),
+        definition: '动爻递相克', condition: '三个及以上动爻依次相克', implication: '祸患相连，大凶'),
 
     // ── 六亲 ──
     '用神': TermEntry(
@@ -376,13 +346,9 @@ class TermGlossary {
         condition: '两爻同为用神六亲',
         implication: '舍此取彼：取动爻、旺爻或临世应者'),
     '世爻': TermEntry(
-        definition: '代表求测人自身之爻',
-        condition: '按卦宫世位而定',
-        implication: '自占以世为用'),
+        definition: '代表求测人自身之爻', condition: '按卦宫世位而定', implication: '自占以世为用'),
     '应爻': TermEntry(
-        definition: '代表他人他事之爻',
-        condition: '与世爻相隔三位',
-        implication: '占他人事以应为参'),
+        definition: '代表他人他事之爻', condition: '与世爻相隔三位', implication: '占他人事以应为参'),
 
     // ── 伏藏飞神 ──
     '伏神': TermEntry(
@@ -394,13 +360,9 @@ class TermGlossary {
         condition: '伏神所在爻位的本卦之爻',
         implication: '飞伏生克定伏神吉凶'),
     '飞生伏': TermEntry(
-        definition: '飞神生伏神',
-        condition: '飞神五行生伏神五行',
-        implication: '伏神得长生，吉'),
+        definition: '飞神生伏神', condition: '飞神五行生伏神五行', implication: '伏神得长生，吉'),
     '飞克伏': TermEntry(
-        definition: '飞神克伏神',
-        condition: '飞神五行克伏神五行',
-        implication: '伏神受压难出，凶'),
+        definition: '飞神克伏神', condition: '飞神五行克伏神五行', implication: '伏神受压难出，凶'),
     '伏生飞': TermEntry(
         definition: '伏神生飞神',
         condition: '伏神五行生飞神五行',
@@ -424,9 +386,7 @@ class TermGlossary {
         condition: '日支与爻支六合',
         implication: '合静爻为合起（吉），合动爻为合绊（迟滞）'),
     '月合': TermEntry(
-        definition: '月建与爻六合',
-        condition: '月建与爻支六合',
-        implication: '同日合，月内之绊'),
+        definition: '月建与爻六合', condition: '月建与爻支六合', implication: '同日合，月内之绊'),
     '太岁入爻': TermEntry(
         definition: '爻临太岁（年支）',
         condition: '爻支与流年地支相同',
@@ -450,13 +410,9 @@ class TermGlossary {
         condition: '游魂再变内卦复原',
         implication: '主返本还原、出行而归、事归故处'),
     '卦变六合': TermEntry(
-        definition: '变卦为六合卦',
-        condition: '动变之后成六合',
-        implication: '渐入佳境，先难后成'),
+        definition: '变卦为六合卦', condition: '动变之后成六合', implication: '渐入佳境，先难后成'),
     '卦变六冲': TermEntry(
-        definition: '变卦为六冲卦',
-        condition: '动变之后成六冲',
-        implication: '先合后散，事将不终'),
+        definition: '变卦为六冲卦', condition: '动变之后成六冲', implication: '先合后散，事将不终'),
     '伏吟': TermEntry(
         definition: '变卦纳支与本卦相同',
         condition: '内卦或外卦动而变后纳支不变（如乾震互变）',

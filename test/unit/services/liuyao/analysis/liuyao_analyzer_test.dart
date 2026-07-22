@@ -47,6 +47,8 @@ void main() {
       expect(report.yaoTags[5]!.map((t) => t.term), contains('忌神'));
       expect(report.yingQi, isNotEmpty);
       expect(report.verdictSummary, contains('妻财'));
+      expect(report.verdictSummary, contains('条件触发窗口'));
+      expect(report.verdictSummary, isNot(contains('总体偏')));
     });
 
     test('用神两现标注在另一爻', () {
@@ -65,6 +67,12 @@ void main() {
       expect(report.yongShen!.isFuShen, isTrue);
       expect(report.yaoTags[2]!.map((t) => t.term), contains('用神(伏)'));
       expect(report.verdictSummary, contains('妻财'));
+      expect(report.yongShenTags.map((tag) => tag.term), contains('休'));
+      expect(report.yongShenTags.map((tag) => tag.term), isNot(contains('旺')));
+      expect(
+          report.yingQi!.map((candidate) => candidate.branch), contains('寅'));
+      expect(report.yingQi!.map((candidate) => candidate.branch),
+          isNot(contains('午')));
     });
   });
 
@@ -88,8 +96,8 @@ void main() {
       final qian = buildGua([7, 7, 7, 9, 7, 7]);
       final changing = buildChangingGua(qian);
       final lunar = buildLunar(yueJian: '午', riGanZhi: '甲寅');
-      final report = LiuYaoAnalyzer.analyze(qian, changing, lunar,
-          yongShenPosition: 4);
+      final report =
+          LiuYaoAnalyzer.analyze(qian, changing, lunar, yongShenPosition: 4);
       expect(report.yingQi, isNotEmpty);
       // 动爻用神：值日与合日在候选中
       final branches = report.yingQi!.map((c) => c.branch).toList();

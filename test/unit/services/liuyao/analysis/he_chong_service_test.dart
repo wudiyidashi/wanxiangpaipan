@@ -17,8 +17,8 @@ void main() {
       final result = HeChongService.analyzeGua(tai, lunar);
       expect(termsAt(result, 1), contains('合住'));
       expect(termsAt(result, 4), contains('合起'));
-      expect(result[1]!.firstWhere((t) => t.term == '合住').relatedYao,
-          contains(4));
+      expect(
+          result[1]!.firstWhere((t) => t.term == '合住').relatedYao, contains(4));
     });
 
     test('两动爻相合：双方合绊', () {
@@ -47,12 +47,13 @@ void main() {
   });
 
   group('HeChongService 六冲（爻间）', () {
-    test('乾卦二五寅申两动：相冲且相刑', () {
+    test('乾卦二五寅申两动：只论相冲，不把两支直接标成三刑', () {
       final qian = buildGua([7, 9, 7, 7, 9, 7]);
       final result = HeChongService.analyzeGua(qian, lunar);
       expect(termsAt(result, 2), contains('相冲'));
       expect(termsAt(result, 5), contains('相冲'));
-      expect(termsAt(result, 2), contains('相刑'));
+      expect(termsAt(result, 2), isNot(contains('相刑')));
+      expect(termsAt(result, 2), isNot(contains('三刑')));
     });
 
     test('动爻冲静爻亦标注相冲', () {
@@ -69,13 +70,47 @@ void main() {
     });
   });
 
+  group('HeChongService 三刑', () {
+    test('寅巳申三支齐全且有动爻才标三刑', () {
+      final base = buildGua([7, 7, 7, 7, 7, 7]);
+      final gua = base.copyWith(yaos: [
+        makeYao(position: 1, branch: '寅', moving: true),
+        makeYao(position: 2, branch: '巳'),
+        makeYao(position: 3, branch: '申'),
+        makeYao(position: 4, branch: '子'),
+        makeYao(position: 5, branch: '卯'),
+        makeYao(position: 6, branch: '辰'),
+      ]);
+
+      final result = HeChongService.analyzeGua(gua, lunar);
+
+      for (final position in [1, 2, 3]) {
+        expect(termsAt(result, position), contains('三刑'));
+      }
+    });
+
+    test('寅巳申三支皆静不形成有效三刑', () {
+      final base = buildGua([7, 7, 7, 7, 7, 7]);
+      final gua = base.copyWith(yaos: [
+        makeYao(position: 1, branch: '寅'),
+        makeYao(position: 2, branch: '巳'),
+        makeYao(position: 3, branch: '申'),
+        ...base.yaos.skip(3),
+      ]);
+
+      final result = HeChongService.analyzeGua(gua, lunar);
+
+      expect(result.values.expand((tags) => tags).map((tag) => tag.term),
+          isNot(contains('三刑')));
+    });
+  });
+
   group('HeChongService 三合局', () {
     test('乾卦子辰两动申静：申子辰三合水局', () {
       final qian = buildGua([9, 7, 9, 7, 7, 7]);
       final result = HeChongService.analyzeGua(qian, lunar);
       for (final pos in [1, 3, 5]) {
-        expect(termsAt(result, pos), contains('三合局'),
-            reason: '$pos 爻应在三合局中');
+        expect(termsAt(result, pos), contains('三合局'), reason: '$pos 爻应在三合局中');
       }
       final tag = result[1]!.firstWhere((t) => t.term == '三合局');
       expect(tag.reason, contains('水'));

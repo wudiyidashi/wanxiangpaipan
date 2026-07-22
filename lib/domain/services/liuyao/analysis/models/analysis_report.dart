@@ -48,7 +48,7 @@ class YingQiCandidate with _$YingQiCandidate {
     /// 展示文案，如 "戌日（填实旬空）"
     required String label,
 
-    /// 应期地支（用于日历按日匹配）
+    /// 应期地支；仅日尺度候选用于日历按日匹配
     required String branch,
     required YingQiScale scale,
     required String reason,
@@ -73,10 +73,13 @@ class AnalysisReport with _$AnalysisReport {
     /// 用神推理链；未选用神时为 null
     YongShenChain? yongShen,
 
+    /// 所选用神自身的状态标签。伏神取用时分析伏神，不复用飞神标签。
+    @Default(<YaoAnalysisTag>[]) List<YaoAnalysisTag> yongShenTags,
+
     /// 应期候选；依赖用神，未选时为 null
     List<YingQiCandidate>? yingQi,
 
-    /// 一句话结论；依赖用神，未选时为 null
+    /// 用神状态摘要；不根据标签数量直接判定事情成败
     String? verdictSummary,
   }) = _AnalysisReport;
 

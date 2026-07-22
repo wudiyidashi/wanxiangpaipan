@@ -7,7 +7,7 @@ import 'tables/dizhi_relations.dart';
 /// 爻间合冲刑害分析。
 ///
 /// 覆盖：合住、合起、合绊、冲开、相冲、三合局、三合成局（借日月）、
-/// 半合、相刑、相害。
+/// 半合、三刑、相刑、相害。
 /// 规则依据《增删卜易》：静爻之间不论生克合冲，动方能作用；
 /// 三刑、相害按《卜筮正宗》补充，仅作低优先级参考。
 /// 日月对单爻的合冲（合起/冲起等日辰作用）由其他服务判定。
@@ -21,10 +21,55 @@ class HeChongService {
     };
 
     _analyzePairs(gua, lunarInfo, result);
+    _analyzeSanXing(gua, result);
     _analyzeSanHe(gua, lunarInfo, result);
 
     result.removeWhere((_, tags) => tags.isEmpty);
     return result;
+  }
+
+  /// 寅巳申、丑戌未须三支齐全，且至少一爻发动，才标记三刑。
+  static void _analyzeSanXing(
+    Gua gua,
+    Map<int, List<YaoAnalysisTag>> result,
+  ) {
+    final yaos = gua.yaos;
+    for (var i = 0; i < yaos.length; i++) {
+      for (var j = i + 1; j < yaos.length; j++) {
+        for (var k = j + 1; k < yaos.length; k++) {
+          final trio = [yaos[i], yaos[j], yaos[k]];
+          if (!DiZhiRelations.isSanXing(
+            trio[0].branch,
+            trio[1].branch,
+            trio[2].branch,
+          )) {
+            continue;
+          }
+          if (!trio.any((yao) => yao.isMoving)) continue;
+
+          final positions = trio.map((yao) => yao.position).toList();
+          final branches = DiZhiRelations.sanXingGroups
+              .firstWhere(
+                (group) =>
+                    group.length == 3 &&
+                    trio.every((yao) => group.contains(yao.branch)),
+              )
+              .join();
+          for (final yao in trio) {
+            result[yao.position]!.add(YaoAnalysisTag(
+              term: '三刑',
+              category: TagCategory.heChong,
+              polarity: Polarity.xiong,
+              priority: 45,
+              reason: '$branches三刑齐全，低权重参考',
+              relatedYao: positions
+                  .where((position) => position != yao.position)
+                  .toList(),
+            ));
+          }
+        }
+      }
+    }
   }
 
   static void _analyzePairs(
@@ -119,10 +164,8 @@ class HeChongService {
               category: TagCategory.heChong,
               polarity: Polarity.ji,
               priority: 11,
-              reason:
-                  '${trio.map((y) => y.branch).join()}三合${element.name}局',
-              relatedYao:
-                  positions.where((p) => p != yao.position).toList(),
+              reason: '${trio.map((y) => y.branch).join()}三合${element.name}局',
+              relatedYao: positions.where((p) => p != yao.position).toList(),
             ));
             claimed.add(yao.position);
           }

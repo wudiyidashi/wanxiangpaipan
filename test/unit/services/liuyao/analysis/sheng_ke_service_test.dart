@@ -64,6 +64,16 @@ void main() {
       expect(terms2, contains('贪合忘生'));
       expect(terms2, isNot(contains('动爻生')));
     });
+
+    test('合处已逢日冲则恢复动爻生克', () {
+      final tai = buildGua([9, 7, 7, 8, 8, 8]);
+      final wuDay = buildLunar(yueJian: '寅', riGanZhi: '甲午');
+
+      final result = ShengKeService.analyzeGua(tai, wuDay);
+
+      expect(termsAt(result, 2), contains('动爻生'));
+      expect(termsAt(result, 2), isNot(contains('贪合忘生')));
+    });
   });
 
   group('ShengKeService 连续相生克', () {
