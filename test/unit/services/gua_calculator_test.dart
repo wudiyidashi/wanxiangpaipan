@@ -107,6 +107,62 @@ void main() {
       expect(gua.yaos[3].stem, '壬');
     });
 
+    test('all 64 gua should use the canonical inner and outer Na Jia', () {
+      for (var value = 0; value < 64; value++) {
+        final guaId = value.toRadixString(2).padLeft(6, '0');
+        final yaoNumbers = guaId
+            .split('')
+            .map((bit) => bit == '1' ? 7 : 8)
+            .toList(growable: false);
+        final gua = GuaCalculator.calculateGua(yaoNumbers);
+        final lowerTrigram = guaId.substring(0, 3);
+        final upperTrigram = guaId.substring(3, 6);
+
+        expect(
+          gua.yaos.map((yao) => yao.branch).toList(),
+          <String>[
+            ..._innerBranches[lowerTrigram]!,
+            ..._outerBranches[upperTrigram]!,
+          ],
+          reason: '$guaId ${gua.name} 的纳甲地支错误',
+        );
+        expect(
+          gua.yaos.map((yao) => yao.stem).toList(),
+          <String>[
+            ...List.filled(3, _innerStems[lowerTrigram]!),
+            ...List.filled(3, _outerStems[upperTrigram]!),
+          ],
+          reason: '$guaId ${gua.name} 的纳甲天干错误',
+        );
+      }
+    });
+
+    test('the eight Liu He gua should be identified correctly', () {
+      const liuHeGuaIds = <String>{
+        '111000', // 地天泰
+        '000111', // 天地否
+        '110010', // 水泽节
+        '010110', // 泽水困
+        '101001', // 山火贲
+        '001101', // 火山旅
+        '000100', // 雷地豫
+        '100000', // 地雷复
+      };
+
+      for (var value = 0; value < 64; value++) {
+        final guaId = value.toRadixString(2).padLeft(6, '0');
+        final gua = GuaCalculator.calculateGua(
+          guaId.split('').map((bit) => bit == '1' ? 7 : 8).toList(),
+        );
+
+        expect(
+          gua.specialType == GuaSpecialType.liuHe,
+          liuHeGuaIds.contains(guaId),
+          reason: '${gua.name} 的六合标记错误',
+        );
+      }
+    });
+
     test('calculateGua should assign correct wuxing', () {
       final List<int> yaoNumbers = <int>[7, 7, 7, 7, 7, 7];
       final Gua gua = GuaCalculator.calculateGua(yaoNumbers);
@@ -207,3 +263,47 @@ void main() {
     });
   });
 }
+
+const _innerBranches = <String, List<String>>{
+  '111': ['子', '寅', '辰'],
+  '110': ['巳', '卯', '丑'],
+  '101': ['卯', '丑', '亥'],
+  '100': ['子', '寅', '辰'],
+  '011': ['丑', '亥', '酉'],
+  '010': ['寅', '辰', '午'],
+  '001': ['辰', '午', '申'],
+  '000': ['未', '巳', '卯'],
+};
+
+const _outerBranches = <String, List<String>>{
+  '111': ['午', '申', '戌'],
+  '110': ['亥', '酉', '未'],
+  '101': ['酉', '未', '巳'],
+  '100': ['午', '申', '戌'],
+  '011': ['未', '巳', '卯'],
+  '010': ['申', '戌', '子'],
+  '001': ['戌', '子', '寅'],
+  '000': ['丑', '亥', '酉'],
+};
+
+const _innerStems = <String, String>{
+  '111': '甲',
+  '110': '丁',
+  '101': '己',
+  '100': '庚',
+  '011': '辛',
+  '010': '戊',
+  '001': '丙',
+  '000': '乙',
+};
+
+const _outerStems = <String, String>{
+  '111': '壬',
+  '110': '丁',
+  '101': '己',
+  '100': '庚',
+  '011': '辛',
+  '010': '戊',
+  '001': '丙',
+  '000': '癸',
+};

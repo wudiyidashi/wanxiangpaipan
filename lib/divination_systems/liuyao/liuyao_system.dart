@@ -134,8 +134,22 @@ class LiuYaoSystem implements DivinationSystem {
 
   @override
   DivinationResult resultFromJson(Map<String, dynamic> json) {
-    return LiuYaoResult.fromJson(json);
+    final result = LiuYaoResult.fromJson(json);
+    if (!_isCanonicalGuaId(result.mainGua.id)) {
+      return result;
+    }
+
+    final mainGua = GuaCalculator.calculateGua(
+      result.mainGua.yaos.map((yao) => yao.number.value).toList(),
+    );
+    return result.copyWith(
+      mainGua: mainGua,
+      changingGua: GuaCalculator.generateChangingGua(mainGua),
+    );
   }
+
+  bool _isCanonicalGuaId(String id) =>
+      id.length == 6 && id.split('').every((bit) => bit == '0' || bit == '1');
 
   @override
   bool validateInput(CastMethod method, Map<String, dynamic> input) {

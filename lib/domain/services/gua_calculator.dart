@@ -116,20 +116,35 @@ class GuaCalculator {
 
   /// 获取纳甲地支
   static String _getNaJiaBranch(String guaId, int position) {
-    final branches = YaoConstants.guaToBranches[guaId];
-    if (branches == null || position > branches.length) {
-      throw StateError('未找到 $guaId 的纳甲地支配置');
+    final isInnerYao = position <= 3;
+    final trigramId = _getTrigramId(guaId, position);
+    final branches = isInnerYao
+        ? YaoConstants.innerNaJiaBranches[trigramId]
+        : YaoConstants.outerNaJiaBranches[trigramId];
+    if (branches == null) {
+      throw StateError('未找到八卦 $trigramId 的纳甲地支配置');
     }
-    return branches[position - 1];
+    return branches[(position - 1) % 3];
   }
 
   /// 获取纳甲天干
   static String _getNaJiaStem(String guaId, int position) {
-    final stems = YaoConstants.guaToStems[guaId];
-    if (stems == null || position > stems.length) {
-      throw StateError('未找到 $guaId 的纳甲天干配置');
+    final isInnerYao = position <= 3;
+    final trigramId = _getTrigramId(guaId, position);
+    final stem = isInnerYao
+        ? YaoConstants.innerNaJiaStems[trigramId]
+        : YaoConstants.outerNaJiaStems[trigramId];
+    if (stem == null) {
+      throw StateError('未找到八卦 $trigramId 的纳甲天干配置');
     }
-    return stems[position - 1];
+    return stem;
+  }
+
+  static String _getTrigramId(String guaId, int position) {
+    if (guaId.length != 6 || position < 1 || position > 6) {
+      throw StateError('无效的卦 ID 或爻位：$guaId / $position');
+    }
+    return position <= 3 ? guaId.substring(0, 3) : guaId.substring(3, 6);
   }
 
   /// 地支转五行

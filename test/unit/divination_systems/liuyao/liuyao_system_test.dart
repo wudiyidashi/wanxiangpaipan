@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:flutter_test/flutter_test.dart';
 import 'package:wanxiang_paipan/divination_systems/liuyao/liuyao_result.dart';
 import 'package:wanxiang_paipan/divination_systems/liuyao/liuyao_system.dart';
@@ -186,6 +188,34 @@ void main() {
                 '${yao.liuQin.name}${yao.stem}${yao.branch}${yao.wuXing.name}')
             .toList(),
         <String>['妻财戊寅木', '父母戊辰土', '官鬼戊午火', '兄弟戊申金', '父母戊戌土', '子孙戊子水'],
+      );
+    });
+
+    test('读取旧记录时应重新计算纳甲和变卦', () async {
+      final original = await system.cast(
+        method: CastMethod.time,
+        input: const <String, dynamic>{},
+        castTime: DateTime(2026, 4, 24, 5, 30),
+      ) as LiuYaoResult;
+      final staleMainGua = original.mainGua.copyWith(
+        yaos: original.mainGua.yaos
+            .map((yao) => yao.copyWith(stem: '甲', branch: '子'))
+            .toList(),
+      );
+
+      final persistedJson = jsonDecode(
+        jsonEncode(original.copyWith(mainGua: staleMainGua).toJson()),
+      ) as Map<String, dynamic>;
+      final restored = system.resultFromJson(persistedJson) as LiuYaoResult;
+
+      expect(
+        restored.mainGua.yaos.map((yao) => '${yao.stem}${yao.branch}'),
+        <String>['戊寅', '戊辰', '戊午', '丁亥', '丁酉', '丁未'],
+      );
+      expect(restored.changingGua!.name, '坎为水');
+      expect(
+        restored.changingGua!.yaos.map((yao) => '${yao.stem}${yao.branch}'),
+        <String>['戊寅', '戊辰', '戊午', '戊申', '戊戌', '戊子'],
       );
     });
   });
