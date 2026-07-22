@@ -72,3 +72,44 @@
 ### Next Steps
 
 - None - task complete
+
+
+## Session 3: 六爻卦名卦起卦 + 关系图大画布迭代
+
+**Date**: 2026-07-22
+**Task**: 六爻卦名卦起卦 + 关系图大画布迭代
+**Branch**: `main`
+
+### Summary
+
+关系图七轮迭代：弹窗简化示意图、变爻列+贪合降噪、分类显隐 chips、地支化气具体标注（卯戌合化火）、标签碰撞避让沿线滑动、字号 9→11、InteractiveViewer 大画布(780宽)拖动缩放、本卦变卦列间距 22→76 修复化变标签遮盖。新增卦名卦起卦方式：自定月建日干支+选本卦变卦录入卦例，动爻由两卦阴阳差异反推，LunarInfo 按用户月日覆盖（空亡由日干支推）；修复枚举新值未跑 build_runner 导致序列化崩溃。全量 666 测试绿，需变大过卦例实机端到端验证。期间处理模拟器存储满（经用户确认删除三个旧开发应用）与 GMS 清数据导致的 Keystore 挂起（重启模拟器解决），模拟器旧排盘记录因完全卸载丢失。
+
+### Main Changes
+
+- Detailed change bullets were not supplied; see the summary above.
+
+### Git Commits
+
+| Hash | Message |
+|------|---------|
+| `f2aecce` | (see git log) |
+| `30e1818` | (see git log) |
+| `f9bc82f` | (see git log) |
+| `ada4c98` | (see git log) |
+| `581564b` | (see git log) |
+| `10ef95d` | (see git log) |
+| `32ff3a8` | (see git log) |
+| `61b9a4d` | (see git log) |
+| `17bfaea` | (see git log) |
+
+### Testing
+
+- Validation was not recorded for this session.
+
+### Status
+
+[OK] **Completed**
+
+### Next Steps
+
+- None - task complete
