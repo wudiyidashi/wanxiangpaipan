@@ -66,6 +66,12 @@ List<RelationEdge> buildRelationEdges(
 
   String branch(int position) => mainGua.yaos[position - 1].branch;
 
+  /// 支+五行，如「子水」，用于生克类标注
+  String branchWuXing(int position) {
+    final yao = mainGua.yaos[position - 1];
+    return '${yao.branch}${yao.wuXing.name}';
+  }
+
   // 按地支序排列两支，保证双向标签一致以便去重
   (String, String) ordered(String a, String b) =>
       TianGanDiZhiService.getDiZhiIndex(a) <=
@@ -109,22 +115,22 @@ List<RelationEdge> buildRelationEdges(
         case '动爻生':
           add(RelationEdge(
               from: related!, to: position,
-              term: '${branch(related)}生${branch(position)}',
+              term: '${branchWuXing(related)}生${branchWuXing(position)}',
               kind: RelationKind.sheng, directed: true));
         case '动爻克':
           add(RelationEdge(
               from: related!, to: position,
-              term: '${branch(related)}克${branch(position)}',
+              term: '${branchWuXing(related)}克${branchWuXing(position)}',
               kind: RelationKind.ke, directed: true));
         case '动爻扶':
           add(RelationEdge(
               from: related!, to: position,
-              term: '${branch(related)}扶${branch(position)}',
+              term: '${branchWuXing(related)}扶${branchWuXing(position)}',
               kind: RelationKind.sheng, directed: true));
         case '入动墓':
           add(RelationEdge(
               from: related!, to: position,
-              term: '${branch(position)}入${branch(related)}墓',
+              term: '${branchWuXing(position)}入${branch(related)}墓',
               kind: RelationKind.ke, directed: true));
 
         // ── 爻间合冲刑害（双方各挂一条，标签归一去重）──

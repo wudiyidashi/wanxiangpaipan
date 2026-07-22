@@ -20,18 +20,18 @@ LunarInfo lunar({String yueJian = '寅', String riGanZhi = '甲寅'}) {
 
 void main() {
   group('buildRelationEdges 爻间生克', () {
-    test('乾初爻子水动：「子生寅」有向、「子克午」', () {
+    test('乾初爻子水动：「子水生寅木」有向、「子水克午火」', () {
       final qian = GuaCalculator.calculateGua([9, 7, 7, 7, 7, 7]);
       final report = LiuYaoAnalyzer.analyze(qian, null, lunar());
       final edges = buildRelationEdges(report, mainGua: qian);
 
-      final sheng = edges.firstWhere((e) => e.term == '子生寅');
+      final sheng = edges.firstWhere((e) => e.term == '子水生寅木');
       expect(sheng.from, 1);
       expect(sheng.to, 2);
       expect(sheng.directed, isTrue);
       expect(sheng.kind, RelationKind.sheng);
 
-      final ke = edges.firstWhere((e) => e.term == '子克午');
+      final ke = edges.firstWhere((e) => e.term == '子水克午火');
       expect(ke.from, 1);
       expect(ke.to, 4);
       expect(ke.kind, RelationKind.ke);
