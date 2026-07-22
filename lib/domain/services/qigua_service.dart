@@ -136,6 +136,30 @@ class QiGuaService {
     return List.generate(6, (_) => coinCastOnce());
   }
 
+  /// 卦名卦：由本卦与变卦反推爻数。
+  ///
+  /// [benGuaId]/[bianGuaId] 为 6 位二进制卦 id（初爻在前，1=阳 0=阴）。
+  /// 阴阳不同之爻为动爻（阳爻 9、阴爻 6），相同为静爻（7/8）；
+  /// [bianGuaId] 为 null 或与本卦相同时全静。
+  static List<int> guaNameCast(String benGuaId, String? bianGuaId) {
+    if (benGuaId.length != 6 ||
+        !benGuaId.split('').every((b) => b == '0' || b == '1')) {
+      throw ArgumentError('无效的本卦 id：$benGuaId');
+    }
+    if (bianGuaId != null &&
+        (bianGuaId.length != 6 ||
+            !bianGuaId.split('').every((b) => b == '0' || b == '1'))) {
+      throw ArgumentError('无效的变卦 id：$bianGuaId');
+    }
+
+    return List.generate(6, (i) {
+      final yang = benGuaId[i] == '1';
+      final moving = bianGuaId != null && bianGuaId[i] != benGuaId[i];
+      if (yang) return moving ? 9 : 7;
+      return moving ? 6 : 8;
+    });
+  }
+
   /// 正数取模转为 1..modulus，余数为 0 时取 modulus。
   static int _modToOneBased(int value, int modulus) {
     return ((value - 1) % modulus) + 1;

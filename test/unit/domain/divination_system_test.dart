@@ -52,7 +52,7 @@ void main() {
 
   group('CastMethod', () {
     test('应该包含所有起卦方式', () {
-      expect(CastMethod.values.length, 8);
+      expect(CastMethod.values.length, 9);
       expect(CastMethod.values, contains(CastMethod.coin));
       expect(CastMethod.values, contains(CastMethod.manual));
       expect(CastMethod.values, contains(CastMethod.number));
@@ -61,6 +61,7 @@ void main() {
       expect(CastMethod.values, contains(CastMethod.objectSound));
       expect(CastMethod.values, contains(CastMethod.time));
       expect(CastMethod.values, contains(CastMethod.computer));
+      expect(CastMethod.values, contains(CastMethod.guaName));
     });
 
     test('displayName 应该返回正确的中文名称', () {

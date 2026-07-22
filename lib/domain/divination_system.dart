@@ -89,7 +89,10 @@ enum CastMethod {
   time('时间卦', 'time'),
 
   /// 电脑卦（系统随机生成）
-  computer('电脑卦', 'computer');
+  computer('电脑卦', 'computer'),
+
+  /// 卦名卦（自定月建日辰，直接选本卦变卦，用于录入卦例）
+  guaName('卦名卦', 'guaName');
 
   const CastMethod(this.displayName, this.id);
 

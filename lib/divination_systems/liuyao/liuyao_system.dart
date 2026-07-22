@@ -1,8 +1,10 @@
 import 'package:uuid/uuid.dart';
+import '../../core/constants/yao_constants.dart';
 import '../../domain/divination_system.dart';
 import '../../domain/services/qigua_service.dart';
 import '../../domain/services/gua_calculator.dart';
 import '../../domain/services/shared/lunar_service.dart';
+import '../../domain/services/shared/tiangan_dizhi_service.dart';
 import '../../domain/services/liushen_service.dart';
 import 'liuyao_result.dart';
 
@@ -44,6 +46,7 @@ class LiuYaoSystem implements DivinationSystem {
         CastMethod.reportNumber,
         CastMethod.time,
         CastMethod.computer,
+        CastMethod.guaName,
       ];
 
   @override
@@ -103,13 +106,35 @@ class LiuYaoSystem implements DivinationSystem {
       case CastMethod.computer:
         yaoNumbers = QiGuaService.computerCast();
         break;
+
+      case CastMethod.guaName:
+        yaoNumbers = QiGuaService.guaNameCast(
+          input['benGuaId'] as String,
+          input['bianGuaId'] as String?,
+        );
+        break;
       case CastMethod.characterStroke:
       case CastMethod.objectSound:
         throw UnsupportedError('六爻不支持的起卦方式: ${method.displayName}');
     }
 
-    // 2. 计算农历信息
-    final lunarInfo = LunarService.getLunarInfo(time);
+    // 2. 计算农历信息（卦名卦按用户给定的月建日辰覆盖，
+    //    年干支沿用起卦时刻仅供太岁参考，时辰置空）
+    var lunarInfo = LunarService.getLunarInfo(time);
+    if (method == CastMethod.guaName) {
+      final yueJian = input['yueJian'] as String;
+      final riGanZhi = input['riGanZhi'] as String;
+      final split = TianGanDiZhiService.splitGanZhi(riGanZhi)!;
+      lunarInfo = lunarInfo.copyWith(
+        yueJian: yueJian,
+        monthGanZhi: yueJian,
+        riGan: split[0],
+        riZhi: split[1],
+        riGanZhi: riGanZhi,
+        kongWang: TianGanDiZhiService.getKongWang(riGanZhi),
+        hourGanZhi: null,
+      );
+    }
 
     // 3. 计算主卦
     final mainGua = GuaCalculator.calculateGua(yaoNumbers);
@@ -195,6 +220,26 @@ class LiuYaoSystem implements DivinationSystem {
             input['lowerNum'] is int &&
             input.containsKey('movingNum') &&
             input['movingNum'] is int;
+      case CastMethod.guaName:
+        final benGuaId = input['benGuaId'];
+        if (benGuaId is! String ||
+            !YaoConstants.guaNames.containsKey(benGuaId)) {
+          return false;
+        }
+        final bianGuaId = input['bianGuaId'];
+        if (bianGuaId != null &&
+            (bianGuaId is! String ||
+                !YaoConstants.guaNames.containsKey(bianGuaId))) {
+          return false;
+        }
+        final yueJian = input['yueJian'];
+        if (yueJian is! String ||
+            !TianGanDiZhiService.isValidDiZhi(yueJian)) {
+          return false;
+        }
+        final riGanZhi = input['riGanZhi'];
+        return riGanZhi is String &&
+            TianGanDiZhiService.isValidGanZhi(riGanZhi);
       case CastMethod.characterStroke:
       case CastMethod.objectSound:
         return false;
@@ -276,6 +321,27 @@ class LiuYaoSystem implements DivinationSystem {
         'upperNum': upperNum,
         'lowerNum': lowerNum,
         'movingNum': movingNum,
+      },
+      castTime: castTime,
+    );
+    return result as LiuYaoResult;
+  }
+
+  /// 便捷方法：卦名卦（自定月建日辰，选本卦与可选变卦）
+  Future<LiuYaoResult> castByGuaName({
+    required String benGuaId,
+    String? bianGuaId,
+    required String yueJian,
+    required String riGanZhi,
+    DateTime? castTime,
+  }) async {
+    final result = await cast(
+      method: CastMethod.guaName,
+      input: {
+        'benGuaId': benGuaId,
+        'bianGuaId': bianGuaId,
+        'yueJian': yueJian,
+        'riGanZhi': riGanZhi,
       },
       castTime: castTime,
     );

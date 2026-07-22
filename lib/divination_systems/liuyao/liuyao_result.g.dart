@@ -50,4 +50,5 @@ const _$CastMethodEnumMap = {
   CastMethod.objectSound: 'objectSound',
   CastMethod.time: 'time',
   CastMethod.computer: 'computer',
+  CastMethod.guaName: 'guaName',
 };

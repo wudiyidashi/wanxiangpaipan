@@ -9,6 +9,7 @@ import '../../../presentation/divination_ui_registry.dart';
 import '../../../presentation/widgets/antique/antique.dart';
 import '../../../presentation/widgets/cast/coin_cast_section.dart';
 import '../../../presentation/widgets/cast/computer_cast_section.dart';
+import '../../../presentation/widgets/cast/gua_name_cast_section.dart';
 import '../../../presentation/widgets/cast/number_cast_section.dart';
 import '../../../presentation/widgets/cast/report_number_cast_section.dart';
 import '../../../presentation/widgets/cast/time_cast_section.dart';
@@ -31,6 +32,7 @@ class _LiuYaoCastScreenState extends State<LiuYaoCastScreen> {
     CastMethod.reportNumber,
     CastMethod.time,
     CastMethod.computer,
+    CastMethod.guaName,
   ];
 
   CastMethod _selectedMethod = CastMethod.coin;
@@ -247,6 +249,40 @@ class _LiuYaoCastScreenState extends State<LiuYaoCastScreen> {
     }
   }
 
+  Future<void> _handleGuaNameCast(
+    String yueJian,
+    String riGanZhi,
+    String benGuaId,
+    String? bianGuaId,
+  ) async {
+    if (_isProcessing) {
+      return;
+    }
+    setState(() => _isProcessing = true);
+    try {
+      final viewModel = context.read<LiuYaoViewModel>();
+      await viewModel.castByGuaName(
+        benGuaId: benGuaId,
+        bianGuaId: bianGuaId,
+        yueJian: yueJian,
+        riGanZhi: riGanZhi,
+        castTime: DateTime.now(),
+        question: _question.isNotEmpty ? _question : null,
+      );
+      if (viewModel.hasError) {
+        _showError(viewModel.errorMessage ?? '起卦失败');
+        return;
+      }
+      if (mounted) {
+        await _navigateToResult(context, viewModel);
+      }
+    } finally {
+      if (mounted) {
+        setState(() => _isProcessing = false);
+      }
+    }
+  }
+
   Future<void> _handleComputerCast() async {
     if (_isProcessing) {
       return;
@@ -365,6 +401,11 @@ class _LiuYaoCastScreenState extends State<LiuYaoCastScreen> {
       case CastMethod.computer:
         return ComputerCastSection(
           onCast: _isProcessing ? null : _handleComputerCast,
+          isLoading: _isProcessing,
+        );
+      case CastMethod.guaName:
+        return GuaNameCastSection(
+          onCast: _isProcessing ? null : _handleGuaNameCast,
           isLoading: _isProcessing,
         );
       case CastMethod.characterStroke:

@@ -76,6 +76,31 @@ class LiuYaoViewModel extends DivinationViewModel<LiuYaoResult> {
     );
   }
 
+  /// 卦名卦：自定月建日辰，选本卦与可选变卦起卦
+  Future<void> castByGuaName({
+    required String benGuaId,
+    String? bianGuaId,
+    required String yueJian,
+    required String riGanZhi,
+    DateTime? castTime,
+    String? question,
+  }) async {
+    await cast(
+      method: CastMethod.guaName,
+      input: {
+        'benGuaId': benGuaId,
+        'bianGuaId': bianGuaId,
+        'yueJian': yueJian,
+        'riGanZhi': riGanZhi,
+      },
+      castTime: castTime,
+    );
+
+    if (hasResult) {
+      await saveRecord(question: question);
+    }
+  }
+
   /// 爻名卦：手动输入爻数起卦
   ///
   /// [yaoNumbers] 6 个爻数（从下到上），每个爻数必须在 6-9 之间
