@@ -77,7 +77,7 @@ void main() {
   });
 
   group('buildRelationEdges 变爻边', () {
-    test('泰初爻子化丑（化合+回头克）：按优先级取回头克，变爻→本爻', () {
+    test('泰初爻子化丑：化合与回头克同时记录，线型取回头克（变爻→本爻）', () {
       final tai = GuaCalculator.calculateGua([9, 7, 7, 8, 8, 8]);
       final changing = GuaCalculator.generateChangingGua(tai);
       final report = LiuYaoAnalyzer.analyze(tai, changing, lunar());
@@ -85,10 +85,12 @@ void main() {
           mainGua: tai, movingPositions: {1});
       final bian = edges.where((e) => e.isBianEdge).toList();
       expect(bian, hasLength(1));
-      expect(bian.first.term, '回头克');
+      // 标签按检查次序排列：生克→合冲→空（甲寅旬丑空，化空亦并记）
+      expect(bian.first.term, '回头克·化合·化空');
       expect(bian.first.from, 1 + RelationEdge.bianNodeOffset);
       expect(bian.first.to, 1);
       expect(bian.first.directed, isTrue);
+      expect(bian.first.kind, RelationKind.ke);
     });
 
     test('贪合忘生克不再产生连线', () {

@@ -158,6 +158,14 @@ class DongBianService {
           priority: 27,
           reason: '本爻${original.wuXing.name}生变爻${changed.wuXing.name}，泄气',
         ));
+      } else if (WuXingService.isKe(original.wuXing, changed.wuXing)) {
+        tags.add(YaoAnalysisTag(
+          term: '克出',
+          category: TagCategory.dongBian,
+          polarity: Polarity.neutral,
+          priority: 27,
+          reason: '本爻${original.wuXing.name}克变爻${changed.wuXing.name}，克出耗力',
+        ));
       }
     }
 

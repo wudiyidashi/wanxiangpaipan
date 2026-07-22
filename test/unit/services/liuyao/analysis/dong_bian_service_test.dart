@@ -54,9 +54,10 @@ void main() {
   });
 
   group('DongBianService 化空破墓绝合冲', () {
-    test('卯化戌：化合且化空（甲子旬戌亥空）', () {
+    test('卯化戌：化合、克出（卯木克戌土）且化空（甲子旬戌亥空）', () {
       final terms = transformTerms('卯', '戌');
       expect(terms, contains('化合'));
+      expect(terms, contains('克出'));
       expect(terms, contains('化空'));
     });
 

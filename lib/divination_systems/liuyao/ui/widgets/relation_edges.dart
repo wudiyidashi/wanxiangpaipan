@@ -45,10 +45,16 @@ class RelationEdge {
   String toString() => '$from${directed ? '→' : '—'}$to $term';
 }
 
-/// 动爻化变关系的取舍优先级（每个动爻只画一条最关键的化变线）
+/// 化变线的线型/方向取影响最大者
 const List<String> _bianPrecedence = [
   '回头克', '回头生', '化冲', '化合', '化墓', '化绝',
-  '化进神', '化退神', '化泄', '化空', '化破',
+  '化进神', '化退神', '化泄', '克出', '化空', '化破',
+];
+
+/// 化变标签的排列顺序（依断卦检查次序：进退→生克→合冲→空→破→墓→绝）
+const List<String> _bianLabelOrder = [
+  '化进神', '化退神', '回头生', '回头克', '化泄', '克出',
+  '化合', '化冲', '化空', '化破', '化墓', '化绝',
 ];
 
 /// 从分析报告提取关系图的边（纯函数，供弹窗绘制）。
@@ -203,18 +209,22 @@ List<RelationEdge> buildRelationEdges(
     }
   });
 
-  // ── 动爻 ↔ 变爻：每动爻取最关键的一条化变关系 ──
+  // ── 动爻 ↔ 变爻：并存关系同时记录（如「回头克·化合」），
+  //    线型与方向取影响最大者 ──
   report.yaoTags.forEach((position, tags) {
     final terms = tags.map((t) => t.term).toSet();
-    String? picked;
-    for (final candidate in _bianPrecedence) {
-      if (terms.contains(candidate)) {
-        picked = candidate;
-        break;
-      }
-    }
-    if (picked == null) return;
-    edges.add(_bianEdge(position, picked));
+    final present =
+        _bianLabelOrder.where(terms.contains).toList();
+    if (present.isEmpty) return;
+    final styleTerm = _bianPrecedence.firstWhere(present.contains);
+    final style = _bianEdge(position, styleTerm);
+    edges.add(RelationEdge(
+      from: style.from,
+      to: style.to,
+      term: present.join('·'),
+      kind: style.kind,
+      directed: style.directed,
+    ));
   });
 
   // 有动爻但无任何化变标签（如爻伏吟）：补中性连接线
@@ -259,6 +269,7 @@ RelationEdge _bianEdge(int position, String term) {
     case '化绝':
     case '化退神':
     case '化泄':
+    case '克出':
       return RelationEdge(
           from: position, to: bian, term: term,
           kind: RelationKind.ke, directed: true);

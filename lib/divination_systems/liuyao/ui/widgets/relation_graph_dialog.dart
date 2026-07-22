@@ -547,21 +547,32 @@ class _RelationGraphPainter extends CustomPainter {
     }
   }
 
-  /// 变爻线标签：置于横线上方中点（右侧空间独立，无需避让弧线）
+  /// 变爻线标签：并存关系（「·」分隔）分两行绘制——
+  /// 首要关系在线上方，其余在线下方，避免超出两列缝隙
   void _drawBianLabel(Canvas canvas, RelationEdge edge, Color color) {
     final position = (edge.from > RelationEdge.bianNodeOffset
             ? edge.from - RelationEdge.bianNodeOffset
             : edge.from)
         .clamp(1, 6);
     final midX = (layout.nodeRight + layout.bianLeft) / 2;
-    final center = Offset(midX, layout.yaoY(position) - 8);
-    final painter = _layoutText(edge.term, color);
-    _placedLabels.add(Rect.fromCenter(
-        center: center,
-        width: painter.width + 4,
-        height: painter.height + 2));
-    painter.paint(
-        canvas, center - Offset(painter.width / 2, painter.height / 2));
+    final y = layout.yaoY(position);
+    final parts = edge.term.split('·');
+
+    void paintAt(String text, double centerY) {
+      final painter = _layoutText(text, color);
+      final center = Offset(midX, centerY);
+      _placedLabels.add(Rect.fromCenter(
+          center: center,
+          width: painter.width + 4,
+          height: painter.height + 2));
+      painter.paint(
+          canvas, center - Offset(painter.width / 2, painter.height / 2));
+    }
+
+    paintAt(parts.first, y - 9);
+    if (parts.length > 1) {
+      paintAt(parts.sublist(1).join('·'), y + 11);
+    }
   }
 
   TextPainter _layoutText(String text, Color color) {

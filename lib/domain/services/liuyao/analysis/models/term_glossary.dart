@@ -255,6 +255,10 @@ class TermGlossary {
         definition: '本爻生变爻而泄气',
         condition: '动爻五行生变爻五行',
         implication: '动而泄气，力量渐减'),
+    '克出': TermEntry(
+        definition: '本爻克变爻',
+        condition: '动爻五行克变爻五行（如卯木化戌土）',
+        implication: '克出耗力，与化合化冲并见时须综合判断'),
     '化空': TermEntry(
         definition: '变爻落旬空',
         condition: '变爻之支在本旬空亡',
