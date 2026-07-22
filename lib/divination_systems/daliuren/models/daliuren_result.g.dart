@@ -49,6 +49,9 @@ const _$CastMethodEnumMap = {
   CastMethod.manual: 'manual',
   CastMethod.number: 'number',
   CastMethod.reportNumber: 'reportNumber',
+  CastMethod.characterStroke: 'characterStroke',
+  CastMethod.objectSound: 'objectSound',
   CastMethod.time: 'time',
   CastMethod.computer: 'computer',
+  CastMethod.guaName: 'guaName',
 };
