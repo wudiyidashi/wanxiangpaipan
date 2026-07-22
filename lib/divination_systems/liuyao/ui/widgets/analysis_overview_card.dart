@@ -19,7 +19,6 @@ class AnalysisOverviewCard extends StatelessWidget {
     required this.yongShenIsFuShen,
     required this.onSelectYongShen,
     required this.onClearYongShen,
-    this.onViewCalendar,
   });
 
   final Gua mainGua;
@@ -28,7 +27,6 @@ class AnalysisOverviewCard extends StatelessWidget {
   final bool yongShenIsFuShen;
   final void Function(int position, {bool isFuShen}) onSelectYongShen;
   final VoidCallback onClearYongShen;
-  final VoidCallback? onViewCalendar;
 
   static const List<String> _positionNames = ['初爻', '二爻', '三爻', '四爻', '五爻', '上爻'];
 
@@ -154,14 +152,6 @@ class AnalysisOverviewCard extends StatelessWidget {
           Text(
             report.verdictSummary!,
             style: AppTextStyles.antiqueBody.copyWith(height: 1.6),
-          ),
-        ],
-        if (onViewCalendar != null &&
-            (report.yingQi?.isNotEmpty ?? false)) ...[
-          const SizedBox(height: 12),
-          AntiqueButton(
-            label: '查看应期日历',
-            onPressed: onViewCalendar!,
           ),
         ],
       ],

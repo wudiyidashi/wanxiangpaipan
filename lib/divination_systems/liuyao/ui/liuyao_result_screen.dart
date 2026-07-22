@@ -72,7 +72,6 @@ class _LiuYaoResultView extends StatelessWidget {
             onSelectYongShen: (position, {bool isFuShen = false}) =>
                 controller.selectYongShen(position, isFuShen: isFuShen),
             onClearYongShen: controller.clearYongShen,
-            onViewCalendar: () => _openYingQiCalendar(context, controller),
           ),
         ),
         Align(

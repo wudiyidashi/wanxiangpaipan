@@ -109,7 +109,7 @@ void main() {
         onViewCalendar: () {},
       )));
       expect(find.text('应期推算'), findsOneWidget);
-      expect(find.text('查看应期日历'), findsOneWidget);
+      expect(find.text('应期日历'), findsOneWidget);
     });
   });
 }
