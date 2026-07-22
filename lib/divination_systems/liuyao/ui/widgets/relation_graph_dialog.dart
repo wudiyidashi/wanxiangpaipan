@@ -88,11 +88,19 @@ class RelationGraphView extends StatefulWidget {
 
 class _RelationGraphViewState extends State<RelationGraphView> {
   final Set<EdgeGroup> _visibleGroups = {...EdgeGroup.values};
+  final TransformationController _transformation = TransformationController();
+  bool _initialPositioned = false;
 
   Gua get mainGua => widget.mainGua;
   Gua? get changingGua => widget.changingGua;
   LunarInfo get lunarInfo => widget.lunarInfo;
   int? get yongShenPosition => widget.yongShenPosition;
+
+  @override
+  void dispose() {
+    _transformation.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -108,9 +116,12 @@ class _RelationGraphViewState extends State<RelationGraphView> {
     final edges = allEdges
         .where((e) => _visibleGroups.contains(EdgeGroup.of(e)))
         .toList();
-    final width =
-        math.min(MediaQuery.of(context).size.width - 20, 430).toDouble();
-    final layout = _GraphLayout(width: width);
+    final screenSize = MediaQuery.of(context).size;
+    final width = math.min(screenSize.width - 20, 430).toDouble();
+    const layout = _GraphLayout();
+    // 视口高度：小图完整展示，大图内部可拖动
+    final viewerHeight =
+        math.min(layout.graphHeight, screenSize.height - 300);
 
     return SizedBox(
       width: width,
@@ -153,23 +164,52 @@ class _RelationGraphViewState extends State<RelationGraphView> {
             ),
           SizedBox(
             width: width,
-            height: layout.graphHeight,
-            child: Stack(
-              children: [
-                Positioned.fill(
-                  child: CustomPaint(
-                    painter:
-                        _RelationGraphPainter(edges: edges, layout: layout),
+            height: viewerHeight,
+            child: LayoutBuilder(
+              builder: (context, constraints) {
+                // 首帧定位到爻列区域（画布右侧），左侧弧线区可拖出查看
+                if (!_initialPositioned) {
+                  _initialPositioned = true;
+                  final overflowX =
+                      _GraphLayout.canvasWidth - constraints.maxWidth;
+                  if (overflowX > 0) {
+                    _transformation.value = Matrix4.identity()
+                      ..translate(-overflowX, 0.0);
+                  }
+                }
+                return ClipRect(
+                  child: InteractiveViewer(
+                    transformationController: _transformation,
+                    constrained: false,
+                    boundaryMargin: const EdgeInsets.all(240),
+                    minScale: 0.4,
+                    maxScale: 3.0,
+                    child: SizedBox(
+                      width: _GraphLayout.canvasWidth,
+                      height: layout.graphHeight,
+                      child: Stack(
+                        children: [
+                          Positioned.fill(
+                            child: CustomPaint(
+                              painter: _RelationGraphPainter(
+                                  edges: edges, layout: layout),
+                            ),
+                          ),
+                          _topChip('月建 ${lunarInfo.yueJian}',
+                              layout.yueCenter),
+                          _topChip('日辰 ${lunarInfo.riZhi}',
+                              layout.riCenter),
+                          for (var position = 1; position <= 6; position++)
+                            _buildYaoNode(layout, position),
+                          if (changingGua != null)
+                            for (final yao in mainGua.movingYaos)
+                              _buildBianNode(layout, yao.position),
+                        ],
+                      ),
+                    ),
                   ),
-                ),
-                _topChip('月建 ${lunarInfo.yueJian}', layout.yueCenter),
-                _topChip('日辰 ${lunarInfo.riZhi}', layout.riCenter),
-                for (var position = 1; position <= 6; position++)
-                  _buildYaoNode(layout, position),
-                if (changingGua != null)
-                  for (final yao in mainGua.movingYaos)
-                    _buildBianNode(layout, yao.position),
-              ],
+                );
+              },
             ),
           ),
           Padding(
@@ -181,7 +221,7 @@ class _RelationGraphViewState extends State<RelationGraphView> {
                         .copyWith(color: AppColors.huise),
                   )
                 : Text(
-                    '点击上方分类可切换连线显隐',
+                    '可拖动、双指缩放查看；点击上方分类切换显隐',
                     style: AppTextStyles.antiqueLabel
                         .copyWith(color: AppColors.huiseLight),
                   ),
@@ -307,26 +347,26 @@ class _RelationGraphViewState extends State<RelationGraphView> {
 
 /// 固定坐标布局：本卦列偏右，左侧留弧线区，最右为变爻列
 class _GraphLayout {
-  const _GraphLayout({required this.width});
+  const _GraphLayout();
 
-  final double width;
+  static const double canvasWidth = 780;
+  static const double nodeWidth = 150;
+  static const double bianWidth = 96;
+  static const double rowHeight = 74;
+  static const double topHeight = 64;
+  static const double bottomMargin = 16;
 
-  static const double nodeWidth = 140;
-  static const double bianWidth = 88;
-  static const double rowHeight = 54;
-  static const double topHeight = 52;
-
-  double get bianLeft => width - 10 - bianWidth;
-  double get nodeLeft => bianLeft - 18 - nodeWidth;
+  double get bianLeft => canvasWidth - 14 - bianWidth;
+  double get nodeLeft => bianLeft - 22 - nodeWidth;
   double get nodeRight => nodeLeft + nodeWidth;
-  double get graphHeight => topHeight + 6 * rowHeight;
+  double get graphHeight => topHeight + 6 * rowHeight + bottomMargin;
 
   /// 爻位 1-6 → 纵坐标（上爻在最上）
   double yaoY(int position) =>
       topHeight + (6 - position) * rowHeight + rowHeight / 2;
 
-  Offset get yueCenter => Offset(width * 0.14 + 20, topHeight / 2);
-  Offset get riCenter => Offset(width * 0.14 + 110, topHeight / 2);
+  Offset get yueCenter => const Offset(150, 32);
+  Offset get riCenter => const Offset(300, 32);
 }
 
 class _RelationGraphPainter extends CustomPainter {
@@ -383,12 +423,12 @@ class _RelationGraphPainter extends CustomPainter {
         RelationKind.neutral => AppColors.huise,
       };
 
-  /// 爻间左侧弧线；lane 递增外扩
+  /// 爻间左侧弧线；lane 递增外扩（大画布下弧距放宽）
   Path _leftArc(RelationEdge edge, int lane) {
     final y1 = layout.yaoY(edge.from);
     final y2 = layout.yaoY(edge.to);
     final x = layout.nodeLeft;
-    final controlX = x - 24 - lane * 13;
+    final controlX = x - 44 - lane * 30;
     return Path()
       ..moveTo(x, y1)
       ..quadraticBezierTo(controlX, (y1 + y2) / 2, x, y2);
@@ -400,7 +440,7 @@ class _RelationGraphPainter extends CustomPainter {
         ? layout.yueCenter
         : layout.riCenter;
     final targetY = layout.yaoY(edge.to);
-    final controlX = layout.nodeLeft - 24 - lane * 13;
+    final controlX = layout.nodeLeft - 44 - lane * 30;
     return Path()
       ..moveTo(start.dx, start.dy + 14)
       ..quadraticBezierTo(

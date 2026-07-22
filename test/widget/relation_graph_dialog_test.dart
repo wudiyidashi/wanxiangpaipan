@@ -47,7 +47,7 @@ void main() {
     // 图例
     expect(find.text('生扶'), findsOneWidget);
     expect(find.text('克冲刑害'), findsOneWidget);
-    expect(find.text('点击上方分类可切换连线显隐'), findsOneWidget);
+    expect(find.text('可拖动、双指缩放查看；点击上方分类切换显隐'), findsOneWidget);
   });
 
   testWidgets('点击分类开关切换显隐不崩溃', (tester) async {
