@@ -118,10 +118,10 @@ class LiuYaoStructuredFormatter
       priority: 6,
     ));
 
-    // 确定性断卦分析（旺衰/空破/合冲/动变/用神链/应期）
+    // 客观规则分析（旺衰/空破/合冲/动变/用神链/应期候选）
     sections.add(StructuredSection(
       key: 'analysis',
-      title: '断卦分析（引擎判定）',
+      title: '断卦分析（规则标注）',
       content: _formatAnalysis(result),
       priority: 7,
     ));
@@ -129,7 +129,7 @@ class LiuYaoStructuredFormatter
     return sections;
   }
 
-  /// 将 LiuYaoAnalyzer 的确定性分析报告渲染为提示词文本
+  /// 将 LiuYaoAnalyzer 的客观分析报告渲染为提示词文本
   String _formatAnalysis(LiuYaoResult result) {
     final report = LiuYaoAnalyzer.analyze(
       result.mainGua,
@@ -140,7 +140,9 @@ class LiuYaoStructuredFormatter
     );
 
     final buffer = StringBuffer();
-    buffer.writeln('以下判定由程序按《增删卜易》规则确定性推得，解读时请以此为准：');
+    buffer.writeln(
+      '以下状态由程序按既定规则标注；应期是条件候选，不可据此单独断定成败：',
+    );
 
     if (report.guaTags.isNotEmpty) {
       buffer.writeln('卦象: ${report.guaTags.map((t) => t.term).join('、')}');
@@ -159,18 +161,15 @@ class LiuYaoStructuredFormatter
 
     final chain = report.yongShen;
     if (chain == null) {
-      buffer.writeln(
-          '用户未指定用神：请先根据所占之事建议合适的用神，再依上述分析解读。');
+      buffer.writeln('用户未指定用神：请先根据所占之事建议合适的用神，再依上述分析解读。');
     } else {
-      buffer.writeln(
-          '用户指定用神: ${_positionName(chain.position)}爻'
+      buffer.writeln('用户指定用神: ${_positionName(chain.position)}爻'
           '${chain.isFuShen ? '（伏神取用）' : ''}');
       if (report.yingQi != null && report.yingQi!.isNotEmpty) {
-        buffer.writeln(
-            '应期候选: ${report.yingQi!.map((c) => c.label).join('、')}');
+        buffer.writeln('应期候选: ${report.yingQi!.map((c) => c.label).join('、')}');
       }
       if (report.verdictSummary != null) {
-        buffer.writeln('引擎结论: ${report.verdictSummary}');
+        buffer.writeln('用神状态摘要: ${report.verdictSummary}');
       }
     }
 

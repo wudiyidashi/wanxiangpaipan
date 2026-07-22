@@ -47,14 +47,34 @@ class RelationEdge {
 
 /// 化变线的线型/方向取影响最大者
 const List<String> _bianPrecedence = [
-  '回头克', '回头生', '化冲', '化合', '化墓', '化绝',
-  '化进神', '化退神', '化泄', '克出', '化空', '化破',
+  '回头克',
+  '回头生',
+  '化冲',
+  '化合',
+  '化墓',
+  '化绝',
+  '化进神',
+  '化退神',
+  '化泄',
+  '克出',
+  '化空',
+  '化破',
 ];
 
 /// 化变标签的排列顺序（依断卦检查次序：进退→生克→合冲→空→破→墓→绝）
 const List<String> _bianLabelOrder = [
-  '化进神', '化退神', '回头生', '回头克', '化泄', '克出',
-  '化合', '化冲', '化空', '化破', '化墓', '化绝',
+  '化进神',
+  '化退神',
+  '回头生',
+  '回头克',
+  '化泄',
+  '克出',
+  '化合',
+  '化冲',
+  '化空',
+  '化破',
+  '化墓',
+  '化绝',
 ];
 
 /// 从分析报告提取关系图的边（纯函数，供弹窗绘制）。
@@ -114,97 +134,144 @@ List<RelationEdge> buildRelationEdges(
 
   report.yaoTags.forEach((position, tags) {
     for (final tag in tags) {
-      final related =
-          tag.relatedYao.isNotEmpty ? tag.relatedYao.first : null;
+      final related = tag.relatedYao.isNotEmpty ? tag.relatedYao.first : null;
       switch (tag.term) {
         // ── 爻间生克（标签挂在受动方，related 首位为施动方）──
         case '动爻生':
           add(RelationEdge(
-              from: related!, to: position,
+              from: related!,
+              to: position,
               term: '${branchWuXing(related)}生${branchWuXing(position)}',
-              kind: RelationKind.sheng, directed: true));
+              kind: RelationKind.sheng,
+              directed: true));
         case '动爻克':
           add(RelationEdge(
-              from: related!, to: position,
+              from: related!,
+              to: position,
               term: '${branchWuXing(related)}克${branchWuXing(position)}',
-              kind: RelationKind.ke, directed: true));
+              kind: RelationKind.ke,
+              directed: true));
         case '动爻扶':
           add(RelationEdge(
-              from: related!, to: position,
+              from: related!,
+              to: position,
               term: '${branchWuXing(related)}扶${branchWuXing(position)}',
-              kind: RelationKind.sheng, directed: true));
+              kind: RelationKind.sheng,
+              directed: true));
         case '入动墓':
           add(RelationEdge(
-              from: related!, to: position,
+              from: related!,
+              to: position,
               term: '${branchWuXing(position)}入${branch(related)}墓',
-              kind: RelationKind.ke, directed: true));
+              kind: RelationKind.ke,
+              directed: true));
 
         // ── 爻间合冲刑害（双方各挂一条，标签归一去重）──
         case '合住':
         case '合起':
         case '合绊':
           add(RelationEdge(
-              from: position, to: related!,
+              from: position,
+              to: related!,
               term: heLabel(branch(position), branch(related)),
-              kind: RelationKind.he, directed: false));
+              kind: RelationKind.he,
+              directed: false));
         case '相冲':
           add(RelationEdge(
-              from: position, to: related!,
+              from: position,
+              to: related!,
               term: pairLabel(branch(position), branch(related), '冲'),
-              kind: RelationKind.ke, directed: false));
+              kind: RelationKind.ke,
+              directed: false));
         case '冲开':
           add(RelationEdge(
-              from: position, to: related!,
+              from: position,
+              to: related!,
               term: pairLabel(branch(position), branch(related), '冲开'),
-              kind: RelationKind.ke, directed: false));
+              kind: RelationKind.ke,
+              directed: false));
         case '相刑':
           add(RelationEdge(
-              from: position, to: related!,
+              from: position,
+              to: related!,
               term: pairLabel(branch(position), branch(related), '刑'),
-              kind: RelationKind.ke, directed: false));
+              kind: RelationKind.ke,
+              directed: false));
+        case '三刑':
+          for (final other in tag.relatedYao) {
+            final group = DiZhiRelations.sanXingGroups.firstWhere(
+              (branches) =>
+                  branches.length == 3 &&
+                  branches.contains(branch(position)) &&
+                  branches.contains(branch(other)),
+            );
+            add(RelationEdge(
+                from: position,
+                to: other,
+                term: '${group.join()}三刑',
+                kind: RelationKind.ke,
+                directed: false));
+          }
         case '相害':
           add(RelationEdge(
-              from: position, to: related!,
+              from: position,
+              to: related!,
               term: pairLabel(branch(position), branch(related), '害'),
-              kind: RelationKind.ke, directed: false));
+              kind: RelationKind.ke,
+              directed: false));
         case '三合局':
         case '三合成局':
           for (final other in tag.relatedYao) {
             add(RelationEdge(
-                from: position, to: other,
+                from: position,
+                to: other,
                 term: sanHeLabel(branch(position), branch(other)),
-                kind: RelationKind.he, directed: false));
+                kind: RelationKind.he,
+                directed: false));
           }
         case '半合':
           for (final other in tag.relatedYao) {
-            final element = DiZhiRelations.getBanHeElement(
-                branch(position), branch(other));
+            final element =
+                DiZhiRelations.getBanHeElement(branch(position), branch(other));
             add(RelationEdge(
-                from: position, to: other,
-                term:
-                    '${pairLabel(branch(position), branch(other), '半合')}'
+                from: position,
+                to: other,
+                term: '${pairLabel(branch(position), branch(other), '半合')}'
                     '${element?.name ?? ''}',
-                kind: RelationKind.he, directed: false));
+                kind: RelationKind.he,
+                directed: false));
           }
 
         // ── 日月对爻 ──
         case '月破':
           add(RelationEdge(
-              from: RelationEdge.yueNode, to: position, term: '月破',
-              kind: RelationKind.ke, directed: true));
+              from: RelationEdge.yueNode,
+              to: position,
+              term: '月破',
+              kind: RelationKind.ke,
+              directed: true));
         case '暗动':
         case '日破':
           add(RelationEdge(
-              from: RelationEdge.riNode, to: position, term: tag.term,
-              kind: RelationKind.ke, directed: true));
+              from: RelationEdge.riNode,
+              to: position,
+              term: tag.term,
+              kind: RelationKind.ke,
+              directed: true));
         case '日合':
           add(RelationEdge(
-              from: RelationEdge.riNode, to: position, term: '日合',
-              kind: RelationKind.he, directed: true));
+              from: RelationEdge.riNode,
+              to: position,
+              term: '日合',
+              kind: RelationKind.he,
+              directed: true));
         case '月合':
           add(RelationEdge(
-              from: RelationEdge.yueNode, to: position, term: '月合',
-              kind: RelationKind.he, directed: true));
+              from: RelationEdge.yueNode,
+              to: position,
+              term: '月合',
+              kind: RelationKind.he,
+              directed: true));
       }
     }
   });
@@ -213,8 +280,7 @@ List<RelationEdge> buildRelationEdges(
   //    线型与方向取影响最大者 ──
   report.yaoTags.forEach((position, tags) {
     final terms = tags.map((t) => t.term).toSet();
-    final present =
-        _bianLabelOrder.where(terms.contains).toList();
+    final present = _bianLabelOrder.where(terms.contains).toList();
     if (present.isEmpty) return;
     final styleTerm = _bianPrecedence.firstWhere(present.contains);
     final style = _bianEdge(position, styleTerm);
@@ -229,8 +295,10 @@ List<RelationEdge> buildRelationEdges(
 
   // 有动爻但无任何化变标签（如爻伏吟）：补中性连接线
   for (final position in movingPositions) {
-    if (edges.any((e) => e.isBianEdge &&
-        (e.from == position || e.to == position ||
+    if (edges.any((e) =>
+        e.isBianEdge &&
+        (e.from == position ||
+            e.to == position ||
             e.from == position + RelationEdge.bianNodeOffset ||
             e.to == position + RelationEdge.bianNodeOffset))) {
       continue;
@@ -251,35 +319,56 @@ RelationEdge _bianEdge(int position, String term) {
   switch (term) {
     case '回头克':
       return RelationEdge(
-          from: bian, to: position, term: term,
-          kind: RelationKind.ke, directed: true);
+          from: bian,
+          to: position,
+          term: term,
+          kind: RelationKind.ke,
+          directed: true);
     case '回头生':
       return RelationEdge(
-          from: bian, to: position, term: term,
-          kind: RelationKind.sheng, directed: true);
+          from: bian,
+          to: position,
+          term: term,
+          kind: RelationKind.sheng,
+          directed: true);
     case '化冲':
       return RelationEdge(
-          from: position, to: bian, term: term,
-          kind: RelationKind.ke, directed: false);
+          from: position,
+          to: bian,
+          term: term,
+          kind: RelationKind.ke,
+          directed: false);
     case '化合':
       return RelationEdge(
-          from: position, to: bian, term: term,
-          kind: RelationKind.he, directed: false);
+          from: position,
+          to: bian,
+          term: term,
+          kind: RelationKind.he,
+          directed: false);
     case '化墓':
     case '化绝':
     case '化退神':
     case '化泄':
     case '克出':
       return RelationEdge(
-          from: position, to: bian, term: term,
-          kind: RelationKind.ke, directed: true);
+          from: position,
+          to: bian,
+          term: term,
+          kind: RelationKind.ke,
+          directed: true);
     case '化进神':
       return RelationEdge(
-          from: position, to: bian, term: term,
-          kind: RelationKind.sheng, directed: true);
+          from: position,
+          to: bian,
+          term: term,
+          kind: RelationKind.sheng,
+          directed: true);
     default: // 化空 / 化破
       return RelationEdge(
-          from: position, to: bian, term: term,
-          kind: RelationKind.neutral, directed: true);
+          from: position,
+          to: bian,
+          term: term,
+          kind: RelationKind.neutral,
+          directed: true);
   }
 }

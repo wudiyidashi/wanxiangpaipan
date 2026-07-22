@@ -51,8 +51,7 @@ void main() {
       final tai = GuaCalculator.calculateGua([9, 7, 7, 8, 8, 8]);
       final report = LiuYaoAnalyzer.analyze(tai, null, lunar());
       final edges = buildRelationEdges(report, mainGua: tai);
-      final heEdges =
-          edges.where((e) => e.term == '子丑合化土').toList();
+      final heEdges = edges.where((e) => e.term == '子丑合化土').toList();
       expect(heEdges, hasLength(1));
       expect(heEdges.first.directed, isFalse);
       expect({heEdges.first.from, heEdges.first.to}, {1, 4});
@@ -67,12 +66,12 @@ void main() {
       expect(sanHe, hasLength(3));
     });
 
-    test('爻间六冲标注带地支：寅申冲', () {
+    test('爻间寅申只显示冲，不显示脱离三刑全局的寅申刑', () {
       final qian = GuaCalculator.calculateGua([7, 9, 7, 7, 9, 7]);
       final report = LiuYaoAnalyzer.analyze(qian, null, lunar());
       final edges = buildRelationEdges(report, mainGua: qian);
       expect(edges.any((e) => e.term == '寅申冲'), isTrue);
-      expect(edges.any((e) => e.term == '寅申刑'), isTrue);
+      expect(edges.any((e) => e.term == '寅申刑'), isFalse);
     });
   });
 
@@ -81,8 +80,8 @@ void main() {
       final tai = GuaCalculator.calculateGua([9, 7, 7, 8, 8, 8]);
       final changing = GuaCalculator.generateChangingGua(tai);
       final report = LiuYaoAnalyzer.analyze(tai, changing, lunar());
-      final edges = buildRelationEdges(report,
-          mainGua: tai, movingPositions: {1});
+      final edges =
+          buildRelationEdges(report, mainGua: tai, movingPositions: {1});
       final bian = edges.where((e) => e.isBianEdge).toList();
       expect(bian, hasLength(1));
       // 标签按检查次序排列：生克→合冲→空（甲寅旬丑空，化空亦并记）

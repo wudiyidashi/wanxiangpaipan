@@ -49,8 +49,7 @@ class CalendarGuaContext {
     if (DiZhiRelations.isLiuHe(dayBranch, yongShenBranch)) {
       return GuaDayMarkerType.he;
     }
-    if (TianGanDiZhiService.getKongWang(dayGanZhi)
-        .contains(yongShenBranch)) {
+    if (TianGanDiZhiService.getKongWang(dayGanZhi).contains(yongShenBranch)) {
       return GuaDayMarkerType.kong;
     }
     return null;
@@ -74,9 +73,8 @@ class CalendarGuaContext {
     } else if (DiZhiRelations.isLiuHe(dayBranch, yongShenBranch)) {
       parts.add('日辰$dayBranch合用神$yongShenBranch，主和合牵绊');
     }
-    if (TianGanDiZhiService.getKongWang(dayGanZhi)
-        .contains(yongShenBranch)) {
-      parts.add('用神$yongShenBranch本日旬空，待出空填实');
+    if (TianGanDiZhiService.getKongWang(dayGanZhi).contains(yongShenBranch)) {
+      parts.add('用神$yongShenBranch本日旬空，待出空或逢本支填实');
     }
     if (parts.isEmpty) {
       return '本日与用神$yongShenBranch无明显合冲空应关系。';

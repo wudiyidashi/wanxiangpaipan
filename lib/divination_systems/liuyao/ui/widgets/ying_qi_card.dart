@@ -49,7 +49,7 @@ class YingQiCard extends StatelessWidget {
           ),
           const SizedBox(height: 10),
           Text(
-            '应期为推算参考，须结合事体缓急定日月年。',
+            '应期是条件触发窗口，不代表事情必成；须结合事体缓急定日月年。',
             style: AppTextStyles.antiqueLabel.copyWith(color: AppColors.huise),
           ),
         ],

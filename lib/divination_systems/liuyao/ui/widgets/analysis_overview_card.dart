@@ -9,7 +9,7 @@ import '../../../../presentation/widgets/yao_tag_badge.dart';
 import '../../models/gua.dart';
 import 'term_glossary_dialog.dart';
 
-/// 断卦总览卡：未选用神时为引导态，选定后展示用神链、状态与结论。
+/// 断卦总览卡：未选用神时为引导态，选定后展示用神链与状态摘要。
 class AnalysisOverviewCard extends StatelessWidget {
   const AnalysisOverviewCard({
     super.key,
@@ -28,7 +28,14 @@ class AnalysisOverviewCard extends StatelessWidget {
   final void Function(int position, {bool isFuShen}) onSelectYongShen;
   final VoidCallback onClearYongShen;
 
-  static const List<String> _positionNames = ['初爻', '二爻', '三爻', '四爻', '五爻', '上爻'];
+  static const List<String> _positionNames = [
+    '初爻',
+    '二爻',
+    '三爻',
+    '四爻',
+    '五爻',
+    '上爻'
+  ];
 
   @override
   Widget build(BuildContext context) {
@@ -60,7 +67,7 @@ class AnalysisOverviewCard extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
-          '点击下方爻行或此处选定用神，即可查看原神忌神、吉凶结论与应期推算。',
+          '点击下方爻行或此处选定用神，即可查看原神忌神、用神状态与应期候选。',
           style: AppTextStyles.antiqueBody.copyWith(
             color: AppColors.huise,
             height: 1.6,
@@ -79,15 +86,16 @@ class AnalysisOverviewCard extends StatelessWidget {
     final chain = report.yongShen;
     if (chain == null) return const SizedBox.shrink();
 
-    final yongShenTags = report
-        .topTagsFor(chain.position)
+    final yongShenTags = report.yongShenTags
         .where((t) => t.term != '用神' && t.term != '用神(伏)')
         .take(3)
         .toList();
 
-    String roleDesc(int? position) {
+    String roleDesc(int? position, {bool isFuShen = false}) {
       if (position == null) return '不上卦';
-      final yao = mainGua.yaos[position - 1];
+      final yao = isFuShen
+          ? FuShenService.calculateFuShen(mainGua)[position]!.yao
+          : mainGua.yaos[position - 1];
       return '${_positionNames[position - 1]}${yao.liuQin.name}${yao.branch}';
     }
 
@@ -100,7 +108,7 @@ class AnalysisOverviewCard extends StatelessWidget {
           children: [
             AntiqueTag(
               label: '用神${chain.isFuShen ? '(伏)' : ''} '
-                  '${roleDesc(chain.position)}',
+                  '${roleDesc(chain.position, isFuShen: chain.isFuShen)}',
               color: AppColors.gutong,
             ),
             AntiqueTag(
