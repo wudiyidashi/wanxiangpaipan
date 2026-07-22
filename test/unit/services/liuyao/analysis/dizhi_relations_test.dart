@@ -23,6 +23,16 @@ void main() {
       expect(DiZhiRelations.getLiuHe('卯'), '戌');
       expect(DiZhiRelations.getLiuHe('戌'), '卯');
     });
+
+    test('六合化气', () {
+      expect(DiZhiRelations.getLiuHeHua('卯', '戌'), WuXing.huo);
+      expect(DiZhiRelations.getLiuHeHua('戌', '卯'), WuXing.huo);
+      expect(DiZhiRelations.getLiuHeHua('子', '丑'), WuXing.tu);
+      expect(DiZhiRelations.getLiuHeHua('寅', '亥'), WuXing.mu);
+      expect(DiZhiRelations.getLiuHeHua('辰', '酉'), WuXing.jin);
+      expect(DiZhiRelations.getLiuHeHua('巳', '申'), WuXing.shui);
+      expect(DiZhiRelations.getLiuHeHua('子', '午'), isNull);
+    });
   });
 
   group('DiZhiRelations 六冲', () {

@@ -99,8 +99,8 @@ class _RelationGraphViewState extends State<RelationGraphView> {
     final movingPositions = changingGua == null
         ? const <int>{}
         : mainGua.movingYaos.map((y) => y.position).toSet();
-    final allEdges =
-        buildRelationEdges(widget.report, movingPositions: movingPositions);
+    final allEdges = buildRelationEdges(widget.report,
+        mainGua: mainGua, movingPositions: movingPositions);
     // 只提供实际存在的分组作为开关
     final availableGroups =
         allEdges.map(EdgeGroup.of).toSet().toList()

@@ -1,4 +1,7 @@
 import '../../../../domain/services/liuyao/analysis/models/analysis_report.dart';
+import '../../../../domain/services/liuyao/analysis/tables/dizhi_relations.dart';
+import '../../../../domain/services/shared/tiangan_dizhi_service.dart';
+import '../../models/gua.dart';
 
 /// 连线类型（决定颜色与线型）
 enum RelationKind {
@@ -27,6 +30,8 @@ class RelationEdge {
 
   final int from;
   final int to;
+
+  /// 线上标注文案（具体到地支，如「卯戌合化火」「子午冲」「子生寅」）
   final String term;
   final RelationKind kind;
 
@@ -48,21 +53,51 @@ const List<String> _bianPrecedence = [
 
 /// 从分析报告提取关系图的边（纯函数，供弹窗绘制）。
 ///
-/// 覆盖：爻间生克扶（有向）、合冲刑害墓（无向）、日月对爻的破冲合、
-/// 动爻与变爻的化变关系（每动爻取优先级最高的一条）。
-/// 贪生忘克/贪合忘生克为效果性标签不画线（信息在爻详析中）。
+/// 线上标注具体到地支与化气：六合标「卯戌合化火」、三合标「申子辰水局」、
+/// 生克标「子生寅」等。贪生忘克/贪合忘生克为效果性标签不画线。
 /// [movingPositions] 用于给无化变标签的动爻（如爻伏吟）补中性连接线。
 List<RelationEdge> buildRelationEdges(
   AnalysisReport report, {
+  required Gua mainGua,
   Set<int> movingPositions = const {},
 }) {
   final edges = <RelationEdge>[];
   final seen = <String>{};
 
+  String branch(int position) => mainGua.yaos[position - 1].branch;
+
+  // 按地支序排列两支，保证双向标签一致以便去重
+  (String, String) ordered(String a, String b) =>
+      TianGanDiZhiService.getDiZhiIndex(a) <=
+              TianGanDiZhiService.getDiZhiIndex(b)
+          ? (a, b)
+          : (b, a);
+
   void add(RelationEdge edge) {
     final a = edge.from < edge.to ? edge.from : edge.to;
     final b = edge.from < edge.to ? edge.to : edge.from;
     if (seen.add('$a-$b-${edge.term}')) edges.add(edge);
+  }
+
+  String heLabel(String x, String y) {
+    final (a, b) = ordered(x, y);
+    final hua = DiZhiRelations.getLiuHeHua(a, b);
+    return hua == null ? '$a$b合' : '$a$b合化${hua.name}';
+  }
+
+  String pairLabel(String x, String y, String suffix) {
+    final (a, b) = ordered(x, y);
+    return '$a$b$suffix';
+  }
+
+  /// 三合局完整标注：由局内任意两支反查全局
+  String sanHeLabel(String x, String y) {
+    for (final entry in DiZhiRelations.sanHeJu.entries) {
+      if (entry.value.contains(x) && entry.value.contains(y)) {
+        return '${entry.value.join()}${entry.key.name}局';
+      }
+    }
+    return '三合局';
   }
 
   report.yaoTags.forEach((position, tags) {
@@ -73,47 +108,70 @@ List<RelationEdge> buildRelationEdges(
         // ── 爻间生克（标签挂在受动方，related 首位为施动方）──
         case '动爻生':
           add(RelationEdge(
-              from: related!, to: position, term: '生',
+              from: related!, to: position,
+              term: '${branch(related)}生${branch(position)}',
               kind: RelationKind.sheng, directed: true));
         case '动爻克':
           add(RelationEdge(
-              from: related!, to: position, term: '克',
+              from: related!, to: position,
+              term: '${branch(related)}克${branch(position)}',
               kind: RelationKind.ke, directed: true));
         case '动爻扶':
           add(RelationEdge(
-              from: related!, to: position, term: '扶',
+              from: related!, to: position,
+              term: '${branch(related)}扶${branch(position)}',
               kind: RelationKind.sheng, directed: true));
         case '入动墓':
           add(RelationEdge(
-              from: related!, to: position, term: '入墓',
+              from: related!, to: position,
+              term: '${branch(position)}入${branch(related)}墓',
               kind: RelationKind.ke, directed: true));
 
-        // ── 爻间合冲刑害（双方各挂一条，归一去重）──
+        // ── 爻间合冲刑害（双方各挂一条，标签归一去重）──
         case '合住':
         case '合起':
         case '合绊':
           add(RelationEdge(
-              from: position, to: related!, term: '六合',
+              from: position, to: related!,
+              term: heLabel(branch(position), branch(related)),
               kind: RelationKind.he, directed: false));
         case '相冲':
           add(RelationEdge(
-              from: position, to: related!, term: '六冲',
+              from: position, to: related!,
+              term: pairLabel(branch(position), branch(related), '冲'),
               kind: RelationKind.ke, directed: false));
         case '冲开':
           add(RelationEdge(
-              from: position, to: related!, term: '冲开',
+              from: position, to: related!,
+              term: pairLabel(branch(position), branch(related), '冲开'),
               kind: RelationKind.ke, directed: false));
         case '相刑':
+          add(RelationEdge(
+              from: position, to: related!,
+              term: pairLabel(branch(position), branch(related), '刑'),
+              kind: RelationKind.ke, directed: false));
         case '相害':
           add(RelationEdge(
-              from: position, to: related!, term: tag.term,
+              from: position, to: related!,
+              term: pairLabel(branch(position), branch(related), '害'),
               kind: RelationKind.ke, directed: false));
         case '三合局':
         case '三合成局':
-        case '半合':
           for (final other in tag.relatedYao) {
             add(RelationEdge(
-                from: position, to: other, term: tag.term,
+                from: position, to: other,
+                term: sanHeLabel(branch(position), branch(other)),
+                kind: RelationKind.he, directed: false));
+          }
+        case '半合':
+          for (final other in tag.relatedYao) {
+            final element = DiZhiRelations.getBanHeElement(
+                branch(position), branch(other));
+            add(RelationEdge(
+                from: position, to: other,
+                term:
+                    '${pairLabel(branch(position), branch(other), '半合')}'
+                    '${element?.name ?? ''}',
                 kind: RelationKind.he, directed: false));
           }
 

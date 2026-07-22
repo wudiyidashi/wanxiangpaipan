@@ -55,7 +55,23 @@ class DiZhiRelations {
     '酉': '戌', '戌': '酉',
   };
 
+  /// 六合化气：子丑化土、寅亥化木、卯戌化火、辰酉化金、巳申化水、午未化土
+  static const Map<String, WuXing> _liuHeHua = {
+    '子丑': WuXing.tu,
+    '寅亥': WuXing.mu,
+    '卯戌': WuXing.huo,
+    '辰酉': WuXing.jin,
+    '巳申': WuXing.shui,
+    '午未': WuXing.tu,
+  };
+
   static bool isLiuHe(String a, String b) => liuHe[a] == b;
+
+  /// 两支六合所化五行；非六合对返回 null
+  static WuXing? getLiuHeHua(String a, String b) {
+    if (!isLiuHe(a, b)) return null;
+    return _liuHeHua['$a$b'] ?? _liuHeHua['$b$a'];
+  }
 
   /// 返回与 [zhi] 相合的地支，无效输入返回 null
   static String? getLiuHe(String zhi) => liuHe[zhi];
