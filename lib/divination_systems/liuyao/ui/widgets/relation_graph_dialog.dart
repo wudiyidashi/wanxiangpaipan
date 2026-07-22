@@ -357,7 +357,9 @@ class _GraphLayout {
   static const double bottomMargin = 16;
 
   double get bianLeft => canvasWidth - 14 - bianWidth;
-  double get nodeLeft => bianLeft - 22 - nodeWidth;
+
+  /// 本卦列与变爻列间距需容纳「化进神/回头克」等标签（约 40 逻辑宽）
+  double get nodeLeft => bianLeft - 76 - nodeWidth;
   double get nodeRight => nodeLeft + nodeWidth;
   double get graphHeight => topHeight + 6 * rowHeight + bottomMargin;
 
