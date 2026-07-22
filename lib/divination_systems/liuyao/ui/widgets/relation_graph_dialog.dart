@@ -335,8 +335,12 @@ class _RelationGraphPainter extends CustomPainter {
   final List<RelationEdge> edges;
   final _GraphLayout layout;
 
+  /// 已放置标签的占位矩形（碰撞避让用）
+  final List<Rect> _placedLabels = [];
+
   @override
   void paint(Canvas canvas, Size size) {
+    _placedLabels.clear();
     final bianEdges = edges.where((e) => e.isBianEdge).toList();
     final leftEdges = edges.where((e) => !e.isBianEdge).toList()
       // 短跨度在内圈：先爻间边按跨度升序，日月边固定在外圈
@@ -356,7 +360,7 @@ class _RelationGraphPainter extends CustomPainter {
           : _leftArc(edge, lane);
       _drawPath(canvas, path, color, dashed: dashed);
       if (edge.directed) _drawArrowhead(canvas, path, color);
-      _drawLabel(canvas, path, edge.term, color, lane);
+      _drawLabelAlongPath(canvas, path, edge.term, color);
     }
 
     for (final edge in bianEdges) {
@@ -461,32 +465,65 @@ class _RelationGraphPainter extends CustomPainter {
     );
   }
 
-  /// 弧线标签：置于弧中点，按 lane 纵向错位避让
-  void _drawLabel(
-      Canvas canvas, Path path, String term, Color color, int lane) {
+  /// 弧线标签：沿线滑动寻找不与已放置标签重叠的位置。
+  /// 每条弧形状不同，沿线滑动同时产生水平与垂直分离。
+  static const List<double> _labelSlots = [
+    0.5, 0.38, 0.62, 0.28, 0.72, 0.2, 0.8,
+  ];
+
+  void _drawLabelAlongPath(
+      Canvas canvas, Path path, String term, Color color) {
     final metric = path.computeMetrics().first;
-    final middle = metric.getTangentForOffset(metric.length / 2)?.position;
-    if (middle == null) return;
-    final staggerY = ((lane % 3) - 1) * 10.0;
-    _paintText(canvas, term, color,
-        middle + Offset(0, staggerY), align: _LabelAlign.center);
+    final painter = _layoutText(term, color);
+
+    Offset? fallback;
+    for (final t in _labelSlots) {
+      final position =
+          metric.getTangentForOffset(metric.length * t)?.position;
+      if (position == null) continue;
+      fallback ??= position;
+      final rect = Rect.fromCenter(
+        center: position,
+        width: painter.width + 4,
+        height: painter.height + 2,
+      );
+      if (_placedLabels.every((placed) => !placed.overlaps(rect))) {
+        _placedLabels.add(rect);
+        painter.paint(canvas,
+            position - Offset(painter.width / 2, painter.height / 2));
+        return;
+      }
+    }
+    // 所有槽位均冲突：退回中点绘制并占位（宁重叠不丢失）
+    if (fallback != null) {
+      _placedLabels.add(Rect.fromCenter(
+          center: fallback,
+          width: painter.width + 4,
+          height: painter.height + 2));
+      painter.paint(canvas,
+          fallback - Offset(painter.width / 2, painter.height / 2));
+    }
   }
 
-  /// 变爻线标签：置于横线上方中点
+  /// 变爻线标签：置于横线上方中点（右侧空间独立，无需避让弧线）
   void _drawBianLabel(Canvas canvas, RelationEdge edge, Color color) {
     final position = (edge.from > RelationEdge.bianNodeOffset
             ? edge.from - RelationEdge.bianNodeOffset
             : edge.from)
         .clamp(1, 6);
     final midX = (layout.nodeRight + layout.bianLeft) / 2;
-    final y = layout.yaoY(position) - 8;
-    _paintText(canvas, edge.term, color, Offset(midX, y),
-        align: _LabelAlign.center);
+    final center = Offset(midX, layout.yaoY(position) - 8);
+    final painter = _layoutText(edge.term, color);
+    _placedLabels.add(Rect.fromCenter(
+        center: center,
+        width: painter.width + 4,
+        height: painter.height + 2));
+    painter.paint(
+        canvas, center - Offset(painter.width / 2, painter.height / 2));
   }
 
-  void _paintText(Canvas canvas, String text, Color color, Offset center,
-      {required _LabelAlign align}) {
-    final painter = TextPainter(
+  TextPainter _layoutText(String text, Color color) {
+    return TextPainter(
       text: TextSpan(
         text: text,
         style: TextStyle(
@@ -497,8 +534,6 @@ class _RelationGraphPainter extends CustomPainter {
       ),
       textDirection: ui.TextDirection.ltr,
     )..layout();
-    painter.paint(
-        canvas, center - Offset(painter.width / 2, painter.height / 2));
   }
 
   @override
@@ -506,4 +541,3 @@ class _RelationGraphPainter extends CustomPainter {
       oldDelegate.edges != edges;
 }
 
-enum _LabelAlign { center }
