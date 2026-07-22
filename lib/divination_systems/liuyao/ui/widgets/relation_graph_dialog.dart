@@ -54,8 +54,7 @@ enum EdgeGroup {
 
   static EdgeGroup of(RelationEdge edge) {
     if (edge.isBianEdge) return EdgeGroup.bian;
-    if (edge.from == RelationEdge.yueNode ||
-        edge.from == RelationEdge.riNode) {
+    if (edge.from == RelationEdge.yueNode || edge.from == RelationEdge.riNode) {
       return EdgeGroup.riYue;
     }
     return switch (edge.kind) {
@@ -110,9 +109,8 @@ class _RelationGraphViewState extends State<RelationGraphView> {
     final allEdges = buildRelationEdges(widget.report,
         mainGua: mainGua, movingPositions: movingPositions);
     // 只提供实际存在的分组作为开关
-    final availableGroups =
-        allEdges.map(EdgeGroup.of).toSet().toList()
-          ..sort((a, b) => a.index.compareTo(b.index));
+    final availableGroups = allEdges.map(EdgeGroup.of).toSet().toList()
+      ..sort((a, b) => a.index.compareTo(b.index));
     final edges = allEdges
         .where((e) => _visibleGroups.contains(EdgeGroup.of(e)))
         .toList();
@@ -120,8 +118,7 @@ class _RelationGraphViewState extends State<RelationGraphView> {
     final width = math.min(screenSize.width - 20, 430).toDouble();
     const layout = _GraphLayout();
     // 视口高度：小图完整展示，大图内部可拖动
-    final viewerHeight =
-        math.min(layout.graphHeight, screenSize.height - 300);
+    final viewerHeight = math.min(layout.graphHeight, screenSize.height - 300);
 
     return SizedBox(
       width: width,
@@ -140,8 +137,8 @@ class _RelationGraphViewState extends State<RelationGraphView> {
                   ),
                 ),
                 IconButton(
-                  icon: const Icon(Icons.close,
-                      size: 20, color: AppColors.huise),
+                  icon:
+                      const Icon(Icons.close, size: 20, color: AppColors.huise),
                   onPressed: () => Navigator.of(context).pop(),
                 ),
               ],
@@ -195,10 +192,8 @@ class _RelationGraphViewState extends State<RelationGraphView> {
                                   edges: edges, layout: layout),
                             ),
                           ),
-                          _topChip('月建 ${lunarInfo.yueJian}',
-                              layout.yueCenter),
-                          _topChip('日辰 ${lunarInfo.riZhi}',
-                              layout.riCenter),
+                          _topChip('月建 ${lunarInfo.yueJian}', layout.yueCenter),
+                          _topChip('日辰 ${lunarInfo.riZhi}', layout.riCenter),
                           for (var position = 1; position <= 6; position++)
                             _buildYaoNode(layout, position),
                           if (changingGua != null)
@@ -243,9 +238,8 @@ class _RelationGraphViewState extends State<RelationGraphView> {
         decoration: BoxDecoration(
           color: selected ? group.color.withOpacity(0.14) : Colors.transparent,
           border: Border.all(
-            color: selected
-                ? group.color
-                : AppColors.huiseLight.withOpacity(0.6),
+            color:
+                selected ? group.color : AppColors.huiseLight.withOpacity(0.6),
           ),
           borderRadius: BorderRadius.circular(12),
         ),
@@ -342,7 +336,6 @@ class _RelationGraphViewState extends State<RelationGraphView> {
       ),
     );
   }
-
 }
 
 /// 固定坐标布局：本卦列偏右，左侧留弧线区，最右为变爻列
@@ -397,9 +390,8 @@ class _RelationGraphPainter extends CustomPainter {
       final edge = leftEdges[lane];
       final color = _colorOf(edge.kind);
       final dashed = edge.kind == RelationKind.ke;
-      final path = edge.from > 6
-          ? _dayMonthPath(edge, lane)
-          : _leftArc(edge, lane);
+      final path =
+          edge.from > 6 ? _dayMonthPath(edge, lane) : _leftArc(edge, lane);
       _drawPath(canvas, path, color, dashed: dashed);
       if (edge.directed) _drawArrowhead(canvas, path, color);
       _drawLabelAlongPath(canvas, path, edge.term, color);
@@ -408,8 +400,7 @@ class _RelationGraphPainter extends CustomPainter {
     for (final edge in bianEdges) {
       final color = _colorOf(edge.kind);
       final path = _bianPath(edge);
-      _drawPath(canvas, path, color,
-          dashed: edge.kind == RelationKind.ke);
+      _drawPath(canvas, path, color, dashed: edge.kind == RelationKind.ke);
       if (edge.directed) _drawArrowhead(canvas, path, color);
       _drawBianLabel(canvas, edge, color);
     }
@@ -438,9 +429,8 @@ class _RelationGraphPainter extends CustomPainter {
 
   /// 日月节点 → 爻节点（同样走左侧，外圈）
   Path _dayMonthPath(RelationEdge edge, int lane) {
-    final start = edge.from == RelationEdge.yueNode
-        ? layout.yueCenter
-        : layout.riCenter;
+    final start =
+        edge.from == RelationEdge.yueNode ? layout.yueCenter : layout.riCenter;
     final targetY = layout.yaoY(edge.to);
     final controlX = layout.nodeLeft - 44 - lane * 30;
     return Path()
@@ -510,18 +500,22 @@ class _RelationGraphPainter extends CustomPainter {
   /// 弧线标签：沿线滑动寻找不与已放置标签重叠的位置。
   /// 每条弧形状不同，沿线滑动同时产生水平与垂直分离。
   static const List<double> _labelSlots = [
-    0.5, 0.38, 0.62, 0.28, 0.72, 0.2, 0.8,
+    0.5,
+    0.38,
+    0.62,
+    0.28,
+    0.72,
+    0.2,
+    0.8,
   ];
 
-  void _drawLabelAlongPath(
-      Canvas canvas, Path path, String term, Color color) {
+  void _drawLabelAlongPath(Canvas canvas, Path path, String term, Color color) {
     final metric = path.computeMetrics().first;
     final painter = _layoutText(term, color);
 
     Offset? fallback;
     for (final t in _labelSlots) {
-      final position =
-          metric.getTangentForOffset(metric.length * t)?.position;
+      final position = metric.getTangentForOffset(metric.length * t)?.position;
       if (position == null) continue;
       fallback ??= position;
       final rect = Rect.fromCenter(
@@ -531,8 +525,8 @@ class _RelationGraphPainter extends CustomPainter {
       );
       if (_placedLabels.every((placed) => !placed.overlaps(rect))) {
         _placedLabels.add(rect);
-        painter.paint(canvas,
-            position - Offset(painter.width / 2, painter.height / 2));
+        painter.paint(
+            canvas, position - Offset(painter.width / 2, painter.height / 2));
         return;
       }
     }
@@ -542,8 +536,8 @@ class _RelationGraphPainter extends CustomPainter {
           center: fallback,
           width: painter.width + 4,
           height: painter.height + 2));
-      painter.paint(canvas,
-          fallback - Offset(painter.width / 2, painter.height / 2));
+      painter.paint(
+          canvas, fallback - Offset(painter.width / 2, painter.height / 2));
     }
   }
 
@@ -594,4 +588,3 @@ class _RelationGraphPainter extends CustomPainter {
   bool shouldRepaint(_RelationGraphPainter oldDelegate) =>
       oldDelegate.edges != edges;
 }
-
