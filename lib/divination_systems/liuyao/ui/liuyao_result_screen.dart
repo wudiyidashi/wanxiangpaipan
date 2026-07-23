@@ -10,12 +10,10 @@ import '../../../presentation/divination/divination_result_page.dart';
 import '../../../presentation/screens/calendar/calendar_gua_context.dart';
 import '../../../presentation/widgets/antique/antique.dart';
 import '../../../presentation/widgets/diagram_comparison_row.dart';
-import '../../../presentation/widgets/extended_info_section.dart';
-import '../../../presentation/widgets/special_relation_section.dart';
 import '../liuyao_result.dart';
-import '../models/gua.dart';
 import '../viewmodels/liuyao_analysis_controller.dart';
 import 'widgets/analysis_overview_card.dart';
+import 'widgets/liuyao_share_dialog.dart';
 import 'widgets/relation_graph_dialog.dart';
 import 'widgets/yao_detail_sheet.dart';
 import 'widgets/ying_qi_card.dart';
@@ -55,13 +53,42 @@ class _LiuYaoResultView extends StatelessWidget {
       fallbackQuestion: result.questionId.isNotEmpty ? result.questionId : null,
       padding: const EdgeInsets.all(12),
       buildSections: (context, question) => [
-        ExtendedInfoSection(
-          castTime: result.castTime,
-          lunarInfo: result.lunarInfo,
-          liuShen: result.liuShen,
-          shenShaInfo: null,
-        ),
         _buildPanParamsSection(result, question),
+        DiagramComparisonRow(
+          mainGua: result.mainGua,
+          changingGua: result.changingGua,
+          liuShen: result.liuShen,
+          yaoTags: report.yaoTags,
+          yongShenPosition: controller.yongShenPosition,
+          onYaoTap: (position) => _showYaoDetail(context, controller, position),
+        ),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            TextButton.icon(
+              icon: const Icon(Icons.ios_share_outlined, size: 16),
+              label: const Text('分享排盘'),
+              onPressed: () => showLiuYaoShareDialog(
+                context,
+                result: result,
+                report: report,
+                question: question.isNotEmpty ? question : null,
+              ),
+            ),
+            TextButton.icon(
+              icon: const Icon(Icons.account_tree_outlined, size: 16),
+              label: const Text('生克关系图'),
+              onPressed: () => showRelationGraphDialog(
+                context,
+                mainGua: result.mainGua,
+                changingGua: result.changingGua,
+                lunarInfo: result.lunarInfo,
+                report: report,
+                yongShenPosition: controller.yongShenPosition,
+              ),
+            ),
+          ],
+        ),
         Padding(
           padding: const EdgeInsets.only(bottom: 4),
           child: AnalysisOverviewCard(
@@ -73,33 +100,6 @@ class _LiuYaoResultView extends StatelessWidget {
                 controller.selectYongShen(position, isFuShen: isFuShen),
             onClearYongShen: controller.clearYongShen,
           ),
-        ),
-        Align(
-          alignment: Alignment.centerRight,
-          child: TextButton.icon(
-            icon: const Icon(Icons.account_tree_outlined, size: 16),
-            label: const Text('生克关系图'),
-            onPressed: () => showRelationGraphDialog(
-              context,
-              mainGua: result.mainGua,
-              changingGua: result.changingGua,
-              lunarInfo: result.lunarInfo,
-              report: report,
-              yongShenPosition: controller.yongShenPosition,
-            ),
-          ),
-        ),
-        DiagramComparisonRow(
-          mainGua: result.mainGua,
-          changingGua: result.changingGua,
-          liuShen: result.liuShen,
-          yaoTags: report.yaoTags,
-          yongShenPosition: controller.yongShenPosition,
-          onYaoTap: (position) => _showYaoDetail(context, controller, position),
-        ),
-        SpecialRelationSection(
-          relationType: _getSpecialRelationType(result.mainGua),
-          description: _getSpecialRelationDescription(result.mainGua),
         ),
         if (report.yingQi != null)
           Padding(
@@ -173,12 +173,21 @@ class _LiuYaoResultView extends StatelessWidget {
             const AntiqueDivider(),
             const SizedBox(height: 8),
             _buildInfoRow('占问', question.isEmpty ? '未设置' : question),
+            _buildInfoRow('时间', _buildCastTimeText(result)),
             _buildInfoRow('干支', _buildGanZhiText(result)),
             _buildInfoRow('月日建', _buildMonthDayBuildText(result)),
           ],
         ),
       ),
     );
+  }
+
+  String _buildCastTimeText(LiuYaoResult result) {
+    final t = result.castTime;
+    return '${t.year}-${t.month.toString().padLeft(2, '0')}-'
+        '${t.day.toString().padLeft(2, '0')} '
+        '${t.hour.toString().padLeft(2, '0')}:'
+        '${t.minute.toString().padLeft(2, '0')}';
   }
 
   String _buildGanZhiText(LiuYaoResult result) {
@@ -218,22 +227,5 @@ class _LiuYaoResultView extends StatelessWidget {
         ],
       ),
     );
-  }
-
-  String? _getSpecialRelationType(Gua gua) {
-    if (gua.specialType == GuaSpecialType.none) {
-      return null;
-    }
-    return gua.specialType.name;
-  }
-
-  String? _getSpecialRelationDescription(Gua gua) {
-    return switch (gua.specialType) {
-      GuaSpecialType.youHun => '游魂卦，主动荡不安，事多变化。',
-      GuaSpecialType.guiHun => '归魂卦，主稳定，事归本源。',
-      GuaSpecialType.liuChong => '六冲卦，主冲突激烈，事难成。',
-      GuaSpecialType.liuHe => '六合卦，主和谐顺利，事易成。',
-      GuaSpecialType.none => null,
-    };
   }
 }
