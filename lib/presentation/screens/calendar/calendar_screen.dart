@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:lunar/lunar.dart';
 import 'package:provider/provider.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_text_styles.dart';
@@ -106,6 +107,8 @@ class _CalendarBody extends StatelessWidget {
             controller: scrollController,
             child: Column(
               children: [
+                if (guaContext != null)
+                  _MonthYingQiBar(guaContext: guaContext!),
                 MonthGridView(guaContext: guaContext),
                 const AntiqueDivider(),
                 DayDetailView(guaContext: guaContext),
@@ -114,6 +117,44 @@ class _CalendarBody extends StatelessWidget {
           ),
         ),
       ],
+    );
+  }
+}
+
+/// 月应期提示条：当前显示月份的月建命中月尺度应期时提示整月
+class _MonthYingQiBar extends StatelessWidget {
+  const _MonthYingQiBar({required this.guaContext});
+  final CalendarGuaContext guaContext;
+
+  @override
+  Widget build(BuildContext context) {
+    final vm = context.watch<CalendarViewModel>();
+    final m = vm.displayedMonth;
+    // 以当月 15 日的节气月支代表本月月建（节气换月与公历错位约半月，
+    // 月中取值最稳定）
+    final monthGanZhi = Solar.fromYmd(m.year, m.month, 15)
+        .getLunar()
+        .getMonthInGanZhi();
+    final monthZhi = monthGanZhi.substring(monthGanZhi.length - 1);
+    final reason = guaContext.monthYingQiReason(monthZhi);
+    if (reason == null) return const SizedBox.shrink();
+
+    return Container(
+      width: double.infinity,
+      margin: const EdgeInsets.fromLTRB(12, 4, 12, 2),
+      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+      decoration: BoxDecoration(
+        color: AppColors.gutong.withOpacity(0.1),
+        border: Border.all(color: AppColors.gutong.withOpacity(0.45)),
+        borderRadius: BorderRadius.circular(6),
+      ),
+      child: Text(
+        '本月（$monthZhi月）值应期：$reason',
+        style: AppTextStyles.antiqueLabel.copyWith(
+          color: AppColors.gutong,
+          fontWeight: FontWeight.w600,
+        ),
+      ),
     );
   }
 }

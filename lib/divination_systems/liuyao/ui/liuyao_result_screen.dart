@@ -140,6 +140,11 @@ class _LiuYaoResultView extends StatelessWidget {
             if (candidate.scale == YingQiScale.ri)
               candidate.branch: candidate.reason,
         },
+        yingQiMonthByBranch: {
+          for (final candidate in report.yingQi ?? <YingQiCandidate>[])
+            if (candidate.scale == YingQiScale.yue)
+              candidate.branch: candidate.reason,
+        },
       ),
     );
   }

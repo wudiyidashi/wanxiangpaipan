@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:wanxiang_paipan/presentation/screens/calendar/calendar_screen.dart';
 import 'package:wanxiang_paipan/domain/services/shared/almanac_service.dart';
+import 'package:wanxiang_paipan/presentation/screens/calendar/calendar_gua_context.dart';
 
 void main() {
   Future<void> pump(WidgetTester t, {bool chromeless = true}) async {
@@ -82,5 +83,45 @@ void main() {
     await t.pumpAndSettle();
     final after = t.widget<Text>(find.byKey(const Key('pillar-hour-gz')));
     expect(before.data, isNot(equals(after.data)));
+  });
+
+  testWidgets('应期模式：月建命中月尺度应期时显示整月提示条', (t) async {
+    const ctx = CalendarGuaContext(
+      title: '兑为泽 · 用神妻财卯木',
+      yongShenBranch: '卯',
+      yingQiByBranch: {'卯': '值日填实月破'},
+      yingQiMonthByBranch: {'戌': '出月解除月破'},
+    );
+    await t.pumpWidget(MaterialApp(
+      home: Scaffold(
+        body: CalendarScreen(
+          chromeless: true,
+          guaContext: ctx,
+          now: () => DateTime(2026, 10, 20, 10), // 2026-10 为戌月
+        ),
+      ),
+    ));
+    await t.pump();
+    expect(find.textContaining('值应期：出月解除月破'), findsOneWidget);
+  });
+
+  testWidgets('应期模式：月建未命中时不显示月提示条', (t) async {
+    const ctx = CalendarGuaContext(
+      title: '兑为泽 · 用神妻财卯木',
+      yongShenBranch: '卯',
+      yingQiByBranch: {},
+      yingQiMonthByBranch: {'戌': '出月解除月破'},
+    );
+    await t.pumpWidget(MaterialApp(
+      home: Scaffold(
+        body: CalendarScreen(
+          chromeless: true,
+          guaContext: ctx,
+          now: () => DateTime(2026, 7, 20, 10), // 未月，不命中
+        ),
+      ),
+    ));
+    await t.pump();
+    expect(find.textContaining('值应期'), findsNothing);
   });
 }

@@ -25,6 +25,7 @@ class CalendarGuaContext {
     required this.title,
     required this.yongShenBranch,
     required this.yingQiByBranch,
+    this.yingQiMonthByBranch = const {},
   });
 
   /// 顶部横幅标题，如「乾为天 · 用神妻财寅木」
@@ -33,8 +34,15 @@ class CalendarGuaContext {
   /// 用神地支
   final String yongShenBranch;
 
-  /// 应期候选：地支 → 理由（仅日尺度参与格子标记）
+  /// 日尺度应期候选：地支 → 理由（参与格子「应」标记与日详情）
   final Map<String, String> yingQiByBranch;
+
+  /// 月尺度应期候选：地支 → 理由（月建命中时在月视图顶部提示整月）
+  final Map<String, String> yingQiMonthByBranch;
+
+  /// 某月是否值应期；[monthZhi] 为该月月建地支，命中返回理由
+  String? monthYingQiReason(String monthZhi) =>
+      yingQiMonthByBranch[monthZhi];
 
   /// 某日相对用神的角标；[dayGanZhi] 为该日干支（如「甲子」）
   GuaDayMarkerType? markerFor(String dayGanZhi) {
