@@ -189,23 +189,26 @@ class LiuYaoTableWidget extends StatelessWidget {
                 liuShen.length > yaoIndex ? liuShen[yaoIndex] : '';
             final isLastRow = i == 5;
 
+            // 分隔线与用神高亮包住整组（主行+徽标+伏神），
+            // 避免徽标看似归属下一爻
             return _wrapYaoRow(
               mainYao.position,
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Container(
-                    decoration: BoxDecoration(
-                      color: mainYao.position == yongShenPosition
-                          ? AppColors.danjin.withOpacity(0.15)
-                          : null,
-                      border: isLastRow
-                          ? null
-                          : Border(
-                              bottom: BorderSide(color: Colors.grey.shade200),
-                            ),
-                    ),
-                    child: Row(
+              Container(
+                padding: const EdgeInsets.only(bottom: 4),
+                decoration: BoxDecoration(
+                  color: mainYao.position == yongShenPosition
+                      ? AppColors.danjin.withOpacity(0.15)
+                      : null,
+                  border: isLastRow
+                      ? null
+                      : Border(
+                          bottom: BorderSide(color: Colors.grey.shade200),
+                        ),
+                ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Row(
                       children: [
                         ..._buildSegmentRowCells(
                           yao: mainYao,
@@ -220,22 +223,23 @@ class LiuYaoTableWidget extends StatelessWidget {
                         ),
                       ],
                     ),
-                  ),
-                  _buildTagNote(
-                    mainYao.position,
-                    mainSegmentFlex: showWorldResponse ? 7 : 3,
-                    includeMovingColumn: true,
-                    includeSecondarySegment: true,
-                    secondarySegmentFlex: secondaryShowWorldResponse ? 7 : 3,
-                  ),
-                  _buildFuShenNote(
-                    fuShenByPosition[mainYao.position]?.displayText,
-                    showWorldResponse: showWorldResponse,
-                    includeMovingColumn: true,
-                    includeSecondarySegment: true,
-                    secondaryShowWorldResponse: secondaryShowWorldResponse,
-                  ),
-                ],
+                    _buildTagNote(
+                      mainYao.position,
+                      mainSegmentFlex: showWorldResponse ? 7 : 3,
+                      includeMovingColumn: true,
+                      includeSecondarySegment: true,
+                      secondarySegmentFlex:
+                          secondaryShowWorldResponse ? 7 : 3,
+                    ),
+                    _buildFuShenNote(
+                      fuShenByPosition[mainYao.position]?.displayText,
+                      showWorldResponse: showWorldResponse,
+                      includeMovingColumn: true,
+                      includeSecondarySegment: true,
+                      secondaryShowWorldResponse: secondaryShowWorldResponse,
+                    ),
+                  ],
+                ),
               ),
             );
           }),
