@@ -37,20 +37,24 @@ class MonthGridView extends StatelessWidget {
           ),
         ),
         for (int row = 0; row < 6; row++)
-          SizedBox(
-            height: 48,
-            child: Row(
-              children: [
-                for (int col = 0; col < 7; col++)
-                  Expanded(
-                    child: _Cell(
-                      date: days[row * 7 + col],
-                      inMonth:
-                          days[row * 7 + col].month == vm.displayedMonth.month,
-                      guaContext: guaContext,
+          Padding(
+            // 与星期表头同宽，保证七列纵向对齐
+            padding: const EdgeInsets.symmetric(horizontal: 12),
+            child: SizedBox(
+              height: 48,
+              child: Row(
+                children: [
+                  for (int col = 0; col < 7; col++)
+                    Expanded(
+                      child: _Cell(
+                        date: days[row * 7 + col],
+                        inMonth: days[row * 7 + col].month ==
+                            vm.displayedMonth.month,
+                        guaContext: guaContext,
+                      ),
                     ),
-                  ),
-              ],
+                ],
+              ),
             ),
           ),
       ],
@@ -121,6 +125,7 @@ class _Cell extends StatelessWidget {
                   style: AppTextStyles.antiqueLabel.copyWith(
                     color: inMonth ? AppColors.huise : AppColors.huiseLight,
                     fontSize: 9,
+                    letterSpacing: 0,
                   ),
                   overflow: TextOverflow.ellipsis,
                 ),
