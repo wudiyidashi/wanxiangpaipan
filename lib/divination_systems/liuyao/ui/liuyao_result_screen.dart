@@ -6,6 +6,7 @@ import '../../../core/theme/app_text_styles.dart';
 import '../../../domain/repositories/divination_repository.dart';
 import '../../../domain/services/fushen_service.dart';
 import '../../../domain/services/liuyao/analysis/models/analysis_report.dart';
+import '../../../domain/services/shared/tiangan_dizhi_service.dart';
 import '../../../presentation/divination/divination_result_page.dart';
 import '../../../presentation/screens/calendar/calendar_gua_context.dart';
 import '../../../presentation/widgets/antique/antique.dart';
@@ -53,7 +54,7 @@ class _LiuYaoResultView extends StatelessWidget {
       fallbackQuestion: result.questionId.isNotEmpty ? result.questionId : null,
       padding: const EdgeInsets.all(12),
       buildSections: (context, question) => [
-        _buildPanParamsSection(result, question),
+        _buildPanParamsSection(context, controller, result, question),
         DiagramComparisonRow(
           mainGua: result.mainGua,
           changingGua: result.changingGua,
@@ -162,7 +163,12 @@ class _LiuYaoResultView extends StatelessWidget {
     );
   }
 
-  Widget _buildPanParamsSection(LiuYaoResult result, String question) {
+  Widget _buildPanParamsSection(
+    BuildContext context,
+    LiuYaoAnalysisController controller,
+    LiuYaoResult result,
+    String question,
+  ) {
     return Padding(
       padding: const EdgeInsets.only(bottom: 12),
       child: AntiqueCard(
@@ -172,9 +178,16 @@ class _LiuYaoResultView extends StatelessWidget {
             const AntiqueSectionTitle(title: '排盘参数'),
             const AntiqueDivider(),
             const SizedBox(height: 8),
-            _buildInfoRow('占问', question.isEmpty ? '未设置' : question),
-            _buildInfoRow('时间', _buildCastTimeText(result)),
-            _buildInfoRow('干支', _buildGanZhiText(result)),
+            _buildInfoRow(
+              '占问',
+              question.isEmpty ? '未设置' : question,
+              onSetup: () => _showQuestionEditor(context, controller, question),
+            ),
+            _buildInfoRow(
+              '干支',
+              _buildGanZhiText(result),
+              onSetup: () => _showLunarEditor(context, controller, result),
+            ),
             _buildInfoRow('月日建', _buildMonthDayBuildText(result)),
           ],
         ),
@@ -182,12 +195,102 @@ class _LiuYaoResultView extends StatelessWidget {
     );
   }
 
-  String _buildCastTimeText(LiuYaoResult result) {
-    final t = result.castTime;
-    return '${t.year}-${t.month.toString().padLeft(2, '0')}-'
-        '${t.day.toString().padLeft(2, '0')} '
-        '${t.hour.toString().padLeft(2, '0')}:'
-        '${t.minute.toString().padLeft(2, '0')}';
+  /// 占问编辑弹窗
+  void _showQuestionEditor(
+    BuildContext context,
+    LiuYaoAnalysisController controller,
+    String current,
+  ) {
+    final textController = TextEditingController(text: current);
+    showDialog<void>(
+      context: context,
+      builder: (dialogContext) => AntiqueDialog(
+        title: '设置占问',
+        content: AntiqueTextField(
+          controller: textController,
+          hint: '请输入占问事项…',
+          maxLines: 2,
+          minLines: 1,
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(dialogContext).pop(),
+            child: const Text('取消'),
+          ),
+          TextButton(
+            onPressed: () {
+              Navigator.of(dialogContext).pop();
+              controller.updateQuestion(textController.text.trim());
+            },
+            child: const Text('保存'),
+          ),
+        ],
+      ),
+    );
+  }
+
+  /// 月建/日干支编辑弹窗（改后空亡与六神自动重推）
+  void _showLunarEditor(
+    BuildContext context,
+    LiuYaoAnalysisController controller,
+    LiuYaoResult result,
+  ) {
+    var yueJian = result.lunarInfo.yueJian;
+    var riGanZhi = result.lunarInfo.riGanZhi;
+    showDialog<void>(
+      context: context,
+      builder: (dialogContext) => AntiqueDialog(
+        title: '设置月建与日辰',
+        content: StatefulBuilder(
+          builder: (context, setState) => Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const Text('月建', style: AppTextStyles.antiqueLabel),
+              const SizedBox(height: 4),
+              AntiqueDropdown<String>(
+                value: yueJian,
+                items: [
+                  for (final zhi in TianGanDiZhiService.diZhi)
+                    AntiqueDropdownItem(value: zhi, label: '$zhi月'),
+                ],
+                onChanged: (v) => setState(() => yueJian = v ?? yueJian),
+              ),
+              const SizedBox(height: 12),
+              const Text('日辰（干支）', style: AppTextStyles.antiqueLabel),
+              const SizedBox(height: 4),
+              AntiqueDropdown<String>(
+                value: riGanZhi,
+                items: [
+                  for (final ganZhi in TianGanDiZhiService.liuShiJiaZi)
+                    AntiqueDropdownItem(value: ganZhi, label: '$ganZhi日'),
+                ],
+                onChanged: (v) => setState(() => riGanZhi = v ?? riGanZhi),
+              ),
+              const SizedBox(height: 8),
+              Text(
+                '修改后空亡、六神与全部断卦分析将自动重算',
+                style: AppTextStyles.antiqueLabel
+                    .copyWith(color: AppColors.huise),
+              ),
+            ],
+          ),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(dialogContext).pop(),
+            child: const Text('取消'),
+          ),
+          TextButton(
+            onPressed: () {
+              Navigator.of(dialogContext).pop();
+              controller.updateLunar(yueJian: yueJian, riGanZhi: riGanZhi);
+            },
+            child: const Text('保存'),
+          ),
+        ],
+      ),
+    );
   }
 
   String _buildGanZhiText(LiuYaoResult result) {
@@ -203,7 +306,7 @@ class _LiuYaoResultView extends StatelessWidget {
     return '月建${result.lunarInfo.yueJian}　日建${result.lunarInfo.riZhi}　空亡$kongWang';
   }
 
-  Widget _buildInfoRow(String label, String value) {
+  Widget _buildInfoRow(String label, String value, {VoidCallback? onSetup}) {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 4),
       child: Row(
@@ -224,6 +327,23 @@ class _LiuYaoResultView extends StatelessWidget {
               style: AppTextStyles.antiqueBody,
             ),
           ),
+          if (onSetup != null)
+            SizedBox(
+              height: 24,
+              child: TextButton(
+                onPressed: onSetup,
+                style: TextButton.styleFrom(
+                  padding: const EdgeInsets.symmetric(horizontal: 8),
+                  minimumSize: Size.zero,
+                  tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                ),
+                child: Text(
+                  '设置',
+                  style: AppTextStyles.antiqueLabel
+                      .copyWith(color: AppColors.zhusha),
+                ),
+              ),
+            ),
         ],
       ),
     );

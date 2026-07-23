@@ -505,11 +505,11 @@ class LiuYaoTableWidget extends StatelessWidget {
   }) {
     return Row(
       children: [
-        if (showWorldResponse) const Spacer(flex: 2),
+        // 伏神注记从行首起排、占满主段（六神列起点），避免窄容器换行
         Expanded(
-          flex: 3,
+          flex: showWorldResponse ? 7 : 3,
           child: Padding(
-            padding: const EdgeInsets.only(left: 4, bottom: 4),
+            padding: const EdgeInsets.only(left: 8, bottom: 4),
             child: Text(
               '伏神：$fuShenText',
               // 伏神注记（领域色：朱砂系，保留内联）
@@ -521,7 +521,6 @@ class LiuYaoTableWidget extends StatelessWidget {
             ),
           ),
         ),
-        if (showWorldResponse) const Spacer(flex: 2),
         if (includeMovingColumn) const SizedBox(width: 48),
         if (includeSecondarySegment) ...[
           if (secondaryShowWorldResponse) const Spacer(flex: 2),

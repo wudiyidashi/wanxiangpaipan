@@ -105,7 +105,6 @@ class _LiuYaoShareDialogState extends State<_LiuYaoShareDialog> {
   Widget build(BuildContext context) {
     final result = widget.result;
     final lunar = result.lunarInfo;
-    final t = result.castTime;
 
     return Dialog(
       backgroundColor: AppColors.xiangse,
@@ -153,19 +152,8 @@ class _LiuYaoShareDialogState extends State<_LiuYaoShareDialog> {
                               style: AppTextStyles.antiqueBody),
                         ),
                       Text(
-                        '时间：${t.year}-${t.month.toString().padLeft(2, '0')}-'
-                        '${t.day.toString().padLeft(2, '0')} '
-                        '${t.hour.toString().padLeft(2, '0')}:'
-                        '${t.minute.toString().padLeft(2, '0')}　'
                         '${lunar.yearGanZhi}年 ${lunar.monthGanZhi}月 '
-                        '${lunar.riGanZhi}日',
-                        style: AppTextStyles.antiqueLabel
-                            .copyWith(color: AppColors.guhe),
-                      ),
-                      const SizedBox(height: 2),
-                      Text(
-                        '月建${lunar.yueJian}　日建${lunar.riZhi}　'
-                        '空亡${lunar.kongWang.join()}',
+                        '${lunar.riGanZhi}日（空 ${lunar.kongWang.join('')}）',
                         style: AppTextStyles.antiqueLabel
                             .copyWith(color: AppColors.guhe),
                       ),

@@ -1,6 +1,8 @@
 import 'package:flutter/foundation.dart';
 
 import '../../../domain/repositories/divination_repository.dart';
+import '../../../domain/services/liushen_service.dart';
+import '../../../domain/services/shared/tiangan_dizhi_service.dart';
 import '../../../domain/services/liuyao/analysis/liuyao_analyzer.dart';
 import '../../../domain/services/liuyao/analysis/models/analysis_report.dart';
 import '../liuyao_result.dart';
@@ -38,6 +40,41 @@ class LiuYaoAnalysisController extends ChangeNotifier {
     _result = _result.copyWith(
       yongShenPosition: position,
       yongShenIsFuShen: isFuShen,
+    );
+    _recompute();
+    notifyListeners();
+    await _persist();
+  }
+
+  /// 修改占问（写入加密存储并通知界面重载）
+  Future<void> updateQuestion(String question) async {
+    try {
+      await _repository?.saveEncryptedFieldsBatch(
+          {'question_${_result.id}': question});
+    } catch (e) {
+      debugPrint('占问保存失败: $e');
+    }
+    notifyListeners();
+  }
+
+  /// 修改月建与日干支（空亡随日干支重推、六神随日干重排），
+  /// 全部分析即时重算并持久化
+  Future<void> updateLunar({
+    required String yueJian,
+    required String riGanZhi,
+  }) async {
+    final split = TianGanDiZhiService.splitGanZhi(riGanZhi);
+    if (split == null || !TianGanDiZhiService.isValidDiZhi(yueJian)) return;
+    _result = _result.copyWith(
+      lunarInfo: _result.lunarInfo.copyWith(
+        yueJian: yueJian,
+        monthGanZhi: yueJian,
+        riGan: split[0],
+        riZhi: split[1],
+        riGanZhi: riGanZhi,
+        kongWang: TianGanDiZhiService.getKongWang(riGanZhi),
+      ),
+      liuShen: LiuShenService.calculateLiuShen(split[0]),
     );
     _recompute();
     notifyListeners();
