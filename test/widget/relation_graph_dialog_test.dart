@@ -98,8 +98,8 @@ void main() {
     expect(find.text('化变'), findsOneWidget);
   });
 
-  testWidgets('无跨爻关系时显示空态文案', (tester) async {
-    // 丰卦全静（卯丑亥午申戌），丑月乙丑日：丑之冲（未）合（子）皆不在卦中
+  testWidgets('日月生克分组存在且可切换（默认隐藏不崩溃）', (tester) async {
+    // 丰卦全静（卯丑亥午申戌），丑月乙丑日：无爻间边，但日月生克边始终存在
     final feng = GuaCalculator.calculateGua([7, 8, 7, 7, 8, 8]);
     final lunar = _lunar(yueJian: '丑', riGanZhi: '乙丑');
     final report = LiuYaoAnalyzer.analyze(feng, null, lunar);
@@ -114,7 +114,32 @@ void main() {
       ),
     ));
 
-    expect(find.text('本卦当前无跨爻生克合冲关系'), findsOneWidget);
-    expect(find.text('生扶'), findsNothing);
+    expect(find.text('日月生克'), findsOneWidget);
+    // 切换开启再关闭均不崩溃
+    await tester.tap(find.text('日月生克'));
+    await tester.pump();
+    await tester.tap(find.text('日月生克'));
+    await tester.pump();
+    expect(find.textContaining('初爻'), findsOneWidget);
+  });
+
+  testWidgets('爻节点显示旺相休囚死状态徽标', (tester) async {
+    // 午月乾卦：四爻午火旺、初爻子水囚
+    final qian = GuaCalculator.calculateGua([7, 7, 7, 7, 7, 7]);
+    final lunar = _lunar(yueJian: '午', riGanZhi: '甲寅');
+    final report = LiuYaoAnalyzer.analyze(qian, null, lunar);
+
+    await tester.pumpWidget(MaterialApp(
+      home: Scaffold(
+        body: RelationGraphView(
+          mainGua: qian,
+          lunarInfo: lunar,
+          report: report,
+        ),
+      ),
+    ));
+
+    expect(find.text('旺'), findsWidgets);
+    expect(find.text('囚'), findsWidgets);
   });
 }

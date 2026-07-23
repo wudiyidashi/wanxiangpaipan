@@ -46,16 +46,24 @@ enum EdgeGroup {
   keChong('克冲刑害', AppColors.zhusha),
   he('合', AppColors.danjinDeep),
   bian('化变', AppColors.huise),
-  riYue('日月', AppColors.dailan);
+  riYue('日月冲合', AppColors.dailan),
+  riYueShengKe('日月生克', AppColors.dailanLight);
 
   const EdgeGroup(this.label, this.color);
   final String label;
   final Color color;
 
+  /// 日月对爻的关键事件（破/冲起/合绊），与常规生克扶临分组区分
+  static const Set<String> _riYueCriticalTerms = {
+    '月破', '暗动', '日破', '日合', '月合',
+  };
+
   static EdgeGroup of(RelationEdge edge) {
     if (edge.isBianEdge) return EdgeGroup.bian;
     if (edge.from == RelationEdge.yueNode || edge.from == RelationEdge.riNode) {
-      return EdgeGroup.riYue;
+      return _riYueCriticalTerms.contains(edge.term)
+          ? EdgeGroup.riYue
+          : EdgeGroup.riYueShengKe;
     }
     return switch (edge.kind) {
       RelationKind.sheng => EdgeGroup.shengFu,
@@ -86,7 +94,9 @@ class RelationGraphView extends StatefulWidget {
 }
 
 class _RelationGraphViewState extends State<RelationGraphView> {
-  final Set<EdgeGroup> _visibleGroups = {...EdgeGroup.values};
+  /// 日月生克线数量多（每爻与日月几乎必有生克），默认隐藏待用户开启
+  final Set<EdgeGroup> _visibleGroups = {...EdgeGroup.values}
+    ..remove(EdgeGroup.riYueShengKe);
   final TransformationController _transformation = TransformationController();
   bool _initialPositioned = false;
 
@@ -276,41 +286,96 @@ class _RelationGraphViewState extends State<RelationGraphView> {
     );
   }
 
+  static const Set<String> _wangShuaiTerms = {'旺', '相', '休', '囚', '死'};
+
+  /// 爻的旺相休囚死状态（来自旺衰服务的状态标签）
+  String? _wangShuaiOf(int position) {
+    final tags = widget.report.yaoTags[position];
+    if (tags == null) return null;
+    for (final tag in tags) {
+      if (_wangShuaiTerms.contains(tag.term)) return tag.term;
+    }
+    return null;
+  }
+
+  Color _wangShuaiColor(String term) {
+    switch (term) {
+      case '旺':
+      case '相':
+        return AppColors.jishenGreen;
+      case '休':
+        return AppColors.huise;
+      default: // 囚 / 死
+        return AppColors.zhusha;
+    }
+  }
+
   Widget _buildYaoNode(_GraphLayout layout, int position) {
     const positionNames = ['初', '二', '三', '四', '五', '上'];
     final yao = mainGua.yaos[position - 1];
     final isYongShen = position == yongShenPosition;
+    final wangShuai = _wangShuaiOf(position);
 
     return Positioned(
       left: layout.nodeLeft,
       top: layout.yaoY(position) - 18,
-      child: Container(
-        width: _GraphLayout.nodeWidth,
-        height: 36,
-        alignment: Alignment.center,
-        decoration: BoxDecoration(
-          color: isYongShen
-              ? AppColors.danjin.withOpacity(0.25)
-              : Colors.white.withOpacity(0.7),
-          border: Border.all(
-            color: isYongShen
-                ? AppColors.gutong
-                : AppColors.danjin.withOpacity(0.6),
-            width: isYongShen ? 1.4 : 0.8,
+      child: Stack(
+        clipBehavior: Clip.none,
+        children: [
+          Container(
+            width: _GraphLayout.nodeWidth,
+            height: 36,
+            alignment: Alignment.center,
+            decoration: BoxDecoration(
+              color: isYongShen
+                  ? AppColors.danjin.withOpacity(0.25)
+                  : Colors.white.withOpacity(0.7),
+              border: Border.all(
+                color: isYongShen
+                    ? AppColors.gutong
+                    : AppColors.danjin.withOpacity(0.6),
+                width: isYongShen ? 1.4 : 0.8,
+              ),
+              borderRadius: BorderRadius.circular(6),
+            ),
+            child: Text(
+              '${positionNames[position - 1]}爻 '
+              '${yao.liuQin.name}${yao.branch}${yao.wuXing.name}'
+              '${yao.isMoving ? ' ╳' : ''}'
+              '${yao.isSeYao ? ' 世' : yao.isYingYao ? ' 应' : ''}'
+              '${isYongShen ? ' ·用' : ''}',
+              style: AppTextStyles.antiqueLabel.copyWith(
+                color: yao.isMoving ? AppColors.zhusha : AppColors.xuanse,
+                fontWeight: isYongShen ? FontWeight.bold : FontWeight.w500,
+              ),
+            ),
           ),
-          borderRadius: BorderRadius.circular(6),
-        ),
-        child: Text(
-          '${positionNames[position - 1]}爻 '
-          '${yao.liuQin.name}${yao.branch}${yao.wuXing.name}'
-          '${yao.isMoving ? ' ╳' : ''}'
-          '${yao.isSeYao ? ' 世' : yao.isYingYao ? ' 应' : ''}'
-          '${isYongShen ? ' ·用' : ''}',
-          style: AppTextStyles.antiqueLabel.copyWith(
-            color: yao.isMoving ? AppColors.zhusha : AppColors.xuanse,
-            fontWeight: isYongShen ? FontWeight.bold : FontWeight.w500,
-          ),
-        ),
+          // 旺相休囚死状态徽标（爻的固有状态，标在节点角上不画线）
+          if (wangShuai != null)
+            Positioned(
+              top: -7,
+              left: -7,
+              child: Container(
+                width: 16,
+                height: 16,
+                alignment: Alignment.center,
+                decoration: BoxDecoration(
+                  color: AppColors.xiangse,
+                  border: Border.all(color: _wangShuaiColor(wangShuai)),
+                  shape: BoxShape.circle,
+                ),
+                child: Text(
+                  wangShuai,
+                  style: TextStyle(
+                    fontSize: 9,
+                    height: 1,
+                    fontWeight: FontWeight.bold,
+                    color: _wangShuaiColor(wangShuai),
+                  ),
+                ),
+              ),
+            ),
+        ],
       ),
     );
   }

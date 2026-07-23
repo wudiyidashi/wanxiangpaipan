@@ -272,6 +272,57 @@ List<RelationEdge> buildRelationEdges(
               term: '月合',
               kind: RelationKind.he,
               directed: true));
+
+        // ── 日月对爻的生克扶临（独立分组，默认隐藏）──
+        case '月生':
+          add(RelationEdge(
+              from: RelationEdge.yueNode,
+              to: position,
+              term: '月生',
+              kind: RelationKind.sheng,
+              directed: true));
+        case '月克':
+          add(RelationEdge(
+              from: RelationEdge.yueNode,
+              to: position,
+              term: '月克',
+              kind: RelationKind.ke,
+              directed: true));
+        case '临月建':
+          add(RelationEdge(
+              from: RelationEdge.yueNode,
+              to: position,
+              term: '临月建',
+              kind: RelationKind.neutral,
+              directed: false));
+        case '日生':
+          add(RelationEdge(
+              from: RelationEdge.riNode,
+              to: position,
+              term: '日生',
+              kind: RelationKind.sheng,
+              directed: true));
+        case '日克':
+          add(RelationEdge(
+              from: RelationEdge.riNode,
+              to: position,
+              term: '日克',
+              kind: RelationKind.ke,
+              directed: true));
+        case '日扶':
+          add(RelationEdge(
+              from: RelationEdge.riNode,
+              to: position,
+              term: '日扶',
+              kind: RelationKind.sheng,
+              directed: true));
+        case '临日建':
+          add(RelationEdge(
+              from: RelationEdge.riNode,
+              to: position,
+              term: '临日建',
+              kind: RelationKind.neutral,
+              directed: false));
       }
     }
   });
