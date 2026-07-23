@@ -229,51 +229,107 @@ class _LiuYaoResultView extends StatelessWidget {
     );
   }
 
-  /// 月建/日干支编辑弹窗（改后空亡与六神自动重推）
+  /// 无时辰的哨兵值
+  static const String _noHour = 'none';
+
+  /// 取合法干支；无效时（如月干支被记为单支）取以 [fallbackZhi] 为支的
+  /// 首个六十甲子，再退到甲子
+  String _validGanZhiOr(String? value, {String? fallbackZhi}) {
+    if (value != null && TianGanDiZhiService.isValidGanZhi(value)) {
+      return value;
+    }
+    if (fallbackZhi != null) {
+      for (final ganZhi in TianGanDiZhiService.liuShiJiaZi) {
+        if (ganZhi[1] == fallbackZhi) return ganZhi;
+      }
+    }
+    return '甲子';
+  }
+
+  /// 四柱干支编辑弹窗（改后月建/空亡/六神/太岁与全部分析自动重算）
   void _showLunarEditor(
     BuildContext context,
     LiuYaoAnalysisController controller,
     LiuYaoResult result,
   ) {
-    var yueJian = result.lunarInfo.yueJian;
-    var riGanZhi = result.lunarInfo.riGanZhi;
+    final lunar = result.lunarInfo;
+    var yearGanZhi = _validGanZhiOr(lunar.yearGanZhi);
+    var monthGanZhi =
+        _validGanZhiOr(lunar.monthGanZhi, fallbackZhi: lunar.yueJian);
+    var riGanZhi = _validGanZhiOr(lunar.riGanZhi);
+    var hourGanZhi = lunar.hourGanZhi != null &&
+            TianGanDiZhiService.isValidGanZhi(lunar.hourGanZhi!)
+        ? lunar.hourGanZhi!
+        : _noHour;
+
+    Widget picker({
+      required String label,
+      required String value,
+      required ValueChanged<String?> onChanged,
+      bool allowNone = false,
+    }) {
+      return Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(label, style: AppTextStyles.antiqueLabel),
+          const SizedBox(height: 4),
+          AntiqueDropdown<String>(
+            value: value,
+            items: [
+              if (allowNone)
+                const AntiqueDropdownItem(value: _noHour, label: '不设'),
+              for (final ganZhi in TianGanDiZhiService.liuShiJiaZi)
+                AntiqueDropdownItem(value: ganZhi, label: ganZhi),
+            ],
+            onChanged: onChanged,
+          ),
+          const SizedBox(height: 12),
+        ],
+      );
+    }
+
     showDialog<void>(
       context: context,
       builder: (dialogContext) => AntiqueDialog(
-        title: '设置月建与日辰',
+        title: '设置四柱干支',
         content: StatefulBuilder(
-          builder: (context, setState) => Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              const Text('月建', style: AppTextStyles.antiqueLabel),
-              const SizedBox(height: 4),
-              AntiqueDropdown<String>(
-                value: yueJian,
-                items: [
-                  for (final zhi in TianGanDiZhiService.diZhi)
-                    AntiqueDropdownItem(value: zhi, label: '$zhi月'),
-                ],
-                onChanged: (v) => setState(() => yueJian = v ?? yueJian),
-              ),
-              const SizedBox(height: 12),
-              const Text('日辰（干支）', style: AppTextStyles.antiqueLabel),
-              const SizedBox(height: 4),
-              AntiqueDropdown<String>(
-                value: riGanZhi,
-                items: [
-                  for (final ganZhi in TianGanDiZhiService.liuShiJiaZi)
-                    AntiqueDropdownItem(value: ganZhi, label: '$ganZhi日'),
-                ],
-                onChanged: (v) => setState(() => riGanZhi = v ?? riGanZhi),
-              ),
-              const SizedBox(height: 8),
-              Text(
-                '修改后空亡、六神与全部断卦分析将自动重算',
-                style: AppTextStyles.antiqueLabel
-                    .copyWith(color: AppColors.huise),
-              ),
-            ],
+          builder: (context, setState) => SingleChildScrollView(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                picker(
+                  label: '年',
+                  value: yearGanZhi,
+                  onChanged: (v) =>
+                      setState(() => yearGanZhi = v ?? yearGanZhi),
+                ),
+                picker(
+                  label: '月',
+                  value: monthGanZhi,
+                  onChanged: (v) =>
+                      setState(() => monthGanZhi = v ?? monthGanZhi),
+                ),
+                picker(
+                  label: '日',
+                  value: riGanZhi,
+                  onChanged: (v) => setState(() => riGanZhi = v ?? riGanZhi),
+                ),
+                picker(
+                  label: '时（可不设）',
+                  value: hourGanZhi,
+                  allowNone: true,
+                  onChanged: (v) =>
+                      setState(() => hourGanZhi = v ?? hourGanZhi),
+                ),
+                Text(
+                  '月建取月支，空亡随日干支、六神随日干、太岁随年支，'
+                  '保存后全部分析自动重算',
+                  style: AppTextStyles.antiqueLabel
+                      .copyWith(color: AppColors.huise),
+                ),
+              ],
+            ),
           ),
         ),
         actions: [
@@ -284,7 +340,12 @@ class _LiuYaoResultView extends StatelessWidget {
           TextButton(
             onPressed: () {
               Navigator.of(dialogContext).pop();
-              controller.updateLunar(yueJian: yueJian, riGanZhi: riGanZhi);
+              controller.updateLunar(
+                yearGanZhi: yearGanZhi,
+                monthGanZhi: monthGanZhi,
+                riGanZhi: riGanZhi,
+                hourGanZhi: hourGanZhi == _noHour ? null : hourGanZhi,
+              );
             },
             child: const Text('保存'),
           ),

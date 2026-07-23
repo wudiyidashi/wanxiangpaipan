@@ -139,6 +139,42 @@ void main() {
     });
   });
 
+  group('LiuYaoAnalysisController 四柱修改', () {
+    test('updateLunar：月建/空亡/六神联动并持久化', () async {
+      final controller = LiuYaoAnalysisController(
+          result: buildResult(), repository: repository);
+
+      await controller.updateLunar(
+        yearGanZhi: '甲子',
+        monthGanZhi: '己巳',
+        riGanZhi: '乙亥',
+        hourGanZhi: null,
+      );
+
+      final lunar = controller.result.lunarInfo;
+      expect(lunar.yearGanZhi, '甲子');
+      expect(lunar.monthGanZhi, '己巳');
+      expect(lunar.yueJian, '巳'); // 月建取月支
+      expect(lunar.riGanZhi, '乙亥');
+      expect(lunar.kongWang, ['申', '酉']); // 乙亥在甲戌旬
+      expect(lunar.hourGanZhi, isNull);
+      expect(controller.result.liuShen.first, '青龙'); // 乙日起青龙
+      verify(() => repository.updateRecord(any())).called(1);
+    });
+
+    test('updateLunar：非法干支拒绝且不落库', () async {
+      final controller = LiuYaoAnalysisController(
+          result: buildResult(), repository: repository);
+      await controller.updateLunar(
+        yearGanZhi: '甲子',
+        monthGanZhi: '乙子', // 非法组合
+        riGanZhi: '乙亥',
+      );
+      expect(controller.result.lunarInfo.yueJian, '午'); // 原值不变
+      verifyNever(() => repository.updateRecord(any()));
+    });
+  });
+
   group('LiuYaoResult 序列化兼容', () {
     Map<String, dynamic> roundTrip(LiuYaoResult result) =>
         jsonDecode(jsonEncode(result.toJson())) as Map<String, dynamic>;

@@ -126,18 +126,22 @@ class HistoryRecordCard extends StatelessWidget {
                             textAlign: TextAlign.right,
                           ),
                           const SizedBox(height: 8),
-                          // Layer 3: 结果摘要
-                          Text(
-                            _summary(result),
-                            style: AppTextStyles.antiqueBody.copyWith(
-                              fontSize: 15,
-                              fontWeight: FontWeight.bold,
-                              color: AppColors.zhusha,
-                              letterSpacing: 0.5,
+                          // Layer 3: 结果摘要（单行，超宽时整体缩字号，
+                          // 保证「雷天大壮 → 泽风大过」等 4+4 字也不折行）
+                          FittedBox(
+                            fit: BoxFit.scaleDown,
+                            alignment: Alignment.centerRight,
+                            child: Text(
+                              _summary(result),
+                              style: AppTextStyles.antiqueBody.copyWith(
+                                fontSize: 15,
+                                fontWeight: FontWeight.bold,
+                                color: AppColors.zhusha,
+                                letterSpacing: 0.5,
+                              ),
+                              textAlign: TextAlign.right,
+                              maxLines: 1,
                             ),
-                            textAlign: TextAlign.right,
-                            maxLines: 2,
-                            overflow: TextOverflow.ellipsis,
                           ),
                         ],
                       ),

@@ -57,24 +57,36 @@ class LiuYaoAnalysisController extends ChangeNotifier {
     notifyListeners();
   }
 
-  /// 修改月建与日干支（空亡随日干支重推、六神随日干重排），
-  /// 全部分析即时重算并持久化
+  /// 修改四柱干支：月建随月干支之支、空亡随日干支重推、六神随日干
+  /// 重排、太岁随年干支；全部分析即时重算并持久化。
+  /// [hourGanZhi] 传 null 表示不设时辰。
   Future<void> updateLunar({
-    required String yueJian,
+    required String yearGanZhi,
+    required String monthGanZhi,
     required String riGanZhi,
+    String? hourGanZhi,
   }) async {
-    final split = TianGanDiZhiService.splitGanZhi(riGanZhi);
-    if (split == null || !TianGanDiZhiService.isValidDiZhi(yueJian)) return;
+    if (!TianGanDiZhiService.isValidGanZhi(yearGanZhi) ||
+        !TianGanDiZhiService.isValidGanZhi(monthGanZhi) ||
+        !TianGanDiZhiService.isValidGanZhi(riGanZhi) ||
+        (hourGanZhi != null &&
+            !TianGanDiZhiService.isValidGanZhi(hourGanZhi))) {
+      return;
+    }
+    final riSplit = TianGanDiZhiService.splitGanZhi(riGanZhi)!;
+    final monthSplit = TianGanDiZhiService.splitGanZhi(monthGanZhi)!;
     _result = _result.copyWith(
       lunarInfo: _result.lunarInfo.copyWith(
-        yueJian: yueJian,
-        monthGanZhi: yueJian,
-        riGan: split[0],
-        riZhi: split[1],
+        yearGanZhi: yearGanZhi,
+        monthGanZhi: monthGanZhi,
+        yueJian: monthSplit[1],
+        riGan: riSplit[0],
+        riZhi: riSplit[1],
         riGanZhi: riGanZhi,
         kongWang: TianGanDiZhiService.getKongWang(riGanZhi),
+        hourGanZhi: hourGanZhi,
       ),
-      liuShen: LiuShenService.calculateLiuShen(split[0]),
+      liuShen: LiuShenService.calculateLiuShen(riSplit[0]),
     );
     _recompute();
     notifyListeners();
