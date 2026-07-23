@@ -288,6 +288,19 @@ class _RelationGraphViewState extends State<RelationGraphView> {
 
   static const Set<String> _wangShuaiTerms = {'旺', '相', '休', '囚', '死'};
 
+  /// 爻在用神链中的角色（用/元/忌/仇）及标志色
+  (String, Color)? _roleOf(int position) {
+    final chain = widget.report.yongShen;
+    if (chain == null) return null;
+    if (position == chain.position) return ('用', AppColors.gutong);
+    if (position == chain.yuanShenPosition) {
+      return ('元', AppColors.jishenGreen);
+    }
+    if (position == chain.jiShenPosition) return ('忌', AppColors.zhusha);
+    if (position == chain.chouShenPosition) return ('仇', AppColors.huise);
+    return null;
+  }
+
   /// 爻的旺相休囚死状态（来自旺衰服务的状态标签）
   String? _wangShuaiOf(int position) {
     final tags = widget.report.yaoTags[position];
@@ -315,6 +328,27 @@ class _RelationGraphViewState extends State<RelationGraphView> {
     final yao = mainGua.yaos[position - 1];
     final isYongShen = position == yongShenPosition;
     final wangShuai = _wangShuaiOf(position);
+    final role = _roleOf(position);
+
+    Widget cornerBadge(String text, Color color) => Container(
+          width: 16,
+          height: 16,
+          alignment: Alignment.center,
+          decoration: BoxDecoration(
+            color: AppColors.xiangse,
+            border: Border.all(color: color),
+            shape: BoxShape.circle,
+          ),
+          child: Text(
+            text,
+            style: TextStyle(
+              fontSize: 9,
+              height: 1,
+              fontWeight: FontWeight.bold,
+              color: color,
+            ),
+          ),
+        );
 
     return Positioned(
       left: layout.nodeLeft,
@@ -342,38 +376,26 @@ class _RelationGraphViewState extends State<RelationGraphView> {
               '${positionNames[position - 1]}爻 '
               '${yao.liuQin.name}${yao.branch}${yao.wuXing.name}'
               '${yao.isMoving ? ' ╳' : ''}'
-              '${yao.isSeYao ? ' 世' : yao.isYingYao ? ' 应' : ''}'
-              '${isYongShen ? ' ·用' : ''}',
+              '${yao.isSeYao ? ' 世' : yao.isYingYao ? ' 应' : ''}',
               style: AppTextStyles.antiqueLabel.copyWith(
                 color: yao.isMoving ? AppColors.zhusha : AppColors.xuanse,
                 fontWeight: isYongShen ? FontWeight.bold : FontWeight.w500,
               ),
             ),
           ),
-          // 旺相休囚死状态徽标（爻的固有状态，标在节点角上不画线）
+          // 旺相休囚死状态徽标（左上角，爻的固有状态不画线）
           if (wangShuai != null)
             Positioned(
               top: -7,
               left: -7,
-              child: Container(
-                width: 16,
-                height: 16,
-                alignment: Alignment.center,
-                decoration: BoxDecoration(
-                  color: AppColors.xiangse,
-                  border: Border.all(color: _wangShuaiColor(wangShuai)),
-                  shape: BoxShape.circle,
-                ),
-                child: Text(
-                  wangShuai,
-                  style: TextStyle(
-                    fontSize: 9,
-                    height: 1,
-                    fontWeight: FontWeight.bold,
-                    color: _wangShuaiColor(wangShuai),
-                  ),
-                ),
-              ),
+              child: cornerBadge(wangShuai, _wangShuaiColor(wangShuai)),
+            ),
+          // 用神链角色标志（右上角：用/元/忌/仇）
+          if (role != null)
+            Positioned(
+              top: -7,
+              right: -7,
+              child: cornerBadge(role.$1, role.$2),
             ),
         ],
       ),

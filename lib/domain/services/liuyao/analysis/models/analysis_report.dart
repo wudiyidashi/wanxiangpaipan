@@ -27,7 +27,7 @@ class YongShenChain with _$YongShenChain {
     /// 用神两现时另一爻位
     @Default(<int>[]) List<int> duplicatePositions,
 
-    /// 原神爻位（可能不上卦）
+    /// 元神爻位（可能不上卦）
     int? yuanShenPosition,
 
     /// 忌神爻位

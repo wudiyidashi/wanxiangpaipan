@@ -43,7 +43,7 @@ void main() {
       expect(report.yongShen!.yuanShenPosition, 1);
       expect(report.yongShen!.jiShenPosition, 5);
       expect(report.yaoTags[2]!.map((t) => t.term), contains('用神'));
-      expect(report.yaoTags[1]!.map((t) => t.term), contains('原神'));
+      expect(report.yaoTags[1]!.map((t) => t.term), contains('元神'));
       expect(report.yaoTags[5]!.map((t) => t.term), contains('忌神'));
       expect(report.yingQi, isNotEmpty);
       expect(report.verdictSummary, contains('妻财'));

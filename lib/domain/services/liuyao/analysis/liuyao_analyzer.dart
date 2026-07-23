@@ -148,9 +148,9 @@ class LiuYaoAnalyzer {
 
     addRole(chain.position, chain.isFuShen ? '用神(伏)' : '用神', Polarity.neutral,
         0, chain.isFuShen ? '用神不现，伏神取用' : '所占之事以此爻为用');
-    addRole(chain.yuanShenPosition, '原神', Polarity.ji, 1, '生用神者为原神');
+    addRole(chain.yuanShenPosition, '元神', Polarity.ji, 1, '生用神者为元神');
     addRole(chain.jiShenPosition, '忌神', Polarity.xiong, 1, '克用神者为忌神');
-    addRole(chain.chouShenPosition, '仇神', Polarity.xiong, 8, '克原神生忌神者为仇神');
+    addRole(chain.chouShenPosition, '仇神', Polarity.xiong, 8, '克元神生忌神者为仇神');
     for (final position in chain.duplicatePositions) {
       addRole(position, '用神两现', Polarity.neutral, 8, '与用神同六亲，舍此取彼');
     }

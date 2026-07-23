@@ -4,10 +4,10 @@ import '../../fushen_service.dart';
 import '../../shared/liuqin_service.dart';
 import 'models/analysis_report.dart';
 
-/// 六亲推理链推导：由用户选定的用神推出原神、忌神、仇神、闲神。
+/// 六亲推理链推导：由用户选定的用神推出元神、忌神、仇神、闲神。
 ///
 /// 六亲相生：父→兄→子→财→官→父；相克：父克子、子克官、官克兄、兄克财、财克父。
-/// 原神生用神，忌神克用神，仇神克原神而生忌神，其余为闲神。
+/// 元神生用神，忌神克用神，仇神克元神而生忌神，其余为闲神。
 /// 同六亲多爻时动爻优先，其次低爻位优先。
 class LiuQinDeduceService {
   LiuQinDeduceService._();
@@ -30,7 +30,7 @@ class LiuQinDeduceService {
     LiuQin.qiCai: LiuQin.fuMu,
   };
 
-  /// 原神：生用神者
+  /// 元神：生用神者
   static LiuQin yuanShenOf(LiuQin yongShen) =>
       shengCycle.entries.firstWhere((e) => e.value == yongShen).key;
 
@@ -38,7 +38,7 @@ class LiuQinDeduceService {
   static LiuQin jiShenOf(LiuQin yongShen) =>
       keCycle.entries.firstWhere((e) => e.value == yongShen).key;
 
-  /// 仇神：克原神者（亦生忌神）
+  /// 仇神：克元神者（亦生忌神）
   static LiuQin chouShenOf(LiuQin yongShen) => jiShenOf(yuanShenOf(yongShen));
 
   /// 推导用神链。

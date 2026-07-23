@@ -325,18 +325,18 @@ class TermGlossary {
         definition: '用神不上卦，取伏神为用',
         condition: '所需六亲不现，于本宫首卦取同位伏神',
         implication: '伏而待出，飞神空破之日得出'),
-    '原神': TermEntry(
+    '元神': TermEntry(
         definition: '生用神之爻',
         condition: '六亲相生中生用神者',
-        implication: '用神之根，原神旺动则用神有源'),
+        implication: '用神之根，元神旺动则用神有源'),
     '忌神': TermEntry(
         definition: '克用神之爻',
         condition: '六亲相克中克用神者',
         implication: '用神之敌，忌神旺动则事凶'),
     '仇神': TermEntry(
-        definition: '克原神、生忌神之爻',
-        condition: '六亲循环中克原神者',
-        implication: '助纣为虐，动则原神受伤'),
+        definition: '克元神、生忌神之爻',
+        condition: '六亲循环中克元神者',
+        implication: '助纣为虐，动则元神受伤'),
     '闲神': TermEntry(
         definition: '与用神无直接生克之爻',
         condition: '非用原忌仇之其余六亲',

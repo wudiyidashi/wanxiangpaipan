@@ -23,7 +23,8 @@ void main() {
   testWidgets('有跨爻关系时渲染六爻节点、日月节点与图例', (tester) async {
     final qian = GuaCalculator.calculateGua([9, 7, 7, 7, 7, 7]);
     final lunar = _lunar();
-    final report = LiuYaoAnalyzer.analyze(qian, null, lunar);
+    final report =
+        LiuYaoAnalyzer.analyze(qian, null, lunar, yongShenPosition: 2);
 
     await tester.pumpWidget(MaterialApp(
       home: Scaffold(
@@ -43,7 +44,7 @@ void main() {
     expect(find.textContaining('初爻'), findsOneWidget);
     expect(find.textContaining('上爻'), findsOneWidget);
     // 用神节点标记
-    expect(find.textContaining('·用'), findsOneWidget);
+    expect(find.text('用'), findsOneWidget); // 右上角用神角标
     // 图例
     expect(find.text('生扶'), findsOneWidget);
     expect(find.text('克冲刑害'), findsOneWidget);

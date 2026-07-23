@@ -94,7 +94,7 @@ void main() {
         onClearYongShen: () {},
       )));
       expect(find.textContaining('用神'), findsWidgets);
-      expect(find.textContaining('原神'), findsOneWidget);
+      expect(find.textContaining('元神'), findsOneWidget);
       expect(find.textContaining('忌神'), findsOneWidget);
       expect(find.text('取消用神'), findsOneWidget);
     });

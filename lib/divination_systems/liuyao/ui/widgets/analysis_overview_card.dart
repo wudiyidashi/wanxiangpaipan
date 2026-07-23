@@ -5,11 +5,9 @@ import '../../../../core/theme/app_text_styles.dart';
 import '../../../../domain/services/fushen_service.dart';
 import '../../../../domain/services/liuyao/analysis/models/analysis_report.dart';
 import '../../../../presentation/widgets/antique/antique.dart';
-import '../../../../presentation/widgets/yao_tag_badge.dart';
 import '../../models/gua.dart';
-import 'term_glossary_dialog.dart';
 
-/// 断卦总览卡：未选用神时为引导态，选定后展示用神链与状态摘要。
+/// 取用神卡：未选用神时为引导态，选定后展示用神/元神/忌神/仇神链。
 class AnalysisOverviewCard extends StatelessWidget {
   const AnalysisOverviewCard({
     super.key,
@@ -44,7 +42,7 @@ class AnalysisOverviewCard extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           AntiqueSectionTitle(
-            title: '断卦总览',
+            title: '取用神',
             trailing: yongShenPosition == null
                 ? null
                 : TextButton(
@@ -67,7 +65,7 @@ class AnalysisOverviewCard extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
-          '点击下方爻行或此处选定用神，即可查看原神忌神、用神状态与应期候选。',
+          '点击下方爻行或此处选定用神，即可标注元神、忌神、仇神并推算应期。',
           style: AppTextStyles.antiqueBody.copyWith(
             color: AppColors.huise,
             height: 1.6,
@@ -85,11 +83,6 @@ class AnalysisOverviewCard extends StatelessWidget {
   Widget _buildAnalysisState(BuildContext context) {
     final chain = report.yongShen;
     if (chain == null) return const SizedBox.shrink();
-
-    final yongShenTags = report.yongShenTags
-        .where((t) => t.term != '用神' && t.term != '用神(伏)')
-        .take(3)
-        .toList();
 
     String roleDesc(int? position, {bool isFuShen = false}) {
       if (position == null) return '不上卦';
@@ -112,7 +105,7 @@ class AnalysisOverviewCard extends StatelessWidget {
               color: AppColors.gutong,
             ),
             AntiqueTag(
-              label: '原神 ${roleDesc(chain.yuanShenPosition)}',
+              label: '元神 ${roleDesc(chain.yuanShenPosition)}',
               color: AppColors.jishenGreen,
             ),
             AntiqueTag(
@@ -133,35 +126,6 @@ class AnalysisOverviewCard extends StatelessWidget {
             style: AppTextStyles.antiqueLabel.copyWith(color: AppColors.huise),
           ),
         ],
-        if (yongShenTags.isNotEmpty) ...[
-          const SizedBox(height: 10),
-          Row(
-            children: [
-              Text('用神状态：',
-                  style: AppTextStyles.antiqueLabel
-                      .copyWith(color: AppColors.huise)),
-              const SizedBox(width: 4),
-              Wrap(
-                spacing: 4,
-                children: [
-                  for (final tag in yongShenTags)
-                    YaoTagBadge(
-                      tag: tag,
-                      dense: false,
-                      onTap: () => showTermGlossaryDialog(context, tag.term),
-                    ),
-                ],
-              ),
-            ],
-          ),
-        ],
-        if (report.verdictSummary != null) ...[
-          const SizedBox(height: 10),
-          Text(
-            report.verdictSummary!,
-            style: AppTextStyles.antiqueBody.copyWith(height: 1.6),
-          ),
-        ],
       ],
     );
   }
@@ -176,49 +140,66 @@ class AnalysisOverviewCard extends StatelessWidget {
         borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
       ),
       builder: (sheetContext) => SafeArea(
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Padding(
-              padding: const EdgeInsets.fromLTRB(16, 12, 16, 4),
-              child: Text('选定用神',
-                  style: AppTextStyles.antiqueBody
-                      .copyWith(fontWeight: FontWeight.bold)),
-            ),
-            for (final yao in mainGua.yaos.reversed)
-              ListTile(
-                dense: true,
-                title: Text(
-                  '${_positionNames[yao.position - 1]}  '
-                  '${yao.liuQin.name}${yao.stem}${yao.branch}${yao.wuXing.name}'
-                  '${yao.isSeYao ? '（世）' : yao.isYingYao ? '（应）' : ''}',
-                  style: AppTextStyles.antiqueBody,
-                ),
-                onTap: () {
-                  Navigator.of(sheetContext).pop();
-                  onSelectYongShen(yao.position);
-                },
-              ),
-            if (fuShenMap.isNotEmpty) ...[
-              const AntiqueDivider(),
-              for (final entry in fuShenMap.entries)
-                ListTile(
-                  dense: true,
-                  title: Text(
-                    '伏神（${_positionNames[entry.key - 1]}下）  '
-                    '${entry.value.displayText}',
+        child: ConstrainedBox(
+          // 小屏（如 720p 模拟器）下限高并允许滚动，避免溢出
+          constraints: BoxConstraints(
+            maxHeight: MediaQuery.of(sheetContext).size.height * 0.72,
+          ),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Padding(
+                padding: const EdgeInsets.fromLTRB(16, 12, 16, 4),
+                child: Text('选定用神',
                     style: AppTextStyles.antiqueBody
-                        .copyWith(color: AppColors.zhusha),
+                        .copyWith(fontWeight: FontWeight.bold)),
+              ),
+              Flexible(
+                child: SingleChildScrollView(
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      for (final yao in mainGua.yaos.reversed)
+                        ListTile(
+                          dense: true,
+                          title: Text(
+                            '${_positionNames[yao.position - 1]}  '
+                            '${yao.liuQin.name}${yao.stem}${yao.branch}'
+                            '${yao.wuXing.name}'
+                            '${yao.isSeYao ? '（世）' : yao.isYingYao ? '（应）' : ''}',
+                            style: AppTextStyles.antiqueBody,
+                          ),
+                          onTap: () {
+                            Navigator.of(sheetContext).pop();
+                            onSelectYongShen(yao.position);
+                          },
+                        ),
+                      if (fuShenMap.isNotEmpty) ...[
+                        const AntiqueDivider(),
+                        for (final entry in fuShenMap.entries)
+                          ListTile(
+                            dense: true,
+                            title: Text(
+                              '伏神（${_positionNames[entry.key - 1]}下）  '
+                              '${entry.value.displayText}',
+                              style: AppTextStyles.antiqueBody
+                                  .copyWith(color: AppColors.zhusha),
+                            ),
+                            onTap: () {
+                              Navigator.of(sheetContext).pop();
+                              onSelectYongShen(entry.key, isFuShen: true);
+                            },
+                          ),
+                      ],
+                      const SizedBox(height: 8),
+                    ],
                   ),
-                  onTap: () {
-                    Navigator.of(sheetContext).pop();
-                    onSelectYongShen(entry.key, isFuShen: true);
-                  },
                 ),
+              ),
             ],
-            const SizedBox(height: 8),
-          ],
+          ),
         ),
       ),
     );
