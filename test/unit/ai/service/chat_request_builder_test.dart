@@ -62,8 +62,8 @@ void main() {
     test('恰好 12 条追问：不丢弃', () {
       final messages = [_msg('m0', ChatRole.assistant, '初始分析')];
       for (var i = 0; i < 12; i++) {
-        messages.add(_msg('m${i + 1}',
-            i.isEven ? ChatRole.user : ChatRole.assistant, 't$i'));
+        messages.add(_msg(
+            'm${i + 1}', i.isEven ? ChatRole.user : ChatRole.assistant, 't$i'));
       }
       final conv = _conv(messages);
       final msgs = ChatRequestBuilder.build(conv);
@@ -76,8 +76,8 @@ void main() {
     test('13 条追问：丢弃最早一条', () {
       final messages = [_msg('m0', ChatRole.assistant, '初始分析')];
       for (var i = 0; i < 13; i++) {
-        messages.add(_msg('m${i + 1}',
-            i.isEven ? ChatRole.user : ChatRole.assistant, 't$i'));
+        messages.add(_msg(
+            'm${i + 1}', i.isEven ? ChatRole.user : ChatRole.assistant, 't$i'));
       }
       final conv = _conv(messages);
       final msgs = ChatRequestBuilder.build(conv);

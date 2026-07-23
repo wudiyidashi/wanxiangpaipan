@@ -226,8 +226,7 @@ class LiuYaoTableWidget extends StatelessWidget {
                     mainSegmentFlex: showWorldResponse ? 7 : 3,
                     includeMovingColumn: true,
                     includeSecondarySegment: true,
-                    secondarySegmentFlex:
-                        secondaryShowWorldResponse ? 7 : 3,
+                    secondarySegmentFlex: secondaryShowWorldResponse ? 7 : 3,
                   ),
                   _buildFuShenNote(
                     fuShenByPosition[mainYao.position]?.displayText,

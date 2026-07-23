@@ -35,25 +35,24 @@ class FuShenRelationService {
     var feiKeFu = false;
 
     if (WuXingService.isSheng(fei.wuXing, fu.wuXing)) {
-      tags.add(_tag('飞生伏', Polarity.ji, 30,
-          '飞神${fei.branch}生伏神$fuDesc，伏神得长生'));
+      tags.add(_tag('飞生伏', Polarity.ji, 30, '飞神${fei.branch}生伏神$fuDesc，伏神得长生'));
     } else if (WuXingService.isKe(fei.wuXing, fu.wuXing)) {
       feiKeFu = true;
-      tags.add(_tag('飞克伏', Polarity.xiong, 30,
-          '飞神${fei.branch}克伏神$fuDesc，伏神受压'));
+      tags.add(
+          _tag('飞克伏', Polarity.xiong, 30, '飞神${fei.branch}克伏神$fuDesc，伏神受压'));
     } else if (WuXingService.isSheng(fu.wuXing, fei.wuXing)) {
-      tags.add(_tag('伏生飞', Polarity.xiong, 31,
-          '伏神$fuDesc生飞神${fei.branch}，伏神泄气'));
+      tags.add(
+          _tag('伏生飞', Polarity.xiong, 31, '伏神$fuDesc生飞神${fei.branch}，伏神泄气'));
     } else if (WuXingService.isKe(fu.wuXing, fei.wuXing)) {
-      tags.add(_tag('伏克飞', Polarity.ji, 31,
-          '伏神$fuDesc克飞神${fei.branch}，伏神出暴有力'));
+      tags.add(
+          _tag('伏克飞', Polarity.ji, 31, '伏神$fuDesc克飞神${fei.branch}，伏神出暴有力'));
     }
 
     // 飞神空亡或被日冲，伏神得出
     if (lunarInfo.isKongWang(fei.branch) ||
         DiZhiRelations.isLiuChong(lunarInfo.riZhi, fei.branch)) {
-      tags.add(_tag('伏神得出', Polarity.ji, 25,
-          '飞神${fei.branch}空破被冲，伏神$fuDesc得出而有用'));
+      tags.add(
+          _tag('伏神得出', Polarity.ji, 25, '飞神${fei.branch}空破被冲，伏神$fuDesc得出而有用'));
     }
 
     // 飞克伏且日月再克伏神：受制无用
@@ -62,8 +61,7 @@ class FuShenRelationService {
     if (feiKeFu &&
         (WuXingService.isKe(riWuXing, fu.wuXing) ||
             WuXingService.isKe(yueWuXing, fu.wuXing))) {
-      tags.add(_tag('伏神受制', Polarity.xiong, 25,
-          '伏神$fuDesc既被飞神克又遭日月克，受制难出'));
+      tags.add(_tag('伏神受制', Polarity.xiong, 25, '伏神$fuDesc既被飞神克又遭日月克，受制难出'));
     }
 
     return tags;

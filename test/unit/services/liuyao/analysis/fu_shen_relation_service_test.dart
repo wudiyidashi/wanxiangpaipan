@@ -74,8 +74,7 @@ void main() {
       final result = FuShenRelationService.analyzeGua(dun, lunar);
       final tags = result[1]!;
       expect(tags.map((t) => t.term), contains('伏神受制'));
-      expect(tags.firstWhere((t) => t.term == '伏神受制').polarity,
-          Polarity.xiong);
+      expect(tags.firstWhere((t) => t.term == '伏神受制').polarity, Polarity.xiong);
     });
   });
 }

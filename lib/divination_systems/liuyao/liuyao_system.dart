@@ -233,8 +233,7 @@ class LiuYaoSystem implements DivinationSystem {
           return false;
         }
         final yueJian = input['yueJian'];
-        if (yueJian is! String ||
-            !TianGanDiZhiService.isValidDiZhi(yueJian)) {
+        if (yueJian is! String || !TianGanDiZhiService.isValidDiZhi(yueJian)) {
           return false;
         }
         final riGanZhi = input['riGanZhi'];

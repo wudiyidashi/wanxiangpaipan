@@ -30,8 +30,10 @@ void main() {
   group('WangShuaiService.analyzeYao 月建相关', () {
     final lunar = buildLunar(yueJian: '午', riGanZhi: '甲子');
 
-    List<String> termsOf(int position) => WangShuaiService.analyzeYao(
-        qian.yaos[position - 1], lunar).map((t) => t.term).toList();
+    List<String> termsOf(int position) =>
+        WangShuaiService.analyzeYao(qian.yaos[position - 1], lunar)
+            .map((t) => t.term)
+            .toList();
 
     test('四爻午火：临月建 + 旺', () {
       final terms = termsOf(4);
@@ -77,29 +79,29 @@ void main() {
   group('WangShuaiService.analyzeYao 日辰相关', () {
     test('初爻子水在甲子日：临日建', () {
       final lunar = buildLunar(yueJian: '午', riGanZhi: '甲子');
-      final terms = WangShuaiService.analyzeYao(qian.yaos[0], lunar)
-          .map((t) => t.term);
+      final terms =
+          WangShuaiService.analyzeYao(qian.yaos[0], lunar).map((t) => t.term);
       expect(terms, contains('临日建'));
     });
 
     test('四爻午火在甲子日：日克', () {
       final lunar = buildLunar(yueJian: '午', riGanZhi: '甲子');
-      final terms = WangShuaiService.analyzeYao(qian.yaos[3], lunar)
-          .map((t) => t.term);
+      final terms =
+          WangShuaiService.analyzeYao(qian.yaos[3], lunar).map((t) => t.term);
       expect(terms, contains('日克'));
     });
 
     test('二爻寅木在甲子日：日生', () {
       final lunar = buildLunar(yueJian: '午', riGanZhi: '甲子');
-      final terms = WangShuaiService.analyzeYao(qian.yaos[1], lunar)
-          .map((t) => t.term);
+      final terms =
+          WangShuaiService.analyzeYao(qian.yaos[1], lunar).map((t) => t.term);
       expect(terms, contains('日生'));
     });
 
     test('初爻子水在乙亥日：日扶（同五行异支）', () {
       final lunar = buildLunar(yueJian: '午', riGanZhi: '乙亥');
-      final terms = WangShuaiService.analyzeYao(qian.yaos[0], lunar)
-          .map((t) => t.term);
+      final terms =
+          WangShuaiService.analyzeYao(qian.yaos[0], lunar).map((t) => t.term);
       expect(terms, contains('日扶'));
       expect(terms, isNot(contains('临日建')));
     });
@@ -107,8 +109,8 @@ void main() {
     test('日冲不在本服务出标签（暗动/日破由动变服务判定）', () {
       // 甲午日冲初爻子水
       final lunar = buildLunar(yueJian: '寅', riGanZhi: '甲午');
-      final terms = WangShuaiService.analyzeYao(qian.yaos[0], lunar)
-          .map((t) => t.term);
+      final terms =
+          WangShuaiService.analyzeYao(qian.yaos[0], lunar).map((t) => t.term);
       expect(terms, isNot(contains('暗动')));
       expect(terms, isNot(contains('日破')));
     });

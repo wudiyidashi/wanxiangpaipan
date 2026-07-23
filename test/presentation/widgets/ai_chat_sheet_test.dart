@@ -90,8 +90,8 @@ Widget _wrap(_FakeConversationService svc) {
                 context: context,
                 useSafeArea: true,
                 isScrollControlled: true,
-                builder: (ctx) => ChangeNotifierProvider<
-                    AIConversationService>.value(
+                builder: (ctx) =>
+                    ChangeNotifierProvider<AIConversationService>.value(
                   value: svc,
                   child: const AIChatSheet(resultId: 'r1'),
                 ),

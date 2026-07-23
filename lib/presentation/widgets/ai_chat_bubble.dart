@@ -48,9 +48,8 @@ class AIChatBubble extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final bubbleColor = _isUser
-        ? theme.primaryColor.withOpacity(0.12)
-        : theme.cardColor;
+    final bubbleColor =
+        _isUser ? theme.primaryColor.withOpacity(0.12) : theme.cardColor;
     final borderColor = theme.dividerColor;
 
     return Padding(
@@ -62,8 +61,7 @@ class AIChatBubble extends StatelessWidget {
         children: [
           Flexible(
             child: Container(
-              padding: const EdgeInsets.symmetric(
-                  horizontal: 12, vertical: 10),
+              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
               decoration: BoxDecoration(
                 color: bubbleColor,
                 borderRadius: BorderRadius.circular(12),
@@ -86,13 +84,15 @@ class AIChatBubble extends StatelessWidget {
                         children: [
                           const Icon(Icons.error_outline,
                               size: 14,
-                              color: AppColors.zhusha), // domain: error/failed state
+                              color: AppColors
+                                  .zhusha), // domain: error/failed state
                           const SizedBox(width: 4),
                           Text(
                             message.errorMessage ?? '发送失败',
                             style: const TextStyle(
                                 fontSize: 12,
-                                color: AppColors.zhusha), // domain: error/failed state
+                                color: AppColors
+                                    .zhusha), // domain: error/failed state
                           ),
                           if (onRetry != null) ...[
                             const SizedBox(width: 8),
@@ -105,9 +105,9 @@ class AIChatBubble extends StatelessWidget {
                                   '重试',
                                   style: TextStyle(
                                       fontSize: 12,
-                                      color: AppColors.dailan, // domain: interactive retry link (黛蓝 primary action)
-                                      decoration:
-                                          TextDecoration.underline),
+                                      color: AppColors
+                                          .dailan, // domain: interactive retry link (黛蓝 primary action)
+                                      decoration: TextDecoration.underline),
                                 ),
                               ),
                             ),
@@ -172,10 +172,9 @@ class _TypingDotsState extends State<_TypingDots>
           mainAxisSize: MainAxisSize.min,
           children: List.generate(3, (i) {
             final phase = (_controller.value + i / 3) % 1.0;
-            final opacity = (phase < 0.5
-                    ? 0.25 + phase * 1.5
-                    : 1.0 - (phase - 0.5) * 1.5)
-                .clamp(0.25, 1.0);
+            final opacity =
+                (phase < 0.5 ? 0.25 + phase * 1.5 : 1.0 - (phase - 0.5) * 1.5)
+                    .clamp(0.25, 1.0);
             return Padding(
               padding: const EdgeInsets.symmetric(horizontal: 2),
               child: Opacity(

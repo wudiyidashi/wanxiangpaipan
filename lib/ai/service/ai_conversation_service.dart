@@ -145,8 +145,7 @@ class AIConversationService extends ChangeNotifier {
         _safeNotify();
       } catch (e) {
         conv = _updateMessage(conv, placeholder.id,
-            status: ChatMessageStatus.failed,
-            errorMessage: e.toString());
+            status: ChatMessageStatus.failed, errorMessage: e.toString());
         _cache[result.id] = conv;
         _errors[result.id] = e.toString();
         await _chatRepository.save(conv);
@@ -162,8 +161,7 @@ class AIConversationService extends ChangeNotifier {
       (chunk) {
         buffer.write(chunk);
         conv = _updateMessage(conv, placeholder.id,
-            content: buffer.toString(),
-            status: ChatMessageStatus.streaming);
+            content: buffer.toString(), status: ChatMessageStatus.streaming);
         _cache[result.id] = conv;
         _safeNotify();
       },
@@ -215,17 +213,16 @@ class AIConversationService extends ChangeNotifier {
     var conv = existing;
     if (conv.castSnapshot == null) {
       if (fallbackResult == null) {
-        _errors[resultId] =
-            '对话缺少 castSnapshot，需要 fallbackResult 重新组装';
+        _errors[resultId] = '对话缺少 castSnapshot，需要 fallbackResult 重新组装';
         notifyListeners();
         return;
       }
       try {
         final prompt = await _promptAssembler.assemble(fallbackResult);
-        final modelName =
-            (_providerRegistry.getAvailableProvider()?.getConfigInfo()?['model']
-                    as String?) ??
-                '';
+        final modelName = (_providerRegistry
+                .getAvailableProvider()
+                ?.getConfigInfo()?['model'] as String?) ??
+            '';
         conv = conv.copyWith(
           castSnapshot: CastSnapshot(
             systemPrompt: prompt.systemPrompt,
@@ -285,10 +282,8 @@ class AIConversationService extends ChangeNotifier {
 
     if (stream == null) {
       try {
-        final resp =
-            await provider.chat(ChatRequest(messages: chatMessages));
-        conv = _updateMessage(conv, userMsg.id,
-            status: ChatMessageStatus.sent);
+        final resp = await provider.chat(ChatRequest(messages: chatMessages));
+        conv = _updateMessage(conv, userMsg.id, status: ChatMessageStatus.sent);
         conv = _updateMessage(conv, assistantMsg.id,
             content: resp.content, status: ChatMessageStatus.sent);
         _cache[resultId] = conv;
@@ -313,17 +308,14 @@ class AIConversationService extends ChangeNotifier {
     _activeStreams[resultId] = stream.listen(
       (chunk) {
         buffer.write(chunk);
-        conv = _updateMessage(conv, userMsg.id,
-            status: ChatMessageStatus.sent);
+        conv = _updateMessage(conv, userMsg.id, status: ChatMessageStatus.sent);
         conv = _updateMessage(conv, assistantMsg.id,
-            content: buffer.toString(),
-            status: ChatMessageStatus.streaming);
+            content: buffer.toString(), status: ChatMessageStatus.streaming);
         _cache[resultId] = conv;
         _safeNotify();
       },
       onDone: () async {
-        conv = _updateMessage(conv, userMsg.id,
-            status: ChatMessageStatus.sent);
+        conv = _updateMessage(conv, userMsg.id, status: ChatMessageStatus.sent);
         conv = _updateMessage(conv, assistantMsg.id,
             content: buffer.toString(), status: ChatMessageStatus.sent);
         _cache[resultId] = conv;
@@ -389,8 +381,7 @@ class AIConversationService extends ChangeNotifier {
       }
       return m;
     }).toList();
-    final newConv =
-        conv.copyWith(messages: updated, updatedAt: DateTime.now());
+    final newConv = conv.copyWith(messages: updated, updatedAt: DateTime.now());
     _cache[resultId] = newConv;
     await _chatRepository.save(newConv);
     notifyListeners();
@@ -418,8 +409,7 @@ class AIConversationService extends ChangeNotifier {
     _errors.remove(resultId);
     notifyListeners();
 
-    await sendFollowUp(resultId, originalText,
-        fallbackResult: fallbackResult);
+    await sendFollowUp(resultId, originalText, fallbackResult: fallbackResult);
   }
 
   // ==================== 辅助 ====================

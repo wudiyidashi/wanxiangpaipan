@@ -13,15 +13,17 @@ void main() {
   group('KongWangService 旬空判定', () {
     test('甲子日上爻戌土：旬空', () {
       final lunar = buildLunar(yueJian: '午', riGanZhi: '甲子');
-      final terms = KongWangService.analyzeYao(
-          qianStatic.yaos[5], qianStatic, lunar).map((t) => t.term);
+      final terms =
+          KongWangService.analyzeYao(qianStatic.yaos[5], qianStatic, lunar)
+              .map((t) => t.term);
       expect(terms, contains('旬空'));
     });
 
     test('非空爻无旬空标签', () {
       final lunar = buildLunar(yueJian: '午', riGanZhi: '甲子');
-      final terms = KongWangService.analyzeYao(
-          qianStatic.yaos[0], qianStatic, lunar).map((t) => t.term);
+      final terms =
+          KongWangService.analyzeYao(qianStatic.yaos[0], qianStatic, lunar)
+              .map((t) => t.term);
       expect(terms, isNot(contains('旬空')));
       expect(terms, isEmpty);
     });
@@ -30,8 +32,8 @@ void main() {
   group('KongWangService 真空/假空', () {
     test('休囚静爻逢空为真空：卯月戌土（月克死地）', () {
       final lunar = buildLunar(yueJian: '卯', riGanZhi: '甲子');
-      final tags = KongWangService.analyzeYao(
-          qianStatic.yaos[5], qianStatic, lunar);
+      final tags =
+          KongWangService.analyzeYao(qianStatic.yaos[5], qianStatic, lunar);
       final terms = tags.map((t) => t.term);
       expect(terms, contains('真空'));
       expect(terms, isNot(contains('假空')));
@@ -40,8 +42,8 @@ void main() {
 
     test('旺相之爻逢空为假空（旺不为空）：午月戌土相地', () {
       final lunar = buildLunar(yueJian: '午', riGanZhi: '甲子');
-      final tags = KongWangService.analyzeYao(
-          qianStatic.yaos[5], qianStatic, lunar);
+      final tags =
+          KongWangService.analyzeYao(qianStatic.yaos[5], qianStatic, lunar);
       final terms = tags.map((t) => t.term);
       expect(terms, contains('假空'));
       expect(terms, isNot(contains('真空')));
@@ -62,16 +64,18 @@ void main() {
     test('戊辰日冲空爻戌土：冲空', () {
       // 戊辰在甲子旬，戌亥仍空；辰冲戌
       final lunar = buildLunar(yueJian: '午', riGanZhi: '戊辰');
-      final terms = KongWangService.analyzeYao(
-          qianStatic.yaos[5], qianStatic, lunar).map((t) => t.term);
+      final terms =
+          KongWangService.analyzeYao(qianStatic.yaos[5], qianStatic, lunar)
+              .map((t) => t.term);
       expect(terms, contains('旬空'));
       expect(terms, contains('冲空'));
     });
 
     test('非冲日无冲空标签', () {
       final lunar = buildLunar(yueJian: '午', riGanZhi: '甲子');
-      final terms = KongWangService.analyzeYao(
-          qianStatic.yaos[5], qianStatic, lunar).map((t) => t.term);
+      final terms =
+          KongWangService.analyzeYao(qianStatic.yaos[5], qianStatic, lunar)
+              .map((t) => t.term);
       expect(terms, isNot(contains('冲空')));
     });
   });

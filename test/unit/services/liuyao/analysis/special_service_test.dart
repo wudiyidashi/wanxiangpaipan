@@ -18,34 +18,31 @@ void main() {
 
     test('未月合四爻午火动爻：月合（动爻合绊）', () {
       final lunar = buildLunar(yueJian: '未', riGanZhi: '甲子');
-      final tags =
-          SpecialService.analyzeYao(qianYao4Moving.yaos[3], lunar);
+      final tags = SpecialService.analyzeYao(qianYao4Moving.yaos[3], lunar);
       final yueHe = tags.firstWhere((t) => t.term == '月合');
       expect(yueHe.reason, contains('合绊'));
     });
 
     test('无合无标签', () {
       final lunar = buildLunar(yueJian: '午', riGanZhi: '甲寅');
-      final terms = SpecialService.analyzeYao(qian.yaos[0], lunar)
-          .map((t) => t.term);
+      final terms =
+          SpecialService.analyzeYao(qian.yaos[0], lunar).map((t) => t.term);
       expect(terms, isNot(contains('日合')));
     });
   });
 
   group('SpecialService 太岁入爻', () {
     test('甲子年初爻子水：太岁入爻', () {
-      final lunar =
-          buildLunar(yueJian: '午', riGanZhi: '丙寅', yearGanZhi: '甲子');
-      final terms = SpecialService.analyzeYao(qian.yaos[0], lunar)
-          .map((t) => t.term);
+      final lunar = buildLunar(yueJian: '午', riGanZhi: '丙寅', yearGanZhi: '甲子');
+      final terms =
+          SpecialService.analyzeYao(qian.yaos[0], lunar).map((t) => t.term);
       expect(terms, contains('太岁入爻'));
     });
 
     test('非太岁支无标签', () {
-      final lunar =
-          buildLunar(yueJian: '午', riGanZhi: '丙寅', yearGanZhi: '甲子');
-      final terms = SpecialService.analyzeYao(qian.yaos[1], lunar)
-          .map((t) => t.term);
+      final lunar = buildLunar(yueJian: '午', riGanZhi: '丙寅', yearGanZhi: '甲子');
+      final terms =
+          SpecialService.analyzeYao(qian.yaos[1], lunar).map((t) => t.term);
       expect(terms, isNot(contains('太岁入爻')));
     });
   });

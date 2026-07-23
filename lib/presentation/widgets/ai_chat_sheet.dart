@@ -121,11 +121,13 @@ class _AIChatSheetState extends State<AIChatSheet> {
             if (error != null)
               Container(
                 padding: const EdgeInsets.all(8),
-                color: AppColors.warning.withOpacity(0.1), // domain: error/warning tint (警告色 token)
+                color: AppColors.warning
+                    .withOpacity(0.1), // domain: error/warning tint (警告色 token)
                 width: double.infinity,
                 child: Text(error,
                     style: const TextStyle(
-                        color: AppColors.zhusha)), // domain: error/warning text (朱砂 danger color)
+                        color: AppColors
+                            .zhusha)), // domain: error/warning text (朱砂 danger color)
               ),
             AIChatInputBar(
               isStreaming: isStreaming,
@@ -154,13 +156,12 @@ class _AIChatSheetState extends State<AIChatSheet> {
           const SizedBox(width: 8),
           Expanded(
             child: Text(title,
-                style: const TextStyle(
-                    fontSize: 16, fontWeight: FontWeight.bold)),
+                style:
+                    const TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
           ),
           PopupMenuButton<String>(
             icon: const Icon(Icons.more_vert),
-            onSelected: (action) =>
-                _handleMenu(context, action, conv, service),
+            onSelected: (action) => _handleMenu(context, action, conv, service),
             itemBuilder: (ctx) => const [
               PopupMenuItem(value: 'reset', child: Text('新建话题')),
               PopupMenuItem(value: 'copy_all', child: Text('复制全文')),

@@ -48,8 +48,8 @@ void main() {
 
   group('LiuYaoAnalysisController 初始化', () {
     test('无用神时报告只含客观分析', () {
-      final controller =
-          LiuYaoAnalysisController(result: buildResult(), repository: repository);
+      final controller = LiuYaoAnalysisController(
+          result: buildResult(), repository: repository);
       expect(controller.hasYongShen, isFalse);
       expect(controller.report.yongShen, isNull);
       expect(controller.report.yaoTags, isNotEmpty);
@@ -66,8 +66,8 @@ void main() {
 
   group('LiuYaoAnalysisController 选择用神', () {
     test('选定后重算报告、通知监听并持久化', () async {
-      final controller =
-          LiuYaoAnalysisController(result: buildResult(), repository: repository);
+      final controller = LiuYaoAnalysisController(
+          result: buildResult(), repository: repository);
       var notified = 0;
       controller.addListener(() => notified++);
 
@@ -106,8 +106,8 @@ void main() {
     test('持久化失败不影响界面状态', () async {
       when(() => repository.updateRecord(any()))
           .thenThrow(Exception('db error'));
-      final controller =
-          LiuYaoAnalysisController(result: buildResult(), repository: repository);
+      final controller = LiuYaoAnalysisController(
+          result: buildResult(), repository: repository);
 
       await controller.selectYongShen(2);
 
@@ -132,8 +132,8 @@ void main() {
     });
 
     test('未选用神时取消为无操作', () async {
-      final controller =
-          LiuYaoAnalysisController(result: buildResult(), repository: repository);
+      final controller = LiuYaoAnalysisController(
+          result: buildResult(), repository: repository);
       await controller.clearYongShen();
       verifyNever(() => repository.updateRecord(any()));
     });

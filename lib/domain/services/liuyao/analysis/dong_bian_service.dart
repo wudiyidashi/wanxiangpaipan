@@ -19,8 +19,14 @@ class DongBianService {
 
   /// 进神对：变支为本支同五行顺行
   static const Map<String, String> jinShen = {
-    '寅': '卯', '巳': '午', '申': '酉', '亥': '子',
-    '丑': '辰', '辰': '未', '未': '戌', '戌': '丑',
+    '寅': '卯',
+    '巳': '午',
+    '申': '酉',
+    '亥': '子',
+    '丑': '辰',
+    '辰': '未',
+    '未': '戌',
+    '戌': '丑',
   };
 
   static Map<int, List<YaoAnalysisTag>> analyzeGua(

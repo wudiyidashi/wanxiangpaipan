@@ -47,8 +47,7 @@ class ChangShengTable {
     return ChangShengStage.values[offset < 0 ? offset + 12 : offset];
   }
 
-  static String getChangShengBranch(WuXing wuXing) =>
-      changShengBranch[wuXing]!;
+  static String getChangShengBranch(WuXing wuXing) => changShengBranch[wuXing]!;
 
   /// [wuXing] 的墓库地支
   static String getMuBranch(WuXing wuXing) =>

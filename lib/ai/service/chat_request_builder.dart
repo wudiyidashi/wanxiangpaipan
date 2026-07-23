@@ -39,8 +39,8 @@ class ChatRequestBuilder {
 
     return [
       ...anchors,
-      ...windowed.map(
-          (m) => ProviderChatMessage(role: m.role, content: m.content)),
+      ...windowed
+          .map((m) => ProviderChatMessage(role: m.role, content: m.content)),
     ];
   }
 }

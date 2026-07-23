@@ -39,8 +39,7 @@ class LiuQinDeduceService {
       keCycle.entries.firstWhere((e) => e.value == yongShen).key;
 
   /// 仇神：克原神者（亦生忌神）
-  static LiuQin chouShenOf(LiuQin yongShen) =>
-      jiShenOf(yuanShenOf(yongShen));
+  static LiuQin chouShenOf(LiuQin yongShen) => jiShenOf(yuanShenOf(yongShen));
 
   /// 推导用神链。
   ///
@@ -69,8 +68,7 @@ class LiuQinDeduceService {
     final duplicates = <int>[];
     if (!isFuShen) {
       for (final yao in gua.yaos) {
-        if (yao.position != yongShenPosition &&
-            yao.liuQin == yongShenLiuQin) {
+        if (yao.position != yongShenPosition && yao.liuQin == yongShenLiuQin) {
           duplicates.add(yao.position);
         }
       }

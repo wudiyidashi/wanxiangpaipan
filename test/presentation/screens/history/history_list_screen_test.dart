@@ -6,7 +6,9 @@ import 'package:wanxiang_paipan/domain/divination_system.dart';
 import 'package:wanxiang_paipan/domain/repositories/divination_repository.dart';
 import 'package:wanxiang_paipan/models/lunar_info.dart';
 import 'package:wanxiang_paipan/presentation/divination_ui_registry.dart';
+import 'package:wanxiang_paipan/presentation/screens/history/history_filter.dart';
 import 'package:wanxiang_paipan/presentation/screens/history/history_list_screen.dart';
+import 'package:wanxiang_paipan/presentation/screens/history/history_list_viewmodel.dart';
 
 class _FakeDivinationRepository implements DivinationRepository {
   _FakeDivinationRepository(List<DivinationResult> initialRecords)
@@ -102,7 +104,8 @@ void main() {
 
   group('HistoryListScreen', () {
     testWidgets('支持排序切换与关键字搜索', (tester) async {
-      final now = DateTime.now();
+      final current = DateTime.now();
+      final now = DateTime(current.year, current.month, current.day, 12);
       final repository = _FakeDivinationRepository([
         _FakeResult(
           id: 'newer',
@@ -134,6 +137,12 @@ void main() {
 
       await tester.tap(find.text('最早'));
       await tester.pumpAndSettle();
+
+      final viewModel = Provider.of<HistoryListViewModel>(
+        tester.element(find.text('最早')),
+        listen: false,
+      );
+      expect(viewModel.sortOrder, SortOrder.oldestFirst);
 
       final newerDyAfter = tester.getTopLeft(find.text('较晚记录')).dy;
       final olderDyAfter = tester.getTopLeft(find.text('较早记录')).dy;

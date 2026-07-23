@@ -53,7 +53,14 @@ class _YaoDetailSheet extends StatelessWidget {
   final void Function(int position) onSelectYongShen;
   final VoidCallback onClearYongShen;
 
-  static const List<String> _positionNames = ['初爻', '二爻', '三爻', '四爻', '五爻', '上爻'];
+  static const List<String> _positionNames = [
+    '初爻',
+    '二爻',
+    '三爻',
+    '四爻',
+    '五爻',
+    '上爻'
+  ];
 
   @override
   Widget build(BuildContext context) {

@@ -85,7 +85,8 @@ class _AIChatInputBarState extends State<AIChatInputBar> {
                 key: const Key('stop_btn'),
                 icon: const Icon(Icons.stop_circle_outlined),
                 tooltip: '停止生成',
-                color: AppColors.zhusha, // domain: stop/warning action (朱砂 danger color)
+                color: AppColors
+                    .zhusha, // domain: stop/warning action (朱砂 danger color)
                 onPressed: widget.onStop,
               )
             else

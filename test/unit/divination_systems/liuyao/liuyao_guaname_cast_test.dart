@@ -17,13 +17,12 @@ void main() {
     });
 
     test('变卦同本卦视为全静', () {
-      expect(QiGuaService.guaNameCast('101010', '101010'),
-          [7, 8, 7, 8, 7, 8]);
+      expect(QiGuaService.guaNameCast('101010', '101010'), [7, 8, 7, 8, 7, 8]);
     });
 
     test('非法卦 id 抛参数错误', () {
-      expect(() => QiGuaService.guaNameCast('11101', null),
-          throwsArgumentError);
+      expect(
+          () => QiGuaService.guaNameCast('11101', null), throwsArgumentError);
       expect(() => QiGuaService.guaNameCast('111010', '11x010'),
           throwsArgumentError);
     });

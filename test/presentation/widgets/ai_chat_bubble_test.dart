@@ -7,8 +7,7 @@ Widget _wrap(Widget child) =>
     MaterialApp(home: Scaffold(body: SingleChildScrollView(child: child)));
 
 AIChatMessage _m(ChatRole role, String content,
-        [ChatMessageStatus status = ChatMessageStatus.sent,
-        String? err]) =>
+        [ChatMessageStatus status = ChatMessageStatus.sent, String? err]) =>
     AIChatMessage(
       id: 'x',
       role: role,

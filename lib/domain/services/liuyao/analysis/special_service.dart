@@ -31,8 +31,7 @@ class SpecialService {
     addHe('日合', '日辰', lunarInfo.riZhi, 22);
     addHe('月合', '月建', lunarInfo.yueJian, 23);
 
-    final taiSui =
-        TianGanDiZhiService.splitGanZhi(lunarInfo.yearGanZhi)?.last;
+    final taiSui = TianGanDiZhiService.splitGanZhi(lunarInfo.yearGanZhi)?.last;
     if (taiSui == yao.branch) {
       tags.add(YaoAnalysisTag(
         term: '太岁入爻',

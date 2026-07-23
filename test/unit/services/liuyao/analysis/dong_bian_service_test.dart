@@ -8,7 +8,8 @@ void main() {
   final lunar = buildLunar(yueJian: '寅', riGanZhi: '甲子');
 
   List<String> transformTerms(String from, String to, {String? riGanZhi}) {
-    final l = riGanZhi == null ? lunar : buildLunar(yueJian: '午', riGanZhi: riGanZhi);
+    final l =
+        riGanZhi == null ? lunar : buildLunar(yueJian: '午', riGanZhi: riGanZhi);
     return DongBianService.analyzeTransform(
       makeYao(branch: from, moving: true),
       makeYao(branch: to),

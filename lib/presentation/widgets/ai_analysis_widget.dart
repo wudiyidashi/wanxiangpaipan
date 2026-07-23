@@ -234,11 +234,9 @@ class _AIAnalysisWidgetState extends State<AIAnalysisWidget> {
             Builder(builder: (context) {
               final convService = context.watch<AIConversationService?>();
               final conv = convService?.conversationOf(widget.result.id);
-              final followUpCount =
-                  (conv?.messages.length ?? 1) - 1;
-              final label = followUpCount > 0
-                  ? '继续对话 · $followUpCount 条'
-                  : '继续追问';
+              final followUpCount = (conv?.messages.length ?? 1) - 1;
+              final label =
+                  followUpCount > 0 ? '继续对话 · $followUpCount 条' : '继续追问';
               return Align(
                 alignment: Alignment.centerRight,
                 child: TextButton.icon(
@@ -570,8 +568,8 @@ class AIAnalysisFAB extends StatelessWidget {
       context: context,
       isScrollControlled: true,
       useSafeArea: true,
-      builder: (sheetContext) => ChangeNotifierProvider<
-          AIConversationService>.value(
+      builder: (sheetContext) =>
+          ChangeNotifierProvider<AIConversationService>.value(
         value: convService,
         child: AIChatSheet(
           resultId: result.id,

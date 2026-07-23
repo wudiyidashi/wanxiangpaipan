@@ -10,7 +10,8 @@ import 'package:wanxiang_paipan/models/lunar_info.dart';
 Gua buildGua(List<int> numbers) => GuaCalculator.calculateGua(numbers);
 
 /// 由本卦生成变卦（无动爻返回 null）
-Gua? buildChangingGua(Gua mainGua) => GuaCalculator.generateChangingGua(mainGua);
+Gua? buildChangingGua(Gua mainGua) =>
+    GuaCalculator.generateChangingGua(mainGua);
 
 /// 构造单个爻（用于化爻变换等无需完整卦的测试）
 Yao makeYao({

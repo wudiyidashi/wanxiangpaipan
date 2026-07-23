@@ -15,8 +15,7 @@ class GuaChangeService {
 
     switch (mainGua.specialType) {
       case GuaSpecialType.liuChong:
-        tags.add(_guaTag('六冲卦', Polarity.neutral, 9,
-            '本卦六爻逐位相冲，主散、主快'));
+        tags.add(_guaTag('六冲卦', Polarity.neutral, 9, '本卦六爻逐位相冲，主散、主快'));
       case GuaSpecialType.liuHe:
         tags.add(_guaTag('六合卦', Polarity.ji, 9, '本卦六爻逐位相合，主成、主缓'));
       case GuaSpecialType.youHun:
@@ -40,25 +39,22 @@ class GuaChangeService {
 
     for (final half in const [(1, '内卦'), (4, '外卦')]) {
       final (start, label) = half;
-      final mainHalf =
-          mainGua.yaos.sublist(start - 1, start + 2);
+      final mainHalf = mainGua.yaos.sublist(start - 1, start + 2);
       if (!mainHalf.any((y) => y.isMoving)) continue;
-      final changedHalf =
-          changingGua.yaos.sublist(start - 1, start + 2);
+      final changedHalf = changingGua.yaos.sublist(start - 1, start + 2);
 
-      final allSame = List.generate(3,
-          (i) => mainHalf[i].branch == changedHalf[i].branch).every((x) => x);
+      final allSame =
+          List.generate(3, (i) => mainHalf[i].branch == changedHalf[i].branch)
+              .every((x) => x);
       final allChong = List.generate(
           3,
           (i) => DiZhiRelations.isLiuChong(
               mainHalf[i].branch, changedHalf[i].branch)).every((x) => x);
 
       if (allSame) {
-        tags.add(_guaTag('伏吟', Polarity.xiong, 7,
-            '$label变后纳支不变，伏吟呻吟，主忧虑迁延'));
+        tags.add(_guaTag('伏吟', Polarity.xiong, 7, '$label变后纳支不变，伏吟呻吟，主忧虑迁延'));
       } else if (allChong) {
-        tags.add(_guaTag('反吟', Polarity.xiong, 7,
-            '$label变后纳支逐位相冲，反吟反复，主往复不宁'));
+        tags.add(_guaTag('反吟', Polarity.xiong, 7, '$label变后纳支逐位相冲，反吟反复，主往复不宁'));
       }
     }
 

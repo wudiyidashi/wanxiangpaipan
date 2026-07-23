@@ -87,8 +87,7 @@ void main() {
 
       final restored = AIConversation.fromJson(conv.toJson());
 
-      expect(restored.messages.map((m) => m.id).toList(),
-          ['m0', 'm1', 'm2']);
+      expect(restored.messages.map((m) => m.id).toList(), ['m0', 'm1', 'm2']);
       expect(restored.messages.map((m) => m.role).toList(),
           [ChatRole.assistant, ChatRole.user, ChatRole.assistant]);
       expect(restored, equals(conv));

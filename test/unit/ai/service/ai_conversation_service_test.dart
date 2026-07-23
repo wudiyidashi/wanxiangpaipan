@@ -15,8 +15,11 @@ import 'package:wanxiang_paipan/domain/divination_system.dart';
 import 'package:wanxiang_paipan/models/lunar_info.dart';
 
 class _MockProvider extends Mock implements LLMProvider {}
+
 class _MockRegistry extends Mock implements LLMProviderRegistry {}
+
 class _MockAssembler extends Mock implements PromptAssembler {}
+
 class _MockConfig extends Mock implements AIConfigManager {}
 
 class _MockSecureStorage implements SecureStorage {
@@ -27,6 +30,7 @@ class _MockSecureStorage implements SecureStorage {
   Future<void> delete(String key) async {
     _storage.remove(key);
   }
+
   @override
   Future<void> deleteAll() async => _storage.clear();
   @override
@@ -40,6 +44,7 @@ class _MockSecureStorage implements SecureStorage {
     }
     return result;
   }
+
   @override
   Future<Map<String, String>> readAll() async => Map.unmodifiable(_storage);
   @override
@@ -234,7 +239,7 @@ void main() {
           .thenAnswer((_) async => _fakePrompt());
     });
 
-    Future<AIConversationService> _startService() async {
+    Future<AIConversationService> startService() async {
       when(() => provider.chatStream(any())).thenAnswer(
         (_) => Stream.fromIterable(['初始分析']),
       );
@@ -249,7 +254,7 @@ void main() {
     }
 
     test('正常追问：追加 user + assistant，流式内容累加', () async {
-      final service = await _startService();
+      final service = await startService();
       when(() => provider.chatStream(any())).thenAnswer(
         (_) => Stream.fromIterable(['回', '复']),
       );
@@ -267,7 +272,7 @@ void main() {
     });
 
     test('流式失败：user 和 assistant 都标记 failed', () async {
-      final service = await _startService();
+      final service = await startService();
       when(() => provider.chatStream(any())).thenAnswer(
         (_) => Stream.error(Exception('boom')),
       );
@@ -291,8 +296,7 @@ void main() {
         assembler: assembler,
         config: config,
       );
-      await service.loadIfNeeded('r1',
-          legacySystemType: DivinationType.liuYao);
+      await service.loadIfNeeded('r1', legacySystemType: DivinationType.liuYao);
       // 此时 castSnapshot 为 null
 
       // 模拟 follow-up
@@ -300,8 +304,7 @@ void main() {
           .thenAnswer((_) => Stream.fromIterable(['ok']));
 
       // sendFollowUp 需要 DivinationResult 以便组装 prompt
-      await service.sendFollowUp('r1', '再问',
-          fallbackResult: _FakeResult('r1'));
+      await service.sendFollowUp('r1', '再问', fallbackResult: _FakeResult('r1'));
 
       final conv = service.conversationOf('r1');
       expect(conv!.castSnapshot, isNotNull);
@@ -309,7 +312,7 @@ void main() {
     });
 
     test('并发 sendFollowUp: 第二次调用会取消第一次的流', () async {
-      final service = await _startService();
+      final service = await startService();
 
       final firstController = StreamController<String>();
       var firstStreamCancelled = false;

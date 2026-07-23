@@ -264,7 +264,8 @@ void main() {
         formatterRegistry: StructuredOutputFormatterRegistry.instance,
       );
       secureStorageForChat = MockSecureStorage();
-      final chatRepository = ChatRepository(secureStorage: secureStorageForChat);
+      final chatRepository =
+          ChatRepository(secureStorage: secureStorageForChat);
       conversationService = AIConversationService(
         providerRegistry: providerRegistry,
         promptAssembler: promptAssembler,
@@ -281,8 +282,7 @@ void main() {
       repository = _FakeRepository();
       // 遗留的"interpretation_<id>" blob 必须种到 ChatRepository 读的 secure
       // storage 里——widget 已改为通过 AIConversationService.loadIfNeeded 读取。
-      await secureStorageForChat.write(
-          'interpretation_${resultB.id}', '历史B分析');
+      await secureStorageForChat.write('interpretation_${resultB.id}', '历史B分析');
     });
 
     tearDown(() async {

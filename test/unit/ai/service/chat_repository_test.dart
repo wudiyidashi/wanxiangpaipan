@@ -36,8 +36,7 @@ class _MockSecureStorage implements SecureStorage {
   }
 
   @override
-  Future<Map<String, String>> readAll() async =>
-      Map.unmodifiable(_storage);
+  Future<Map<String, String>> readAll() async => Map.unmodifiable(_storage);
 
   @override
   Future<void> write(String key, String value) async {
@@ -140,8 +139,8 @@ void main() {
       await repo.save(conv);
       final raw = await storage.read('conversation_r6');
       expect(raw, isNotNull);
-      final decoded = AIConversation.fromJson(
-          json.decode(raw!) as Map<String, dynamic>);
+      final decoded =
+          AIConversation.fromJson(json.decode(raw!) as Map<String, dynamic>);
       expect(decoded, equals(conv));
     });
   });

@@ -136,9 +136,8 @@ class _Cell extends StatelessWidget {
                   style: TextStyle(
                     fontSize: 8,
                     fontWeight: FontWeight.bold,
-                    color: inMonth
-                        ? marker.color
-                        : marker.color.withOpacity(0.4),
+                    color:
+                        inMonth ? marker.color : marker.color.withOpacity(0.4),
                   ),
                 ),
               ),
