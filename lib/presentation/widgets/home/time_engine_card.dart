@@ -20,9 +20,7 @@ import 'jieqi_seal.dart';
 /// │ 14:30                                        │
 /// └──────────────────────────────────────────────┘
 ///
-/// 资源依赖：
-/// - assets/images/jieqi/*.png - 节气印章图片
-/// - assets/images/time_engine/shichen_bg.png - 时辰背景图（可选）
+/// 节气印章由 JieQiSeal 纯代码绘制，无图片资源依赖。
 class TimeEngineCard extends StatefulWidget {
   const TimeEngineCard({super.key});
 

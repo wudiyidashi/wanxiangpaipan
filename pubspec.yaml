@@ -76,7 +76,6 @@ flutter:
   assets:
     - assets/images/
     - assets/images/screen_card/
-    - assets/images/jieqi/
     
 flutter_launcher_icons:
   remove_alpha_ios: true

@@ -1,12 +1,13 @@
+import 'dart:math' as math;
+
 import 'package:flutter/material.dart';
 
-/// 节气印章组件
+import '../../../core/theme/app_colors.dart';
+
+/// 节气印章组件（纯代码绘制，不依赖图片资源）。
 ///
-/// 使用 assets/images/jieqi/ 目录下的印章图片
-/// 设计特点：
-/// - 方形红色印章样式
-/// - 白色篆书风格文字
-/// - 支持24节气
+/// 传统印章样式：朱砂底方章、内衬细白框、两字竖排白文，
+/// 轻微旋转模拟手工钤印。适用于全部二十四节气及任意短词。
 class JieQiSeal extends StatelessWidget {
   /// 节气名称（中文，如"冬至"）
   final String jieQi;
@@ -20,56 +21,55 @@ class JieQiSeal extends StatelessWidget {
     this.size = 44,
   });
 
-  /// 节气名称到文件名的映射
-  static const Map<String, String> _jieQiToFile = {
-    '立春': 'lichun',
-    '雨水': 'yushui',
-    '惊蛰': 'jinzhe',
-    '春分': 'chunfen',
-    '清明': 'qingming',
-    '谷雨': 'guyu',
-    '立夏': 'lixia',
-    '小满': 'xiaoman',
-    '芒种': 'mangzhong',
-    '夏至': 'xiazhi',
-    '小暑': 'xiaoshu',
-    '大暑': 'dashu',
-    '立秋': 'liqiu',
-    '处暑': 'chushu',
-    '白露': 'bailu',
-    '秋分': 'qiufen',
-    '寒露': 'hanlu',
-    '霜降': 'shuangjiang',
-    '立冬': 'lidong',
-    '小雪': 'xiaoxue',
-    '大雪': 'daxue',
-    '冬至': 'dongzhi',
-    '小寒': 'xiaohan',
-    '大寒': 'dahan',
-  };
-
-  String? _getImagePath() {
-    final fileName = _jieQiToFile[jieQi];
-    if (fileName == null) return null;
-    return 'assets/images/jieqi/$fileName.png';
-  }
-
   @override
   Widget build(BuildContext context) {
     if (jieQi.isEmpty) return const SizedBox.shrink();
 
-    final imagePath = _getImagePath();
-    if (imagePath == null) return const SizedBox.shrink();
-
-    return Image.asset(
-      imagePath,
-      width: size,
-      height: size,
-      fit: BoxFit.contain,
-      errorBuilder: (context, error, stackTrace) {
-        // 图片加载失败时显示空白
-        return SizedBox(width: size, height: size);
-      },
+    return Transform.rotate(
+      angle: -3 * math.pi / 180,
+      child: Container(
+        width: size,
+        height: size,
+        decoration: BoxDecoration(
+          color: AppColors.zhushaDeep,
+          borderRadius: BorderRadius.circular(size * 0.14),
+          boxShadow: [
+            BoxShadow(
+              color: AppColors.zhushaDeep.withOpacity(0.35),
+              blurRadius: 4,
+              offset: const Offset(1, 2),
+            ),
+          ],
+        ),
+        // 内衬细白框，形成传统印章的双边效果
+        child: Container(
+          margin: EdgeInsets.all(size * 0.07),
+          decoration: BoxDecoration(
+            border: Border.all(
+              color: Colors.white.withOpacity(0.85),
+              width: 1,
+            ),
+            borderRadius: BorderRadius.circular(size * 0.08),
+          ),
+          alignment: Alignment.center,
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              for (final char in jieQi.split(''))
+                Text(
+                  char,
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: size * 0.32,
+                    fontWeight: FontWeight.w700,
+                    height: 1.15,
+                    letterSpacing: 0,
+                  ),
+                ),
+            ],
+          ),
+        ),
+      ),
     );
   }
 }
