@@ -250,8 +250,10 @@ class _LiuYaoCastScreenState extends State<LiuYaoCastScreen> {
   }
 
   Future<void> _handleGuaNameCast(
-    String yueJian,
+    String? yearGanZhi,
+    String monthGanZhi,
     String riGanZhi,
+    String? hourGanZhi,
     String benGuaId,
     String? bianGuaId,
   ) async {
@@ -264,8 +266,10 @@ class _LiuYaoCastScreenState extends State<LiuYaoCastScreen> {
       await viewModel.castByGuaName(
         benGuaId: benGuaId,
         bianGuaId: bianGuaId,
-        yueJian: yueJian,
+        monthGanZhi: monthGanZhi,
         riGanZhi: riGanZhi,
+        yearGanZhi: yearGanZhi,
+        hourGanZhi: hourGanZhi,
         castTime: DateTime.now(),
         question: _question.isNotEmpty ? _question : null,
       );

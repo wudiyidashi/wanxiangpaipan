@@ -76,12 +76,14 @@ class LiuYaoViewModel extends DivinationViewModel<LiuYaoResult> {
     );
   }
 
-  /// 卦名卦：自定月建日辰，选本卦与可选变卦起卦
+  /// 卦名卦：自定四柱（月可给单支或完整干支），选本卦与可选变卦起卦
   Future<void> castByGuaName({
     required String benGuaId,
     String? bianGuaId,
-    required String yueJian,
+    required String monthGanZhi,
     required String riGanZhi,
+    String? yearGanZhi,
+    String? hourGanZhi,
     DateTime? castTime,
     String? question,
   }) async {
@@ -90,8 +92,10 @@ class LiuYaoViewModel extends DivinationViewModel<LiuYaoResult> {
       input: {
         'benGuaId': benGuaId,
         'bianGuaId': bianGuaId,
-        'yueJian': yueJian,
+        'monthGanZhi': monthGanZhi,
         'riGanZhi': riGanZhi,
+        'yearGanZhi': yearGanZhi,
+        'hourGanZhi': hourGanZhi,
       },
       castTime: castTime,
     );

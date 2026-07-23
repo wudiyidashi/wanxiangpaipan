@@ -118,21 +118,25 @@ class LiuYaoSystem implements DivinationSystem {
         throw UnsupportedError('六爻不支持的起卦方式: ${method.displayName}');
     }
 
-    // 2. 计算农历信息（卦名卦按用户给定的月建日辰覆盖，
-    //    年干支沿用起卦时刻仅供太岁参考，时辰置空）
+    // 2. 计算农历信息。卦名卦按用户给定四柱覆盖：
+    //    月建取月支；年/时未给时分别沿用起卦时刻、置空
     var lunarInfo = LunarService.getLunarInfo(time);
     if (method == CastMethod.guaName) {
-      final yueJian = input['yueJian'] as String;
+      final monthRaw =
+          (input['monthGanZhi'] ?? input['yueJian']) as String;
+      final yueJian = monthRaw.length == 2 ? monthRaw[1] : monthRaw;
       final riGanZhi = input['riGanZhi'] as String;
       final split = TianGanDiZhiService.splitGanZhi(riGanZhi)!;
       lunarInfo = lunarInfo.copyWith(
         yueJian: yueJian,
-        monthGanZhi: yueJian,
+        monthGanZhi: monthRaw,
         riGan: split[0],
         riZhi: split[1],
         riGanZhi: riGanZhi,
         kongWang: TianGanDiZhiService.getKongWang(riGanZhi),
-        hourGanZhi: null,
+        yearGanZhi:
+            (input['yearGanZhi'] as String?) ?? lunarInfo.yearGanZhi,
+        hourGanZhi: input['hourGanZhi'] as String?,
       );
     }
 
@@ -232,8 +236,24 @@ class LiuYaoSystem implements DivinationSystem {
                 !YaoConstants.guaNames.containsKey(bianGuaId))) {
           return false;
         }
-        final yueJian = input['yueJian'];
-        if (yueJian is! String || !TianGanDiZhiService.isValidDiZhi(yueJian)) {
+        // 月：单支（yueJian）或完整干支（monthGanZhi）二选一
+        final monthRaw = input['monthGanZhi'] ?? input['yueJian'];
+        if (monthRaw is! String ||
+            !(TianGanDiZhiService.isValidDiZhi(monthRaw) ||
+                TianGanDiZhiService.isValidGanZhi(monthRaw))) {
+          return false;
+        }
+        // 年/时可选，给了必须是合法干支
+        final yearGanZhi = input['yearGanZhi'];
+        if (yearGanZhi != null &&
+            (yearGanZhi is! String ||
+                !TianGanDiZhiService.isValidGanZhi(yearGanZhi))) {
+          return false;
+        }
+        final hourGanZhi = input['hourGanZhi'];
+        if (hourGanZhi != null &&
+            (hourGanZhi is! String ||
+                !TianGanDiZhiService.isValidGanZhi(hourGanZhi))) {
           return false;
         }
         final riGanZhi = input['riGanZhi'];
@@ -332,6 +352,8 @@ class LiuYaoSystem implements DivinationSystem {
     String? bianGuaId,
     required String yueJian,
     required String riGanZhi,
+    String? yearGanZhi,
+    String? hourGanZhi,
     DateTime? castTime,
   }) async {
     final result = await cast(
@@ -341,6 +363,8 @@ class LiuYaoSystem implements DivinationSystem {
         'bianGuaId': bianGuaId,
         'yueJian': yueJian,
         'riGanZhi': riGanZhi,
+        'yearGanZhi': yearGanZhi,
+        'hourGanZhi': hourGanZhi,
       },
       castTime: castTime,
     );

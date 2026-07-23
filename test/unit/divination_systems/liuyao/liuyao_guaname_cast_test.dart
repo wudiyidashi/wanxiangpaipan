@@ -53,6 +53,31 @@ void main() {
       expect(result.castMethod, CastMethod.guaName);
     });
 
+    test('给定年时干支时覆盖农历信息', () async {
+      final result = await system.castByGuaName(
+        benGuaId: '111010',
+        yueJian: '巳',
+        riGanZhi: '乙亥',
+        yearGanZhi: '庚辰',
+        hourGanZhi: '丁丑',
+      );
+      expect(result.lunarInfo.yearGanZhi, '庚辰');
+      expect(result.lunarInfo.hourGanZhi, '丁丑');
+    });
+
+    test('完整月干支：月建取支、月干支保留', () async {
+      final result = await system.cast(
+        method: CastMethod.guaName,
+        input: {
+          'benGuaId': '111010',
+          'monthGanZhi': '己巳',
+          'riGanZhi': '乙亥',
+        },
+      ) as dynamic;
+      expect(result.lunarInfo.yueJian, '巳');
+      expect(result.lunarInfo.monthGanZhi, '己巳');
+    });
+
     test('无变卦：六爻安静', () async {
       final result = await system.castByGuaName(
         benGuaId: '111111',
