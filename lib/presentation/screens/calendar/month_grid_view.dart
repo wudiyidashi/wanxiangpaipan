@@ -110,6 +110,8 @@ class _Cell extends StatelessWidget {
           borderRadius: BorderRadius.circular(4),
         ),
         child: Stack(
+          // 居中非定位子项（Column）；无此项时内容贴左上导致列参差
+          alignment: Alignment.center,
           children: [
             Column(
               mainAxisAlignment: MainAxisAlignment.center,
