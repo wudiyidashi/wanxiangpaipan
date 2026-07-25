@@ -126,6 +126,48 @@ class AnalysisOverviewCard extends StatelessWidget {
             style: AppTextStyles.antiqueLabel.copyWith(color: AppColors.huise),
           ),
         ],
+        if (report.judgment != null) ...[
+          const SizedBox(height: 10),
+          _buildJudgment(report.judgment!),
+        ],
+      ],
+    );
+  }
+
+  /// 裁决区：趋势徽标 + 未决条件胶囊 + 免责说明
+  Widget _buildJudgment(VerdictJudgment judgment) {
+    final trendColor = switch (judgment.trend) {
+      VerdictTrend.keCheng => AppColors.jishenGreen,
+      VerdictTrend.nanCheng => AppColors.zhusha,
+      VerdictTrend.daiTiaoJian => AppColors.gutong,
+      VerdictTrend.buMing => AppColors.huise,
+    };
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Wrap(
+          spacing: 8,
+          runSpacing: 6,
+          children: [
+            AntiqueTag(
+              label: '断曰 ${judgment.trend.name}'
+                  '${judgment.nuance == null ? '' : '·${judgment.nuance}'}',
+              color: trendColor,
+            ),
+            for (final condition in judgment.conditions)
+              AntiqueTag(
+                label: condition.branch == null
+                    ? condition.label
+                    : '${condition.label}（${condition.branch}）',
+                color: AppColors.huise,
+              ),
+          ],
+        ),
+        const SizedBox(height: 6),
+        Text(
+          '趋势由用神受力与未决条件裁定，条件解除前不定成败。',
+          style: AppTextStyles.antiqueLabel.copyWith(color: AppColors.huise),
+        ),
       ],
     );
   }

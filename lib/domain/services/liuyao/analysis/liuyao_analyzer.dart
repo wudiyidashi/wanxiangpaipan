@@ -13,6 +13,7 @@ import 'models/analysis_tag.dart';
 import 'mu_jue_service.dart';
 import 'sheng_ke_service.dart';
 import 'special_service.dart';
+import 'verdict_service.dart';
 import 'wang_shuai_service.dart';
 import 'ying_qi_service.dart';
 
@@ -53,7 +54,7 @@ class LiuYaoAnalyzer {
     YongShenChain? chain;
     List<YaoAnalysisTag> selectedYongShenTags = const [];
     List<YingQiCandidate>? yingQi;
-    String? verdict;
+    VerdictJudgment? judgment;
 
     if (yongShenPosition != null) {
       chain = LiuQinDeduceService.deduce(
@@ -77,15 +78,25 @@ class LiuYaoAnalyzer {
       selectedYongShenTags.sort(
         (a, b) => a.priority.compareTo(b.priority),
       );
+      final changedYao = yongShenYao.isMoving && changingGua != null
+          ? changingGua.yaos[yongShenPosition - 1]
+          : null;
       yingQi = YingQiService.calculate(
         yongShen: yongShenYao,
-        changedYao: yongShenYao.isMoving && changingGua != null
-            ? changingGua.yaos[yongShenPosition - 1]
-            : null,
+        changedYao: changedYao,
         yongShenTags: selectedYongShenTags,
         lunarInfo: lunarInfo,
       );
-      verdict = _buildVerdict(yongShenYao, selectedYongShenTags, yingQi);
+      judgment = VerdictService.judge(
+        yongShen: yongShenYao,
+        isFuShen: yongShenIsFuShen,
+        yongShenTags: selectedYongShenTags,
+        yaoTags: yaoTags,
+        mainGua: mainGua,
+        changedYao: changedYao,
+        lunarInfo: lunarInfo,
+        yingQi: yingQi,
+      );
     }
 
     for (final tags in yaoTags.values) {
@@ -99,7 +110,8 @@ class LiuYaoAnalyzer {
       yongShen: chain,
       yongShenTags: selectedYongShenTags,
       yingQi: yingQi,
-      verdictSummary: verdict,
+      verdictSummary: judgment?.summary,
+      judgment: judgment,
     );
   }
 
@@ -156,27 +168,4 @@ class LiuYaoAnalyzer {
     }
   }
 
-  static String _buildVerdict(
-    Yao yongShen,
-    List<YaoAnalysisTag> yongShenTags,
-    List<YingQiCandidate> yingQi,
-  ) {
-    final desc =
-        '${yongShen.liuQin.name}${yongShen.branch}${yongShen.wuXing.name}';
-    final keyTags = [...yongShenTags]
-      ..sort((a, b) => a.priority.compareTo(b.priority));
-    final keyTerms = keyTags
-        .where((t) => t.category != TagCategory.liuQin)
-        .take(3)
-        .map((t) => t.term)
-        .join('、');
-
-    final yingQiHint = yingQi.isEmpty
-        ? ''
-        : '；优先观察：${yingQi.take(2).map((c) => c.label).join('，')}';
-
-    final stateDesc = keyTerms.isEmpty ? '暂无突出状态' : '主要状态：$keyTerms';
-    return '用神$desc，$stateDesc。'
-        '应期候选仅表示条件触发窗口，不单独决定事情成败$yingQiHint';
-  }
 }

@@ -98,6 +98,24 @@ void main() {
       expect(find.textContaining('忌神'), findsOneWidget);
       expect(find.text('取消用神'), findsOneWidget);
     });
+
+    testWidgets('选定用神后显示裁决趋势与未决条件', (tester) async {
+      final report =
+          LiuYaoAnalyzer.analyze(qian, null, _lunar(), yongShenPosition: 2);
+      await tester.pumpWidget(_wrap(AnalysisOverviewCard(
+        mainGua: qian,
+        report: report,
+        yongShenPosition: 2,
+        yongShenIsFuShen: false,
+        onSelectYongShen: (_, {bool isFuShen = false}) {},
+        onClearYongShen: () {},
+      )));
+      expect(find.textContaining('断曰'), findsOneWidget);
+      expect(
+        find.text('趋势由用神受力与未决条件裁定，条件解除前不定成败。'),
+        findsOneWidget,
+      );
+    });
   });
 
   group('YingQiCard', () {

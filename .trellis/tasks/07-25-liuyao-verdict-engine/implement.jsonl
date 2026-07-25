@@ -1,0 +1,2 @@
+{"file": ".trellis/spec/domain/liuyao-analysis-engine.md", "reason": "裁决口径基准：《增删卜易》裁决约定、既有口径表、禁止按标签数量判吉凶"}
+{"file": ".trellis/tasks/07-25-liuyao-verdict-engine/design.md", "reason": "裁决算法四步求值与决策表定义，实现必须严格按表行序"}

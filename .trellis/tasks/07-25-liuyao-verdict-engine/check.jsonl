@@ -1,0 +1,2 @@
+{"file": ".trellis/spec/domain/liuyao-analysis-engine.md", "reason": "检查裁决实现是否违反既有口径（悬置状态不判凶、不加权求和、派生数据不落库）"}
+{"file": ".trellis/tasks/07-25-liuyao-verdict-engine/prd.md", "reason": "验收标准清单：决策表正反例、黄金断例≥8、未选用神回归兼容"}
