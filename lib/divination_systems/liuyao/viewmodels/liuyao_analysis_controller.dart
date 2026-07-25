@@ -49,8 +49,8 @@ class LiuYaoAnalysisController extends ChangeNotifier {
   /// 修改占问（写入加密存储并通知界面重载）
   Future<void> updateQuestion(String question) async {
     try {
-      await _repository?.saveEncryptedFieldsBatch(
-          {'question_${_result.id}': question});
+      await _repository
+          ?.saveEncryptedFieldsBatch({'question_${_result.id}': question});
     } catch (e) {
       debugPrint('占问保存失败: $e');
     }

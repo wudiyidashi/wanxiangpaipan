@@ -41,8 +41,7 @@ class CalendarGuaContext {
   final Map<String, String> yingQiMonthByBranch;
 
   /// 某月是否值应期；[monthZhi] 为该月月建地支，命中返回理由
-  String? monthYingQiReason(String monthZhi) =>
-      yingQiMonthByBranch[monthZhi];
+  String? monthYingQiReason(String monthZhi) => yingQiMonthByBranch[monthZhi];
 
   /// 某日相对用神的角标；[dayGanZhi] 为该日干支（如「甲子」）
   GuaDayMarkerType? markerFor(String dayGanZhi) {

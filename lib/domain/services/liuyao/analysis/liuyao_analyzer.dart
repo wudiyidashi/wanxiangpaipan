@@ -167,5 +167,4 @@ class LiuYaoAnalyzer {
       addRole(position, '用神两现', Polarity.neutral, 8, '与用神同六亲，舍此取彼');
     }
   }
-
 }

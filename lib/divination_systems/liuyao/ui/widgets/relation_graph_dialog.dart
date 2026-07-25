@@ -55,7 +55,11 @@ enum EdgeGroup {
 
   /// 日月对爻的关键事件（破/冲起/合绊），与常规生克扶临分组区分
   static const Set<String> _riYueCriticalTerms = {
-    '月破', '暗动', '日破', '日合', '月合',
+    '月破',
+    '暗动',
+    '日破',
+    '日合',
+    '月合',
   };
 
   static EdgeGroup of(RelationEdge edge) {

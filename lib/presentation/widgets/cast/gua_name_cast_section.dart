@@ -119,9 +119,7 @@ class _GuaNameCastSectionState extends State<GuaNameCastSection> {
       ri,
       hour,
       _benGuaId,
-      _bianGuaId == _noBianGua || _bianGuaId == _benGuaId
-          ? null
-          : _bianGuaId,
+      _bianGuaId == _noBianGua || _bianGuaId == _benGuaId ? null : _bianGuaId,
     );
   }
 
@@ -191,8 +189,9 @@ class _GuaNameCastSectionState extends State<GuaNameCastSection> {
       child: Container(
         padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
         decoration: BoxDecoration(
-          color:
-              selected ? AppColors.zhusha.withOpacity(0.12) : Colors.transparent,
+          color: selected
+              ? AppColors.zhusha.withOpacity(0.12)
+              : Colors.transparent,
           border: Border.all(
             color: selected ? AppColors.zhusha : AppColors.huiseLight,
           ),
@@ -281,8 +280,7 @@ class _GuaNameCastSectionState extends State<GuaNameCastSection> {
           onTap: _pickSolarTime,
           child: Container(
             width: double.infinity,
-            padding:
-                const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
+            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
             decoration: BoxDecoration(
               border: Border.all(color: AppColors.danjin),
               borderRadius: BorderRadius.circular(8),
@@ -300,8 +298,7 @@ class _GuaNameCastSectionState extends State<GuaNameCastSection> {
         const SizedBox(height: 6),
         Text(
           '换算：$_solarGanZhiPreview',
-          style:
-              AppTextStyles.antiqueLabel.copyWith(color: AppColors.gutong),
+          style: AppTextStyles.antiqueLabel.copyWith(color: AppColors.gutong),
         ),
       ],
     );

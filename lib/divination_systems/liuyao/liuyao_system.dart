@@ -122,8 +122,7 @@ class LiuYaoSystem implements DivinationSystem {
     //    月建取月支；年/时未给时分别沿用起卦时刻、置空
     var lunarInfo = LunarService.getLunarInfo(time);
     if (method == CastMethod.guaName) {
-      final monthRaw =
-          (input['monthGanZhi'] ?? input['yueJian']) as String;
+      final monthRaw = (input['monthGanZhi'] ?? input['yueJian']) as String;
       final yueJian = monthRaw.length == 2 ? monthRaw[1] : monthRaw;
       final riGanZhi = input['riGanZhi'] as String;
       final split = TianGanDiZhiService.splitGanZhi(riGanZhi)!;
@@ -134,8 +133,7 @@ class LiuYaoSystem implements DivinationSystem {
         riZhi: split[1],
         riGanZhi: riGanZhi,
         kongWang: TianGanDiZhiService.getKongWang(riGanZhi),
-        yearGanZhi:
-            (input['yearGanZhi'] as String?) ?? lunarInfo.yearGanZhi,
+        yearGanZhi: (input['yearGanZhi'] as String?) ?? lunarInfo.yearGanZhi,
         hourGanZhi: input['hourGanZhi'] as String?,
       );
     }

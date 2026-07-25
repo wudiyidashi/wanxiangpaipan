@@ -132,9 +132,8 @@ class _MonthYingQiBar extends StatelessWidget {
     final m = vm.displayedMonth;
     // 以当月 15 日的节气月支代表本月月建（节气换月与公历错位约半月，
     // 月中取值最稳定）
-    final monthGanZhi = Solar.fromYmd(m.year, m.month, 15)
-        .getLunar()
-        .getMonthInGanZhi();
+    final monthGanZhi =
+        Solar.fromYmd(m.year, m.month, 15).getLunar().getMonthInGanZhi();
     final monthZhi = monthGanZhi.substring(monthGanZhi.length - 1);
     final reason = guaContext.monthYingQiReason(monthZhi);
     if (reason == null) return const SizedBox.shrink();
