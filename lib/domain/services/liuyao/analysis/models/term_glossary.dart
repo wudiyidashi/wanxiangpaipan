@@ -196,7 +196,7 @@ class TermGlossary {
     '日冲': TermEntry(
         definition: '日辰冲爻之统称',
         condition: '日支与爻支六冲',
-        implication: '旺者暗动、衰者日破、空者冲空'),
+        implication: '静旺暗动、静衰日破、动衰冲散、动旺催动而不散、空者冲空'),
     '冲起': TermEntry(
         definition: '爻因冲而起用之统称',
         condition: '见「暗动」「冲空」',
@@ -226,9 +226,9 @@ class TermGlossary {
         condition: '卯化寅、午化巳、酉化申、子化亥等',
         implication: '渐退渐衰，事势渐消'),
     '化扶': TermEntry(
-        definition: '变爻与本爻同五行相扶之统称',
-        condition: '同五行之化必为进神或退神，见各条',
-        implication: '进则增力，退则减力'),
+        definition: '动爻化出之爻回头相合的原书术语',
+        condition: '见「化合」',
+        implication: '得变爻回头扶助'),
     '回头生': TermEntry(
         definition: '变爻回头生本爻',
         condition: '变爻五行生动爻五行',
@@ -262,9 +262,9 @@ class TermGlossary {
         condition: '变爻之支为动爻五行之绝地',
         implication: '化至绝地，气数将尽，凶'),
     '化合': TermEntry(
-        definition: '变爻回头合本爻',
+        definition: '变爻回头合本爻，原书称化扶',
         condition: '变爻之支与动爻六合',
-        implication: '化出羁绊，动而被合住；冲开之日应'),
+        implication: '得变爻回头扶助；若同时见回头克、化泄等，须并见参断'),
     '化冲': TermEntry(
         definition: '变爻回头冲本爻',
         condition: '变爻之支与动爻六冲',

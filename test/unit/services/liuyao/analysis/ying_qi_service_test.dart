@@ -88,6 +88,44 @@ void main() {
           isFalse);
     });
 
+    test('化合为化扶，不生成解合候选', () {
+      final candidates = YingQiService.calculate(
+        yongShen: makeYao(position: 4, branch: '午', moving: true),
+        changedYao: makeYao(position: 4, branch: '未'),
+        yongShenTags: [tagOf('化合')],
+        lunarInfo: lunar,
+      );
+
+      expect(candidates.any((candidate) => candidate.reason.contains('解合')),
+          isFalse);
+    });
+
+    test('动爻被日月合住时生成解合候选', () {
+      final candidates = YingQiService.calculate(
+        yongShen: makeYao(position: 4, branch: '丑', moving: true),
+        yongShenTags: [tagOf('日合')],
+        lunarInfo: lunar,
+      );
+
+      expect(candidates.any((candidate) => candidate.reason.contains('解合')),
+          isTrue);
+    });
+
+    test('化绝与临绝一样生成长生扶起候选', () {
+      final candidates = YingQiService.calculate(
+        yongShen: makeYao(position: 4, branch: '午', moving: true),
+        changedYao: makeYao(position: 4, branch: '亥'),
+        yongShenTags: [tagOf('化绝')],
+        lunarInfo: lunar,
+      );
+
+      expect(
+        candidates.any((candidate) =>
+            candidate.branch == '寅' && candidate.reason == '绝处逢生'),
+        isTrue,
+      );
+    });
+
     test('化空化破化墓按变爻状态生成候选', () {
       final candidates = YingQiService.calculate(
         yongShen: makeYao(position: 1, branch: '卯', moving: true),

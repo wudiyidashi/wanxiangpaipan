@@ -21,9 +21,9 @@ class VerdictService {
 
   static const _l1FuTerms = {'临月建', '临日建', '日扶', '月生', '日生', '旺', '相'};
   static const _l1YiTerms = {'月克', '日克', '囚', '死', '日破', '冲散'};
-  static const _l2FuTerms = {'动爻生', '动爻扶', '连续相生', '三合局', '三合成局', '半合', '合起'};
+  static const _l2FuTerms = {'动爻生', '动爻扶', '连续相生'};
   static const _l2YiTerms = {'动爻克', '连续相克'};
-  static const _l4FuTerms = {'回头生', '化进神'};
+  static const _l4FuTerms = {'回头生', '化进神', '化合'};
   static const _l4YiHeavyTerms = {'回头克', '化退神'};
   static const _l4YiLightTerms = {'化泄', '化冲'};
   static const _fuShenFuTerms = {'飞生伏', '伏克飞', '伏神得出'};
@@ -32,9 +32,20 @@ class VerdictService {
 
   /// 悬置状态：不判凶，转条件（日合/月合仅动爻悬置，静爻为合起论扶）
   static const _suspendTerms = {
-    '旬空', '真空', '假空', '月破',
-    '入日墓', '入月墓', '入动墓', '化墓',
-    '合住', '合绊', '化合', '化空', '化破', '临绝', '化绝',
+    '旬空',
+    '真空',
+    '假空',
+    '月破',
+    '入日墓',
+    '入月墓',
+    '入动墓',
+    '化墓',
+    '合住',
+    '合绊',
+    '化空',
+    '化破',
+    '临绝',
+    '化绝',
   };
 
   static const Map<TagCategory, String> _sources = {
@@ -103,8 +114,7 @@ class VerdictService {
 
     // 净强弱：动爻克不入重抑集（即忌神动，由 jiActive 修正处理，避免双重计数）
     final hasFu = factors.any((f) => f.effect == VerdictEffect.fu);
-    final l1Fu = terms.intersection(_l1FuTerms).isNotEmpty ||
-        terms.intersection(_fuShenFuTerms).isNotEmpty;
+    final l1Fu = terms.intersection(_l1FuTerms).isNotEmpty;
     final heavyYi = terms.intersection({
       ..._l1YiTerms,
       ..._l4YiHeavyTerms,
@@ -123,8 +133,7 @@ class VerdictService {
     // ── Step 3 元/忌神活跃性（标签驱动，遮蔽结论已由事实层吸收）──
     final yuanActive =
         terms.contains('动爻生') || terms.contains('连续相生') || anDongSheng;
-    var jiActive =
-        terms.contains('动爻克') || terms.contains('连续相克') || anDongKe;
+    var jiActive = terms.contains('动爻克') || terms.contains('连续相克') || anDongKe;
     if (jiActive && terms.contains('动爻克') && !anDongKe) {
       final attackers = yongShenTags
           .where((t) => t.term == '动爻克')
@@ -165,44 +174,62 @@ class VerdictService {
     // ── Step 4 裁决决策表（首行命中）──
     final hasNoRescue = conditions.any((c) => !c.hasRescue);
     final allRescuable = conditions.isNotEmpty && !hasNoRescue;
+    final hasOnlyJoinCondition = conditions.isNotEmpty &&
+        conditions.every((condition) => condition.label == '待冲开');
+    final yuanTakesPriority = yuanActive &&
+        (!jiActive || terms.contains('连续相生') || terms.contains('贪生忘克'));
     VerdictTrend trend;
     String? nuance;
     String rule;
-    switch (strength) {
-      case _Strength.weak:
-        if (hasNoRescue) {
-          (trend, nuance, rule) =
-              (VerdictTrend.nanCheng, '空破墓绝，到底无救', '衰而无救');
-        } else if (yuanActive) {
-          // 元神动须先于忌神判：忌元同动则贪生忘克，接续相生
-          (trend, nuance, rule) =
-              (VerdictTrend.daiTiaoJian, '先难后成', '元神动而生用');
-        } else if (jiActive) {
-          (trend, nuance, rule) = (VerdictTrend.nanCheng, '克处无生', '忌神乘衰攻用');
-        } else {
-          (trend, nuance, rule) = (VerdictTrend.nanCheng, '衰而无助', '休囚无生扶');
-        }
-      case _Strength.strong:
-        if (conditions.isEmpty && !jiActive) {
-          (trend, nuance, rule) = (VerdictTrend.keCheng, null, '日月生扶而无阻');
-        } else if (conditions.isNotEmpty) {
-          (trend, nuance, rule) = (VerdictTrend.daiTiaoJian, '成而有待', '旺而有待');
-        } else {
-          (trend, nuance, rule) = (VerdictTrend.daiTiaoJian, '吉中有阻', '旺而忌动');
-        }
-      case _Strength.mixed:
-        if (yuanActive) {
-          (trend, nuance, rule) =
-              (VerdictTrend.daiTiaoJian, '先难后成', '元神动而生用');
-        } else if (jiActive) {
-          (trend, nuance, rule) = (VerdictTrend.nanCheng, '抑重于扶', '忌神动而克用');
-        } else if (allRescuable) {
-          (trend, nuance, rule) =
-              (VerdictTrend.daiTiaoJian, '待解除后再断', '悬而未决');
-        } else {
-          (trend, nuance, rule) =
-              (VerdictTrend.buMing, '扶抑并见，须参断者裁', '扶抑并见');
-        }
+    if (terms.contains('回头克') && !l1Fu) {
+      // 《五行相克章》《进退章》均以用神自身回头克为直接败象；
+      // 不得被同卦其他爻形成的连续相生标签反向覆盖。
+      (trend, nuance, rule) = (VerdictTrend.nanCheng, '克处无生', '用神回头受克');
+    } else if (terms.contains('回头生') &&
+        !jiActive &&
+        (conditions.isEmpty || hasOnlyJoinCondition)) {
+      // 《五行相生章》复之震例：用神虽受日月克，化回头生仍断相生为吉。
+      (trend, nuance, rule) = (VerdictTrend.keCheng, '先难后成', '用神回头得生');
+    } else {
+      switch (strength) {
+        case _Strength.weak:
+          if (hasNoRescue) {
+            (trend, nuance, rule) =
+                (VerdictTrend.nanCheng, '空破墓绝，到底无救', '衰而无救');
+          } else if (yuanTakesPriority) {
+            // 元神动须先于忌神判：忌元同动则贪生忘克，接续相生
+            (trend, nuance, rule) =
+                (VerdictTrend.daiTiaoJian, '先难后成', '元神动而生用');
+          } else if (jiActive) {
+            (trend, nuance, rule) = (VerdictTrend.nanCheng, '克处无生', '忌神乘衰攻用');
+          } else {
+            (trend, nuance, rule) = (VerdictTrend.nanCheng, '衰而无助', '休囚无生扶');
+          }
+        case _Strength.strong:
+          if (conditions.isEmpty && !jiActive) {
+            (trend, nuance, rule) = (VerdictTrend.keCheng, null, '日月生扶而无阻');
+          } else if (conditions.isNotEmpty) {
+            (trend, nuance, rule) = (VerdictTrend.daiTiaoJian, '成而有待', '旺而有待');
+          } else {
+            (trend, nuance, rule) = (VerdictTrend.daiTiaoJian, '吉中有阻', '旺而忌动');
+          }
+        case _Strength.mixed:
+          if (yuanTakesPriority) {
+            (trend, nuance, rule) =
+                (VerdictTrend.daiTiaoJian, '先难后成', '元神动而生用');
+          } else if (jiActive) {
+            (trend, nuance, rule) = (VerdictTrend.nanCheng, '抑重于扶', '忌神动而克用');
+          } else if (allRescuable) {
+            (trend, nuance, rule) =
+                (VerdictTrend.daiTiaoJian, '待解除后再断', '悬而未决');
+          } else if (l1Fu) {
+            // 《克处逢生章》：休囚受制而仍得日月生扶，不作趋势不明，
+            // 保留为先难后成的条件性判断。
+            (trend, nuance, rule) = (VerdictTrend.daiTiaoJian, '先难后成', '克处逢生');
+          } else {
+            (trend, nuance, rule) = (VerdictTrend.buMing, '扶抑并见，须参断者裁', '扶抑并见');
+          }
+      }
     }
     factors.add(VerdictFactor(
       rule: '裁决·$rule',
@@ -287,9 +314,8 @@ class VerdictService {
         hasRescue: notWeak,
       ));
     }
-    final inMu = terms.contains('入日墓') ||
-        terms.contains('入月墓') ||
-        terms.contains('入动墓');
+    final inMu =
+        terms.contains('入日墓') || terms.contains('入月墓') || terms.contains('入动墓');
     if (inMu && !terms.contains('出墓')) {
       conditions.add(VerdictCondition(
         label: '待冲开墓库',
@@ -306,9 +332,7 @@ class VerdictService {
     }
     final heZhu = terms.contains('合住') ||
         terms.contains('合绊') ||
-        terms.contains('化合') ||
-        (yongShen.isMoving &&
-            (terms.contains('日合') || terms.contains('月合')));
+        (yongShen.isMoving && (terms.contains('日合') || terms.contains('月合')));
     if (heZhu && !terms.contains('冲开')) {
       conditions.add(VerdictCondition(
         label: '待冲开',
@@ -339,11 +363,13 @@ class VerdictService {
       ));
     }
     if (isFuShen) {
+      final alreadyReleased = terms.contains('伏神得出');
       conditions.add(VerdictCondition(
         label: '待出伏',
         branch: zhi,
         reason: '用神不现，待伏神值日或冲飞之日引出',
-        hasRescue: !terms.contains('伏神受制'),
+        hasRescue: alreadyReleased ||
+            (!terms.contains('飞克伏') && !terms.contains('伏神受制')),
       ));
     }
     return conditions;
@@ -359,8 +385,7 @@ class VerdictService {
   }) {
     final desc = '${yongShen.liuQin.name}${yongShen.branch}'
         '${yongShen.wuXing.name}${isFuShen ? '（伏）' : ''}';
-    final condText =
-        conditions.take(2).map((c) => c.label).join('、');
+    final condText = conditions.take(2).map((c) => c.label).join('、');
     final yingQiHint = yingQi.isEmpty
         ? ''
         : '；优先观察：${yingQi.take(2).map((c) => c.label).join('，')}';

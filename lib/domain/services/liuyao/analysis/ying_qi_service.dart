@@ -50,22 +50,21 @@ class YingQiService {
       add(zhi, '值日填实月破', 2);
       add(heZhi, '逢合解破', 3);
     }
-    if (terms.contains('入日墓') ||
-        terms.contains('入月墓') ||
-        terms.contains('入动墓')) {
+    if ((terms.contains('入日墓') ||
+            terms.contains('入月墓') ||
+            terms.contains('入动墓')) &&
+        !terms.contains('出墓')) {
       final muBranch = ChangShengTable.getMuBranch(yongShen.wuXing);
       add(DiZhiRelations.getLiuChong(muBranch)!, '冲开墓库', 2);
     }
-    final isHeZhu =
-        terms.contains('合住') || terms.contains('合绊') || terms.contains('化合');
+    final isHeZhu = terms.contains('合住') ||
+        terms.contains('合绊') ||
+        (yongShen.isMoving && (terms.contains('日合') || terms.contains('月合')));
     if (isHeZhu && !terms.contains('冲开')) {
       add(chongZhi, '冲用神解合', 3);
-      final hePartner = terms.contains('化合') && changedYao != null
-          ? changedYao.branch
-          : heZhi;
-      add(DiZhiRelations.getLiuChong(hePartner)!, '冲合神解合', 3);
+      add(DiZhiRelations.getLiuChong(heZhi)!, '冲合神解合', 3);
     }
-    if (terms.contains('临绝')) {
+    if (terms.contains('临绝') || terms.contains('化绝')) {
       add(ChangShengTable.getChangShengBranch(yongShen.wuXing), '绝处逢生', 7);
     }
     if (terms.contains('化进神') && changedYao != null) {
