@@ -113,3 +113,37 @@
 ### Next Steps
 
 - None - task complete
+
+
+## Session 4: 六爻裁决层：受力求值+决策表+40例黄金断例
+
+**Date**: 2026-07-25
+**Task**: 六爻裁决层：受力求值+决策表+40例黄金断例
+**Branch**: `main`
+
+### Summary
+
+实现 VerdictService 裁决层：四步求值（受力归集/元忌活跃性/悬置转条件/决策表首行命中）输出趋势+条件集+推理链，AnalysisReport 新增 judgment 字段（派生不落库），取用神卡展示断曰徽标。领域复核扩黄金断例至 40 例（29 原书占例+11 章法校验例）并修正五处裁决偏差：回头克优先、回头生直断、化合论化扶、元神优先需接续证据、克处逢生。spec 口径表同步裁决层规则。758 测试全绿。
+
+### Main Changes
+
+- Detailed change bullets were not supplied; see the summary above.
+
+### Git Commits
+
+| Hash | Message |
+|------|---------|
+| `91591d7` | (see git log) |
+| `6c7b16d` | (see git log) |
+
+### Testing
+
+- Validation was not recorded for this session.
+
+### Status
+
+[OK] **Completed**
+
+### Next Steps
+
+- None - task complete
