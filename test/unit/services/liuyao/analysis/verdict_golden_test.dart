@@ -15,6 +15,8 @@ const _huaXuanZhi = '化空破墓绝';
 const _shen = '元神/忌神/仇神';
 const _fuShen = '飞伏/出伏';
 const _yingQi = '应期条件联动';
+const _originalCase = '原书占例';
+const _ruleValidationCase = '章法校验例';
 
 class _GoldenCase {
   const _GoldenCase({
@@ -906,10 +908,18 @@ void main() {
   }
 
   group('黄金断例领域覆盖矩阵', () {
-    test('至少40例且各规则域达到覆盖下限', () {
+    test('来源构成、编号与各规则域达到覆盖下限', () {
       expect(_goldenCases, hasLength(greaterThanOrEqualTo(40)));
-      expect(_goldenCases.map((c) => c.id).toSet(),
-          hasLength(_goldenCases.length));
+      expect(_goldenCases.map((c) => c.id),
+          orderedEquals(List.generate(_goldenCases.length, (i) => i + 1)));
+      final originalCount =
+          _goldenCases.where((c) => c.nature == _originalCase).length;
+      final validationCount =
+          _goldenCases.where((c) => c.nature == _ruleValidationCase).length;
+      expect(originalCount, greaterThanOrEqualTo(26));
+      expect(validationCount, greaterThanOrEqualTo(14));
+      expect(originalCount + validationCount, _goldenCases.length,
+          reason: '所有断例必须明确归为原书占例或章法校验例');
 
       for (final entry in _coverageFloor.entries) {
         final actual =
@@ -922,16 +932,33 @@ void main() {
     test('每例均记录完整占例元数据，规则推导不冒充原书占例', () {
       for (final goldenCase in _goldenCases) {
         expect(goldenCase.question, isNotEmpty, reason: '例${goldenCase.id}');
+        expect(goldenCase.yueJian, isNotEmpty, reason: '例${goldenCase.id}');
+        expect(goldenCase.riGanZhi, isNotEmpty, reason: '例${goldenCase.id}');
         expect(goldenCase.hexagram, isNotEmpty, reason: '例${goldenCase.id}');
         expect(goldenCase.movingLines, isNotEmpty, reason: '例${goldenCase.id}');
+        expect(goldenCase.numbers, hasLength(6), reason: '例${goldenCase.id}');
+        expect(
+          goldenCase.numbers,
+          everyElement(inInclusiveRange(6, 9)),
+          reason: '例${goldenCase.id}爻值须为6至9',
+        );
+        expect(
+          goldenCase.position,
+          inInclusiveRange(1, 6),
+          reason: '例${goldenCase.id}用神爻位须为1至6',
+        );
         expect(goldenCase.yongShen, isNotEmpty, reason: '例${goldenCase.id}');
         expect(goldenCase.sourceChapter, isNotEmpty,
             reason: '例${goldenCase.id}');
         expect(goldenCase.printedPages, isNotEmpty,
             reason: '例${goldenCase.id}');
+        expect(goldenCase.adjudication, isNotEmpty,
+            reason: '例${goldenCase.id}须先记录原书或章法裁定');
+        expect(goldenCase.coverage, isNotEmpty,
+            reason: '例${goldenCase.id}须归入至少一个规则域');
         expect(
           goldenCase.nature,
-          anyOf('原书占例', '章法校验例'),
+          anyOf(_originalCase, _ruleValidationCase),
           reason: '例${goldenCase.id}必须明确来源性质',
         );
       }

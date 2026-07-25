@@ -1,12 +1,40 @@
 import 'package:flutter_test/flutter_test.dart';
+import 'package:wanxiang_paipan/divination_systems/liuyao/models/yao.dart';
 import 'package:wanxiang_paipan/domain/services/liuyao/analysis/liuyao_analyzer.dart';
 import 'package:wanxiang_paipan/domain/services/liuyao/analysis/models/analysis_report.dart';
+import 'package:wanxiang_paipan/domain/services/liuyao/analysis/models/analysis_tag.dart';
+import 'package:wanxiang_paipan/domain/services/liuyao/analysis/verdict_service.dart';
 
 import 'helpers/analysis_fixtures.dart';
 
 /// 裁决层测试：经 LiuYaoAnalyzer 全管道驱动，用真实服务产出的标签作输入，
 /// 覆盖决策表每行的正例与关键反例。卦例按《增删卜易》断法原则构造。
 void main() {
+  YaoAnalysisTag tag(String term, TagCategory category) => YaoAnalysisTag(
+        term: term,
+        category: category,
+        polarity: Polarity.neutral,
+        priority: 0,
+        reason: '通用规则组合：$term',
+      );
+
+  VerdictJudgment judgeTags(
+    List<YaoAnalysisTag> tags, {
+    Yao? yongShen,
+    bool isFuShen = false,
+  }) {
+    final yao = yongShen ?? makeYao(branch: '午', moving: true);
+    return VerdictService.judge(
+      yongShen: yao,
+      isFuShen: isFuShen,
+      yongShenTags: tags,
+      yaoTags: {yao.position: tags},
+      mainGua: buildGua([7, 7, 7, 7, 7, 7]),
+      lunarInfo: buildLunar(),
+      yingQi: const [],
+    );
+  }
+
   VerdictJudgment judge(
     List<int> numbers, {
     required String yueJian,
@@ -215,6 +243,56 @@ void main() {
 
       expect(j.factors.map((f) => f.rule), contains('伏神得出'));
       final condition = j.conditions.firstWhere((c) => c.label == '待出伏');
+      expect(condition.hasRescue, isTrue);
+      expect(j.trend, VerdictTrend.daiTiaoJian);
+    });
+  });
+
+  group('领域复核规则按通用标签组合生效', () {
+    test('回头生前置规则不依赖复之震占例', () {
+      final j = judgeTags([
+        tag('月克', TagCategory.wangShuai),
+        tag('回头生', TagCategory.dongBian),
+      ]);
+
+      expect(j.trend, VerdictTrend.keCheng);
+      expect(j.factors.last.rule, '裁决·用神回头得生');
+    });
+
+    test('回头克优先、克处逢生、非接续元忌均由标签守卫决定', () {
+      final huiTouKe = judgeTags([
+        tag('月克', TagCategory.wangShuai),
+        tag('回头克', TagCategory.dongBian),
+        tag('连续相生', TagCategory.shengKe),
+      ]);
+      final keChuFengSheng = judgeTags([
+        tag('日生', TagCategory.wangShuai),
+        tag('回头克', TagCategory.dongBian),
+      ]);
+      final yuanJi = judgeTags([
+        tag('动爻生', TagCategory.shengKe),
+        tag('动爻克', TagCategory.shengKe),
+      ]);
+
+      expect(huiTouKe.factors.last.rule, '裁决·用神回头受克');
+      expect(huiTouKe.trend, VerdictTrend.nanCheng);
+      expect(keChuFengSheng.factors.last.rule, '裁决·克处逢生');
+      expect(keChuFengSheng.trend, VerdictTrend.daiTiaoJian);
+      expect(yuanJi.factors.last.rule, '裁决·忌神动而克用');
+      expect(yuanJi.trend, VerdictTrend.nanCheng);
+    });
+
+    test('伏神得出可解覆盖飞克伏无解也不依赖具体卦例', () {
+      final j = judgeTags(
+        [
+          tag('飞克伏', TagCategory.fuShen),
+          tag('伏神得出', TagCategory.fuShen),
+        ],
+        yongShen: makeYao(branch: '子'),
+        isFuShen: true,
+      );
+
+      final condition = j.conditions.singleWhere((c) => c.label == '待出伏');
       expect(condition.hasRescue, isTrue);
       expect(j.trend, VerdictTrend.daiTiaoJian);
     });
