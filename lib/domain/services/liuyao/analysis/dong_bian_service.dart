@@ -9,11 +9,12 @@ import 'wang_shuai_service.dart';
 
 /// 动静与动爻变化分析。
 ///
-/// 覆盖：暗动、日破、冲散、独发、独静、化进神、化退神、回头生、回头克、
+/// 覆盖：暗动、日破、冲散、日冲催动、独发、独静、化进神、化退神、回头生、回头克、
 /// 化泄、化空、化破、化墓、化绝、化合、化冲。
 /// 规则依据《增删卜易》：旺相静爻逢日冲为暗动，休囚静爻逢日冲为日破，
-/// 休囚动爻逢日冲为冲散，旺相动爻冲之不散；旬空之爻逢冲论冲空不论暗动。
-/// 化扶不单独标注（同五行必构成进神或退神，词典中说明）。
+/// 休囚动爻逢日冲为冲散，旺相动爻逢日冲为催动而冲之不散；
+/// 旬空之爻逢冲论冲空不论暗动。
+/// 化扶不另起标签：变爻回头相合以“化合”记录，裁决时按扶助解释。
 class DongBianService {
   DongBianService._();
 
@@ -68,7 +69,8 @@ class DongBianService {
     return result;
   }
 
-  /// 日冲的定性：暗动 / 日破 / 冲散。旬空之爻不在此论（由空亡服务判定冲空）。
+  /// 日冲的定性：暗动 / 日破 / 冲散 / 催动不散。
+  /// 旬空之爻不在此论（由空亡服务判定冲空）。
   static List<YaoAnalysisTag> _analyzeRiChong(Yao yao, LunarInfo lunarInfo) {
     if (!DiZhiRelations.isLiuChong(lunarInfo.riZhi, yao.branch)) {
       return const [];
@@ -109,7 +111,15 @@ class DongBianService {
         ),
       ];
     }
-    return const []; // 旺相动爻冲之不散
+    return [
+      YaoAnalysisTag(
+        term: '日冲',
+        category: TagCategory.dongBian,
+        polarity: Polarity.neutral,
+        priority: 18,
+        reason: '旺相动爻逢日辰${lunarInfo.riZhi}冲，催动趋急而冲之不散',
+      ),
+    ];
   }
 
   /// 动爻与其化出变爻的变化标签
@@ -215,9 +225,9 @@ class DongBianService {
       tags.add(YaoAnalysisTag(
         term: '化合',
         category: TagCategory.dongBian,
-        polarity: Polarity.neutral,
+        polarity: Polarity.ji,
         priority: 26,
-        reason: '$from与变爻$to六合，回头合住',
+        reason: '$from与变爻$to六合，回头相合为化扶',
       ));
     }
     if (DiZhiRelations.isLiuChong(from, to)) {

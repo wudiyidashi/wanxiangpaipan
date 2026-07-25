@@ -56,10 +56,18 @@ void main() {
 
   group('DongBianService 化空破墓绝合冲', () {
     test('卯化戌：化合、克出（卯木克戌土）且化空（甲子旬戌亥空）', () {
-      final terms = transformTerms('卯', '戌');
+      final tags = DongBianService.analyzeTransform(
+        makeYao(branch: '卯', moving: true),
+        makeYao(branch: '戌'),
+        buildLunar(yueJian: '午', riGanZhi: '甲子'),
+      );
+      final terms = tags.map((tag) => tag.term);
       expect(terms, contains('化合'));
       expect(terms, contains('克出'));
       expect(terms, contains('化空'));
+      final huaHe = tags.firstWhere((tag) => tag.term == '化合');
+      expect(huaHe.reason, contains('化扶'));
+      expect(huaHe.polarity, Polarity.ji);
     });
 
     test('申化子于午月：化破（午冲子）', () {
@@ -92,7 +100,7 @@ void main() {
     });
   });
 
-  group('DongBianService 日冲定性（暗动/日破/冲散）', () {
+  group('DongBianService 日冲定性（暗动/日破/冲散/催动）', () {
     test('旺相静爻逢日冲：暗动', () {
       // 亥月子水旺，甲午日冲子（甲午旬空辰巳，子不空）
       final qian = buildGua([7, 7, 7, 7, 7, 7]);
@@ -120,13 +128,18 @@ void main() {
       expect((result[1] ?? []).map((t) => t.term), contains('冲散'));
     });
 
-    test('旺相动爻逢日冲：冲不散，无凶标签', () {
+    test('旺相动爻逢日冲：催动趋急但冲不散', () {
       final qian = buildGua([9, 7, 7, 7, 7, 7]);
       final l = buildLunar(yueJian: '亥', riGanZhi: '甲午');
       final result = DongBianService.analyzeGua(qian, null, l);
-      final terms = (result[1] ?? []).map((t) => t.term);
+      final tags = result[1] ?? [];
+      final terms = tags.map((t) => t.term);
+      final riChong = tags.singleWhere((tag) => tag.term == '日冲');
+      expect(riChong.polarity, Polarity.neutral);
+      expect(riChong.reason, contains('催动趋急而冲之不散'));
       expect(terms, isNot(contains('冲散')));
       expect(terms, isNot(contains('日破')));
+      expect(terms, isNot(contains('暗动')));
     });
 
     test('旬空静爻逢日冲不论暗动（由冲空判定）', () {

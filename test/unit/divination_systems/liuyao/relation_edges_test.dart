@@ -111,14 +111,75 @@ void main() {
       expect(yuePo.to, 1);
     });
 
-    test('亥月甲午日冲初爻子（旺相）：暗动边（日辰→初爻）', () {
+    test('亥月甲午日冲初爻子（旺相）：日冲暗动边（日辰→初爻）', () {
       final qian = GuaCalculator.calculateGua([7, 7, 7, 7, 7, 7]);
       final report = LiuYaoAnalyzer.analyze(
           qian, null, lunar(yueJian: '亥', riGanZhi: '甲午'));
       final edges = buildRelationEdges(report, mainGua: qian);
-      final anDong = edges.firstWhere((e) => e.term == '暗动');
+      final anDong = edges.firstWhere((e) => e.term == '日冲·暗动');
       expect(anDong.from, RelationEdge.riNode);
       expect(anDong.to, 1);
+    });
+
+    test('丑日冲未土两现：静爻暗动，化戌的明动爻催动不散，各自画线', () {
+      // 泽地萃：初爻与上爻均为未土，上爻明动后化出戌土。
+      final cui = GuaCalculator.calculateGua([8, 8, 8, 7, 7, 6]);
+      final changing = GuaCalculator.generateChangingGua(cui)!;
+      expect(cui.yaos[0].branch, '未');
+      expect(cui.yaos[5].branch, '未');
+      expect(cui.yaos[0].isMoving, isFalse);
+      expect(cui.yaos[5].isMoving, isTrue);
+      expect(changing.yaos[5].branch, '戌');
+
+      final report = LiuYaoAnalyzer.analyze(
+        cui,
+        changing,
+        lunar(yueJian: '午', riGanZhi: '乙丑'),
+      );
+      final edges = buildRelationEdges(
+        report,
+        mainGua: cui,
+        movingPositions: {6},
+      );
+      final riChongEdges = edges
+          .where((edge) =>
+              edge.from == RelationEdge.riNode && edge.term.startsWith('日冲·'))
+          .toList();
+
+      expect(riChongEdges, hasLength(2));
+      expect(
+        riChongEdges.map((edge) => (edge.to, edge.term)).toSet(),
+        {(1, '日冲·暗动'), (6, '日冲·催动')},
+      );
+    });
+
+    test('休囚明动爻逢日冲：绘制日冲冲散边', () {
+      final qian = GuaCalculator.calculateGua([9, 7, 7, 7, 7, 7]);
+      final changing = GuaCalculator.generateChangingGua(qian)!;
+      final report = LiuYaoAnalyzer.analyze(
+        qian,
+        changing,
+        lunar(yueJian: '午', riGanZhi: '甲午'),
+      );
+      final edges = buildRelationEdges(report, mainGua: qian);
+
+      final chongSan = edges.singleWhere((e) => e.term == '日冲·冲散');
+      expect(chongSan.from, RelationEdge.riNode);
+      expect(chongSan.to, 1);
+    });
+
+    test('旬空爻逢日冲：绘制日冲冲空边', () {
+      final qian = GuaCalculator.calculateGua([7, 7, 7, 7, 7, 7]);
+      final report = LiuYaoAnalyzer.analyze(
+        qian,
+        null,
+        lunar(yueJian: '午', riGanZhi: '戊辰'),
+      );
+      final edges = buildRelationEdges(report, mainGua: qian);
+
+      final chongKong = edges.singleWhere((e) => e.term == '日冲·冲空');
+      expect(chongKong.from, RelationEdge.riNode);
+      expect(chongKong.to, 6);
     });
   });
 }

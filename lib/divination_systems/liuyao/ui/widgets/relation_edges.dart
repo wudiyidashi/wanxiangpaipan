@@ -252,10 +252,17 @@ List<RelationEdge> buildRelationEdges(
               directed: true));
         case '暗动':
         case '日破':
+        case '冲散':
+        case '冲空':
+        case '日冲':
+          final effect = switch (tag.term) {
+            '日冲' => '催动',
+            _ => tag.term,
+          };
           add(RelationEdge(
               from: RelationEdge.riNode,
               to: position,
-              term: tag.term,
+              term: '日冲·$effect',
               kind: RelationKind.ke,
               directed: true));
         case '日合':
