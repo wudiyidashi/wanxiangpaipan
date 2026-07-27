@@ -8,10 +8,12 @@ import 'package:lunar/lunar.dart';
 
 import '../../../divination_systems/daliuren/models/chuan.dart';
 import '../../../divination_systems/daliuren/models/daliuren_result.dart';
+import '../../../divination_systems/daliuren/models/pan_params.dart';
 import '../../../divination_systems/daliuren/models/shen_sha.dart';
 import '../../../domain/divination_system.dart';
 import '../../../domain/services/daliuren/analysis/daliuren_analyzer.dart';
 import '../../../domain/services/daliuren/analysis/models/daliuren_analysis_models.dart';
+import '../../../domain/services/shared/tiangan_dizhi_service.dart';
 import '../structured_output.dart';
 import '../structured_output_formatter.dart';
 
@@ -77,6 +79,7 @@ class DaLiuRenStructuredFormatter
         'buJiang': result.shenJiangConfig.directionDescription,
         'guiRenVerse': result.panParams.guiRenVerseLabel,
         'xunShou': result.panParams.xunShouModeLabel,
+        'xunShouGanZhi': _resolveXunShouGanZhi(result),
         'keType': result.keTypeName,
         'sanChuan': [
           result.chuChuan,
@@ -259,6 +262,7 @@ class DaLiuRenStructuredFormatter
     buffer.writeln('- 布将：${result.shenJiangConfig.directionDescription}');
     buffer.writeln('- 贵人口诀：${result.panParams.guiRenVerseLabel}');
     buffer.writeln('- 旬位：${result.panParams.xunShouModeLabel}');
+    buffer.writeln('- 旬首：${_resolveXunShouGanZhi(result)}旬');
     buffer.writeln('- 课格：${result.keTypeName}课');
     buffer.writeln(
       '- 三传：${result.chuChuan} → ${result.zhongChuan} → ${result.moChuan}',
@@ -349,6 +353,22 @@ class DaLiuRenStructuredFormatter
   }
 
   bool _isDay(DaLiuRenResult result) => result.shenJiangConfig.isYangGui;
+
+  /// 解析旬首干支（如「甲申」）。
+  ///
+  /// 口径对齐 `daliuren_result_screen.dart._resolveXunName`：
+  /// 按 [DaLiuRenXunShouMode] 取旬目标干支，索引落到所在旬的旬首。
+  String _resolveXunShouGanZhi(DaLiuRenResult result) {
+    final xunTarget = result.panParams.xunShouMode == DaLiuRenXunShouMode.hour
+        ? (result.lunarInfo.hourGanZhi ?? result.lunarInfo.riGanZhi)
+        : result.lunarInfo.riGanZhi;
+    final index = TianGanDiZhiService.getGanZhiIndex(xunTarget);
+    if (index == -1) {
+      return '';
+    }
+    final xunStartIndex = (index ~/ 10) * 10;
+    return TianGanDiZhiService.getGanZhi(xunStartIndex);
+  }
 
   String _joinBranches(List<String> branches) => branches.join();
 

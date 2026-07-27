@@ -112,6 +112,7 @@ void main() {
       expect(rendered, contains('- 月将：戌将（戌加巳时）'));
       expect(rendered, contains('- 昼夜：昼占'));
       expect(rendered, contains('- 贵人：昼贵巳'));
+      expect(rendered, contains('- 旬首：甲寅旬'));
       expect(rendered, contains('- 课格：贼克课'));
       expect(rendered, contains('- 三传：午 → 亥 → 辰'));
       expect(rendered, contains('- 月建：辰'));
@@ -166,6 +167,13 @@ void main() {
       // coreData 增补字段
       expect(output.coreData['keGeName'], '元首');
       expect(output.coreData['verdictTrend'], isNotNull);
+
+      // 旬首：戊子在甲申旬（总览行 + coreData.overview.xunShouGanZhi）
+      expect(rendered, contains('- 旬首：甲申旬'));
+      final overview = output.coreData['overview'] as Map<String, dynamic>;
+      expect(overview['xunShouGanZhi'], '甲申');
+      // 既有取旬模式标签字段不变
+      expect(overview['xunShou'], '日柱旬遁干');
 
       // 既有字段不删不改
       expect(output.coreData['formatTitle'], '大六壬完整结构化排盘');
