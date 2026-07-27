@@ -130,6 +130,18 @@ void main() {
   });
 
   group('决策表 mixed 分支', () {
+    test('重抑与元神生并见时归 mixed，由元神分支裁决', () {
+      final j = judgeTags([
+        tag('月克', TagCategory.wangShuai),
+        tag('动爻生', TagCategory.shengKe),
+      ]);
+
+      expect(j.factors.map((f) => f.rule), containsAll(['月克', '动爻生']));
+      expect(j.trend, VerdictTrend.daiTiaoJian);
+      expect(j.nuance, '先难后成');
+      expect(j.factors.last.rule, '裁决·元神动而生用');
+    });
+
     test('正例·元神动而生用 → 待条件·先难后成（震午月辛卯日三爻辰动生五爻申）', () {
       final j = judge([7, 8, 6, 7, 8, 8],
           yueJian: '午', riGanZhi: '辛卯', position: 5, withChanging: true);

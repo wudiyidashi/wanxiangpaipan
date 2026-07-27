@@ -196,10 +196,6 @@ class VerdictService {
           if (hasNoRescue) {
             (trend, nuance, rule) =
                 (VerdictTrend.nanCheng, '空破墓绝，到底无救', '衰而无救');
-          } else if (yuanTakesPriority) {
-            // 元神动须先于忌神判：忌元同动则贪生忘克，接续相生
-            (trend, nuance, rule) =
-                (VerdictTrend.daiTiaoJian, '先难后成', '元神动而生用');
           } else if (jiActive) {
             (trend, nuance, rule) = (VerdictTrend.nanCheng, '克处无生', '忌神乘衰攻用');
           } else {
