@@ -19,7 +19,8 @@
   "pr_url": null,
   "subtasks": [],
   "children": [
-    "07-27-daliuren-sanchuan-fix"
+    "07-27-daliuren-sanchuan-fix",
+    "07-27-daliuren-analysis-engine"
   ],
   "parent": null,
   "relatedFiles": [],

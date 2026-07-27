@@ -1,0 +1,2 @@
+{"file": ".trellis/tasks/07-27-daliuren-analysis-engine/design.md", "reason": "分析层模型/服务/决策表唯一依据"}
+{"file": ".trellis/spec/domain/daliuren-pan-engine.md", "reason": "排盘层口径，分析层只读依赖"}

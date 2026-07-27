@@ -1,5 +1,9 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
 
+import '../../../shared/analysis/models/polarity.dart';
+
+export '../../../shared/analysis/models/polarity.dart';
+
 part 'analysis_tag.freezed.dart';
 
 /// 分析标签分类
@@ -16,16 +20,6 @@ enum TagCategory {
   guaChange('卦象变化');
 
   const TagCategory(this.name);
-  final String name;
-}
-
-/// 标签吉凶极性
-enum Polarity {
-  ji('吉'),
-  xiong('凶'),
-  neutral('中性');
-
-  const Polarity(this.name);
   final String name;
 }
 
