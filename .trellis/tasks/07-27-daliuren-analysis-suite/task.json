@@ -20,7 +20,8 @@
   "subtasks": [],
   "children": [
     "07-27-daliuren-sanchuan-fix",
-    "07-27-daliuren-analysis-engine"
+    "07-27-daliuren-analysis-engine",
+    "07-27-daliuren-analysis-ui"
   ],
   "parent": null,
   "relatedFiles": [],

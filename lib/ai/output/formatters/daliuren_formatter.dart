@@ -10,6 +10,8 @@ import '../../../divination_systems/daliuren/models/chuan.dart';
 import '../../../divination_systems/daliuren/models/daliuren_result.dart';
 import '../../../divination_systems/daliuren/models/shen_sha.dart';
 import '../../../domain/divination_system.dart';
+import '../../../domain/services/daliuren/analysis/daliuren_analyzer.dart';
+import '../../../domain/services/daliuren/analysis/models/daliuren_analysis_models.dart';
 import '../structured_output.dart';
 import '../structured_output_formatter.dart';
 
@@ -23,13 +25,15 @@ class DaLiuRenStructuredFormatter
   StructuredDivinationOutput format(DaLiuRenResult result, {String? question}) {
     final lunarDate = Lunar.fromDate(result.castTime);
     final lunarDateText = _formatLunarDate(lunarDate);
+    final report = DaLiuRenAnalyzer.analyze(result);
 
     return StructuredDivinationOutput(
       systemType: systemType.id,
       temporal: _buildTemporalInfo(result, lunarDateText),
       coreData: _buildCoreData(result,
-          question: question, lunarDateText: lunarDateText),
-      sections: _buildSections(result, lunarDateText: lunarDateText),
+          question: question, lunarDateText: lunarDateText, report: report),
+      sections:
+          _buildSections(result, lunarDateText: lunarDateText, report: report),
       userQuestion: question,
       summary: result.getSummary(),
     );
@@ -54,6 +58,7 @@ class DaLiuRenStructuredFormatter
     DaLiuRenResult result, {
     required String? question,
     required String lunarDateText,
+    required DaLiuRenAnalysisReport report,
   }) {
     return {
       'formatTitle': '大六壬完整结构化排盘',
@@ -105,6 +110,8 @@ class DaLiuRenStructuredFormatter
         'zhong': _buildChuanMap(result.sanChuan.zhongChuan),
         'mo': _buildChuanMap(result.sanChuan.moChuan),
       },
+      'keGeName': report.keGe.geName,
+      'verdictTrend': report.judgment?.trend.name,
     };
   }
 
@@ -120,6 +127,7 @@ class DaLiuRenStructuredFormatter
   List<StructuredSection> _buildSections(
     DaLiuRenResult result, {
     required String lunarDateText,
+    required DaLiuRenAnalysisReport report,
   }) {
     return [
       StructuredSection(
@@ -158,7 +166,74 @@ class DaLiuRenStructuredFormatter
         content: _formatShenSha(result),
         priority: 6,
       ),
+      StructuredSection(
+        key: 'analysis',
+        title: '七、断课分析（规则标注）',
+        content: _formatAnalysis(report),
+        priority: 7,
+      ),
     ];
+  }
+
+  /// 将 DaLiuRenAnalyzer 的客观分析报告渲染为提示词文本。
+  ///
+  /// 措辞对齐六爻 analysis section：程序按既定规则标注、
+  /// 分级列出、不下断语。
+  String _formatAnalysis(DaLiuRenAnalysisReport report) {
+    final buffer = StringBuffer();
+    buffer.writeln(
+      '以下状态由程序按既定规则标注；应期是条件候选，不可据此单独断定成败：',
+    );
+    buffer.writeln(
+      '课格：课体${report.keGe.keTypeName}，格局${report.keGe.geName}'
+      '（${report.keGe.polarity.name}）：${report.keGe.reason}',
+    );
+
+    if (report.ganZhiTags.isNotEmpty) {
+      buffer.writeln('干支主客：');
+      for (final tag in report.ganZhiTags) {
+        buffer.writeln('- ${tag.term}：${tag.reason}');
+      }
+    }
+
+    buffer.writeln('三传标签：');
+    for (final position in ChuanPosition.values) {
+      final tags = report.chuanTags[position] ?? const <DlrAnalysisTag>[];
+      final text = tags.isEmpty
+          ? '无'
+          : tags.map((t) => '${t.term}（${t.reason}）').join('、');
+      buffer.writeln('- ${position.displayName}：$text');
+    }
+
+    if (report.juTags.isNotEmpty) {
+      buffer.writeln('课局标签：');
+      for (final tag in report.juTags) {
+        buffer.writeln('- ${tag.term}（${tag.reason}）');
+      }
+    }
+
+    final judgment = report.judgment;
+    if (judgment != null) {
+      buffer.writeln('裁决摘要：${report.verdictSummary ?? judgment.summary}');
+      for (final condition in judgment.conditions) {
+        buffer.writeln(
+          '- 未决条件：${condition.label}'
+          '${condition.branch == null ? '' : '（${condition.branch}）'}'
+          '：${condition.reason}'
+          '${condition.hasRescue ? '' : '（无解救路径）'}',
+        );
+      }
+    }
+
+    final yingQi = report.yingQi;
+    if (yingQi != null && yingQi.isNotEmpty) {
+      buffer.writeln('应期候选：');
+      for (final candidate in yingQi) {
+        buffer.writeln('- ${candidate.label}：${candidate.reason}');
+      }
+    }
+
+    return buffer.toString().trimRight();
   }
 
   String _formatOverview(DaLiuRenResult result, String lunarDateText) {

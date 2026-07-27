@@ -2,9 +2,12 @@ import 'package:flutter/material.dart';
 
 import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_text_styles.dart';
+import '../../../domain/services/daliuren/analysis/models/daliuren_analysis_models.dart';
 import '../../../presentation/widgets/antique/antique.dart';
 import '../models/chuan.dart';
 import '../models/daliuren_result.dart';
+import 'widgets/dlr_chuan_detail_sheet.dart';
+import 'widgets/dlr_tag_badge.dart';
 
 class DaLiuRenPanParamsSection extends StatelessWidget {
   const DaLiuRenPanParamsSection({
@@ -163,9 +166,13 @@ class DaLiuRenSanChuanSection extends StatelessWidget {
   const DaLiuRenSanChuanSection({
     super.key,
     required this.result,
+    this.report,
   });
 
   final DaLiuRenResult result;
+
+  /// 分析报告；非空时传列展示标签徽标并支持点击详析（向后兼容可不传）
+  final DaLiuRenAnalysisReport? report;
 
   @override
   Widget build(BuildContext context) {
@@ -177,23 +184,22 @@ class DaLiuRenSanChuanSection extends StatelessWidget {
           const AntiqueDivider(),
           const SizedBox(height: 12),
           Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              _DaLiuRenChuanCircle(
-                  label: '初传', chuan: result.sanChuan.chuChuan),
+              _buildChuan(context, '初传', result.sanChuan.chuChuan),
               const Padding(
-                padding: EdgeInsets.only(bottom: 20),
+                padding: EdgeInsets.only(top: 40),
                 child:
                     Icon(Icons.arrow_forward, size: 18, color: AppColors.guhe),
               ),
-              _DaLiuRenChuanCircle(
-                  label: '中传', chuan: result.sanChuan.zhongChuan),
+              _buildChuan(context, '中传', result.sanChuan.zhongChuan),
               const Padding(
-                padding: EdgeInsets.only(bottom: 20),
+                padding: EdgeInsets.only(top: 40),
                 child:
                     Icon(Icons.arrow_forward, size: 18, color: AppColors.guhe),
               ),
-              _DaLiuRenChuanCircle(label: '末传', chuan: result.sanChuan.moChuan),
+              _buildChuan(context, '末传', result.sanChuan.moChuan),
             ],
           ),
           const SizedBox(height: 12),
@@ -225,8 +231,37 @@ class DaLiuRenSanChuanSection extends StatelessWidget {
               ),
             ),
           ],
+          if (report != null) ...[
+            const SizedBox(height: 6),
+            Center(
+              child: Text(
+                '点击传柱查看该传详析',
+                style: AppTextStyles.antiqueLabel.copyWith(
+                  color: AppColors.huiseLight,
+                ),
+              ),
+            ),
+          ],
         ],
       ),
+    );
+  }
+
+  Widget _buildChuan(BuildContext context, String label, Chuan chuan) {
+    final currentReport = report;
+    return _DaLiuRenChuanCircle(
+      label: label,
+      chuan: chuan,
+      tags: currentReport?.topTagsForChuan(chuan.position, count: 2)
+          ?? const [],
+      onTap: currentReport == null
+          ? null
+          : () => showDlrChuanDetailSheet(
+                context,
+                chuan: chuan,
+                tags: currentReport.chuanTags[chuan.position] ?? const [],
+                juTags: currentReport.juTags,
+              ),
     );
   }
 }
@@ -485,14 +520,18 @@ class _DaLiuRenChuanCircle extends StatelessWidget {
   const _DaLiuRenChuanCircle({
     required this.label,
     required this.chuan,
+    this.tags = const [],
+    this.onTap,
   });
 
   final String label;
   final Chuan chuan;
+  final List<DlrAnalysisTag> tags;
+  final VoidCallback? onTap;
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
+    final column = Padding(
       padding: const EdgeInsets.symmetric(horizontal: 8),
       child: Column(
         children: [
@@ -550,7 +589,31 @@ class _DaLiuRenChuanCircle extends StatelessWidget {
               ),
             ),
           ],
+          if (tags.isNotEmpty) ...[
+            const SizedBox(height: 4),
+            SizedBox(
+              width: 80,
+              child: Wrap(
+                alignment: WrapAlignment.center,
+                spacing: 3,
+                runSpacing: 3,
+                children: [
+                  for (final tag in tags) DlrTagBadge(tag: tag),
+                ],
+              ),
+            ),
+          ],
         ],
+      ),
+    );
+    if (onTap == null) return column;
+    return Semantics(
+      button: true,
+      label: '$label ${chuan.diZhi}，点击查看详析',
+      child: GestureDetector(
+        behavior: HitTestBehavior.opaque,
+        onTap: onTap,
+        child: column,
       ),
     );
   }

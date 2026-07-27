@@ -25,3 +25,10 @@
 - 传归生身判定含"末传支与日干寄宫支六合"路径（寄宫用六壬寄宫表，非禄位）。
 - 课格重推自结构化字段（keType + SiKe 克方向 + 刚柔日），**禁止解析 `keTypeExplanation` 文本**。
 - 课格测试必须复用排盘层 13 黄金课例盘面直调构造（`test/unit/services/daliuren/analysis/`），保证两层口径联动。
+
+## 可视化与 AI 接入约定
+
+- 结果页在 build 内一次派生 `DaLiuRenAnalyzer.analyze(result)`，无控制器、不落库；三传 section 的 `report` 参数必须保持可选（起卦预览等调用点无 report）。
+- `YingQiCard` 为共享组件（`lib/presentation/widgets/ying_qi_card.dart`）；六爻旧路径仅 export 转发，新系统直接 import 共享路径。
+- 标签配色以 `lib/presentation/widgets/yao_tag_badge.dart` 为权威（吉=jishenGreen、凶=zhusha、中=huise）；圆盘图子宫在正下方、顺时针、每宫 30°，颜色一律用 AppColors token。
+- AI formatter 的 `analysis` section 只能增字段不得删改既有 sections/coreData（模板兼容）；措辞遵循"程序按既定规则标注、不下断语"。

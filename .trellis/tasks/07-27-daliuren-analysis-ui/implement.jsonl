@@ -1,0 +1,2 @@
+{"file": ".trellis/tasks/07-27-daliuren-analysis-ui/design.md", "reason": "组件/装配/formatter 设计唯一依据"}
+{"file": ".trellis/spec/domain/daliuren-analysis-engine.md", "reason": "分析层契约，UI 只读消费"}

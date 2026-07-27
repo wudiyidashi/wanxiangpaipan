@@ -1,8 +1,84 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:wanxiang_paipan/ai/output/formatters/daliuren_formatter.dart';
+import 'package:wanxiang_paipan/divination_systems/daliuren/daliuren_constants.dart';
 import 'package:wanxiang_paipan/divination_systems/daliuren/daliuren_system.dart';
 import 'package:wanxiang_paipan/divination_systems/daliuren/models/daliuren_result.dart';
+import 'package:wanxiang_paipan/divination_systems/daliuren/models/pan_params.dart';
+import 'package:wanxiang_paipan/divination_systems/daliuren/models/tianpan.dart';
 import 'package:wanxiang_paipan/domain/divination_system.dart';
+import 'package:wanxiang_paipan/domain/services/daliuren/san_chuan_service.dart';
+import 'package:wanxiang_paipan/domain/services/daliuren/shen_jiang_service.dart';
+import 'package:wanxiang_paipan/domain/services/daliuren/shen_sha_service.dart';
+import 'package:wanxiang_paipan/domain/services/daliuren/si_ke_service.dart';
+import 'package:wanxiang_paipan/models/lunar_info.dart';
+
+/// 由位移 s 构造天盘映射（与分析层黄金课例同口径）
+Map<String, String> _buildTianPanMap(int s) {
+  const diZhi = DaLiuRenConstants.diZhi;
+  return {
+    for (var i = 0; i < 12; i++) diZhi[i]: diZhi[(i + s + 12) % 12],
+  };
+}
+
+/// 直调排盘服务组装完整 DaLiuRenResult（不落库）
+DaLiuRenResult _buildGoldenResult({
+  required String riGan,
+  required String riZhi,
+  required int s,
+  required List<String> kongWang,
+  String yueJian = '寅',
+  String shiZhi = '午',
+}) {
+  final tianPanMap = _buildTianPanMap(s);
+  final shenJiangConfig = ShenJiangService.configureShenJiang(
+    riGan: riGan,
+    shiZhi: shiZhi,
+    tianPanMap: tianPanMap,
+  );
+  final siKe = SiKeService.arrangeSiKe(
+    riGan: riGan,
+    riZhi: riZhi,
+    tianPanMap: tianPanMap,
+    shenJiangConfig: shenJiangConfig,
+  );
+  final sanChuan = SanChuanService.deriveSanChuan(
+    siKe: siKe,
+    tianPanMap: tianPanMap,
+    shenJiangConfig: shenJiangConfig,
+    kongWang: kongWang,
+  );
+  final shenShaList = ShenShaService.calculateShenSha(
+    riGan: riGan,
+    riZhi: riZhi,
+    yueJian: yueJian,
+    shiZhi: shiZhi,
+  );
+  return DaLiuRenResult(
+    id: 'formatter-$riGan$riZhi-$s',
+    castTime: DateTime(2026, 7, 27, 12),
+    castMethod: CastMethod.time,
+    lunarInfo: LunarInfo(
+      yueJian: yueJian,
+      riGan: riGan,
+      riZhi: riZhi,
+      riGanZhi: '$riGan$riZhi',
+      kongWang: kongWang,
+      yearGanZhi: '丙午',
+      monthGanZhi: '壬寅',
+    ),
+    tianPan: TianPan(
+      yueJiang: '亥',
+      yueJiangName: '登明',
+      shiZhi: shiZhi,
+      tianPanMap: tianPanMap,
+    ),
+    siKe: siKe,
+    sanChuan: sanChuan,
+    shenJiangConfig: shenJiangConfig,
+    shenShaList: shenShaList,
+    panParams: const DaLiuRenPanParams(),
+  );
+}
 
 void main() {
   group('DaLiuRenStructuredFormatter', () {
@@ -59,6 +135,42 @@ void main() {
       expect(rendered, isNot(contains('二、起课参数')));
       expect(rendered, isNot(contains('关键标签')));
       expect(rendered, isNot(contains('排盘摘要')));
+    });
+
+    test('analysis section：黄金例 K（戊子元首）锁定课格/裁决/应期', () {
+      // 戊子在甲申旬，空亡午未；s=+4 位移盘为分析层黄金例 K（元首课）
+      final formatter = DaLiuRenStructuredFormatter();
+      final result = _buildGoldenResult(
+        riGan: '戊',
+        riZhi: '子',
+        s: 4,
+        kongWang: const ['午', '未'],
+      );
+
+      final output = formatter.format(result, question: '问事业');
+      final rendered = formatter.render(output);
+
+      // 新增 analysis section 排在既有 sections 之后
+      final analysis = output.getSection('analysis');
+      expect(analysis, isNotNull);
+      expect(analysis!.priority, 7);
+      expect(analysis.content, contains('元首'));
+      expect(analysis.content, contains('课格：课体贼克，格局元首（吉）'));
+      expect(analysis.content, contains('干支主客：'));
+      expect(analysis.content, contains('三传标签：'));
+      expect(analysis.content, contains('- 初传：'));
+      expect(analysis.content, contains('断曰'));
+      expect(analysis.content, contains('应期候选：'));
+      expect(rendered, contains('七、断课分析（规则标注）'));
+
+      // coreData 增补字段
+      expect(output.coreData['keGeName'], '元首');
+      expect(output.coreData['verdictTrend'], isNotNull);
+
+      // 既有字段不删不改
+      expect(output.coreData['formatTitle'], '大六壬完整结构化排盘');
+      expect(output.hasSection('overview'), true);
+      expect(output.hasSection('shenSha'), true);
     });
   });
 }
