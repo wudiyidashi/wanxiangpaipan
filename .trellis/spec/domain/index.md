@@ -5,6 +5,7 @@
 | 文档 | 内容 |
 |-----|------|
 | [liuyao-analysis-engine.md](liuyao-analysis-engine.md) | 六爻断卦分析引擎：规则基准（增删卜易）、派生数据不落库、可空参数扩展、应期日历匹配约定 |
+| [daliuren-pan-engine.md](daliuren-pan-engine.md) | 大六壬排盘引擎：寄宫口径（非禄位）、四课方向语义、九宗门三传取法锁定口径、黄金课例约定 |
 
 ## 通用约定（来自 CLAUDE.md，此处仅索引）
 

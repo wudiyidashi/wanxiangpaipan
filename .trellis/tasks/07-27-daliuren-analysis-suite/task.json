@@ -1,0 +1,28 @@
+{
+  "id": "daliuren-analysis-suite",
+  "name": "daliuren-analysis-suite",
+  "title": "大六壬排盘完善与分析引擎",
+  "description": "父任务：修复九宗门三传正确性，建立断课分析层与可视化，对齐六爻分析引擎架构",
+  "status": "planning",
+  "dev_type": null,
+  "scope": null,
+  "package": null,
+  "priority": "P1",
+  "creator": "yuekai",
+  "assignee": "yuekai",
+  "createdAt": "2026-07-27",
+  "completedAt": null,
+  "branch": null,
+  "base_branch": "main",
+  "worktree_path": null,
+  "commit": null,
+  "pr_url": null,
+  "subtasks": [],
+  "children": [
+    "07-27-daliuren-sanchuan-fix"
+  ],
+  "parent": null,
+  "relatedFiles": [],
+  "notes": "",
+  "meta": {}
+}

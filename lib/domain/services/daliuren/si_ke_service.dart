@@ -103,29 +103,31 @@ class SiKeService {
     bool isBiYong = false;
 
     if (shangShenWuXing != null && xiaShenWuXing != null) {
-      // 上克下为正统当前优先发用
-      if (WuXingService.isKe(shangShenWuXing, xiaShenWuXing)) {
-        wuXingRelation = '上克下';
+      // 两方向独立判定：
+      // 下神克上神 → 下贼上（isZeiKe）；上神克下神 → 上克下（isBiYong）
+      if (WuXingService.isKe(xiaShenWuXing, shangShenWuXing)) {
+        wuXingRelation = '下克上';
         hasKe = true;
         isZeiKe = true;
       }
-      // 无上克下时，再看下克上
-      else if (WuXingService.isKe(xiaShenWuXing, shangShenWuXing)) {
-        wuXingRelation = '下克上';
+      if (WuXingService.isKe(shangShenWuXing, xiaShenWuXing)) {
+        wuXingRelation = '上克下';
         hasKe = true;
         isBiYong = true;
       }
-      // 上生下
-      else if (WuXingService.isSheng(shangShenWuXing, xiaShenWuXing)) {
-        wuXingRelation = '上生下';
-      }
-      // 下生上
-      else if (WuXingService.isSheng(xiaShenWuXing, shangShenWuXing)) {
-        wuXingRelation = '下生上';
-      }
-      // 比和
-      else if (shangShenWuXing == xiaShenWuXing) {
-        wuXingRelation = '比和';
+      if (!hasKe) {
+        // 上生下
+        if (WuXingService.isSheng(shangShenWuXing, xiaShenWuXing)) {
+          wuXingRelation = '上生下';
+        }
+        // 下生上
+        else if (WuXingService.isSheng(xiaShenWuXing, shangShenWuXing)) {
+          wuXingRelation = '下生上';
+        }
+        // 比和
+        else if (shangShenWuXing == xiaShenWuXing) {
+          wuXingRelation = '比和';
+        }
       }
     }
 

@@ -100,23 +100,105 @@ class DaLiuRenConstants {
     '癸'
   ];
 
-  /// 天干寄宫表
+  /// 天干寄宫表（六壬口径）
   ///
   /// 天干无形体，需寄于地支宫位。
-  /// 甲寄寅、乙寄卯、丙戊寄巳、丁己寄午、
-  /// 庚寄申、辛寄酉、壬寄亥、癸寄子
+  /// 歌诀："甲课寅兮乙课辰，丙戊课巳丁己未，
+  /// 庚课申兮辛课戌，壬课亥兮癸课丑，分明不用四正神"。
+  /// 四正（子午卯酉）无寄干。
+  /// 注意：此表为寄宫表，与禄位表（乙禄卯、丁己禄午、辛禄酉、癸禄子）
+  /// 不同，两者不得互相替代。
   static const Map<String, String> ganJiGong = {
     '甲': '寅',
-    '乙': '卯',
+    '乙': '辰',
     '丙': '巳',
-    '丁': '午',
+    '丁': '未',
     '戊': '巳',
-    '己': '午',
+    '己': '未',
     '庚': '申',
-    '辛': '酉',
+    '辛': '戌',
     '壬': '亥',
-    '癸': '子',
+    '癸': '丑',
   };
+
+  /// 宫→寄干反查表（涉害计数用）
+  ///
+  /// 四正（子午卯酉）无寄干，返回空列表。
+  static const Map<String, List<String>> gongJiGan = {
+    '寅': ['甲'],
+    '辰': ['乙'],
+    '巳': ['丙', '戊'],
+    '未': ['丁', '己'],
+    '申': ['庚'],
+    '戌': ['辛'],
+    '亥': ['壬'],
+    '丑': ['癸'],
+    '子': [],
+    '午': [],
+    '卯': [],
+    '酉': [],
+  };
+
+  /// 三刑表
+  ///
+  /// 子刑卯、卯刑子（无礼之刑）；丑刑戌、戌刑未、未刑丑（恃势之刑）；
+  /// 寅刑巳、巳刑申、申刑寅（无恩之刑）；辰午酉亥为自刑。
+  static const Map<String, String> sanXing = {
+    '子': '卯',
+    '卯': '子',
+    '丑': '戌',
+    '戌': '未',
+    '未': '丑',
+    '寅': '巳',
+    '巳': '申',
+    '申': '寅',
+    '辰': '辰',
+    '午': '午',
+    '酉': '酉',
+    '亥': '亥',
+  };
+
+  /// 天干五合表（别责用）
+  ///
+  /// 甲己合、乙庚合、丙辛合、丁壬合、戊癸合。
+  static const Map<String, String> ganWuHe = {
+    '甲': '己',
+    '己': '甲',
+    '乙': '庚',
+    '庚': '乙',
+    '丙': '辛',
+    '辛': '丙',
+    '丁': '壬',
+    '壬': '丁',
+    '戊': '癸',
+    '癸': '戊',
+  };
+
+  /// 驿马表（按日支三合局取，反吟无克用）
+  ///
+  /// 申子辰马在寅，寅午戌马在申，巳酉丑马在亥，亥卯未马在巳。
+  static const Map<String, String> yiMa = {
+    '申': '寅',
+    '子': '寅',
+    '辰': '寅',
+    '寅': '申',
+    '午': '申',
+    '戌': '申',
+    '巳': '亥',
+    '酉': '亥',
+    '丑': '亥',
+    '亥': '巳',
+    '卯': '巳',
+    '未': '巳',
+  };
+
+  /// 三合局序（生→旺→墓循环，别责"支前合"用）
+  static const List<List<String>> sanHeOrder = [
+    ['申', '子', '辰'],
+    ['寅', '午', '戌'],
+    ['巳', '酉', '丑'],
+    ['亥', '卯', '未'],
+  ];
 
   /// 天干贵人表
   ///
@@ -286,7 +368,50 @@ class DaLiuRenConstants {
   static String getChongZhi(String zhi) => diZhiChong[zhi] ?? zhi;
 
   /// 获取天干寄宫
-  static String getGanJiGong(String gan) => ganJiGong[gan] ?? '子';
+  ///
+  /// 无效天干直接抛出 [ArgumentError]，禁止静默兜底（癸不寄子）。
+  static String getGanJiGong(String gan) {
+    final gong = ganJiGong[gan];
+    if (gong == null) {
+      throw ArgumentError('无效天干，无法获取寄宫: $gan');
+    }
+    return gong;
+  }
+
+  /// 获取宫位所寄天干列表（四正无寄干返回空列表）
+  static List<String> getGongJiGan(String zhi) => gongJiGan[zhi] ?? const [];
+
+  /// 获取地支所刑之支（辰午酉亥自刑，返回自身）
+  static String getXingZhi(String zhi) => sanXing[zhi] ?? zhi;
+
+  /// 判断地支是否自刑（辰午酉亥）
+  static bool isZiXing(String zhi) => sanXing[zhi] == zhi;
+
+  /// 获取天干五合之干
+  static String? getGanWuHe(String gan) => ganWuHe[gan];
+
+  /// 获取日支驿马
+  static String getYiMa(String riZhi) {
+    final ma = yiMa[riZhi];
+    if (ma == null) {
+      throw ArgumentError('无效地支，无法获取驿马: $riZhi');
+    }
+    return ma;
+  }
+
+  /// 获取日支三合局"支前合"（本局生旺墓循环中的下一位）
+  static String getSanHeNext(String zhi) {
+    for (final ju in sanHeOrder) {
+      final index = ju.indexOf(zhi);
+      if (index != -1) {
+        return ju[(index + 1) % ju.length];
+      }
+    }
+    throw ArgumentError('无效地支，无法获取三合局前辰: $zhi');
+  }
+
+  /// 判断是否八专日（干寄宫==日支：甲寅/庚申/丁未/己未/癸丑）
+  static bool isBaZhuanDay(String gan, String zhi) => ganJiGong[gan] == zhi;
 
   /// 获取贵人位置
   static List<String> getGuiRenPosition(String gan) =>
