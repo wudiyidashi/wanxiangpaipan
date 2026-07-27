@@ -201,6 +201,18 @@ void main() {
       expect(find.text('点击传柱查看该传详析'), findsOneWidget);
     });
 
+    testWidgets('360dp 窄屏下带徽标不溢出（回归：Row overflow 30px）', (tester) async {
+      tester.view.physicalSize = const Size(720, 1280);
+      tester.view.devicePixelRatio = 2.0; // 逻辑宽 360dp，对齐 MuMu 实机
+      addTearDown(tester.view.reset);
+
+      await tester.pumpWidget(
+        _wrap(DaLiuRenSanChuanSection(result: resultK, report: reportK)),
+      );
+
+      expect(tester.takeException(), isNull);
+    });
+
     testWidgets('点击传行弹出分类分组详析弹层', (tester) async {
       await tester.pumpWidget(
         _wrap(DaLiuRenSanChuanSection(result: resultK, report: reportK)),

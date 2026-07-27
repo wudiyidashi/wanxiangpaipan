@@ -187,19 +187,25 @@ class DaLiuRenSanChuanSection extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              _buildChuan(context, '初传', result.sanChuan.chuChuan),
+              Expanded(
+                child: _buildChuan(context, '初传', result.sanChuan.chuChuan),
+              ),
               const Padding(
                 padding: EdgeInsets.only(top: 40),
                 child:
                     Icon(Icons.arrow_forward, size: 18, color: AppColors.guhe),
               ),
-              _buildChuan(context, '中传', result.sanChuan.zhongChuan),
+              Expanded(
+                child: _buildChuan(context, '中传', result.sanChuan.zhongChuan),
+              ),
               const Padding(
                 padding: EdgeInsets.only(top: 40),
                 child:
                     Icon(Icons.arrow_forward, size: 18, color: AppColors.guhe),
               ),
-              _buildChuan(context, '末传', result.sanChuan.moChuan),
+              Expanded(
+                child: _buildChuan(context, '末传', result.sanChuan.moChuan),
+              ),
             ],
           ),
           const SizedBox(height: 12),
@@ -591,16 +597,13 @@ class _DaLiuRenChuanCircle extends StatelessWidget {
           ],
           if (tags.isNotEmpty) ...[
             const SizedBox(height: 4),
-            SizedBox(
-              width: 80,
-              child: Wrap(
-                alignment: WrapAlignment.center,
-                spacing: 3,
-                runSpacing: 3,
-                children: [
-                  for (final tag in tags) DlrTagBadge(tag: tag),
-                ],
-              ),
+            Wrap(
+              alignment: WrapAlignment.center,
+              spacing: 3,
+              runSpacing: 3,
+              children: [
+                for (final tag in tags) DlrTagBadge(tag: tag),
+              ],
             ),
           ],
         ],
