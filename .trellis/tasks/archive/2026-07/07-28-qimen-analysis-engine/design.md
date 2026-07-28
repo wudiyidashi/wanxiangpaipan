@@ -146,6 +146,29 @@ Every row is a versioned focus rule. Where a direct source does not uniquely pre
 - `QimenFormationService` owns source-locked Three-Wonders auspicious formations, the nine Dun formations, and common adverse formations. The initial adverse catalog must explicitly decide at least: 青龙逃走、白虎猖狂、朱雀投江、螣蛇夭矫、荧入太白、太白入荧、大格、小格、刑格、飞宫格、伏宫格、天网四张. Exact formulas are admitted only after source-catalog and fixture validation.
 - A named formation not present in the v1 catalog is not inferred from text or emitted as a free-form tag.
 
+The shipped `三奇得使` predicate is catalog-owned and directional: heaven/earth
+stem pairs are exactly `乙+己`, `乙+辛`, `丙+戊`, `丙+庚`, `丁+壬`, and
+`丁+癸`. Primary and hosted pairs are evaluated as separate occurrences.
+
+The nine Dun predicates are likewise catalog data rather than evaluator branches:
+
+| Rule | Exact v1 predicate |
+|---|---|
+| 天遁 | 天盘丙 + 地盘丁 + 生门 |
+| 地遁 | 天盘乙 + 地盘己 + 开门 |
+| 人遁 | 天盘丁 + 休门 + 太阴 |
+| 风遁 | 天盘乙 + 开/休/生门 + 巽四宫 |
+| 云遁 | 天盘乙 + 地盘辛 + 开/休/生门 |
+| 龙遁 | 天盘乙 + 休门 + 坎一宫 |
+| 虎遁 | 天盘乙 + 地盘辛 + 休门 + 艮八宫 |
+| 神遁 | 天盘丙 + 生门 + 九天 |
+| 鬼遁 | 天盘乙 + 杜门 + 九地 |
+
+The admitted human-Dun variant is `丁+休门+太阴`; the alternate witness
+using a lower `丙` component remains source metadata and is not OR-ed into the v1
+predicate. Dragon, tiger, and ghost Dun are evaluated independently, so sharing
+`天盘乙` never makes one imply another.
+
 ## 7. Conflict Policy and Ordered Verdict
 
 ### 7.1 Conflict precedence
@@ -200,6 +223,15 @@ The source hierarchy governs admission, not auspiciousness:
 Disputed rules require either two independent references that agree, or one traceable reference plus an explicit project adjudication explaining the chosen variant. External code alone cannot authorize a decision-capable rule.
 
 Typed golden cases contain: case ID/title, source nature, full citation, pan fixture ID and pan-engine commit/schema, question category, manual adjudication note, expected focus roles, matched fact rule IDs, conflict outcomes, decision-row ID/trend/conditions, YingQi rule IDs/triggers, rule-set version, and coverage tags.
+
+The final source-backed matrix has 14 cases. `QM-G16` preserves the published
+promotion example and its favorable convergence, but its persisted `matter`
+focus lies in the 辰巳-void 巽四 palace; frozen first-match ordering therefore
+returns `QMV1-D20`, not `QMV1-D40`. `QM-G17` is explicitly a classical-formula
+witness (not a historical worked pan): 坎一 `戊+丙` and 巽四 `乙+己`
+lock 青龙返首 and 三奇得使, while its complete pan has favorable
+convergence without a higher condition and therefore supplies the source-backed
+`QMV1-D40` / `可成` trend.
 
 The suite has two intentionally separate populations:
 

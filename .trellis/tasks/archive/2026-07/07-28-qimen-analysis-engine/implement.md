@@ -105,13 +105,15 @@ Rollback point: if a golden adjudication disagrees, correct the source adjudicat
 ### Final Verification Evidence (2026-07-28)
 
 - `dart run build_runner build --delete-conflicting-outputs`: completed; no tracked generated-file drift.
-- `flutter test test/unit/services/qimen/analysis`: 105 passed.
-- Whole-pan golden suite: 38 passed; 17 cases (12 source-backed + 5 explicit synthetic) and stable SHA-256 `9DE7FAA2A9247AB6C4071E2D86BD51440FC0BD9BDF46DDCE96F09FB37BFC14A4`.
+- `dart analyze lib/domain/services/qimen/analysis test/unit/services/qimen/analysis tool/qimen_analysis`: no issues found.
+- `flutter test test/unit/services/qimen/analysis`: 123 passed.
+- Whole-pan golden suite: 42 passed; 19 cases (14 source-backed + 5 explicit synthetic) and stable SHA-256 `D575DC31D56C8F6585D365CB42212F36C56FD37D3C97A22DD288BEF9ADE73E2E`.
+- Qimen service/system/repository round-trip gate: 166 passed.
 - `flutter analyze`: no issues found.
-- Qimen-scoped `dart analyze` recheck after unrelated concurrent Daliuren edits: no issues found.
-- `flutter test`: 1,021 passed across the complete repository.
-- `python ./.trellis/scripts/task.py validate 07-28-qimen-analysis-engine`: all context manifests valid.
+- `flutter test`: 1,093 passed across the complete repository.
+- `python ./.trellis/scripts/task.py validate .trellis/tasks/archive/2026-07/07-28-qimen-analysis-engine`: all context manifests valid after replacing stale pre-archive paths.
 - Architecture searches found no pan-stage service imports or calls in production analysis code; scoring terms occur only in explicit prohibition tests/explanations.
+- Reviewer adjudication: `QM-G16` remains `QMV1-D20` because its persisted `matter` focus is void; source-backed formula witness `QM-G17` supplies `QMV1-D40` without overriding first-match precedence.
 
 ## Validation Commands
 

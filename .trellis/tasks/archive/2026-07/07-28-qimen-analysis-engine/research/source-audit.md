@@ -41,7 +41,7 @@ cross-check evidence and may reproduce earlier material.
 | 门迫 | Door element restrains its palace element. 卷707 explicitly gives 开门临震/巽、休门临离、生门临坎 as adverse examples. | A palace restraining its door is not this rule. Seasonal state is a separate fact. |
 | 六仪击刑 | The xun hidden instrument is punished in its named palace: 戊/震, 己/坤, 庚/艮, 辛/离, 壬/巽, 癸/巽. | Evaluate the persisted `xunHiddenStem` occurrence; hosted facts remain separate. |
 | 三奇入墓 | 乙临坤二、丙临乾六、丁临艮八. | Some passages also describe stem/hour tomb language. v1 keeps palace formation and time-stem condition as distinct facts. |
-| 三遁 | 天遁=丙+生门+丁, 地遁=乙+开门+己, 人遁=丁+休门+太阴/丙 as stated by the selected passage. | Text witnesses differ on the lower component of 人遁; v1 must record its adopted witness and alternate, not merge them. |
+| 九遁 | v1 的九个独立谓词按下表固定，不用一个“三吉门+三奇”概括谓词代替。 | 人遁见证对下层丙/太阴有分歧；v1 采“天盘丁+休门+太阴”，不合并备选口径。 |
 | 五不遇时 | Hour stem restrains day stem in the fixed pairs beginning 甲日庚时、乙日辛时、丙日壬时、丁日癸时、戊日甲时 and their cycle continuation. | Uses persisted day/hour pillars only. It is not every generic stem restraint. |
 | 伏吟/反吟 | Same star/door returns to its origin is 伏吟; opposing palace is 反吟. Star and door facts are recorded separately before any combined fact. | Never infer by parsing derivation display text. |
 | Four adverse pairs | 乙+辛 青龙逃走, 辛+乙 白虎猖狂, 丁+癸 朱雀投江/入江, 癸+丁 螣蛇夭矫. | Preserve witness spelling as source metadata; stable rule IDs do not change with display wording. |
@@ -51,6 +51,9 @@ cross-check evidence and may reproduce earlier material.
 
 Additional formula corrections locked by the same witnesses:
 
+- `三奇得使` 只接受六个有向天/地盘干对：乙+己、乙+辛、
+  丙+戊、丙+庚、丁+壬、丁+癸。天盘干在前；主干与寄干 occurrence
+  分别评估。
 - `乙`奇/仪入墓 is 坤二 (`未`墓), not 乾六. The remaining adopted
   palace table is 丙戊->乾六, 丁己庚->艮八, 辛壬->巽四, 癸->坤二.
 - `庚加值符` and `值符加庚` use the persisted `xunHiddenStem`, not the
@@ -59,9 +62,26 @@ Additional formula corrections locked by the same witnesses:
 - “天网四张时加癸” is an hour-stem/duty condition. A generic `癸加癸`
   heaven/earth pair is not an equivalent predicate.
 
-## Source-Backed End-to-End Case Seeds
+### Locked v1 Nine-Dun Predicates
 
-These are candidate sourced cases for the typed golden manifest. Each frozen
+All stem pairs below are directional (`heavenStem + earthStem`). “三吉门” means
+exactly 开门、休门、生门.
+
+| Rule | Exact executable predicate |
+|---|---|
+| 天遁 | 天盘丙 + 地盘丁 + 生门 |
+| 地遁 | 天盘乙 + 地盘己 + 开门 |
+| 人遁 | 天盘丁 + 休门 + 太阴 |
+| 风遁 | 天盘乙 + 三吉门之一 + 巽四宫 |
+| 云遁 | 天盘乙 + 地盘辛 + 三吉门之一 |
+| 龙遁 | 天盘乙 + 休门 + 坎一宫 |
+| 虎遁 | 天盘乙 + 地盘辛 + 休门 + 艮八宫 |
+| 神遁 | 天盘丙 + 生门 + 九天 |
+| 鬼遁 | 天盘乙 + 杜门 + 九地 |
+
+## Source-Backed End-to-End Cases
+
+These are the admitted sourced cases in the typed golden manifest. Each frozen
 fixture must contain a complete, fixed-ID schema-v1 `QimenResult` JSON object;
 the analysis test restores it through `QimenResult.fromJson` and must never
 call `QimenSystem.cast` or a pan-stage service.
@@ -80,15 +100,17 @@ call `QimenSystem.cast` or a pan-stage service.
 | `QM-G10` | 《奇门遁甲元灵经》惊蛰中元阳遁七局，丁壬日壬寅时，占财 | 生门体克天蓬用但门囚且辛加壬，财有而所得微；not a simple favorable verdict. |
 | `QM-G11` | 《奇门遁甲元灵经》立秋上元阴遁二局，甲己日壬申时，占财 | 时干、甲子戊、生门同兑内盘，source says gain is quick. |
 | `QM-G12` | 《奇门遁甲元灵经》大寒中元阳遁九局，乙庚日庚辰时，占走失人口 | 时干与六合都在内盘，坎宫潜藏，source says not lost. |
-| `QM-G13` | 《奇门遁甲元灵经》大暑中元阴遁一局，戊癸日壬戌时，占失物 | 甲子戊在震、无玄武、非空，east/卯 window and 击刑 damage. |
-| `QM-G14` | 《奇门遁甲元灵经》清明上元阳遁四局，乙庚日丙子时，占援兵 | 天英生天禽、庚受克；source says援兵有声势、守方无虞. |
-| `QM-G15` | 《奇门遁甲元灵经》秋分中元阴遁一局，丁亥日乙巳时，占文章 | 天辅与丁在艮，source assigns the lower successful rank; use as study-category source evidence. |
-| `QM-G16` | 《奇门遁甲元灵经》六己年大寒上元阳遁三局，丙申日乙未时，占升迁 | 开门在兑得相、奇合、太岁天辅来生，source says主升无疑. |
+| `QM-G16` | 《奇门遁甲元灵经》六己年大寒上元阳遁三局，丙申日乙未时，占升迁 | 开门在兑且焦点有利收敛；但 matter 时干乙在持久化辰巳空亡的巽四宫，首行优先命中 `QMV1-D20` 待条件。 |
+| `QM-G17` | 《遁甲演义》青龙返首与三奇得使公式；大寒上元阳遁三局、癸酉日辛酉时的 schema-1 公式见证 | 坎一宫戊+丙、巽四宫乙+己，同时命中有利收敛且无更高条件，首行命中 `QMV1-D40` 可成。这是古籍公式见证，不冒充历史占例。 |
 
-At least 12 of these may be admitted after the completed pan JSON is manually
-checked against the cited formula. The catalog must not claim that a modern
-representative year/month pillar is part of the classical example when the
-source omits it.
+The final manifest admits 14 source-backed cases (`QM-G01..G12`, `QM-G16`,
+`QM-G17`) plus five explicitly synthetic decision/conflict cases. G16 remains
+source-backed evidence for the published promotion pan but cannot honestly be
+the source-backed `可成` witness: persisted void on `matter` invokes frozen
+first-match precedence. G17 supplies that trend using source-backed formulas
+and explicitly discloses its representative complete pan. A modern
+representative year/month pillar is never attributed to a classical source
+that omitted it.
 
 ## Implementation Hazards Found During Audit
 

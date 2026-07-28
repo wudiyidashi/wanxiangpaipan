@@ -4,6 +4,6 @@
 {"file": ".trellis/spec/guides/code-reuse-thinking-guide.md", "reason": "复用共享裁决和应期模型，避免复制六壬或六爻实现"}
 {"file": ".trellis/tasks/07-28-qimen-module/research/qimen-rule-baseline.md", "reason": "奇门盘面规则与分析可用事实边界"}
 {"file": ".trellis/tasks/archive/2026-07/07-28-qimen-pan-engine/design.md", "reason": "分析引擎只读消费的 QimenResult 与九宫字段合同"}
-{"file": ".trellis/tasks/07-28-qimen-analysis-engine/design.md", "reason": "本子任务事实表、裁决表、应期与来源合同"}
-{"file": ".trellis/tasks/07-28-qimen-analysis-engine/research/source-audit.md", "reason": "固定公开来源、公式裁定与16个来源案例种子"}
-{"file": ".trellis/tasks/07-28-qimen-analysis-engine/research/stem-response-audit.md", "reason": "《奇门宝鉴御定》固定版本完整81项十干克应矩阵"}
+{"file": ".trellis/tasks/archive/2026-07/07-28-qimen-analysis-engine/design.md", "reason": "本子任务事实表、裁决表、应期与来源合同"}
+{"file": ".trellis/tasks/archive/2026-07/07-28-qimen-analysis-engine/research/source-audit.md", "reason": "固定公开来源、公式裁定与14个来源案例"}
+{"file": ".trellis/tasks/archive/2026-07/07-28-qimen-analysis-engine/research/stem-response-audit.md", "reason": "《奇门宝鉴御定》固定版本完整81项十干克应矩阵"}
