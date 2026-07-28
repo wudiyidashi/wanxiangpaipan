@@ -27,14 +27,14 @@
 
 ## Completion Evidence
 
-- `flutter analyze`：通过。
-- 大六壬结果、规则契约、排盘、分析与 widget 定向测试：130 项通过。
-- AI formatter 与大六壬 widget：15 项通过。
+- `dart run build_runner build --delete-conflicting-outputs`：通过，未新增 working-tree drift。
+- 大六壬 model/system/service/formatter/widget 定向测试：136 项通过。
 - 六爻共享回归：229 项通过。
-- 大六壬代码、测试和规范范围 `flutter analyze`：无问题。
-- 独立 `trellis-check` 补齐 classic `executableApproved` 门禁、project-pan 命名域与非法 JSON 失败测试。
-- 干净隔离 worktree 仅叠加 C01 后：build_runner 成功，`flutter analyze` 通过，`flutter test` 1050 项全部通过。
-- 主工作区全量测试仅受并行奇门 UI 未完成改动影响；隔离门禁证明 C01 本身无全量回归。
+- `flutter analyze`：全仓通过。
+- `flutter test`：全仓 1116 项通过。
+- 独立 `trellis-check` 补齐 classic `executableApproved` 门禁、C00 manifest 同步测试、project-pan 命名域、精确版本匹配和非法 JSON 失败测试。
+- `task.py validate`：implement/check 各 10 条，全部通过。
+- C01 范围 `git diff --check`：通过。
 
 ## Verification
 
