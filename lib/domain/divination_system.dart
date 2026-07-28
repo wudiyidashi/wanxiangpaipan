@@ -41,7 +41,10 @@ enum DivinationType {
   xiaoLiuRen('小六壬', 'xiaoliuren'),
 
   /// 梅花易数排盘
-  meiHua('梅花易数', 'meihua');
+  meiHua('梅花易数', 'meihua'),
+
+  /// 奇门遁甲排盘
+  qiMen('奇门遁甲', 'qimen');
 
   const DivinationType(this.displayName, this.id);
 

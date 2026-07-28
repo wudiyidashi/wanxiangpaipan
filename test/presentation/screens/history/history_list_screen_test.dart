@@ -84,11 +84,39 @@ class _FakeResult implements DivinationResult {
       };
 }
 
+class _FakeUIFactory implements DivinationUIFactory {
+  const _FakeUIFactory(this.systemType);
+
+  @override
+  final DivinationType systemType;
+
+  @override
+  Widget buildCastScreen(CastMethod method) => const SizedBox.shrink();
+
+  @override
+  Widget buildHistoryCard(DivinationResult result) {
+    return Text(result.getSummary());
+  }
+
+  @override
+  Widget buildResultScreen(DivinationResult result) => const SizedBox.shrink();
+
+  @override
+  Color? getSystemColor() => null;
+
+  @override
+  IconData? getSystemIcon() => null;
+}
+
 Widget _wrapWithRepository({
   required DivinationRepository repository,
   bool chromeless = true,
+  DivinationUIRegistry? uiRegistry,
 }) {
-  final screen = HistoryListScreen(chromeless: chromeless);
+  final screen = HistoryListScreen(
+    chromeless: chromeless,
+    uiRegistry: uiRegistry,
+  );
   return MaterialApp(
     home: Provider<DivinationRepository>.value(
       value: repository,
@@ -99,6 +127,10 @@ Widget _wrapWithRepository({
 
 void main() {
   setUp(() {
+    DivinationUIRegistry().clear();
+  });
+
+  tearDown(() {
     DivinationUIRegistry().clear();
   });
 
@@ -198,6 +230,80 @@ void main() {
 
       expect(find.text('梅花问事'), findsOneWidget);
       expect(find.text('六爻问事'), findsOneWidget);
+    });
+
+    testWidgets('筛选菜单只显示已注册 UI 类型且保持枚举顺序', (tester) async {
+      final registry = DivinationUIRegistry()
+        ..registerUI(const _FakeUIFactory(DivinationType.meiHua))
+        ..registerUI(const _FakeUIFactory(DivinationType.liuYao));
+      final repository = _FakeDivinationRepository(const []);
+
+      await tester.pumpWidget(
+        _wrapWithRepository(
+          repository: repository,
+          chromeless: false,
+          uiRegistry: registry,
+        ),
+      );
+      await tester.pumpAndSettle();
+
+      await tester.tap(find.byIcon(Icons.filter_list));
+      await tester.pumpAndSettle();
+
+      expect(find.text(DivinationType.liuYao.displayName), findsOneWidget);
+      expect(find.text(DivinationType.meiHua.displayName), findsOneWidget);
+      expect(find.text(DivinationType.qiMen.displayName), findsNothing);
+      expect(
+        tester.getTopLeft(find.text(DivinationType.liuYao.displayName)).dy,
+        lessThan(
+          tester.getTopLeft(find.text(DivinationType.meiHua.displayName)).dy,
+        ),
+      );
+    });
+
+    testWidgets('未注册 UI 的历史系统仍保留筛选入口', (tester) async {
+      final now = DateTime.now();
+      final registry = DivinationUIRegistry()
+        ..registerUI(const _FakeUIFactory(DivinationType.liuYao));
+      final repository = _FakeDivinationRepository([
+        _FakeResult(
+          id: 'liuyao',
+          systemType: DivinationType.liuYao,
+          castMethod: CastMethod.time,
+          castTime: now,
+          summary: '六爻历史',
+        ),
+        _FakeResult(
+          id: 'qimen',
+          systemType: DivinationType.qiMen,
+          castMethod: CastMethod.manual,
+          castTime: now.subtract(const Duration(minutes: 1)),
+          summary: '奇门历史',
+        ),
+      ]);
+
+      await tester.pumpWidget(
+        _wrapWithRepository(
+          repository: repository,
+          chromeless: false,
+          uiRegistry: registry,
+        ),
+      );
+      await tester.pumpAndSettle();
+
+      await tester.tap(find.byIcon(Icons.filter_list));
+      await tester.pumpAndSettle();
+      expect(find.text(DivinationType.qiMen.displayName), findsOneWidget);
+
+      await tester.tap(find.text(DivinationType.qiMen.displayName));
+      await tester.pumpAndSettle();
+
+      expect(find.text('奇门历史'), findsOneWidget);
+      expect(find.text('六爻历史'), findsNothing);
+      expect(
+        find.textContaining('系统: ${DivinationType.qiMen.displayName}'),
+        findsOneWidget,
+      );
     });
 
     testWidgets('删除记录后显示空历史状态并提示成功', (tester) async {

@@ -31,6 +31,7 @@
 - [`divination-systems/daliuren.md`](divination-systems/daliuren.md)
 - [`divination-systems/xiaoliuren.md`](divination-systems/xiaoliuren.md)
 - [`divination-systems/meihua.md`](divination-systems/meihua.md)
+- [`divination-systems/qimen.md`](divination-systems/qimen.md)
 
 后续“某一个术数具体怎么起、怎么存、怎么显示”，以对应系统说明为准；本文件只保留跨系统统一契约。
 
@@ -680,6 +681,51 @@ Future<DivinationResult> cast({
 - `风火家人 → 风山渐`
 - 若有体用信息，可扩展为：
   - `风火家人 → 风山渐 · 体生用`
+
+---
+
+## 4.5 奇门遁甲 `QimenSystem`
+
+当前状态：领域引擎已实现，`isEnabled = false`，不在产品启动入口注册。
+
+### 支持方式
+
+- `time`
+- `manual`
+
+### 输入规范
+
+`time` 接受可选的强约束 `params`：
+
+```dart
+{
+  'params': {
+    'juMethod': 'chaiBu', // chaiBu / maoShan / zhiRun
+    'timeBasis': 'localCivil', // localCivil / beijing / trueSolar
+    'sourceUtcOffsetMinutes': 480,
+    'longitude': 116.4, // trueSolar 必填
+    'dayBoundary': 'ziInitial', // ziInitial / midnight
+    'hostingMode': 'kunTwo', // kunTwo / yangEightYinTwo
+    'hiddenStemMode': 'dutyDoorHourStem',
+    'questionCategory': 'general',
+  }
+}
+```
+
+`manual` 必须显式提供合法四柱、二十四节气、`yin/yang`、`1..9` 局及
+`upper/middle/lower`。不得用当前时间静默补柱。完整字段和口径说明见
+[`divination-systems/qimen.md`](divination-systems/qimen.md)。
+
+### 输出规范
+
+`QimenResult` 必须包含 `schemaVersion=1`、稳定 `systemType=qimen`、全部时间
+校正事实、定局轨迹、九宫强类型结构、旬首遁仪、值符值使、旬空驿马和推导步骤。
+中五原始字段和寄宫字段必须分开保存。
+
+摘要固定为：
+
+- `阳遁1局 · 天蓬值符 / 休门值使`
+- `阴遁8局 · 天任值符 / 生门值使`
 
 ---
 

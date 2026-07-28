@@ -107,6 +107,8 @@ class _HomeScreenState extends State<HomeScreen> with RouteAware {
         return '小六壬';
       case DivinationType.daLiuRen:
         return '大六壬';
+      case DivinationType.qiMen:
+        return '奇门遁甲';
     }
   }
 

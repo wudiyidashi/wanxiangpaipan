@@ -58,6 +58,8 @@ class _AIChatSheetState extends State<AIChatSheet> {
         return '小六壬';
       case DivinationType.meiHua:
         return '梅花易数';
+      case DivinationType.qiMen:
+        return '奇门遁甲';
     }
   }
 

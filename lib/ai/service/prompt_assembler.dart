@@ -183,6 +183,7 @@ class PromptAssembler {
       DivinationType.meiHua => '你是一位精通梅花易数的易学专家。',
       DivinationType.daLiuRen => '你是一位精通大六壬的易学专家。',
       DivinationType.xiaoLiuRen => '你是一位精通小六壬的易学专家。',
+      DivinationType.qiMen => throw UnsupportedError('奇门分析引擎尚未接入'),
     };
   }
 

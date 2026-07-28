@@ -124,6 +124,8 @@ class _FakeDataManagementActionsService
           xiaoliurenCount: 0,
         );
         return removed;
+      case DivinationType.qiMen:
+        return 0;
     }
   }
 

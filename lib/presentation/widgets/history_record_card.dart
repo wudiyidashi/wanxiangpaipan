@@ -246,6 +246,8 @@ Color _systemColor(DivinationType t) {
       return AppColors.xiaoliurenColor;
     case DivinationType.meiHua:
       return AppColors.meihuaColor;
+    case DivinationType.qiMen:
+      return AppColors.dailan;
   }
 }
 
@@ -259,6 +261,8 @@ String? _systemBackground(DivinationType t) {
       return 'assets/images/screen_card/xiaoliuren_background.png';
     case DivinationType.meiHua:
       return 'assets/images/screen_card/meihua_background.png';
+    case DivinationType.qiMen:
+      return null;
   }
 }
 

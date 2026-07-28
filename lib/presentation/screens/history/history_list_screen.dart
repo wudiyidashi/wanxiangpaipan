@@ -45,6 +45,18 @@ class _HistoryListScreenState extends State<HistoryListScreen> with RouteAware {
   DivinationUIRegistry get _uiRegistry =>
       widget._uiRegistry ?? DivinationUIRegistry();
 
+  List<DivinationType> _availableSystemTypes(
+    HistoryListViewModel viewModel,
+  ) {
+    final availableTypes = <DivinationType>{
+      ..._uiRegistry.getRegisteredTypes(),
+      ...viewModel.records.map((record) => record.systemType),
+    };
+    return DivinationType.values
+        .where(availableTypes.contains)
+        .toList(growable: false);
+  }
+
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
@@ -193,7 +205,7 @@ class _HistoryListScreenState extends State<HistoryListScreen> with RouteAware {
                       child: Text('全部'),
                     ),
                     const PopupMenuDivider(),
-                    ...DivinationType.values.map((type) {
+                    ..._availableSystemTypes(vm).map((type) {
                       return PopupMenuItem(
                         value: type,
                         child: Text(type.displayName),

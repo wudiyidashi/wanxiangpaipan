@@ -4,11 +4,12 @@ import 'package:wanxiang_paipan/domain/divination_system.dart';
 void main() {
   group('DivinationType', () {
     test('应该包含所有术数系统类型', () {
-      expect(DivinationType.values.length, 4);
+      expect(DivinationType.values.length, 5);
       expect(DivinationType.values, contains(DivinationType.liuYao));
       expect(DivinationType.values, contains(DivinationType.daLiuRen));
       expect(DivinationType.values, contains(DivinationType.xiaoLiuRen));
       expect(DivinationType.values, contains(DivinationType.meiHua));
+      expect(DivinationType.values, contains(DivinationType.qiMen));
     });
 
     test('displayName 应该返回正确的中文名称', () {
@@ -16,6 +17,7 @@ void main() {
       expect(DivinationType.daLiuRen.displayName, '大六壬');
       expect(DivinationType.xiaoLiuRen.displayName, '小六壬');
       expect(DivinationType.meiHua.displayName, '梅花易数');
+      expect(DivinationType.qiMen.displayName, '奇门遁甲');
     });
 
     test('id 应该返回正确的唯一标识符', () {
@@ -23,6 +25,7 @@ void main() {
       expect(DivinationType.daLiuRen.id, 'daliuren');
       expect(DivinationType.xiaoLiuRen.id, 'xiaoliuren');
       expect(DivinationType.meiHua.id, 'meihua');
+      expect(DivinationType.qiMen.id, 'qimen');
     });
 
     test('fromId 应该根据 ID 返回正确的枚举值', () {
@@ -30,6 +33,7 @@ void main() {
       expect(DivinationType.fromId('daliuren'), DivinationType.daLiuRen);
       expect(DivinationType.fromId('xiaoliuren'), DivinationType.xiaoLiuRen);
       expect(DivinationType.fromId('meihua'), DivinationType.meiHua);
+      expect(DivinationType.fromId('qimen'), DivinationType.qiMen);
     });
 
     test('fromId 应该在 ID 不存在时抛出 ArgumentError', () {
