@@ -237,7 +237,8 @@ class QimenVerdictSection extends StatelessWidget {
                 letterSpacing: 0,
               ),
             ),
-            if (projection.status != QimenAnalysisStatus.complete) ...[
+            if (projection.status != QimenAnalysisStatus.complete ||
+                projection.diagnostics.isNotEmpty) ...[
               const SizedBox(height: 12),
               _DiagnosticPanel(projection: projection),
             ],

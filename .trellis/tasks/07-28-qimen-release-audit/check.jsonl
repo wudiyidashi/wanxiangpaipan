@@ -1,0 +1,7 @@
+{"file": ".trellis/spec/domain/qimen-analysis-engine.md", "reason": "检查首次 v1 基线、后续版本不可变和分析边界"}
+{"file": ".trellis/spec/domain/qimen-pan-engine.md", "reason": "检查输入边界、三种定局、真太阳时与手动校盘合同"}
+{"file": ".trellis/spec/frontend/qimen-product-integration.md", "reason": "检查 UI payload、卸载、重复提交、registry 和 AI 降级"}
+{"file": ".trellis/tasks/archive/2026-07/07-28-qimen-analysis-engine/research/source-audit.md", "reason": "检查已修正规则仍与固定来源审计一致"}
+{"file": ".trellis/tasks/archive/2026-07/07-28-qimen-product-integration/prd.md", "reason": "检查 A1 原始失败、替代验收和 A2..A14 最终证据"}
+{"file": ".trellis/tasks/archive/2026-07/07-28-qimen-product-integration/implement.md", "reason": "检查原执行声明、测试证据和混合提交时间线"}
+{"file": ".trellis/tasks/07-28-qimen-module/implement.md", "reason": "检查父任务 4/4 子任务与最终发布门"}

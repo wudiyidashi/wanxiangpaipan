@@ -19,9 +19,11 @@ class QimenCastScreen extends StatefulWidget {
   const QimenCastScreen({
     super.key,
     this.initialMethod = CastMethod.time,
+    this.initialCastTime,
   });
 
   final CastMethod initialMethod;
+  final DateTime? initialCastTime;
 
   @override
   State<QimenCastScreen> createState() => _QimenCastScreenState();
@@ -44,7 +46,7 @@ class _QimenCastScreenState extends State<QimenCastScreen> {
 
   late CastMethod _selectedMethod;
   QimenQuestionCategory _questionCategory = QimenQuestionCategory.general;
-  DateTime _castTime = DateTime.now();
+  late DateTime _castTime;
   QimenJuMethod _juMethod = QimenJuMethod.chaiBu;
   QimenTimeBasis _timeBasis = QimenTimeBasis.localCivil;
   QimenDayBoundary _dayBoundary = QimenDayBoundary.ziInitial;
@@ -67,6 +69,7 @@ class _QimenCastScreenState extends State<QimenCastScreen> {
   void initState() {
     super.initState();
     _selectedMethod = widget.initialMethod;
+    _castTime = widget.initialCastTime ?? DateTime.now();
     _loadLastMethod();
   }
 

@@ -11,13 +11,15 @@
 - 排盘提交 `7d226a690fa411ca1fe74f021c0fa54dca875f2c`，任务已归档到
   `.trellis/tasks/archive/2026-07/07-28-qimen-pan-engine`；`QimenResult` schema 为 `1`，
   公开消费入口为 `QimenSystem.cast` / `validateInput` / `resultFromJson`。
-- 分析提交 `a83647e65befa69eb4d972b843ec343b020e3332`，证据提交 `2234996`，
-  任务已归档到 `.trellis/tasks/archive/2026-07/07-28-qimen-analysis-engine`；
-  report/projection schema 均为 `1`，规则集为
-  `qimen-shijia-zhuanpan-analysis/v1`，公开消费入口为
+- 分析提交 `a83647e65befa69eb4d972b843ec343b020e3332` 是禁用、未注册的内部候选，
+  `8bbe6e4e40598a8608452670442156a7ae6618d2` 随后归档该任务；
+  `4016ffc1d35a56cf4e5775982a11ac54bb3c2b8b` 在无关的大六壬归档提交中混入
+  Qimen 来源/证据修订，`8138c6e008a198562bc829f129aff0f8416353d8` 才提交最终
+  分析校正并首次启用完整产品。后者是 `qimen-shijia-zhuanpan-analysis/v1` 的
+  发布基线；report/projection schema 均为 `1`，公开消费入口仍为
   `QimenAnalyzer.analyze` / `analyzePersisted` 与
   `QimenAnalysisProjection.fromReport`。
-- 分析黄金 fixture SHA-256：
+- `8138c6e` 基线分析黄金 fixture SHA-256：
   `D575DC31D56C8F6585D365CB42212F36C56FD37D3C97A22DD288BEF9ADE73E2E`。
 - 排盘口径稳定 ID：定局 `chaiBu/maoShan/zhiRun/manual`，时间基准
   `localCivil/beijing/trueSolar`，换日 `ziInitial/midnight`，寄宫
@@ -32,7 +34,8 @@
 
 - [x] 1.1 阅读统一术数接口、跨层/复用指南、父任务 integration map、两个上游 design/spec 和相关测试先例。
 - [x] 1.2 运行 `rg "DivinationType\\." lib test`、`rg "DivinationType.values" lib test`、`rg "systemType" lib/ai lib/presentation lib/domain/services`，保存所有穷举和硬编码列表清单。
-- [x] 1.3 先新增 enum/registry/provider/data-management/AI 契约测试及 Qimen UI factory 类型错误测试，确认未接入状态下按预期失败。
+- [x] 1.3 最终合同测试存在并通过；仓库没有保留可定位的失败运行，因此不能声明
+  这些测试在实现前曾按预期失败，也不能把本项作为历史 test-first 证据。
 - [x] 1.4 确认通用 Drift 表足够，不创建 migration；若发现存储合同不符，暂停并回到设计评审。
 
 ## 2. ViewModel 与起局页
@@ -134,6 +137,17 @@ rg -n "Qimen(Time|Ju|Earth|Heaven|Duty|Door|Deity|Hidden|Marker).*Service" lib/d
   SHA-256 为
   `610B2A284B27D79E85A3C239E1A0976302E6D5B5900EB0777943219C705D7C7D`；
   生成提示词、工具与模型记录在同目录 provenance 文档中。
+
+## Post-Archive Correction（2026-07-28）
+
+- 原计划 2.6 的 cast/save 分阶段卸载与 saving 期间第二次点击，及 4.4 的无唯一
+  焦点和显式规则版本选择，未保留原任务完成时的精确测试证据；由
+  `07-28-qimen-release-audit` 补齐。
+- 18 个分析生产/测试路径在 `8138c6e` 中与产品集成混合提交，真实路径、最终
+  fixture 哈希和 A1..A14 映射见
+  `.trellis/tasks/archive/2026-07/07-28-qimen-release-audit/research/release-evidence.md`。
+- 本修订只前向纠正文档证据，不 amend/rebase 历史，也不把 `a83647e` 伪装为
+  可选择的已发布旧版本。
 
 ## Risk And Rollback
 

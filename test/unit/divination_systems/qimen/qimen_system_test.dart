@@ -81,6 +81,25 @@ void main() {
       );
     });
 
+    test('time accepts both legal true-solar longitude endpoints', () {
+      for (final longitude in const <double>[-180, 180]) {
+        expect(
+          system.validateInput(
+            CastMethod.time,
+            <String, dynamic>{
+              'params': <String, dynamic>{
+                'timeBasis': 'trueSolar',
+                'sourceUtcOffsetMinutes': 480,
+                'longitude': longitude,
+              },
+            },
+          ),
+          true,
+          reason: 'longitude $longitude',
+        );
+      }
+    });
+
     test('manual requires complete explicit pillars and ju facts', () {
       expect(system.validateInput(CastMethod.manual, qimenManualGoldenInput),
           true);
@@ -117,6 +136,30 @@ void main() {
         ),
         false,
       );
+    });
+
+    test('manual rejects each invalid wire value independently', () {
+      final cases = <({String field, Object value})>[
+        (field: 'solarTerm', value: '不存在节气'),
+        (field: 'dun', value: 'unknown-dun'),
+        (field: 'juNumber', value: 0),
+        (field: 'juNumber', value: 10),
+        (field: 'yuan', value: 'unknown-yuan'),
+      ];
+
+      for (final testCase in cases) {
+        expect(
+          system.validateInput(
+            CastMethod.manual,
+            <String, dynamic>{
+              ...qimenManualGoldenInput,
+              testCase.field: testCase.value,
+            },
+          ),
+          false,
+          reason: '${testCase.field}=${testCase.value}',
+        );
+      }
     });
 
     test('result JSON is strict, stable-ID based, and deeply reversible',

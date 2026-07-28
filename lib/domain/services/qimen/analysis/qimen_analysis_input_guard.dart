@@ -389,12 +389,18 @@ class QimenAnalysisInputGuard {
       );
     }
     if (!QimenConstants.solarTerms
-            .contains(result.temporalContext.currentSolarTerm) ||
-        !QimenConstants.solarTerms.contains(result.juInfo.effectiveSolarTerm)) {
+        .contains(result.temporalContext.currentSolarTerm)) {
       invalid(
         'QMV1-E-SOLAR-TERM',
         r'$.temporalContext.currentSolarTerm',
-        'persisted solar-term facts must be present',
+        'persisted current solar term must be present',
+      );
+    }
+    if (!QimenConstants.solarTerms.contains(result.juInfo.effectiveSolarTerm)) {
+      invalid(
+        'QMV1-E-SOLAR-TERM',
+        r'$.juInfo.effectiveSolarTerm',
+        'persisted effective solar term must be present',
       );
     }
 

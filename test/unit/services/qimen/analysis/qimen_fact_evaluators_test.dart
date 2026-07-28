@@ -455,6 +455,160 @@ void main() {
       }
     });
 
+    test('each Nine-Dun rule requires every source-locked conjunct', () {
+      final cases = <({
+        String ruleId,
+        int? palaceNumber,
+        String heavenStem,
+        String? earthStem,
+        String door,
+        String? deity,
+      })>[
+        (
+          ruleId: QimenRuleCatalog.heavenDun,
+          palaceNumber: null,
+          heavenStem: '丙',
+          earthStem: '丁',
+          door: '生门',
+          deity: null,
+        ),
+        (
+          ruleId: QimenRuleCatalog.earthDun,
+          palaceNumber: null,
+          heavenStem: '乙',
+          earthStem: '己',
+          door: '开门',
+          deity: null,
+        ),
+        (
+          ruleId: QimenRuleCatalog.humanDun,
+          palaceNumber: null,
+          heavenStem: '丁',
+          earthStem: null,
+          door: '休门',
+          deity: '太阴',
+        ),
+        (
+          ruleId: QimenRuleCatalog.windDun,
+          palaceNumber: 4,
+          heavenStem: '乙',
+          earthStem: null,
+          door: '开门',
+          deity: null,
+        ),
+        (
+          ruleId: QimenRuleCatalog.cloudDun,
+          palaceNumber: null,
+          heavenStem: '乙',
+          earthStem: '辛',
+          door: '生门',
+          deity: null,
+        ),
+        (
+          ruleId: QimenRuleCatalog.dragonDun,
+          palaceNumber: 1,
+          heavenStem: '乙',
+          earthStem: null,
+          door: '休门',
+          deity: null,
+        ),
+        (
+          ruleId: QimenRuleCatalog.tigerDun,
+          palaceNumber: 8,
+          heavenStem: '乙',
+          earthStem: '辛',
+          door: '休门',
+          deity: null,
+        ),
+        (
+          ruleId: QimenRuleCatalog.spiritDun,
+          palaceNumber: null,
+          heavenStem: '丙',
+          earthStem: null,
+          door: '生门',
+          deity: '九天',
+        ),
+        (
+          ruleId: QimenRuleCatalog.ghostDun,
+          palaceNumber: null,
+          heavenStem: '乙',
+          earthStem: null,
+          door: '杜门',
+          deity: '九地',
+        ),
+      ];
+
+      for (final testCase in cases) {
+        QimenResult fixture({String? brokenConjunct}) {
+          final expectedPalace = testCase.palaceNumber ?? 1;
+          final targetPalace = brokenConjunct == 'palace'
+              ? (expectedPalace == 1 ? 2 : 1)
+              : expectedPalace;
+          return mutatedQimenAnalysisResult((json) {
+            final palace = qimenAnalysisPalaceJson(json, targetPalace)
+              ..['heavenStem'] = testCase.heavenStem
+              ..['earthStem'] = testCase.earthStem ?? '戊'
+              ..['door'] = testCase.door
+              ..['deity'] = testCase.deity ?? '值符'
+              ..['hostedHeavenStem'] = null
+              ..['hostedEarthStem'] = null;
+            switch (brokenConjunct) {
+              case 'heavenStem':
+                palace['heavenStem'] = '戊';
+                break;
+              case 'earthStem':
+                palace['earthStem'] = '戊';
+                break;
+              case 'door':
+                palace['door'] = testCase.door == '杜门' ? '开门' : '杜门';
+                break;
+              case 'deity':
+                palace['deity'] = testCase.deity == '九地' ? '九天' : '九地';
+                break;
+              case 'palace':
+              case null:
+                break;
+            }
+          });
+        }
+
+        final positive = QimenFormationService.evaluate(
+          fixture(),
+          const <QimenFocus>[],
+          ruleSetVersion: QimenRuleCatalog.v1,
+        );
+        final expectedPalace = testCase.palaceNumber ?? 1;
+        expect(
+          _hasRuleAt(positive.facts, testCase.ruleId, expectedPalace),
+          true,
+          reason: 'positive ${testCase.ruleId}',
+        );
+
+        final conjuncts = <String>[
+          'heavenStem',
+          if (testCase.earthStem != null) 'earthStem',
+          'door',
+          if (testCase.deity != null) 'deity',
+          if (testCase.palaceNumber != null) 'palace',
+        ];
+        for (final conjunct in conjuncts) {
+          final negativePalace = conjunct == 'palace'
+              ? (expectedPalace == 1 ? 2 : 1)
+              : expectedPalace;
+          final negative = QimenFormationService.evaluate(
+            fixture(brokenConjunct: conjunct),
+            const <QimenFocus>[],
+            ruleSetVersion: QimenRuleCatalog.v1,
+          );
+          expect(
+            _hasRuleAt(negative.facts, testCase.ruleId, negativePalace),
+            false,
+            reason: '${testCase.ruleId} without $conjunct',
+          );
+        }
+      }
+    });
+
     test('evaluates all six Three-Wonder-Duty pairs without hiding adversity',
         () {
       const adverseByPair = <(String, String), String>{

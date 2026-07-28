@@ -257,6 +257,73 @@ void main() {
     expect(tester.takeException(), isNull);
   });
 
+  testWidgets('unresolved primary focus shows diagnostics and disables AI',
+      (tester) async {
+    final unresolved = mutatedQimenAnalysisResult((json) {
+      final context = Map<String, dynamic>.from(
+        json['temporalContext'] as Map,
+      )..['dayGanZhi'] = '甲子';
+      json['temporalContext'] = context;
+    });
+
+    await tester.pumpWidget(
+      MaterialApp(
+        home: QimenResultScreen(result: unresolved),
+      ),
+    );
+    await tester.pumpAndSettle();
+
+    expect(find.text('趋势不明'), findsOneWidget);
+    expect(find.text('分析兼容诊断'), findsOneWidget);
+    expect(
+      find.textContaining('QMV1-E-DAY-JIA-FOCUS-UNRESOLVED'),
+      findsWidgets,
+    );
+    expect(find.text('洛书九宫'), findsOneWidget);
+    expect(
+      tester
+          .widget<AIAnalysisWidget>(find.byType(AIAnalysisWidget))
+          .unavailableReason,
+      contains('QMV1-E-DAY-JIA-FOCUS-UNRESOLVED'),
+    );
+    expect(tester.takeException(), isNull);
+  });
+
+  testWidgets('supports current and explicit released rule-set selection',
+      (tester) async {
+    const screenKey = ValueKey<String>('versioned-qimen-result');
+    await tester.pumpWidget(
+      MaterialApp(
+        home: QimenResultScreen(
+          key: screenKey,
+          result: result,
+        ),
+      ),
+    );
+    await tester.pumpAndSettle();
+    expect(
+      find.text('分析规则 qimen-shijia-zhuanpan-analysis/v1'),
+      findsOneWidget,
+    );
+
+    await tester.pumpWidget(
+      MaterialApp(
+        home: QimenResultScreen(
+          key: screenKey,
+          result: result,
+          ruleSetVersion: 'v1',
+        ),
+      ),
+    );
+    await tester.pumpAndSettle();
+
+    expect(
+      find.text('分析规则 qimen-shijia-zhuanpan-analysis/v1'),
+      findsOneWidget,
+    );
+    expect(tester.takeException(), isNull);
+  });
+
   testWidgets('recomputes analysis when the result widget is reused',
       (tester) async {
     const screenKey = ValueKey<String>('reused-qimen-result');

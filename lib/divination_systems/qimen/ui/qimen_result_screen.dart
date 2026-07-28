@@ -11,9 +11,11 @@ class QimenResultScreen extends StatefulWidget {
   const QimenResultScreen({
     super.key,
     required this.result,
+    this.ruleSetVersion = 'current',
   });
 
   final QimenResult result;
+  final String ruleSetVersion;
 
   @override
   State<QimenResultScreen> createState() => _QimenResultScreenState();
@@ -32,18 +34,23 @@ class _QimenResultScreenState extends State<QimenResultScreen> {
   @override
   void didUpdateWidget(covariant QimenResultScreen oldWidget) {
     super.didUpdateWidget(oldWidget);
-    if (!identical(oldWidget.result, widget.result)) {
+    if (!identical(oldWidget.result, widget.result) ||
+        oldWidget.ruleSetVersion != widget.ruleSetVersion) {
       _deriveAnalysis(widget.result);
     }
   }
 
   void _deriveAnalysis(QimenResult result) {
-    _report = QimenAnalyzer.analyze(result);
+    _report = QimenAnalyzer.analyze(
+      result,
+      ruleSetVersion: widget.ruleSetVersion,
+    );
     _projection = QimenAnalysisProjection.fromReport(_report);
   }
 
   String? get _aiUnavailableReason {
-    if (_projection.status == QimenAnalysisStatus.complete) {
+    if (_projection.status == QimenAnalysisStatus.complete &&
+        _projection.diagnostics.isEmpty) {
       return null;
     }
     final diagnosticCodes =

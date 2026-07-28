@@ -32,16 +32,24 @@ class _RecordingQimenSystem extends QimenSystem {
   _RecordingQimenSystem(this.events);
 
   final List<String> events;
+  Completer<void>? castGate;
   int castCalls = 0;
+  CastMethod? lastMethod;
+  Map<String, dynamic>? lastInput;
+  DateTime? lastCastTime;
 
   @override
   Future<DivinationResult> cast({
     required CastMethod method,
     required Map<String, dynamic> input,
     DateTime? castTime,
-  }) {
+  }) async {
     castCalls += 1;
+    lastMethod = method;
+    lastInput = Map<String, dynamic>.from(input);
+    lastCastTime = castTime;
     events.add('cast');
+    await castGate?.future;
     return super.cast(method: method, input: input, castTime: castTime);
   }
 }
@@ -105,6 +113,7 @@ void main() {
     WidgetTester tester, {
     LastCastMethodService? lastCastMethodService,
     double textScale = 1,
+    DateTime? initialCastTime,
   }) async {
     await tester.pumpWidget(
       MultiProvider(
@@ -122,7 +131,7 @@ void main() {
             ),
             child: child!,
           ),
-          home: const QimenCastScreen(),
+          home: QimenCastScreen(initialCastTime: initialCastTime),
         ),
       ),
     );
@@ -160,6 +169,35 @@ void main() {
     );
     await tester.pumpAndSettle();
     await tester.tap(find.text(label).last);
+    await tester.pumpAndSettle();
+  }
+
+  Future<void> chooseJuMethod(
+    WidgetTester tester,
+    String label,
+  ) async {
+    final scope = find.byKey(const Key('qimen-ju-method'));
+    await tester.ensureVisible(scope);
+    await tester.tap(
+      find.descendant(
+        of: scope,
+        matching: find.byType(DropdownButton<QimenJuMethod>),
+      ),
+    );
+    await tester.pumpAndSettle();
+    await tester.tap(find.text(label).last);
+    await tester.pumpAndSettle();
+  }
+
+  Future<void> replaceCastRoute(WidgetTester tester) async {
+    final context = tester.element(find.byType(QimenCastScreen));
+    unawaited(
+      Navigator.of(context).pushReplacement<void, void>(
+        MaterialPageRoute<void>(
+          builder: (_) => const Scaffold(body: Text('detached host')),
+        ),
+      ),
+    );
     await tester.pumpAndSettle();
   }
 
@@ -272,6 +310,27 @@ void main() {
     );
   });
 
+  testWidgets('submits Mao Shan as the selected automatic ju method',
+      (tester) async {
+    DivinationUIRegistry().registerUI(_QimenTestUIFactory(events));
+    await pumpScreen(
+      tester,
+      initialCastTime: DateTime(2025, 6, 8, 12),
+    );
+
+    await chooseJuMethod(tester, '茅山法');
+    final submit = find.byKey(const Key('qimen-submit'));
+    await tester.ensureVisible(submit);
+    await tester.tap(submit);
+    await tester.pumpAndSettle();
+
+    final params = system.lastInput!['params'] as Map<String, dynamic>;
+    expect(system.lastMethod, CastMethod.time);
+    expect(params['juMethod'], 'maoShan');
+    expect(viewModel.result!.panParams.juMethod, QimenJuMethod.maoShan);
+    expect(events, <String>['cast', 'save', 'build']);
+  });
+
   testWidgets('true-solar longitude is validated and cleared when exited',
       (tester) async {
     await pumpScreen(tester);
@@ -318,6 +377,72 @@ void main() {
     expect(find.text('请输入经度'), findsOneWidget);
     expect(system.castCalls, 0);
     verifyNever(() => repository.saveRecord(any()));
+  });
+
+  for (final longitude in const <double>[-180, 180]) {
+    testWidgets('submits legal true-solar endpoint $longitude', (tester) async {
+      DivinationUIRegistry().registerUI(_QimenTestUIFactory(events));
+      await pumpScreen(
+        tester,
+        initialCastTime: DateTime(2025, 6, 8, 12),
+      );
+
+      await chooseTimeBasis(tester, '真太阳时');
+      await tester.enterText(
+        find.byKey(const Key('qimen-longitude')),
+        longitude.toString(),
+      );
+      final submit = find.byKey(const Key('qimen-submit'));
+      await tester.ensureVisible(submit);
+      await tester.tap(submit);
+      await tester.pumpAndSettle();
+
+      final params = system.lastInput!['params'] as Map<String, dynamic>;
+      expect(system.lastMethod, CastMethod.time);
+      expect(params['timeBasis'], 'trueSolar');
+      expect(params['longitude'], longitude);
+      expect(system.castCalls, 1);
+      verify(() => repository.saveRecord(any())).called(1);
+      expect(events, <String>['cast', 'save', 'build']);
+    });
+  }
+
+  testWidgets('selected date and time are forwarded to the cast payload',
+      (tester) async {
+    DivinationUIRegistry().registerUI(_QimenTestUIFactory(events));
+    await pumpScreen(
+      tester,
+      initialCastTime: DateTime(2025, 6, 8, 4),
+    );
+
+    await tester.tap(find.byKey(const Key('qimen-pick-date')));
+    await tester.pumpAndSettle();
+    expect(find.byType(DatePickerDialog), findsOneWidget);
+    await tester.tap(find.text('15'));
+    await tester.tap(find.text('OK'));
+    await tester.pumpAndSettle();
+
+    await tester.tap(find.byKey(const Key('qimen-pick-time')));
+    await tester.pumpAndSettle();
+    expect(find.byType(TimePickerDialog), findsOneWidget);
+    await tester.tap(find.byIcon(Icons.keyboard_outlined));
+    await tester.pumpAndSettle();
+    final timeFields = find.descendant(
+      of: find.byType(TimePickerDialog),
+      matching: find.byType(TextField),
+    );
+    await tester.enterText(timeFields.first, '09');
+    await tester.enterText(timeFields.last, '30');
+    await tester.tap(find.text('OK'));
+    await tester.pumpAndSettle();
+
+    final submit = find.byKey(const Key('qimen-submit'));
+    await tester.ensureVisible(submit);
+    await tester.tap(submit);
+    await tester.pumpAndSettle();
+
+    expect(system.lastCastTime, DateTime(2025, 6, 15, 9, 30));
+    expect(events, <String>['cast', 'save', 'build']);
   });
 
   testWidgets('manual calibration starts empty and rejects omitted facts',
@@ -425,6 +550,93 @@ void main() {
     expect(find.textContaining('storage unavailable'), findsWidgets);
     expect(events, isNot(contains('build')));
     expect(viewModel.submissionPhase, QimenSubmissionPhase.error);
+  });
+
+  testWidgets('cast completion after unmount does not navigate or notify UI',
+      (tester) async {
+    final castGate = Completer<void>();
+    system.castGate = castGate;
+    DivinationUIRegistry().registerUI(_QimenTestUIFactory(events));
+    await pumpScreen(tester);
+
+    final submit = find.byKey(const Key('qimen-submit'));
+    await tester.ensureVisible(submit);
+    await tester.tap(submit);
+    await tester.pump();
+    expect(viewModel.submissionPhase, QimenSubmissionPhase.casting);
+
+    await replaceCastRoute(tester);
+    castGate.complete();
+    await tester.pumpAndSettle();
+
+    expect(find.text('detached host'), findsOneWidget);
+    expect(find.byType(SnackBar), findsNothing);
+    expect(events, <String>['cast', 'save']);
+    verify(() => repository.saveRecord(any())).called(1);
+    expect(tester.takeException(), isNull);
+  });
+
+  testWidgets('save completion after unmount does not navigate or notify UI',
+      (tester) async {
+    final saveGate = Completer<void>();
+    when(() => repository.saveRecord(any())).thenAnswer((invocation) async {
+      events.add('save');
+      await saveGate.future;
+      final result = invocation.positionalArguments.single as DivinationResult;
+      return result.id;
+    });
+    DivinationUIRegistry().registerUI(_QimenTestUIFactory(events));
+    await pumpScreen(tester);
+
+    final submit = find.byKey(const Key('qimen-submit'));
+    await tester.ensureVisible(submit);
+    await tester.tap(submit);
+    await tester.pump();
+    await tester.pump();
+    expect(viewModel.submissionPhase, QimenSubmissionPhase.saving);
+
+    await replaceCastRoute(tester);
+    saveGate.complete();
+    await tester.pumpAndSettle();
+
+    expect(find.text('detached host'), findsOneWidget);
+    expect(find.byType(SnackBar), findsNothing);
+    expect(events, <String>['cast', 'save']);
+    verify(() => repository.saveRecord(any())).called(1);
+    expect(tester.takeException(), isNull);
+  });
+
+  testWidgets('a second click while saving cannot create a second record',
+      (tester) async {
+    final saveGate = Completer<void>();
+    when(() => repository.saveRecord(any())).thenAnswer((invocation) async {
+      events.add('save');
+      await saveGate.future;
+      final result = invocation.positionalArguments.single as DivinationResult;
+      return result.id;
+    });
+    DivinationUIRegistry().registerUI(_QimenTestUIFactory(events));
+    await pumpScreen(tester);
+
+    final submit = find.byKey(const Key('qimen-submit'));
+    await tester.ensureVisible(submit);
+    await tester.tap(submit);
+    await tester.pump();
+    await tester.pump();
+    expect(viewModel.submissionPhase, QimenSubmissionPhase.saving);
+    expect(tester.widget<AntiqueButton>(submit).onPressed, isNull);
+
+    await tester.tap(submit, warnIfMissed: false);
+    await tester.pump();
+    expect(system.castCalls, 1);
+    expect(events.where((event) => event == 'save'), hasLength(1));
+
+    saveGate.complete();
+    await tester.pumpAndSettle();
+
+    expect(events, <String>['cast', 'save', 'build']);
+    verify(() => repository.saveRecord(any())).called(1);
+    expect(tester.takeException(), isNull);
   });
 
   testWidgets('restores the latest supported method from history',

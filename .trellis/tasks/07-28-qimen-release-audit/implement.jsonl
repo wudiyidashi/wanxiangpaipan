@@ -1,0 +1,8 @@
+{"file": ".trellis/spec/domain/qimen-analysis-engine.md", "reason": "规则版本、来源、fixture、诊断与不可变发布合同"}
+{"file": ".trellis/spec/frontend/qimen-product-integration.md", "reason": "自动/手动输入、异步状态机、注册与 AI 发布门合同"}
+{"file": ".trellis/spec/guides/cross-layer-thinking-guide.md", "reason": "首页到 registry、cast、save、history 和 AI 的完整箭头"}
+{"file": ".trellis/tasks/archive/2026-07/07-28-qimen-analysis-engine/design.md", "reason": "内部 v1 候选的版本策略、来源规则与黄金矩阵"}
+{"file": ".trellis/tasks/archive/2026-07/07-28-qimen-analysis-engine/research/source-audit.md", "reason": "三奇得使、九遁、G16/G17 与最终来源裁定"}
+{"file": ".trellis/tasks/archive/2026-07/07-28-qimen-product-integration/prd.md", "reason": "A1..A14 原始验收与边界偏差修正对象"}
+{"file": ".trellis/tasks/archive/2026-07/07-28-qimen-product-integration/implement.md", "reason": "启动提交、fixture 哈希、red-run 与完成证据的直接修正对象"}
+{"file": ".trellis/tasks/07-28-qimen-module/prd.md", "reason": "父任务完整产品闭环与最终验收标准"}

@@ -117,7 +117,8 @@ void main() {
       );
     });
 
-    test('rejects unknown current and effective solar terms', () {
+    test('rejects unknown current and effective solar terms at exact paths',
+        () {
       final current = mutatedQimenAnalysisResult((json) {
         final context =
             Map<String, dynamic>.from(json['temporalContext'] as Map)
@@ -130,12 +131,22 @@ void main() {
         json['juInfo'] = juInfo;
       });
 
-      for (final result in <QimenResult>[current, effective]) {
-        final guard = QimenAnalysisInputGuard.validate(result);
-        expect(
-          guard.diagnostics.map((value) => value.code),
-          contains('QMV1-E-SOLAR-TERM'),
+      for (final testCase in <({QimenResult result, String path})>[
+        (
+          result: current,
+          path: r'$.temporalContext.currentSolarTerm',
+        ),
+        (
+          result: effective,
+          path: r'$.juInfo.effectiveSolarTerm',
+        ),
+      ]) {
+        final guard = QimenAnalysisInputGuard.validate(testCase.result);
+        final diagnostic = guard.diagnostics.singleWhere(
+          (value) => value.code == 'QMV1-E-SOLAR-TERM',
         );
+
+        expect(diagnostic.path, testCase.path);
       }
     });
   });

@@ -84,7 +84,12 @@
 
 ## Acceptance Criteria
 
-- [x] A1：两个上游子任务已完成并归档，启动记录固定其提交、schema、fixture 与消费接口；本任务未修改上游算法合同。
+- [ ] A1（原始验收未满足）：两个上游子任务虽已归档，但产品提交 `8138c6e`
+  同时修改了分析规则与完整性合同，因此“本任务未修改上游算法合同”不成立。
+- [x] A1-R（归档后替代验收）：`07-28-qimen-release-audit` 保留原始失败事实，
+  复核来源并把 `8138c6e` 固定为首次启用前校正完成的 v1 发布基线；未伪造旧版本，
+  也未改写 Git 历史。证据见
+  `.trellis/tasks/archive/2026-07/07-28-qimen-release-audit/research/release-evidence.md`。
 - [x] A2：首页显示启用的奇门入口且可进入起局页；系统、UI factory、Provider/ViewModel 与所有穷举分支注册测试通过。
 - [x] A3：自动方式可提交三种定局、三种时间基准、两种换日、两种寄宫和两种暗干口径；条件字段显示/隐藏与 payload 测试一致。
 - [x] A4：手动方式拒绝缺失/非法四柱、节气、遁、局和三元，合法输入能保存并进入结果页；提交中不会重复起局。
@@ -98,6 +103,10 @@
 - [x] A12：首页/历史背景位图在亮暗主题目标环境可辨识，资源许可或生成记录明确，图片缺失测试不会静默发布空白卡片。
 - [x] A13：系统契约、索引、spec、代码和测试一致；全仓搜索无遗漏的 `DivinationType` switch 或硬编码系统集合。
 - [x] A14：`dart run build_runner build --delete-conflicting-outputs`、`flutter analyze`、全部奇门目标测试和全量 `flutter test` 通过。
+
+归档后复核说明（2026-07-28）：A2..A14 的最终可定位测试、搜索和跨层证据已在
+`07-28-qimen-release-audit` 中重新逐项映射。以上勾选表示纠偏后的最终产品事实，
+不表示原任务当时已保留所有精确 red-run 或边界测试证据。
 
 ## Out of Scope
 
