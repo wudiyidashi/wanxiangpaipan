@@ -7,6 +7,7 @@ import 'tianpan.dart';
 import 'shen_jiang_config.dart';
 import 'shen_sha.dart';
 import 'pan_params.dart';
+import 'dlr_cast_time.dart';
 import 'dlr_rule_contract.dart';
 
 part 'daliuren_result.freezed.dart';
@@ -30,7 +31,9 @@ class DaLiuRenResult with _$DaLiuRenResult implements DivinationResult {
     /// 唯一标识
     required String id,
 
-    /// 占卜时间
+    /// 跨系统既有记录时间；新盘历法事实以 [civilTime] 为准。
+    ///
+    /// 此字段保持 legacy wire 角色，不在本模型中静默迁移为 UTC。
     required DateTime castTime,
 
     /// 起卦方式
@@ -65,6 +68,12 @@ class DaLiuRenResult with _$DaLiuRenResult implements DivinationResult {
 
     /// 原始起课输入的规范化快照；旧盘或不可恢复记录为 null。
     DlrCastInputSnapshot? castInputSnapshot,
+
+    /// 新盘的权威绝对时刻与来源民用 offset；旧 JSON 保持 null。
+    DlrCivilTime? civilTime,
+
+    /// 持久化月将解析事实与来源；旧 JSON 保持 null，不现场补算。
+    DlrMonthGeneralResolution? monthGeneralResolution,
 
     /// 显式重排来源盘 ID；C15 再实现关联保存流程。
     String? recastFromId,

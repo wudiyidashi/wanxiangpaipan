@@ -99,15 +99,24 @@ void main() {
       expect(ref.isExecutable, isTrue);
     });
 
-    test('project pan 规则使用独立命名域与 pan version', () {
-      final ref = DlrRuleRef.project(
-        'dlr.project.pan.calendar.month-general-baseline',
-        ruleSetVersion: DlrRuleSetVersions.panCurrent,
+    test('project pan helper 固定 project/D 与 current pan version', () {
+      final ref = DlrRuleRef.projectPan(
+        DlrProjectPanRuleIds.monthGeneralByZhongQiInstant,
       );
 
       expect(ref.kind, DlrRuleKind.project);
+      expect(ref.evidenceLevel, DlrEvidenceLevel.d);
       expect(ref.ruleSetVersion, DlrRuleSetVersions.panCurrent);
+      expect(ref.sourceIds, isEmpty);
+      expect(ref.executableApproved, isFalse);
       expect(ref.isExecutable, isTrue);
+    });
+
+    test('project pan helper 拒绝 analysis 命名域', () {
+      expect(
+        () => DlrRuleRef.projectPan(DlrProjectRuleIds.keGeChongShen),
+        throwsArgumentError,
+      );
     });
 
     test('拒绝规则 kind 与稳定命名域不匹配', () {
@@ -225,6 +234,13 @@ void main() {
   });
 
   group('DlrRuleSetVersions', () {
+    test('C02 发布独立的 pan v2 与 snapshot v2 常量', () {
+      expect(DlrRuleSetVersions.panV1, 'daliuren-pan/1.0.0');
+      expect(DlrRuleSetVersions.panCurrent, 'daliuren-pan/2.0.0');
+      expect(DlrRuleSetVersions.castInputSchemaV1, '1.0.0');
+      expect(DlrRuleSetVersions.castInputSchema, '2.0.0');
+    });
+
     test('盘面版本必须精确匹配 current，首尾空白不得被静默归一化', () {
       final snapshot = DlrCastInputSnapshot.capture(
         castMethod: CastMethod.time,
@@ -239,6 +255,37 @@ void main() {
       expect(
         DlrRuleSetVersions.resolveAnalysisCompatibility(
           sourcePanRuleSetVersion: ' ${DlrRuleSetVersions.panCurrent}',
+          castInputSnapshot: snapshot,
+        ),
+        DlrAnalysisCompatibility.versionMismatch,
+      );
+      expect(
+        DlrRuleSetVersions.resolveAnalysisCompatibility(
+          sourcePanRuleSetVersion: '   ',
+          castInputSnapshot: snapshot,
+        ),
+        DlrAnalysisCompatibility.versionMismatch,
+      );
+    });
+
+    test('C01 pan v1 即使带完整 v1 snapshot 也不是 current', () {
+      final snapshot = DlrCastInputSnapshot.fromJson(
+        <String, dynamic>{
+          'schemaVersion': DlrRuleSetVersions.castInputSchemaV1,
+          'castMethod': CastMethod.time.name,
+          'castTime': '2022-04-20T10:24:18.000',
+          'utcOffsetMinutes': 480,
+          'normalizedInput': <String, dynamic>{
+            'params': <String, dynamic>{},
+          },
+          'replayStatus': DlrReplayStatus.complete.name,
+          'missingFields': <String>[],
+        },
+      );
+
+      expect(
+        DlrRuleSetVersions.resolveAnalysisCompatibility(
+          sourcePanRuleSetVersion: DlrRuleSetVersions.panV1,
           castInputSnapshot: snapshot,
         ),
         DlrAnalysisCompatibility.versionMismatch,
@@ -348,6 +395,164 @@ void main() {
       final decoded = DlrCastInputSnapshot.fromJson(snapshot.toJson());
       expect(decoded.utcOffsetMinutes, 480);
       expect(decoded.castTime, snapshot.castTime);
+    });
+
+    test('v2 capture 将绝对时刻规范化为 UTC wire', () {
+      final snapshot = DlrCastInputSnapshot.capture(
+        castMethod: CastMethod.time,
+        castTime: DateTime.parse('2022-04-20T10:24:18+08:00'),
+        utcOffsetMinutes: 480,
+        normalizedInput: const <String, dynamic>{
+          'params': <String, dynamic>{},
+        },
+        replayStatus: DlrReplayStatus.complete,
+      );
+
+      expect(snapshot.schemaVersion, DlrRuleSetVersions.castInputSchema);
+      expect(snapshot.castTime, DateTime.utc(2022, 4, 20, 2, 24, 18));
+      expect(snapshot.castTime.isUtc, isTrue);
+      expect(snapshot.toJson()['castTime'], '2022-04-20T02:24:18.000Z');
+    });
+
+    test('C01 v1 无 zone 时间按保存的 offset 确定性恢复', () {
+      final zoneLess = DlrCastInputSnapshot.fromJson(
+        <String, dynamic>{
+          'schemaVersion': DlrRuleSetVersions.castInputSchemaV1,
+          'castMethod': CastMethod.manual.name,
+          'castTime': '2022-04-20T10:24:18.000',
+          'utcOffsetMinutes': 480,
+          'normalizedInput': <String, dynamic>{
+            'yearGanZhi': '壬寅',
+            'monthGanZhi': '甲辰',
+            'dayGanZhi': '癸卯',
+            'hourGanZhi': '丁巳',
+            'params': <String, dynamic>{},
+          },
+          'replayStatus': DlrReplayStatus.incomplete.name,
+          'missingFields': <String>['manualCivilDateTime'],
+        },
+      );
+      final explicitZone = DlrCastInputSnapshot.fromJson(
+        <String, dynamic>{
+          'schemaVersion': DlrRuleSetVersions.castInputSchemaV1,
+          'castMethod': CastMethod.manual.name,
+          'castTime': '2022-04-20T10:24:18.000+08:00',
+          'utcOffsetMinutes': 480,
+          'normalizedInput': <String, dynamic>{
+            'yearGanZhi': '壬寅',
+            'monthGanZhi': '甲辰',
+            'dayGanZhi': '癸卯',
+            'hourGanZhi': '丁巳',
+            'params': <String, dynamic>{},
+          },
+          'replayStatus': DlrReplayStatus.incomplete.name,
+          'missingFields': <String>['manualCivilDateTime'],
+        },
+      );
+
+      expect(zoneLess.schemaVersion, DlrRuleSetVersions.castInputSchemaV1);
+      expect(zoneLess.castTime, DateTime.utc(2022, 4, 20, 2, 24, 18));
+      expect(zoneLess.castTime, explicitZone.castTime);
+      expect(zoneLess.toJson()['castTime'], '2022-04-20T02:24:18.000Z');
+    });
+
+    test('v2 JSON 拒绝无 zone 时间，v1 仍允许兼容恢复', () {
+      final json = <String, dynamic>{
+        'schemaVersion': DlrRuleSetVersions.castInputSchema,
+        'castMethod': CastMethod.time.name,
+        'castTime': '2022-04-20T10:24:18.000',
+        'utcOffsetMinutes': 480,
+        'normalizedInput': <String, dynamic>{
+          'params': <String, dynamic>{},
+        },
+        'replayStatus': DlrReplayStatus.complete.name,
+        'missingFields': <String>[],
+      };
+
+      expect(() => DlrCastInputSnapshot.fromJson(json), throwsArgumentError);
+      expect(
+        DlrCastInputSnapshot.fromJson(
+          <String, dynamic>{
+            ...json,
+            'schemaVersion': DlrRuleSetVersions.castInputSchemaV1,
+          },
+        ).castTime,
+        DateTime.utc(2022, 4, 20, 2, 24, 18),
+      );
+    });
+
+    test('UTC offset 只接受 [-840, 840] 的有限整数分钟', () {
+      for (final offset in <int>[-840, 840]) {
+        final snapshot = DlrCastInputSnapshot.capture(
+          castMethod: CastMethod.time,
+          castTime: DateTime.utc(2022, 4, 20),
+          utcOffsetMinutes: offset,
+          normalizedInput: const <String, dynamic>{
+            'params': <String, dynamic>{},
+          },
+          replayStatus: DlrReplayStatus.complete,
+        );
+        expect(snapshot.utcOffsetMinutes, offset);
+      }
+
+      for (final offset in <int>[-841, 841]) {
+        expect(
+          () => DlrCastInputSnapshot.capture(
+            castMethod: CastMethod.time,
+            castTime: DateTime.utc(2022, 4, 20),
+            utcOffsetMinutes: offset,
+            normalizedInput: const <String, dynamic>{
+              'params': <String, dynamic>{},
+            },
+            replayStatus: DlrReplayStatus.complete,
+          ),
+          throwsArgumentError,
+        );
+      }
+    });
+
+    test('fromJson 同样拒绝越界 offset', () {
+      final json = <String, dynamic>{
+        'schemaVersion': DlrRuleSetVersions.castInputSchema,
+        'castMethod': CastMethod.time.name,
+        'castTime': '2022-04-20T02:24:18.000Z',
+        'utcOffsetMinutes': 0,
+        'normalizedInput': <String, dynamic>{
+          'params': <String, dynamic>{},
+        },
+        'replayStatus': DlrReplayStatus.complete.name,
+        'missingFields': <String>[],
+      };
+
+      for (final offset in <int>[-841, 841]) {
+        expect(
+          () => DlrCastInputSnapshot.fromJson(
+            <String, dynamic>{...json, 'utcOffsetMinutes': offset},
+          ),
+          throwsArgumentError,
+        );
+      }
+    });
+
+    test('future snapshot schema 带明确 zone 时原样保留', () {
+      final snapshot = DlrCastInputSnapshot.fromJson(
+        <String, dynamic>{
+          'schemaVersion': '99.0.0',
+          'castMethod': CastMethod.time.name,
+          'castTime': '2022-04-20T10:24:18.000+08:00',
+          'utcOffsetMinutes': 480,
+          'normalizedInput': <String, dynamic>{
+            'params': <String, dynamic>{},
+          },
+          'replayStatus': DlrReplayStatus.complete.name,
+          'missingFields': <String>[],
+        },
+      );
+
+      expect(snapshot.schemaVersion, '99.0.0');
+      expect(snapshot.castTime, DateTime.utc(2022, 4, 20, 2, 24, 18));
+      expect(snapshot.toJson()['schemaVersion'], '99.0.0');
+      expect(snapshot.toJson()['castTime'], '2022-04-20T02:24:18.000Z');
     });
 
     test('fromJson 拒绝非法 schema、replay 组合与非 JSON-safe 输入', () {

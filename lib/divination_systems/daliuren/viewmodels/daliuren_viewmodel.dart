@@ -3,6 +3,7 @@ import '../../../domain/divination_system.dart';
 import '../../../domain/repositories/divination_repository.dart';
 import '../daliuren_system.dart';
 import '../models/daliuren_result.dart';
+import '../models/dlr_cast_time.dart';
 import '../models/si_ke.dart';
 import '../models/san_chuan.dart';
 import '../models/tianpan.dart';
@@ -78,12 +79,19 @@ class DaLiuRenViewModel extends DivinationViewModel<DaLiuRenResult> {
   /// 使用当前时间进行起课
   Future<void> castByTime({
     DateTime? castTime,
+    int? sourceUtcOffsetMinutes,
     DaLiuRenPanParams params = const DaLiuRenPanParams(),
   }) async {
+    final effectiveCastTime = castTime ?? DateTime.now();
+    final capturedUtcOffsetMinutes =
+        sourceUtcOffsetMinutes ?? effectiveCastTime.timeZoneOffset.inMinutes;
     await cast(
       method: CastMethod.time,
-      input: {'params': params.toJson()},
-      castTime: castTime ?? DateTime.now(),
+      input: {
+        'sourceUtcOffsetMinutes': capturedUtcOffsetMinutes,
+        'params': params.toJson(),
+      },
+      castTime: effectiveCastTime,
     );
   }
 
@@ -98,19 +106,52 @@ class DaLiuRenViewModel extends DivinationViewModel<DaLiuRenResult> {
     required String monthGanZhi,
     required String dayGanZhi,
     required String hourGanZhi,
-    DaLiuRenPanParams params = const DaLiuRenPanParams(
-      monthGeneralMode: DaLiuRenMonthGeneralMode.manual,
-    ),
+    required String monthGeneral,
+    DaLiuRenPanParams params = const DaLiuRenPanParams(),
   }) async {
+    final rawParams = params.copyWith(
+      monthGeneralMode: DaLiuRenMonthGeneralMode.manual,
+      manualMonthGeneral: monthGeneral,
+    );
     await cast(
       method: CastMethod.manual,
       input: {
+        'manualInputMode': DlrManualInputMode.rawPillars.id,
         'yearGanZhi': yearGanZhi,
         'monthGanZhi': monthGanZhi,
         'dayGanZhi': dayGanZhi,
         'hourGanZhi': hourGanZhi,
-        'params': params.toJson(),
+        'params': rawParams.toJson(),
       },
+    );
+  }
+
+  /// 使用民用时刻校验过的四柱起课。
+  ///
+  /// [expectedPillars] 必须与 [manualCivilDateTime] 和固定来源 offset
+  /// 解析出的四柱完全一致。
+  Future<void> castByCalendarBackedManual({
+    required DateTime manualCivilDateTime,
+    required int sourceUtcOffsetMinutes,
+    required DlrPillars expectedPillars,
+    DateTime? castTime,
+    DaLiuRenPanParams params = const DaLiuRenPanParams(),
+  }) async {
+    final effectiveCastTime = castTime ?? DateTime.now();
+    final calendarParams = params.copyWith(
+      monthGeneralMode: DaLiuRenMonthGeneralMode.auto,
+      manualMonthGeneral: null,
+    );
+    await cast(
+      method: CastMethod.manual,
+      input: {
+        'manualInputMode': DlrManualInputMode.calendarBacked.id,
+        'manualCivilDateTime': manualCivilDateTime.toUtc().toIso8601String(),
+        'sourceUtcOffsetMinutes': sourceUtcOffsetMinutes,
+        ...expectedPillars.toJson(),
+        'params': calendarParams.toJson(),
+      },
+      castTime: effectiveCastTime,
     );
   }
 
@@ -120,12 +161,20 @@ class DaLiuRenViewModel extends DivinationViewModel<DaLiuRenResult> {
   Future<void> castByReportNumber(
     int number, {
     DateTime? castTime,
+    int? sourceUtcOffsetMinutes,
     DaLiuRenPanParams params = const DaLiuRenPanParams(),
   }) async {
+    final effectiveCastTime = castTime ?? DateTime.now();
+    final capturedUtcOffsetMinutes =
+        sourceUtcOffsetMinutes ?? effectiveCastTime.timeZoneOffset.inMinutes;
     await cast(
       method: CastMethod.reportNumber,
-      input: {'number': number, 'params': params.toJson()},
-      castTime: castTime,
+      input: {
+        'number': number,
+        'sourceUtcOffsetMinutes': capturedUtcOffsetMinutes,
+        'params': params.toJson(),
+      },
+      castTime: effectiveCastTime,
     );
   }
 
@@ -134,12 +183,19 @@ class DaLiuRenViewModel extends DivinationViewModel<DaLiuRenResult> {
   /// 系统随机选择一个地支作为时支进行起课
   Future<void> castByComputer({
     DateTime? castTime,
+    int? sourceUtcOffsetMinutes,
     DaLiuRenPanParams params = const DaLiuRenPanParams(),
   }) async {
+    final effectiveCastTime = castTime ?? DateTime.now();
+    final capturedUtcOffsetMinutes =
+        sourceUtcOffsetMinutes ?? effectiveCastTime.timeZoneOffset.inMinutes;
     await cast(
       method: CastMethod.computer,
-      input: {'params': params.toJson()},
-      castTime: castTime,
+      input: {
+        'sourceUtcOffsetMinutes': capturedUtcOffsetMinutes,
+        'params': params.toJson(),
+      },
+      castTime: effectiveCastTime,
     );
   }
 

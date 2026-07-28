@@ -3,6 +3,7 @@ import 'package:wanxiang_paipan/divination_systems/daliuren/daliuren_constants.d
 import 'package:wanxiang_paipan/divination_systems/daliuren/daliuren_system.dart';
 import 'package:wanxiang_paipan/divination_systems/daliuren/models/chuan.dart';
 import 'package:wanxiang_paipan/divination_systems/daliuren/models/daliuren_result.dart';
+import 'package:wanxiang_paipan/divination_systems/daliuren/models/dlr_cast_time.dart';
 import 'package:wanxiang_paipan/divination_systems/daliuren/models/dlr_rule_contract.dart';
 import 'package:wanxiang_paipan/divination_systems/daliuren/models/ke.dart';
 import 'package:wanxiang_paipan/divination_systems/daliuren/models/pan_params.dart';
@@ -179,6 +180,7 @@ void main() {
         final result = await system.cast(
           method: CastMethod.manual,
           input: {
+            'manualInputMode': 'rawPillars',
             'yearGanZhi': '丙午',
             'monthGanZhi': '壬辰',
             'dayGanZhi': '壬戌',
@@ -285,9 +287,10 @@ void main() {
       });
 
       test('时间起课只保存白名单参数并深复制 caller input', () async {
-        final castTime = DateTime(2026, 4, 18, 22, 20);
+        final castTime = DateTime.utc(2026, 4, 18, 14, 20);
         final params = <String, dynamic>{'dayNightMode': 'day'};
         final input = <String, dynamic>{
+          'sourceUtcOffsetMinutes': 480,
           'question': '不得进入结果快照',
           'extra': <String, dynamic>{'private': true},
           'params': params,
@@ -310,14 +313,96 @@ void main() {
           DlrRuleSetVersions.evidenceCatalog,
         );
         expect(snapshot.castMethod, CastMethod.time);
-        expect(snapshot.castTime, castTime);
-        expect(snapshot.utcOffsetMinutes, castTime.timeZoneOffset.inMinutes);
+        expect(snapshot.schemaVersion, DlrRuleSetVersions.castInputSchema);
+        expect(snapshot.castTime, castTime.toUtc());
+        expect(snapshot.utcOffsetMinutes, 480);
         expect(snapshot.replayStatus, DlrReplayStatus.complete);
         expect(snapshot.missingFields, isEmpty);
         expect(savedParams['dayNightMode'], 'day');
         expect(
+          snapshot.normalizedInput['civilTime'],
+          result.civilTime!.toJson(),
+        );
+        expect(
           snapshot.normalizedInput.keys,
-          unorderedEquals(<String>['params']),
+          unorderedEquals(<String>['civilTime', 'params']),
+        );
+        expect(result.monthGeneralResolution, isNotNull);
+      });
+
+      test('同一绝对时刻的三种自动入口共享月将且只覆盖时柱', () async {
+        final instant = DateTime.utc(2022, 4, 20, 2, 24, 18);
+        final timeResult = await system.cast(
+          method: CastMethod.time,
+          input: const <String, dynamic>{'sourceUtcOffsetMinutes': 480},
+          castTime: instant,
+        ) as DaLiuRenResult;
+        final reportResult = await system.cast(
+          method: CastMethod.reportNumber,
+          input: const <String, dynamic>{
+            'number': 1,
+            'sourceUtcOffsetMinutes': 480,
+          },
+          castTime: instant,
+        ) as DaLiuRenResult;
+        final computerResult = await system.cast(
+          method: CastMethod.computer,
+          input: const <String, dynamic>{'sourceUtcOffsetMinutes': 480},
+          castTime: instant,
+        ) as DaLiuRenResult;
+
+        expect(
+          <String>{
+            timeResult.tianPan.yueJiang,
+            reportResult.tianPan.yueJiang,
+            computerResult.tianPan.yueJiang,
+          },
+          <String>{'酉'},
+        );
+        expect(
+          <String?>{
+            timeResult.monthGeneralResolution!.effectiveZhongQi,
+            reportResult.monthGeneralResolution!.effectiveZhongQi,
+            computerResult.monthGeneralResolution!.effectiveZhongQi,
+          },
+          <String?>{'谷雨'},
+        );
+        expect(reportResult.tianPan.shiZhi, '子');
+        expect(
+          reportResult.lunarInfo.hourGanZhi,
+          '${DlrPillars.expectedHourGanFor(dayGan: reportResult.lunarInfo.riGan, hourZhi: '子')}子',
+        );
+        expect(
+            reportResult.lunarInfo.yearGanZhi, timeResult.lunarInfo.yearGanZhi);
+        expect(reportResult.lunarInfo.monthGanZhi,
+            timeResult.lunarInfo.monthGanZhi);
+        expect(reportResult.lunarInfo.riGanZhi, timeResult.lunarInfo.riGanZhi);
+      });
+
+      test('显式来源 offset 被一次捕获且不会改变同一 instant 的月将', () async {
+        final instant = DateTime.utc(2022, 4, 20, 2, 24, 18);
+        final results = <DaLiuRenResult>[];
+        for (final offset in <int>[480, 330, 0]) {
+          results.add(
+            await system.cast(
+              method: CastMethod.time,
+              input: <String, dynamic>{'sourceUtcOffsetMinutes': offset},
+              castTime: instant,
+            ) as DaLiuRenResult,
+          );
+        }
+
+        expect(
+          results.map((result) => result.tianPan.yueJiang).toSet(),
+          <String>{'酉'},
+        );
+        expect(
+          results.map((result) => result.civilTime!.sourceUtcOffsetMinutes),
+          <int>[480, 330, 0],
+        );
+        expect(
+          results.map((result) => result.castInputSnapshot!.utcOffsetMinutes),
+          <int>[480, 330, 0],
         );
       });
 
@@ -373,6 +458,7 @@ void main() {
         final result = await system.cast(
           method: CastMethod.manual,
           input: const <String, dynamic>{
+            'manualInputMode': 'rawPillars',
             'yearGanZhi': '丙午',
             'monthGanZhi': '壬辰',
             'dayGanZhi': '壬戌',
@@ -390,30 +476,183 @@ void main() {
         expect(snapshot.castMethod, CastMethod.manual);
         expect(snapshot.replayStatus, DlrReplayStatus.complete);
         expect(snapshot.missingFields, isEmpty);
+        expect(snapshot.normalizedInput['manualInputMode'], 'rawPillars');
+        expect(snapshot.normalizedInput['calendarValidated'], isFalse);
         expect(snapshot.normalizedInput['yearGanZhi'], '丙午');
         expect(snapshot.normalizedInput['monthGanZhi'], '壬辰');
         expect(snapshot.normalizedInput['dayGanZhi'], '壬戌');
         expect(snapshot.normalizedInput['hourGanZhi'], '辛亥');
         expect(snapshot.normalizedInput, isNot(contains('question')));
+        expect(result.civilTime, isNull);
+        expect(
+          result.monthGeneralResolution!.mode,
+          DlrMonthGeneralResolutionMode.manualOverride,
+        );
+        expect(result.lunarInfo.solarTerm, isNull);
       });
 
-      test('手动四柱自动月将缺对应 civil time 时明确 incomplete', () async {
+      test('rawPillars 不读取操作时刻派生四柱或月将', () async {
+        const input = <String, dynamic>{
+          'manualInputMode': 'rawPillars',
+          'yearGanZhi': '丙午',
+          'monthGanZhi': '壬辰',
+          'dayGanZhi': '壬戌',
+          'hourGanZhi': '辛亥',
+          'params': <String, dynamic>{
+            'monthGeneralMode': 'manual',
+            'manualMonthGeneral': '戌',
+          },
+        };
+        final first = await system.cast(
+          method: CastMethod.manual,
+          input: input,
+          castTime: DateTime.utc(2022, 4, 20, 2, 24, 17),
+        ) as DaLiuRenResult;
+        final second = await system.cast(
+          method: CastMethod.manual,
+          input: input,
+          castTime: DateTime.utc(2035, 12, 22, 0),
+        ) as DaLiuRenResult;
+
+        expect(second.lunarInfo, first.lunarInfo);
+        expect(second.tianPan, first.tianPan);
+        expect(second.siKe, first.siKe);
+        expect(second.sanChuan, first.sanChuan);
+        expect(second.monthGeneralResolution, first.monthGeneralResolution);
+        expect(first.castInputSnapshot!.castTime,
+            DateTime.utc(2022, 4, 20, 2, 24, 17));
+        expect(
+            second.castInputSnapshot!.castTime, DateTime.utc(2035, 12, 22, 0));
+      });
+
+      test('calendarBacked 校验四柱并以民用 instant 构建完整事实', () async {
+        final operationTime = DateTime.utc(2030, 1, 1);
+        final civilInstant = DateTime.utc(2026, 4, 18, 14, 20);
         final result = await system.cast(
           method: CastMethod.manual,
-          input: const <String, dynamic>{
+          input: <String, dynamic>{
+            'manualInputMode': 'calendarBacked',
+            'manualCivilDateTime': civilInstant,
+            'sourceUtcOffsetMinutes': 480,
             'yearGanZhi': '丙午',
             'monthGanZhi': '壬辰',
             'dayGanZhi': '壬戌',
             'hourGanZhi': '辛亥',
           },
-          castTime: DateTime(2026, 4, 18, 22, 20),
+          castTime: operationTime,
         ) as DaLiuRenResult;
 
         final snapshot = result.castInputSnapshot!;
-        expect(snapshot.replayStatus, DlrReplayStatus.incomplete);
-        expect(snapshot.missingFields, <String>['manualCivilDateTime']);
+        expect(result.castTime, operationTime);
+        expect(result.civilTime!.instantUtc, civilInstant);
+        expect(result.civilTime!.sourceUtcOffsetMinutes, 480);
+        expect(result.tianPan.yueJiang, '戌');
         expect(
-            snapshot.normalizedInput, isNot(contains('manualCivilDateTime')));
+          result.monthGeneralResolution!.mode,
+          DlrMonthGeneralResolutionMode.zhongQi,
+        );
+        expect(snapshot.castTime, civilInstant);
+        expect(snapshot.utcOffsetMinutes, 480);
+        expect(snapshot.replayStatus, DlrReplayStatus.complete);
+        expect(snapshot.missingFields, isEmpty);
+        expect(snapshot.normalizedInput['manualInputMode'], 'calendarBacked');
+        expect(snapshot.normalizedInput['calendarValidated'], isTrue);
+        expect(snapshot.normalizedInput['manualCivilDateTime'],
+            civilInstant.toIso8601String());
+      });
+
+      test('手工模式必须显式完整且 calendarBacked 柱不符时指出字段', () async {
+        const implicitMode = <String, dynamic>{
+          'yearGanZhi': '丙午',
+          'monthGanZhi': '壬辰',
+          'dayGanZhi': '壬戌',
+          'hourGanZhi': '辛亥',
+          'params': <String, dynamic>{
+            'monthGeneralMode': 'manual',
+            'manualMonthGeneral': '戌',
+          },
+        };
+        const rawWithoutGeneral = <String, dynamic>{
+          'manualInputMode': 'rawPillars',
+          'yearGanZhi': '丙午',
+          'monthGanZhi': '壬辰',
+          'dayGanZhi': '壬戌',
+          'hourGanZhi': '辛亥',
+        };
+        final mismatch = <String, dynamic>{
+          'manualInputMode': 'calendarBacked',
+          'manualCivilDateTime': DateTime.utc(2026, 4, 18, 14, 20),
+          'sourceUtcOffsetMinutes': 480,
+          'yearGanZhi': '丙午',
+          'monthGanZhi': '壬辰',
+          'dayGanZhi': '壬戌',
+          'hourGanZhi': '庚戌',
+        };
+
+        expect(system.validateInput(CastMethod.manual, implicitMode), isFalse);
+        expect(
+          system.validateInput(CastMethod.manual, rawWithoutGeneral),
+          isFalse,
+        );
+        expect(system.validateInput(CastMethod.manual, mismatch), isFalse);
+        await expectLater(
+          system.cast(method: CastMethod.manual, input: mismatch),
+          throwsA(
+            isA<ArgumentError>().having(
+              (error) => error.message.toString(),
+              'message',
+              contains('hourGanZhi'),
+            ),
+          ),
+        );
+      });
+
+      test('rawPillars 拒绝年月或日时干联动错误', () async {
+        Map<String, dynamic> input({
+          String monthGanZhi = '壬辰',
+          String hourGanZhi = '辛亥',
+        }) =>
+            <String, dynamic>{
+              'manualInputMode': 'rawPillars',
+              'yearGanZhi': '丙午',
+              'monthGanZhi': monthGanZhi,
+              'dayGanZhi': '壬戌',
+              'hourGanZhi': hourGanZhi,
+              'params': const <String, dynamic>{
+                'monthGeneralMode': 'manual',
+                'manualMonthGeneral': '戌',
+              },
+            };
+
+        for (final invalid in <Map<String, dynamic>>[
+          input(monthGanZhi: '庚辰'),
+          input(hourGanZhi: '己亥'),
+        ]) {
+          expect(system.validateInput(CastMethod.manual, invalid), isFalse);
+          await expectLater(
+            system.cast(method: CastMethod.manual, input: invalid),
+            throwsArgumentError,
+          );
+        }
+      });
+
+      test('calendarBacked 缺显式 civil instant 或 offset 时直接无效', () {
+        final base = <String, dynamic>{
+          'manualInputMode': 'calendarBacked',
+          'manualCivilDateTime': DateTime.utc(2026, 4, 18, 14, 20),
+          'sourceUtcOffsetMinutes': 480,
+          'yearGanZhi': '丙午',
+          'monthGanZhi': '壬辰',
+          'dayGanZhi': '壬戌',
+          'hourGanZhi': '辛亥',
+        };
+        final noInstant = Map<String, dynamic>.from(base)
+          ..remove('manualCivilDateTime');
+        final noOffset = Map<String, dynamic>.from(base)
+          ..remove('sourceUtcOffsetMinutes');
+
+        expect(system.validateInput(CastMethod.manual, noInstant), isFalse);
+        expect(system.validateInput(CastMethod.manual, noOffset), isFalse);
       });
     });
 

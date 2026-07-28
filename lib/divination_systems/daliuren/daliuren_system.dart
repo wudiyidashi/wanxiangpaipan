@@ -1,16 +1,17 @@
 import 'dart:math';
 
-import 'package:lunar/lunar.dart';
 import '../../domain/divination_system.dart';
-import '../../domain/services/shared/lunar_service.dart';
 import '../../domain/services/shared/tiangan_dizhi_service.dart';
+import '../../domain/services/daliuren/dlr_cast_time_service.dart';
 import '../../domain/services/daliuren/tianpan_service.dart';
 import '../../domain/services/daliuren/si_ke_service.dart';
 import '../../domain/services/daliuren/san_chuan_service.dart';
 import '../../domain/services/daliuren/shen_jiang_service.dart';
 import '../../domain/services/daliuren/shen_sha_service.dart';
 import '../../domain/services/daliuren/yue_jiang_service.dart';
+import '../../models/lunar_info.dart';
 import 'models/daliuren_result.dart';
+import 'models/dlr_cast_time.dart';
 import 'models/dlr_rule_contract.dart';
 import 'models/pan_params.dart';
 
@@ -53,13 +54,17 @@ class DaLiuRenSystem implements DivinationSystem {
     required Map<String, dynamic> input,
     DateTime? castTime,
   }) async {
+    final time = castTime ?? DateTime.now();
+
+    // Manual parsing owns its validation so calendar mismatches can name the
+    // offending pillars instead of being collapsed into a generic error.
+    if (method == CastMethod.manual) {
+      return _castByManual(time, input);
+    }
     if (!validateInput(method, input)) {
       throw ArgumentError('输入参数无效');
     }
 
-    final time = castTime ?? DateTime.now();
-
-    // 根据起课方式执行不同逻辑
     switch (method) {
       case CastMethod.time:
         return _castByTime(time, input);
@@ -67,8 +72,6 @@ class DaLiuRenSystem implements DivinationSystem {
         return _castByReportNumber(time, input);
       case CastMethod.computer:
         return _castByComputer(time, input);
-      case CastMethod.manual:
-        return _castByManual(time, input);
       default:
         throw UnsupportedError('大六壬不支持的起卦方式: ${method.displayName}');
     }
@@ -98,112 +101,48 @@ class DaLiuRenSystem implements DivinationSystem {
     DateTime castTime,
     Map<String, dynamic> input, {
     String? shiZhiOverride,
-    String? hourGanZhiOverride,
     CastMethod? castMethodOverride,
   }) async {
     final panParams = _parsePanParams(input);
-
-    // 1. 获取农历信息
-    var lunarInfo = LunarService.getLunarInfo(castTime);
-
-    // 2. 获取时支（如果有覆盖值则使用覆盖值）
-    final String shiZhi;
-    final String hourGanZhi;
-    if (shiZhiOverride != null) {
-      shiZhi = shiZhiOverride;
-      hourGanZhi = hourGanZhiOverride ??
-          _buildHourGanZhi(
-            dayGan: lunarInfo.riGan,
-            shiZhi: shiZhiOverride,
+    final civilTime = _civilTimeFromCast(castTime, input);
+    final calendarContext = DlrCastTimeService.resolve(civilTime);
+    final shiZhi = shiZhiOverride ?? calendarContext.pillars.hourZhi;
+    final hourGanZhi = shiZhiOverride == null
+        ? calendarContext.pillars.hourGanZhi
+        : _buildHourGanZhi(
+            dayGan: calendarContext.pillars.dayGan,
+            shiZhi: shiZhi,
           );
-    } else {
-      final solar = Solar.fromDate(castTime);
-      final lunar = solar.getLunar();
-      shiZhi = lunar.getTimeZhi();
-      hourGanZhi = lunar.getTimeInGanZhi();
-    }
-    lunarInfo = lunarInfo.copyWith(
+    final lunarInfo = calendarContext.lunarInfo.copyWith(
       hourGanZhi: hourGanZhi,
       kongWang: _resolveKongWang(
-        dayGanZhi: lunarInfo.riGanZhi,
+        dayGanZhi: calendarContext.pillars.dayGanZhi,
         hourGanZhi: hourGanZhi,
         xunShouMode: panParams.xunShouMode,
       ),
     );
-
-    final resolvedYueJiang = _resolveYueJiang(
+    final monthGeneralResolution = _resolveMonthGeneral(
       params: panParams,
-      yueJian: lunarInfo.yueJian,
-      castTime: castTime,
+      automatic: calendarContext.monthGeneralResolution,
     );
-
-    // 3. 计算天盘
-    final tianPan = TianPanService.createTianPan(
-      yueJian: lunarInfo.yueJian,
-      shiZhi: shiZhi,
-      resolvedYueJiang: resolvedYueJiang,
-      castTime: panParams.monthGeneralMode == DaLiuRenMonthGeneralMode.auto
-          ? castTime
-          : null,
-      solarTerm: lunarInfo.solarTerm,
-    );
-
-    // 4. 配置神将（需要在四课之前，因为四课需要神将信息）
-    final shenJiangConfig = ShenJiangService.configureShenJiang(
-      riGan: lunarInfo.riGan,
-      shiZhi: shiZhi,
-      tianPanMap: tianPan.tianPanMap,
-      dayNightMode: panParams.dayNightMode,
-      guiRenVerse: panParams.guiRenVerse,
-    );
-
-    // 5. 排列四课
-    final siKe = SiKeService.arrangeSiKe(
-      riGan: lunarInfo.riGan,
-      riZhi: lunarInfo.riZhi,
-      tianPanMap: tianPan.tianPanMap,
-      shenJiangConfig: shenJiangConfig,
-    );
-
-    // 6. 推导三传
-    final sanChuan = SanChuanService.deriveSanChuan(
-      siKe: siKe,
-      tianPanMap: tianPan.tianPanMap,
-      shenJiangConfig: shenJiangConfig,
-      kongWang: lunarInfo.kongWang,
-    );
-
-    // 7. 计算神煞
-    final shenShaList = ShenShaService.calculateShenSha(
-      riGan: lunarInfo.riGan,
-      riZhi: lunarInfo.riZhi,
-      yueJian: lunarInfo.yueJian,
-      shiZhi: shiZhi,
-    );
-
-    // 8. 创建结果
     final effectiveCastMethod = castMethodOverride ?? CastMethod.time;
     final castInputSnapshot = _captureTimeDerivedInput(
       castMethod: effectiveCastMethod,
-      castTime: castTime,
+      civilTime: civilTime,
       input: input,
       panParams: panParams,
       resolvedShiZhi: shiZhi,
       resolvedHourGanZhi: hourGanZhi,
     );
-    return DaLiuRenResult(
-      id: _generateId(),
+
+    return _assembleResult(
       castTime: castTime,
       castMethod: effectiveCastMethod,
       lunarInfo: lunarInfo,
-      tianPan: tianPan,
-      siKe: siKe,
-      sanChuan: sanChuan,
-      shenJiangConfig: shenJiangConfig,
-      shenShaList: shenShaList,
+      shiZhi: shiZhi,
       panParams: panParams,
-      panRuleSetVersion: DlrRuleSetVersions.panCurrent,
-      evidenceCatalogVersion: DlrRuleSetVersions.evidenceCatalog,
+      civilTime: civilTime,
+      monthGeneralResolution: monthGeneralResolution,
       castInputSnapshot: castInputSnapshot,
     );
   }
@@ -218,13 +157,11 @@ class DaLiuRenSystem implements DivinationSystem {
     final number = input['number'] as int;
     final index = (number.abs() - 1) % 12;
     final shiZhi = _diZhiList[index];
-    final dayGan = LunarService.getLunarInfo(castTime).riGan;
 
     return _castByTime(
       castTime,
       input,
       shiZhiOverride: shiZhi,
-      hourGanZhiOverride: _buildHourGanZhi(dayGan: dayGan, shiZhi: shiZhi),
       castMethodOverride: CastMethod.reportNumber,
     );
   }
@@ -239,13 +176,11 @@ class DaLiuRenSystem implements DivinationSystem {
     final random = Random();
     final index = random.nextInt(12);
     final shiZhi = _diZhiList[index];
-    final dayGan = LunarService.getLunarInfo(castTime).riGan;
 
     return _castByTime(
       castTime,
       input,
       shiZhiOverride: shiZhi,
-      hourGanZhiOverride: _buildHourGanZhi(dayGan: dayGan, shiZhi: shiZhi),
       castMethodOverride: CastMethod.computer,
     );
   }
@@ -255,96 +190,159 @@ class DaLiuRenSystem implements DivinationSystem {
     DateTime castTime,
     Map<String, dynamic> input,
   ) async {
-    final panParams = _parsePanParams(input);
-    final pillars = _parseManualPillars(input);
-    final shiZhi = pillars.hourZhi;
+    final command = _parseManualCommand(input);
+    return switch (command.mode) {
+      DlrManualInputMode.rawPillars => _castRawPillars(
+          castTime: castTime,
+          input: input,
+          command: command,
+        ),
+      DlrManualInputMode.calendarBacked => _castCalendarBackedManual(
+          castTime: castTime,
+          input: input,
+          command: command,
+        ),
+    };
+  }
 
-    final lunarInfo = LunarService.getLunarInfo(castTime).copyWith(
+  DaLiuRenResult _castRawPillars({
+    required DateTime castTime,
+    required Map<String, dynamic> input,
+    required _ManualCommand command,
+  }) {
+    final pillars = command.pillars;
+    final panParams = command.panParams;
+    final sourceUtcOffsetMinutes = _sourceUtcOffsetMinutes(
+      input: input,
+      castTime: castTime,
+    );
+    final lunarInfo = LunarInfo(
+      yueJian: pillars.monthZhi,
       riGan: pillars.dayGan,
       riZhi: pillars.dayZhi,
       riGanZhi: pillars.dayGanZhi,
       hourGanZhi: pillars.hourGanZhi,
-      yearGanZhi: pillars.yearGanZhi,
-      monthGanZhi: pillars.monthGanZhi,
-      yueJian: pillars.monthZhi,
       kongWang: _resolveKongWang(
         dayGanZhi: pillars.dayGanZhi,
         hourGanZhi: pillars.hourGanZhi,
         xunShouMode: panParams.xunShouMode,
       ),
+      yearGanZhi: pillars.yearGanZhi,
+      monthGanZhi: pillars.monthGanZhi,
     );
-
-    final resolvedYueJiang = _resolveYueJiang(
-      params: panParams,
-      yueJian: pillars.monthZhi,
+    final monthGeneralResolution = YueJiangService.manualOverride(
+      panParams.manualMonthGeneral!,
+    );
+    final snapshot = DlrCastInputSnapshot.capture(
+      castMethod: CastMethod.manual,
       castTime: castTime,
+      utcOffsetMinutes: sourceUtcOffsetMinutes,
+      normalizedInput: <String, dynamic>{
+        'manualInputMode': DlrManualInputMode.rawPillars.id,
+        ...pillars.toJson(),
+        'manualMonthGeneral': monthGeneralResolution.yueJiang,
+        'calendarValidated': false,
+        'params': panParams.toJson(),
+      },
+      replayStatus: DlrReplayStatus.complete,
     );
 
-    // 计算天盘
+    return _assembleResult(
+      castTime: castTime,
+      castMethod: CastMethod.manual,
+      lunarInfo: lunarInfo,
+      shiZhi: pillars.hourZhi,
+      panParams: panParams,
+      monthGeneralResolution: monthGeneralResolution,
+      castInputSnapshot: snapshot,
+    );
+  }
+
+  DaLiuRenResult _castCalendarBackedManual({
+    required DateTime castTime,
+    required Map<String, dynamic> input,
+    required _ManualCommand command,
+  }) {
+    final civilTime = command.civilTime!;
+    final calendarContext = command.resolvedCastTime!;
+    final lunarInfo = calendarContext.lunarInfo.copyWith(
+      kongWang: _resolveKongWang(
+        dayGanZhi: calendarContext.pillars.dayGanZhi,
+        hourGanZhi: calendarContext.pillars.hourGanZhi,
+        xunShouMode: command.panParams.xunShouMode,
+      ),
+    );
+    final snapshot = DlrCastInputSnapshot.capture(
+      castMethod: CastMethod.manual,
+      castTime: civilTime.instantUtc,
+      utcOffsetMinutes: civilTime.sourceUtcOffsetMinutes,
+      normalizedInput: <String, dynamic>{
+        'manualInputMode': DlrManualInputMode.calendarBacked.id,
+        'manualCivilDateTime': civilTime.instantUtc.toIso8601String(),
+        'sourceUtcOffsetMinutes': civilTime.sourceUtcOffsetMinutes,
+        ...calendarContext.pillars.toJson(),
+        'calendarValidated': true,
+        'params': command.panParams.toJson(),
+      },
+      replayStatus: DlrReplayStatus.complete,
+    );
+
+    return _assembleResult(
+      castTime: castTime,
+      castMethod: CastMethod.manual,
+      lunarInfo: lunarInfo,
+      shiZhi: calendarContext.pillars.hourZhi,
+      panParams: command.panParams,
+      civilTime: civilTime,
+      monthGeneralResolution: calendarContext.monthGeneralResolution,
+      castInputSnapshot: snapshot,
+    );
+  }
+
+  DaLiuRenResult _assembleResult({
+    required DateTime castTime,
+    required CastMethod castMethod,
+    required LunarInfo lunarInfo,
+    required String shiZhi,
+    required DaLiuRenPanParams panParams,
+    DlrCivilTime? civilTime,
+    required DlrMonthGeneralResolution monthGeneralResolution,
+    required DlrCastInputSnapshot castInputSnapshot,
+  }) {
     final tianPan = TianPanService.createTianPan(
-      yueJian: pillars.monthZhi,
+      yueJiang: monthGeneralResolution.yueJiang,
       shiZhi: shiZhi,
-      resolvedYueJiang: resolvedYueJiang,
     );
-
-    // 配置神将
     final shenJiangConfig = ShenJiangService.configureShenJiang(
-      riGan: pillars.dayGan,
+      riGan: lunarInfo.riGan,
       shiZhi: shiZhi,
       tianPanMap: tianPan.tianPanMap,
       dayNightMode: panParams.dayNightMode,
       guiRenVerse: panParams.guiRenVerse,
     );
-
-    // 排列四课
     final siKe = SiKeService.arrangeSiKe(
-      riGan: pillars.dayGan,
-      riZhi: pillars.dayZhi,
+      riGan: lunarInfo.riGan,
+      riZhi: lunarInfo.riZhi,
       tianPanMap: tianPan.tianPanMap,
       shenJiangConfig: shenJiangConfig,
     );
-
-    // 推导三传
     final sanChuan = SanChuanService.deriveSanChuan(
       siKe: siKe,
       tianPanMap: tianPan.tianPanMap,
       shenJiangConfig: shenJiangConfig,
       kongWang: lunarInfo.kongWang,
     );
-
-    // 计算神煞
     final shenShaList = ShenShaService.calculateShenSha(
-      riGan: pillars.dayGan,
-      riZhi: pillars.dayZhi,
-      yueJian: pillars.monthZhi,
+      riGan: lunarInfo.riGan,
+      riZhi: lunarInfo.riZhi,
+      yueJian: lunarInfo.yueJian,
       shiZhi: shiZhi,
     );
 
-    // 创建结果
-    final manualAutoMonthGeneral =
-        panParams.monthGeneralMode == DaLiuRenMonthGeneralMode.auto;
-    final castInputSnapshot = DlrCastInputSnapshot.capture(
-      castMethod: CastMethod.manual,
-      castTime: castTime,
-      utcOffsetMinutes: castTime.timeZoneOffset.inMinutes,
-      normalizedInput: <String, dynamic>{
-        'yearGanZhi': pillars.yearGanZhi,
-        'monthGanZhi': pillars.monthGanZhi,
-        'dayGanZhi': pillars.dayGanZhi,
-        'hourGanZhi': pillars.hourGanZhi,
-        'params': panParams.toJson(),
-      },
-      replayStatus: manualAutoMonthGeneral
-          ? DlrReplayStatus.incomplete
-          : DlrReplayStatus.complete,
-      missingFields: manualAutoMonthGeneral
-          ? const <String>['manualCivilDateTime']
-          : const <String>[],
-    );
     return DaLiuRenResult(
       id: _generateId(),
       castTime: castTime,
-      castMethod: CastMethod.manual,
+      castMethod: castMethod,
       lunarInfo: lunarInfo,
       tianPan: tianPan,
       siKe: siKe,
@@ -355,6 +353,8 @@ class DaLiuRenSystem implements DivinationSystem {
       panRuleSetVersion: DlrRuleSetVersions.panCurrent,
       evidenceCatalogVersion: DlrRuleSetVersions.evidenceCatalog,
       castInputSnapshot: castInputSnapshot,
+      civilTime: civilTime,
+      monthGeneralResolution: monthGeneralResolution,
     );
   }
 
@@ -366,20 +366,19 @@ class DaLiuRenSystem implements DivinationSystem {
   @override
   bool validateInput(CastMethod method, Map<String, dynamic> input) {
     final paramsValid = _tryParsePanParams(input) != null;
-    if (!paramsValid) {
+    if (!paramsValid || !_hasValidSourceUtcOffset(input)) {
       return false;
     }
 
     switch (method) {
       case CastMethod.time:
-        // 时间起课不需要额外输入
         return true;
       case CastMethod.reportNumber:
         return input.containsKey('number') && input['number'] is int;
       case CastMethod.computer:
         return true;
       case CastMethod.manual:
-        return _tryParseManualPillars(input) != null;
+        return _tryParseManualCommand(input) != null;
       default:
         return false;
     }
@@ -446,70 +445,181 @@ class DaLiuRenSystem implements DivinationSystem {
     }
   }
 
-  _ManualPillars _parseManualPillars(Map<String, dynamic> input) {
-    final parsed = _tryParseManualPillars(input);
-    if (parsed == null) {
-      throw ArgumentError('指定干支需要完整输入年柱、月柱、日柱、时柱');
+  _ManualCommand _parseManualCommand(Map<String, dynamic> input) {
+    final rawMode = input['manualInputMode'];
+    if (rawMode is! String) {
+      throw ArgumentError.value(
+        rawMode,
+        'manualInputMode',
+        '手工起课必须显式选择 rawPillars 或 calendarBacked',
+      );
     }
-    return parsed;
+    final mode = DlrManualInputMode.fromId(rawMode);
+    final panParams = _parsePanParams(input);
+    final pillars = _parsePillars(input);
+
+    switch (mode) {
+      case DlrManualInputMode.rawPillars:
+        if (input['manualCivilDateTime'] != null) {
+          throw ArgumentError('rawPillars 不得同时提供 manualCivilDateTime');
+        }
+        if (panParams.monthGeneralMode != DaLiuRenMonthGeneralMode.manual ||
+            panParams.manualMonthGeneral == null) {
+          throw ArgumentError('rawPillars 必须显式提供手动月将');
+        }
+        pillars.validateRawStemLinks();
+        return _ManualCommand(
+          mode: mode,
+          panParams: panParams,
+          pillars: pillars,
+        );
+      case DlrManualInputMode.calendarBacked:
+        if (panParams.monthGeneralMode != DaLiuRenMonthGeneralMode.auto) {
+          throw ArgumentError('calendarBacked 必须使用自动月将');
+        }
+        final civilTime = _parseManualCivilTime(input);
+        final resolved = DlrCastTimeService.resolve(civilTime);
+        _verifyCalendarPillars(supplied: pillars, resolved: resolved.pillars);
+        return _ManualCommand(
+          mode: mode,
+          panParams: panParams,
+          pillars: pillars,
+          civilTime: civilTime,
+          resolvedCastTime: resolved,
+        );
+    }
   }
 
-  _ManualPillars? _tryParseManualPillars(Map<String, dynamic> input) {
-    final yearGanZhi = input['yearGanZhi'] as String?;
-    final monthGanZhi = input['monthGanZhi'] as String?;
-    final dayGanZhi = input['dayGanZhi'] as String?;
-    final hourGanZhi = input['hourGanZhi'] as String?;
-    if (yearGanZhi == null ||
-        monthGanZhi == null ||
-        dayGanZhi == null ||
-        hourGanZhi == null) {
+  _ManualCommand? _tryParseManualCommand(Map<String, dynamic> input) {
+    try {
+      return _parseManualCommand(input);
+    } catch (_) {
       return null;
     }
+  }
 
-    if (!TianGanDiZhiService.isValidGanZhi(yearGanZhi) ||
-        !TianGanDiZhiService.isValidGanZhi(monthGanZhi) ||
-        !TianGanDiZhiService.isValidGanZhi(dayGanZhi) ||
-        !TianGanDiZhiService.isValidGanZhi(hourGanZhi)) {
-      return null;
+  DlrPillars _parsePillars(Map<String, dynamic> input) {
+    final values = <String, String>{};
+    for (final field in const <String>[
+      'yearGanZhi',
+      'monthGanZhi',
+      'dayGanZhi',
+      'hourGanZhi',
+    ]) {
+      final value = input[field];
+      if (value is! String) {
+        throw ArgumentError.value(value, field, '指定干支需要完整输入年柱、月柱、日柱、时柱');
+      }
+      values[field] = value;
     }
-
-    final yearParts = TianGanDiZhiService.splitGanZhi(yearGanZhi);
-    final monthParts = TianGanDiZhiService.splitGanZhi(monthGanZhi);
-    final dayParts = TianGanDiZhiService.splitGanZhi(dayGanZhi);
-    final hourParts = TianGanDiZhiService.splitGanZhi(hourGanZhi);
-    if (yearParts == null ||
-        monthParts == null ||
-        dayParts == null ||
-        hourParts == null) {
-      return null;
-    }
-
-    return _ManualPillars(
-      yearGanZhi: yearGanZhi,
-      monthGanZhi: monthGanZhi,
-      dayGanZhi: dayGanZhi,
-      hourGanZhi: hourGanZhi,
-      monthZhi: monthParts[1],
-      dayGan: dayParts[0],
-      dayZhi: dayParts[1],
-      hourZhi: hourParts[1],
+    return DlrPillars(
+      yearGanZhi: values['yearGanZhi']!,
+      monthGanZhi: values['monthGanZhi']!,
+      dayGanZhi: values['dayGanZhi']!,
+      hourGanZhi: values['hourGanZhi']!,
     );
   }
 
-  String _resolveYueJiang({
-    required DaLiuRenPanParams params,
-    required String yueJian,
-    required DateTime castTime,
+  DlrCivilTime _parseManualCivilTime(Map<String, dynamic> input) {
+    if (!input.containsKey('sourceUtcOffsetMinutes')) {
+      throw ArgumentError('calendarBacked 必须显式提供 sourceUtcOffsetMinutes');
+    }
+    final rawInstant = input['manualCivilDateTime'];
+    final DateTime instant;
+    if (rawInstant is DateTime) {
+      instant = rawInstant;
+    } else if (rawInstant is String && _hasExplicitZone(rawInstant)) {
+      try {
+        instant = DateTime.parse(rawInstant);
+      } on FormatException {
+        throw ArgumentError.value(
+          rawInstant,
+          'manualCivilDateTime',
+          '民用时刻格式不合法',
+        );
+      }
+    } else {
+      throw ArgumentError.value(
+        rawInstant,
+        'manualCivilDateTime',
+        '必须是 DateTime 或带明确 zone 的 ISO-8601 字符串',
+      );
+    }
+    return DlrCivilTime(
+      instant: instant,
+      sourceUtcOffsetMinutes: _sourceUtcOffsetMinutes(
+        input: input,
+        castTime: instant,
+        requireExplicit: true,
+      ),
+    );
+  }
+
+  void _verifyCalendarPillars({
+    required DlrPillars supplied,
+    required DlrPillars resolved,
   }) {
-    if (params.monthGeneralMode == DaLiuRenMonthGeneralMode.manual) {
-      return params.manualMonthGeneral!;
+    final mismatches = <String>[
+      if (supplied.yearGanZhi != resolved.yearGanZhi)
+        'yearGanZhi(${supplied.yearGanZhi} != ${resolved.yearGanZhi})',
+      if (supplied.monthGanZhi != resolved.monthGanZhi)
+        'monthGanZhi(${supplied.monthGanZhi} != ${resolved.monthGanZhi})',
+      if (supplied.dayGanZhi != resolved.dayGanZhi)
+        'dayGanZhi(${supplied.dayGanZhi} != ${resolved.dayGanZhi})',
+      if (supplied.hourGanZhi != resolved.hourGanZhi)
+        'hourGanZhi(${supplied.hourGanZhi} != ${resolved.hourGanZhi})',
+    ];
+    if (mismatches.isNotEmpty) {
+      throw ArgumentError('手工四柱与民用时刻不一致: ${mismatches.join(', ')}');
     }
-
-    return YueJiangService.getYueJiangByDateTime(
-      castTime,
-      fallbackYueJian: yueJian,
-    );
   }
+
+  DlrCivilTime _civilTimeFromCast(
+    DateTime castTime,
+    Map<String, dynamic> input,
+  ) =>
+      DlrCivilTime(
+        instant: castTime,
+        sourceUtcOffsetMinutes: _sourceUtcOffsetMinutes(
+          input: input,
+          castTime: castTime,
+        ),
+      );
+
+  int _sourceUtcOffsetMinutes({
+    required Map<String, dynamic> input,
+    required DateTime castTime,
+    bool requireExplicit = false,
+  }) {
+    final rawOffset = input['sourceUtcOffsetMinutes'];
+    if (rawOffset == null) {
+      if (requireExplicit) {
+        throw ArgumentError('必须显式提供 sourceUtcOffsetMinutes');
+      }
+      return castTime.timeZoneOffset.inMinutes;
+    }
+    if (rawOffset is! int || rawOffset < -840 || rawOffset > 840) {
+      throw ArgumentError.value(
+        rawOffset,
+        'sourceUtcOffsetMinutes',
+        'UTC offset 必须是 [-840, 840] 内的整数分钟',
+      );
+    }
+    return rawOffset;
+  }
+
+  bool _hasValidSourceUtcOffset(Map<String, dynamic> input) {
+    final value = input['sourceUtcOffsetMinutes'];
+    return value == null || (value is int && value >= -840 && value <= 840);
+  }
+
+  DlrMonthGeneralResolution _resolveMonthGeneral({
+    required DaLiuRenPanParams params,
+    required DlrMonthGeneralResolution automatic,
+  }) =>
+      params.monthGeneralMode == DaLiuRenMonthGeneralMode.manual
+          ? YueJiangService.manualOverride(params.manualMonthGeneral!)
+          : automatic;
 
   List<String> _resolveKongWang({
     required String dayGanZhi,
@@ -525,26 +635,23 @@ class DaLiuRenSystem implements DivinationSystem {
     required String dayGan,
     required String shiZhi,
   }) {
-    final dayGanIndex = TianGanDiZhiService.getTianGanIndex(dayGan);
-    final shiZhiIndex = TianGanDiZhiService.getDiZhiIndex(shiZhi);
-    if (dayGanIndex == -1 || shiZhiIndex == -1) {
-      throw ArgumentError('无法根据日干$dayGan和时支$shiZhi计算时柱');
-    }
-
-    final hourGanIndex = ((dayGanIndex % 5) * 2 + shiZhiIndex) % 10;
-    final hourGan = TianGanDiZhiService.getTianGanByIndex(hourGanIndex);
+    final hourGan = DlrPillars.expectedHourGanFor(
+      dayGan: dayGan,
+      hourZhi: shiZhi,
+    );
     return '$hourGan$shiZhi';
   }
 
   DlrCastInputSnapshot _captureTimeDerivedInput({
     required CastMethod castMethod,
-    required DateTime castTime,
+    required DlrCivilTime civilTime,
     required Map<String, dynamic> input,
     required DaLiuRenPanParams panParams,
     required String resolvedShiZhi,
     required String resolvedHourGanZhi,
   }) {
     final normalizedInput = <String, dynamic>{
+      'civilTime': civilTime.toJson(),
       'params': panParams.toJson(),
     };
     var replayStatus = DlrReplayStatus.complete;
@@ -569,33 +676,30 @@ class DaLiuRenSystem implements DivinationSystem {
 
     return DlrCastInputSnapshot.capture(
       castMethod: castMethod,
-      castTime: castTime,
-      utcOffsetMinutes: castTime.timeZoneOffset.inMinutes,
+      castTime: civilTime.instantUtc,
+      utcOffsetMinutes: civilTime.sourceUtcOffsetMinutes,
       normalizedInput: normalizedInput,
       replayStatus: replayStatus,
       missingFields: missingFields,
     );
   }
+
+  bool _hasExplicitZone(String value) =>
+      RegExp(r'(Z|[+-]\d{2}:?\d{2})$', caseSensitive: false).hasMatch(value);
 }
 
-class _ManualPillars {
-  const _ManualPillars({
-    required this.yearGanZhi,
-    required this.monthGanZhi,
-    required this.dayGanZhi,
-    required this.hourGanZhi,
-    required this.monthZhi,
-    required this.dayGan,
-    required this.dayZhi,
-    required this.hourZhi,
+class _ManualCommand {
+  const _ManualCommand({
+    required this.mode,
+    required this.panParams,
+    required this.pillars,
+    this.civilTime,
+    this.resolvedCastTime,
   });
 
-  final String yearGanZhi;
-  final String monthGanZhi;
-  final String dayGanZhi;
-  final String hourGanZhi;
-  final String monthZhi;
-  final String dayGan;
-  final String dayZhi;
-  final String hourZhi;
+  final DlrManualInputMode mode;
+  final DaLiuRenPanParams panParams;
+  final DlrPillars pillars;
+  final DlrCivilTime? civilTime;
+  final DlrResolvedCastTime? resolvedCastTime;
 }

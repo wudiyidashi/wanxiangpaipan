@@ -3,6 +3,7 @@ import 'package:wanxiang_paipan/ai/output/formatters/daliuren_formatter.dart';
 import 'package:wanxiang_paipan/divination_systems/daliuren/daliuren_constants.dart';
 import 'package:wanxiang_paipan/divination_systems/daliuren/daliuren_system.dart';
 import 'package:wanxiang_paipan/divination_systems/daliuren/models/daliuren_result.dart';
+import 'package:wanxiang_paipan/divination_systems/daliuren/models/dlr_cast_time.dart';
 import 'package:wanxiang_paipan/divination_systems/daliuren/models/pan_params.dart';
 import 'package:wanxiang_paipan/divination_systems/daliuren/models/tianpan.dart';
 import 'package:wanxiang_paipan/domain/divination_system.dart';
@@ -10,6 +11,7 @@ import 'package:wanxiang_paipan/domain/services/daliuren/san_chuan_service.dart'
 import 'package:wanxiang_paipan/domain/services/daliuren/shen_jiang_service.dart';
 import 'package:wanxiang_paipan/domain/services/daliuren/shen_sha_service.dart';
 import 'package:wanxiang_paipan/domain/services/daliuren/si_ke_service.dart';
+import 'package:wanxiang_paipan/domain/services/daliuren/yue_jiang_service.dart';
 import 'package:wanxiang_paipan/models/lunar_info.dart';
 
 /// 由位移 s 构造天盘映射（与分析层黄金课例同口径）
@@ -28,6 +30,12 @@ DaLiuRenResult _buildGoldenResult({
   required List<String> kongWang,
   String yueJian = '寅',
   String shiZhi = '午',
+  String yueJiang = '亥',
+  DateTime? castTime,
+  CastMethod castMethod = CastMethod.time,
+  DlrCivilTime? civilTime,
+  DlrMonthGeneralResolution? monthGeneralResolution,
+  String? solarTerm,
 }) {
   final tianPanMap = _buildTianPanMap(s);
   final shenJiangConfig = ShenJiangService.configureShenJiang(
@@ -55,8 +63,8 @@ DaLiuRenResult _buildGoldenResult({
   );
   return DaLiuRenResult(
     id: 'formatter-$riGan$riZhi-$s',
-    castTime: DateTime(2026, 7, 27, 12),
-    castMethod: CastMethod.time,
+    castTime: castTime ?? DateTime(2026, 7, 27, 12),
+    castMethod: castMethod,
     lunarInfo: LunarInfo(
       yueJian: yueJian,
       riGan: riGan,
@@ -65,9 +73,10 @@ DaLiuRenResult _buildGoldenResult({
       kongWang: kongWang,
       yearGanZhi: '丙午',
       monthGanZhi: '壬寅',
+      solarTerm: solarTerm,
     ),
     tianPan: TianPan(
-      yueJiang: '亥',
+      yueJiang: yueJiang,
       yueJiangName: '登明',
       shiZhi: shiZhi,
       tianPanMap: tianPanMap,
@@ -77,6 +86,8 @@ DaLiuRenResult _buildGoldenResult({
     shenJiangConfig: shenJiangConfig,
     shenShaList: shenShaList,
     panParams: const DaLiuRenPanParams(),
+    civilTime: civilTime,
+    monthGeneralResolution: monthGeneralResolution,
   );
 }
 
@@ -179,6 +190,71 @@ void main() {
       expect(output.coreData['formatTitle'], '大六壬完整结构化排盘');
       expect(output.hasSection('overview'), true);
       expect(output.hasSection('shenSha'), true);
+    });
+
+    test('权威 civil time 与月将来源不受 legacy castTime 改动影响', () {
+      final civilTime = DlrCivilTime(
+        instant: DateTime.utc(2022, 4, 20, 2, 24, 18),
+        sourceUtcOffsetMinutes: 330,
+      );
+      final resolution = YueJiangService.resolve(civilTime);
+      final result = _buildGoldenResult(
+        riGan: '戊',
+        riZhi: '子',
+        s: 4,
+        kongWang: const ['午', '未'],
+        yueJiang: resolution.yueJiang,
+        castTime: DateTime.utc(1999, 1, 1),
+        civilTime: civilTime,
+        monthGeneralResolution: resolution,
+        solarTerm: '谷雨',
+      );
+      final changedLegacyTime = result.copyWith(
+        castTime: DateTime.utc(2040, 12, 31, 23, 59),
+      );
+      final formatter = DaLiuRenStructuredFormatter();
+
+      final first = formatter.format(result);
+      final changed = formatter.format(changedLegacyTime);
+      final overview = first.coreData['overview'] as Map<String, dynamic>;
+      final resolutionJson =
+          first.coreData['monthGeneralResolution'] as Map<String, dynamic>;
+
+      expect(formatter.render(first), formatter.render(changed));
+      expect(first.temporal, changed.temporal);
+      expect(overview['castTime'], '2022-04-20 07:54');
+      expect(overview['castInstantUtc'], '2022-04-20T02:24:18.000Z');
+      expect(overview['sourceUtcOffsetMinutes'], 330);
+      expect(overview['solarTerm'], '谷雨');
+      expect(resolutionJson['effectiveZhongQi'], '谷雨');
+      expect(resolutionJson['yueJiang'], '酉');
+    });
+
+    test('raw 手工盘不从操作时间补造农历或节气', () {
+      final resolution = YueJiangService.manualOverride('戌');
+      final result = _buildGoldenResult(
+        riGan: '戊',
+        riZhi: '子',
+        s: 4,
+        kongWang: const ['午', '未'],
+        yueJiang: resolution.yueJiang,
+        castMethod: CastMethod.manual,
+        castTime: DateTime.utc(2040, 12, 31, 23, 59),
+        monthGeneralResolution: resolution,
+      );
+      final formatter = DaLiuRenStructuredFormatter();
+
+      final output = formatter.format(result);
+      final rendered = formatter.render(output);
+      final overview = output.coreData['overview'] as Map<String, dynamic>;
+
+      expect(rendered, contains('- 起课：原始四柱（未校历）'));
+      expect(rendered, contains('- 节气：未校历'));
+      expect(rendered, isNot(contains('2040-12-31')));
+      expect(overview['castTime'], isNull);
+      expect(overview['lunarDate'], isNull);
+      expect(overview['solarTerm'], isNull);
+      expect(overview['calendarValidated'], isFalse);
     });
   });
 }

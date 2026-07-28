@@ -3,6 +3,7 @@
 /// 包含大六壬系统所需的所有算法服务。
 library;
 
+export 'dlr_cast_time_service.dart';
 export 'san_chuan_service.dart';
 export 'shen_jiang_service.dart';
 export 'shen_sha_service.dart';

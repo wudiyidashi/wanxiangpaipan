@@ -1,1 +1,13 @@
-{"_example": "Fill with {\"file\": \"<path>\", \"reason\": \"<why>\"}. Put spec/research files only — no code paths. Run `python .trellis/scripts/get_context.py --mode packages` to list available specs. Delete this line once real entries are added."}
+{"file":".trellis/tasks/07-28-daliuren-classics-audit/prd.md","reason":"父任务底本分层、历史兼容和 C02 一次性交付约束"}
+{"file":".trellis/tasks/07-28-daliuren-classics-audit/research/task-decomposition.md","reason":"C02 责任边界、依赖及独立验收"}
+{"file":".trellis/tasks/07-28-daliuren-classics-audit/research/capability-matrix.md","reason":"月将 typed resolution、raw/calendar-backed 手工模式和历法版本目标"}
+{"file":".trellis/tasks/07-28-daliuren-classics-audit/research/core-pan-audit.md","reason":"当前月将提前换将的代码证据与测试缺口"}
+{"file":".trellis/tasks/archive/2026-07/07-28-daliuren-classics-evidence/research/guide-foundation-cases-independent-review.md","reason":"指南 PDF 6 月将表、天地盘及古籍/现代时间边界"}
+{"file":".trellis/tasks/archive/2026-07/07-28-daliuren-rule-provenance/design.md","reason":"C01 pan/version/snapshot 与 project-pan 契约"}
+{"file":".trellis/tasks/07-28-daliuren-cast-yuejiang/research/yuejiang-calendar-evidence.md","reason":"C02 精确边界、offset、手工模式和依赖 oracle"}
+{"file":".trellis/spec/domain/index.md","reason":"领域服务纯函数及系统专属边界"}
+{"file":".trellis/spec/domain/daliuren-pan-engine.md","reason":"现有排盘、古籍门槛和兼容约定"}
+{"file":".trellis/spec/domain/daliuren-rule-contract.md","reason":"稳定 rule ID、project-pan、版本和重放快照合同"}
+{"file":".trellis/spec/guides/cross-layer-thinking-guide.md","reason":"输入到 JSON/历史消费者的时间与版本数据流"}
+{"file":".trellis/spec/guides/code-reuse-thinking-guide.md","reason":"复用现有历法/干支能力并避免跨系统耦合"}
+{"file":".trellis/tasks/07-28-daliuren-cast-yuejiang/design.md","reason":"冻结 C02 时间坐标、typed resolution、手工命令及兼容设计"}

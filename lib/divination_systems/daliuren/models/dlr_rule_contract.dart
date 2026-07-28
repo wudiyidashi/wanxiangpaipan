@@ -18,15 +18,17 @@ class DlrRuleSetVersions {
 
   static const String legacyUnknown = 'legacyUnknown';
   static const String evidenceCatalog = 'daliuren-classics/1.0.0';
-  static const String panCurrent = 'daliuren-pan/1.0.0';
+  static const String panV1 = 'daliuren-pan/1.0.0';
+  static const String panCurrent = 'daliuren-pan/2.0.0';
   static const String analysisCurrent = 'daliuren-analysis-project-v1/1.0.0';
-  static const String castInputSchema = '1.0.0';
+  static const String castInputSchemaV1 = '1.0.0';
+  static const String castInputSchema = '2.0.0';
 
   static DlrAnalysisCompatibility resolveAnalysisCompatibility({
     required String sourcePanRuleSetVersion,
     required DlrCastInputSnapshot? castInputSnapshot,
   }) {
-    if (sourcePanRuleSetVersion.trim().isEmpty ||
+    if (sourcePanRuleSetVersion.isEmpty ||
         sourcePanRuleSetVersion == legacyUnknown) {
       return DlrAnalysisCompatibility.legacyUnknown;
     }
@@ -142,6 +144,17 @@ class DlrProjectRuleIds {
       'dlr.project.analysis.shensha.travelling-horse-initial';
 }
 
+class DlrProjectPanRuleIds {
+  DlrProjectPanRuleIds._();
+
+  static const String monthGeneralByZhongQiInstant =
+      'dlr.project.pan.month-general.by-zhongqi-instant';
+  static const String manualMonthGeneralOverride =
+      'dlr.project.pan.month-general.manual-override';
+  static const String civilPillarsFixedOffset =
+      'dlr.project.pan.calendar.civil-pillars-fixed-offset';
+}
+
 /// A validated, immutable rule identity.
 class DlrRuleRef {
   factory DlrRuleRef({
@@ -180,6 +193,22 @@ class DlrRuleRef {
         kind: DlrRuleKind.project,
         evidenceLevel: DlrEvidenceLevel.d,
       );
+
+  factory DlrRuleRef.projectPan(String ruleId) {
+    if (!ruleId.startsWith('dlr.project.pan.')) {
+      throw ArgumentError.value(
+        ruleId,
+        'ruleId',
+        'projectPan 只能构造 dlr.project.pan.* 规则',
+      );
+    }
+    return DlrRuleRef(
+      ruleId: ruleId,
+      ruleSetVersion: DlrRuleSetVersions.panCurrent,
+      kind: DlrRuleKind.project,
+      evidenceLevel: DlrEvidenceLevel.d,
+    );
+  }
 
   factory DlrRuleRef.fromJson(Map<String, dynamic> json) {
     final rawSourceIds = json['sourceIds'];
@@ -339,26 +368,26 @@ class DlrCastInputSnapshot with _$DlrCastInputSnapshot {
         '快照 schema 版本必须是字符串',
       );
     }
+    final schemaVersion =
+        rawSchemaVersion as String? ?? DlrRuleSetVersions.castInputSchemaV1;
+    if (schemaVersion.trim().isEmpty) {
+      throw ArgumentError.value(
+        schemaVersion,
+        'schemaVersion',
+        '快照 schema 版本不能为空',
+      );
+    }
+    final rawUtcOffsetMinutes = json['utcOffsetMinutes'];
+    final utcOffsetMinutes = _parseUtcOffsetMinutes(rawUtcOffsetMinutes);
     final rawCastTime = json['castTime'];
     if (rawCastTime is! String) {
       throw ArgumentError.value(rawCastTime, 'castTime', '起课时间必须是字符串');
     }
-    final DateTime castTime;
-    try {
-      castTime = DateTime.parse(rawCastTime);
-    } on FormatException {
-      throw ArgumentError.value(rawCastTime, 'castTime', '起课时间格式不合法');
-    }
-    final rawUtcOffsetMinutes = json['utcOffsetMinutes'];
-    if (rawUtcOffsetMinutes is! num ||
-        !rawUtcOffsetMinutes.isFinite ||
-        rawUtcOffsetMinutes != rawUtcOffsetMinutes.roundToDouble()) {
-      throw ArgumentError.value(
-        rawUtcOffsetMinutes,
-        'utcOffsetMinutes',
-        'UTC offset 必须是有限整数',
-      );
-    }
+    final castTime = _parseSnapshotCastTime(
+      rawCastTime,
+      schemaVersion: schemaVersion,
+      utcOffsetMinutes: utcOffsetMinutes,
+    );
     final rawNormalizedInput = json['normalizedInput'];
     if (rawNormalizedInput is! Map) {
       throw ArgumentError.value(
@@ -395,15 +424,14 @@ class DlrCastInputSnapshot with _$DlrCastInputSnapshot {
     }
 
     return DlrCastInputSnapshot.capture(
-      schemaVersion:
-          rawSchemaVersion as String? ?? DlrRuleSetVersions.castInputSchema,
+      schemaVersion: schemaVersion,
       castMethod: _enumByName(
         CastMethod.values,
         json['castMethod'],
         'castMethod',
       ),
       castTime: castTime,
-      utcOffsetMinutes: rawUtcOffsetMinutes.toInt(),
+      utcOffsetMinutes: utcOffsetMinutes,
       normalizedInput: normalizedInput,
       replayStatus: _enumByName(
         DlrReplayStatus.values,
@@ -437,6 +465,7 @@ class DlrCastInputSnapshot with _$DlrCastInputSnapshot {
         '快照 schema 版本不能为空',
       );
     }
+    _validateUtcOffsetMinutes(utcOffsetMinutes);
     if (replayStatus == DlrReplayStatus.complete && missingFields.isNotEmpty) {
       throw ArgumentError.value(
         missingFields,
@@ -455,7 +484,7 @@ class DlrCastInputSnapshot with _$DlrCastInputSnapshot {
     return DlrCastInputSnapshot._validated(
       schemaVersion: schemaVersion,
       castMethod: castMethod,
-      castTime: castTime,
+      castTime: castTime.toUtc(),
       utcOffsetMinutes: utcOffsetMinutes,
       normalizedInput: _copyJsonMap(normalizedInput),
       replayStatus: replayStatus,
@@ -485,12 +514,68 @@ class DlrCastInputSnapshot with _$DlrCastInputSnapshot {
   Map<String, dynamic> toJson() => <String, dynamic>{
         'schemaVersion': schemaVersion,
         'castMethod': castMethod.name,
-        'castTime': castTime.toIso8601String(),
+        'castTime': castTime.toUtc().toIso8601String(),
         'utcOffsetMinutes': utcOffsetMinutes,
         'normalizedInput': _copyJsonMap(normalizedInput),
         'replayStatus': replayStatus.name,
         'missingFields': List<String>.unmodifiable(missingFields),
       };
+}
+
+int _parseUtcOffsetMinutes(Object? rawValue) {
+  if (rawValue is! num ||
+      !rawValue.isFinite ||
+      rawValue != rawValue.roundToDouble()) {
+    throw ArgumentError.value(
+      rawValue,
+      'utcOffsetMinutes',
+      'UTC offset 必须是有限整数',
+    );
+  }
+  final value = rawValue.toInt();
+  _validateUtcOffsetMinutes(value);
+  return value;
+}
+
+void _validateUtcOffsetMinutes(int value) {
+  if (value < -840 || value > 840) {
+    throw ArgumentError.value(
+      value,
+      'utcOffsetMinutes',
+      'UTC offset 必须在 [-840, 840] 分钟内',
+    );
+  }
+}
+
+DateTime _parseSnapshotCastTime(
+  String value, {
+  required String schemaVersion,
+  required int utcOffsetMinutes,
+}) {
+  final hasExplicitZone = RegExp(
+    r'(Z|[+-]\d{2}:?\d{2})$',
+    caseSensitive: false,
+  ).hasMatch(value);
+  try {
+    if (hasExplicitZone) {
+      return DateTime.parse(value).toUtc();
+    }
+    if (schemaVersion != DlrRuleSetVersions.castInputSchemaV1) {
+      throw ArgumentError.value(
+        value,
+        'castTime',
+        'snapshot v2 及未来版本的起课时间必须带明确 zone',
+      );
+    }
+
+    // C01 v1 wrote local wall fields without a zone suffix. Parse those
+    // fields in a UTC container, then apply the offset captured in the same
+    // snapshot so restoration never depends on the current device zone.
+    final wallTime = DateTime.parse('${value}Z');
+    return wallTime.subtract(Duration(minutes: utcOffsetMinutes)).toUtc();
+  } on FormatException {
+    throw ArgumentError.value(value, 'castTime', '起课时间格式不合法');
+  }
 }
 
 bool _isDlrCastMethod(CastMethod method) => switch (method) {

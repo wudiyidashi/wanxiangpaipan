@@ -48,28 +48,13 @@ class TianPanService {
 
   /// 创建天盘模型
   ///
-  /// [yueJian] 月建（月支）
+  /// [yueJiang] 已由上游解析完成的月将地支
   /// [shiZhi] 时支
-  /// [solarTerm] 节气（可选，用于精确计算月将）
   /// 返回 TianPan 模型
   static TianPan createTianPan({
-    required String yueJian,
+    required String yueJiang,
     required String shiZhi,
-    String? resolvedYueJiang,
-    DateTime? castTime,
-    String? solarTerm,
   }) {
-    // 计算月将
-    final yueJiang = resolvedYueJiang ??
-        (castTime != null
-            ? YueJiangService.getYueJiangByDateTime(
-                castTime,
-                fallbackYueJian: yueJian,
-              )
-            : solarTerm != null
-                ? YueJiangService.getYueJiangBySolarTerm(solarTerm, yueJian)
-                : YueJiangService.getYueJiang(yueJian));
-
     // 获取月将名称
     final yueJiangName = YueJiangService.getYueJiangName(yueJiang);
 

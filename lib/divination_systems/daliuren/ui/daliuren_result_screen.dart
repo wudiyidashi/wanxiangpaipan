@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
 
 import '../../../domain/services/daliuren/analysis/daliuren_analyzer.dart';
+import '../../../domain/services/daliuren/dlr_cast_time_service.dart';
 import '../../../domain/services/shared/tiangan_dizhi_service.dart';
 import '../../../presentation/divination/divination_result_page.dart';
 import '../../../presentation/widgets/extended_info_section.dart';
 import '../../../presentation/widgets/ying_qi_card.dart';
 import '../models/daliuren_result.dart';
+import '../models/dlr_cast_time.dart';
 import '../models/pan_params.dart';
 import 'daliuren_result_sections.dart';
 import 'widgets/daliuren_ke_ge_card.dart';
@@ -41,6 +43,7 @@ class DaLiuRenResultScreen extends StatelessWidget {
           castTime: result.castTime,
           lunarInfo: result.lunarInfo,
           liuShen: const [],
+          resolvedRows: _buildExtendedInfoRows(),
         ),
         DaLiuRenPanParamsSection(
           question: question,
@@ -79,8 +82,62 @@ class DaLiuRenResultScreen extends StatelessWidget {
   }
 
   String _buildYueJiangText() {
-    final modeLabel = result.panParams.usesManualMonthGeneral ? '手动指定' : '系统选将';
+    final resolution = result.monthGeneralResolution;
+    final modeLabel = switch (resolution?.mode) {
+      DlrMonthGeneralResolutionMode.manualOverride => '手动指定',
+      DlrMonthGeneralResolutionMode.zhongQi =>
+        '${resolution?.effectiveZhongQi ?? '中气'}后系统选将',
+      null => result.panParams.usesManualMonthGeneral ? '手动指定' : '系统选将',
+    };
     return '${result.tianPan.yueJiang} 将($modeLabel)';
+  }
+
+  List<ExtendedInfoRow>? _buildExtendedInfoRows() {
+    final civilTime = result.civilTime;
+    final resolution = result.monthGeneralResolution;
+    if (civilTime == null) {
+      if (resolution?.mode == DlrMonthGeneralResolutionMode.manualOverride) {
+        return <ExtendedInfoRow>[
+          const ExtendedInfoRow(label: '历法时', value: '未校历（原始四柱）'),
+          ExtendedInfoRow(
+            label: '月　将',
+            value: '${resolution!.yueJiang}（手动指定）',
+          ),
+        ];
+      }
+      return null;
+    }
+
+    final sourceWall = civilTime.sourceWallTime;
+    final hourZhi = result.lunarInfo.hourGanZhi?.substring(1) ?? result.shiZhi;
+    final rows = <ExtendedInfoRow>[
+      ExtendedInfoRow(
+        label: '阳历时',
+        value: '${_formatDateTime(sourceWall)} '
+            '(${_formatUtcOffset(civilTime.sourceUtcOffsetMinutes)})',
+      ),
+      ExtendedInfoRow(
+        label: '农历时',
+        value: '${sourceWall.year}年'
+            '${DlrCastTimeService.formatLunarDate(civilTime)}$hourZhi时',
+      ),
+    ];
+
+    final term = resolution?.effectiveZhongQi;
+    final termInstant = resolution?.effectiveZhongQiInstantUtc;
+    if (term != null && termInstant != null) {
+      final beijingWall = DlrCivilTime.wallTimeAtOffset(
+        termInstant,
+        DlrCastTimeService.beijingUtcOffsetMinutes,
+      );
+      rows.add(
+        ExtendedInfoRow(
+          label: _formatTermLabel(term),
+          value: '${_formatChineseDateTime(beijingWall)}（北京时）',
+        ),
+      );
+    }
+    return rows;
   }
 
   String _buildGuiRenText() {
@@ -96,4 +153,28 @@ class DaLiuRenResultScreen extends StatelessWidget {
     final xunStartIndex = (index ~/ 10) * 10;
     return TianGanDiZhiService.getGanZhi(xunStartIndex);
   }
+
+  String _formatDateTime(DateTime value) =>
+      '${value.year.toString().padLeft(4, '0')}-'
+      '${value.month.toString().padLeft(2, '0')}-'
+      '${value.day.toString().padLeft(2, '0')} '
+      '${value.hour.toString().padLeft(2, '0')}:'
+      '${value.minute.toString().padLeft(2, '0')}';
+
+  String _formatChineseDateTime(DateTime value) =>
+      '${value.year}年${value.month.toString().padLeft(2, '0')}月'
+      '${value.day.toString().padLeft(2, '0')}日'
+      '${value.hour.toString().padLeft(2, '0')}时'
+      '${value.minute.toString().padLeft(2, '0')}分';
+
+  String _formatUtcOffset(int minutes) {
+    final sign = minutes >= 0 ? '+' : '-';
+    final absolute = minutes.abs();
+    final hours = (absolute ~/ 60).toString().padLeft(2, '0');
+    final remainder = (absolute % 60).toString().padLeft(2, '0');
+    return 'UTC$sign$hours:$remainder';
+  }
+
+  String _formatTermLabel(String name) =>
+      name.length == 2 ? '${name[0]}　${name[1]}' : name;
 }

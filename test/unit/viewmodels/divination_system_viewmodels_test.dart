@@ -3,7 +3,9 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:wanxiang_paipan/data/database/app_database.dart';
 import 'package:wanxiang_paipan/data/repositories/divination_repository_impl.dart';
 import 'package:wanxiang_paipan/domain/divination_registry.dart';
+import 'package:wanxiang_paipan/domain/services/daliuren/dlr_cast_time_service.dart';
 import 'package:wanxiang_paipan/divination_systems/daliuren/daliuren_system.dart';
+import 'package:wanxiang_paipan/divination_systems/daliuren/models/dlr_cast_time.dart';
 import 'package:wanxiang_paipan/divination_systems/daliuren/models/pan_params.dart';
 import 'package:wanxiang_paipan/divination_systems/daliuren/viewmodels/daliuren_viewmodel.dart';
 import 'package:wanxiang_paipan/divination_systems/meihua/meihua_system.dart';
@@ -127,6 +129,107 @@ void main() {
       expect(
         await repository.readEncryptedField('question_${viewModel.result!.id}'),
         '测试大六壬占问',
+      );
+    });
+
+    test('DaLiuRenViewModel 时间派生入口应传递一次捕获的来源 offset', () async {
+      final viewModel = DaLiuRenViewModel(
+        system: DaLiuRenSystem(),
+        repository: repository,
+      );
+      final instant = DateTime.utc(2022, 4, 20, 2, 24, 18);
+
+      await viewModel.castByTime(
+        castTime: instant,
+        sourceUtcOffsetMinutes: 330,
+      );
+      expect(viewModel.hasError, isFalse);
+      expect(viewModel.result!.civilTime!.sourceUtcOffsetMinutes, 330);
+      expect(viewModel.result!.castInputSnapshot!.utcOffsetMinutes, 330);
+
+      await viewModel.castByReportNumber(
+        7,
+        castTime: instant,
+        sourceUtcOffsetMinutes: -240,
+      );
+      expect(viewModel.hasError, isFalse);
+      expect(viewModel.result!.civilTime!.sourceUtcOffsetMinutes, -240);
+      expect(viewModel.result!.castInputSnapshot!.utcOffsetMinutes, -240);
+
+      await viewModel.castByComputer(
+        castTime: instant,
+        sourceUtcOffsetMinutes: 60,
+      );
+      expect(viewModel.hasError, isFalse);
+      expect(viewModel.result!.civilTime!.sourceUtcOffsetMinutes, 60);
+      expect(viewModel.result!.castInputSnapshot!.utcOffsetMinutes, 60);
+    });
+
+    test('DaLiuRenViewModel raw 手工入口应强制显式月将并标记输入模式', () async {
+      final viewModel = DaLiuRenViewModel(
+        system: DaLiuRenSystem(),
+        repository: repository,
+      );
+
+      await viewModel.castByManual(
+        yearGanZhi: '甲辰',
+        monthGanZhi: '丙寅',
+        dayGanZhi: '甲子',
+        hourGanZhi: '甲子',
+        monthGeneral: '戌',
+      );
+
+      expect(viewModel.hasError, isFalse);
+      expect(viewModel.result!.civilTime, isNull);
+      expect(
+        viewModel.result!.monthGeneralResolution!.mode,
+        DlrMonthGeneralResolutionMode.manualOverride,
+      );
+      expect(viewModel.result!.panParams.monthGeneralMode,
+          DaLiuRenMonthGeneralMode.manual);
+      expect(viewModel.result!.panParams.manualMonthGeneral, '戌');
+      expect(
+        viewModel.result!.castInputSnapshot!.normalizedInput,
+        containsPair('manualInputMode', DlrManualInputMode.rawPillars.id),
+      );
+      expect(
+        viewModel.result!.castInputSnapshot!.normalizedInput,
+        containsPair('calendarValidated', false),
+      );
+    });
+
+    test('DaLiuRenViewModel calendar-backed 手工入口应提交 typed 预期四柱', () async {
+      final viewModel = DaLiuRenViewModel(
+        system: DaLiuRenSystem(),
+        repository: repository,
+      );
+      final civilTime = DlrCivilTime(
+        instant: DateTime.utc(2022, 4, 20, 2, 24, 18),
+        sourceUtcOffsetMinutes: 480,
+      );
+      final expected = DlrCastTimeService.resolve(civilTime).pillars;
+
+      await viewModel.castByCalendarBackedManual(
+        manualCivilDateTime: civilTime.instantUtc,
+        sourceUtcOffsetMinutes: civilTime.sourceUtcOffsetMinutes,
+        expectedPillars: expected,
+        castTime: DateTime.utc(2026, 7, 28, 12),
+      );
+
+      expect(viewModel.hasError, isFalse);
+      expect(viewModel.result!.civilTime, civilTime);
+      expect(viewModel.result!.panParams.monthGeneralMode,
+          DaLiuRenMonthGeneralMode.auto);
+      expect(
+        viewModel.result!.castInputSnapshot!.normalizedInput,
+        containsPair(
+          'manualInputMode',
+          DlrManualInputMode.calendarBacked.id,
+        ),
+      );
+      expect(
+        viewModel.result!.castInputSnapshot!.normalizedInput,
+        containsPair('calendarValidated', true),
       );
     });
   });

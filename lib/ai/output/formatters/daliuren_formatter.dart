@@ -8,11 +8,13 @@ import 'package:lunar/lunar.dart';
 
 import '../../../divination_systems/daliuren/models/chuan.dart';
 import '../../../divination_systems/daliuren/models/daliuren_result.dart';
+import '../../../divination_systems/daliuren/models/dlr_cast_time.dart';
 import '../../../divination_systems/daliuren/models/pan_params.dart';
 import '../../../divination_systems/daliuren/models/shen_sha.dart';
 import '../../../domain/divination_system.dart';
 import '../../../domain/services/daliuren/analysis/daliuren_analyzer.dart';
 import '../../../domain/services/daliuren/analysis/models/daliuren_analysis_models.dart';
+import '../../../domain/services/daliuren/dlr_cast_time_service.dart';
 import '../../../domain/services/shared/tiangan_dizhi_service.dart';
 import '../structured_output.dart';
 import '../structured_output_formatter.dart';
@@ -25,8 +27,7 @@ class DaLiuRenStructuredFormatter
 
   @override
   StructuredDivinationOutput format(DaLiuRenResult result, {String? question}) {
-    final lunarDate = Lunar.fromDate(result.castTime);
-    final lunarDateText = _formatLunarDate(lunarDate);
+    final lunarDateText = _resolveLunarDateText(result);
     final report = DaLiuRenAnalyzer.analyze(result);
 
     return StructuredDivinationOutput(
@@ -41,10 +42,13 @@ class DaLiuRenStructuredFormatter
     );
   }
 
-  TemporalInfo _buildTemporalInfo(DaLiuRenResult result, String lunarDateText) {
+  TemporalInfo _buildTemporalInfo(
+    DaLiuRenResult result,
+    String? lunarDateText,
+  ) {
     final lunar = result.lunarInfo;
     return TemporalInfo(
-      solarTime: result.castTime,
+      solarTime: result.civilTime?.instantUtc ?? result.castTime,
       yearGanZhi: lunar.yearGanZhi,
       monthGanZhi: lunar.monthGanZhi,
       dayGanZhi: lunar.riGanZhi,
@@ -59,14 +63,20 @@ class DaLiuRenStructuredFormatter
   Map<String, dynamic> _buildCoreData(
     DaLiuRenResult result, {
     required String? question,
-    required String lunarDateText,
+    required String? lunarDateText,
     required DaLiuRenAnalysisReport report,
   }) {
     return {
       'formatTitle': '大六壬完整结构化排盘',
       'overview': {
-        'castTime': _formatIsoDateTime(result.castTime),
+        'castTime': _isRawManual(result)
+            ? null
+            : _formatIsoDateTime(_displayWallTime(result)),
+        'castInstantUtc': result.civilTime?.instantUtc.toIso8601String(),
+        'sourceUtcOffsetMinutes': result.civilTime?.sourceUtcOffsetMinutes,
+        'calendarValidated': result.civilTime != null,
         'lunarDate': lunarDateText,
+        'solarTerm': result.lunarInfo.solarTerm,
         'question': question,
         'pillars':
             '${result.lunarInfo.yearGanZhi}年 ${result.lunarInfo.monthGanZhi}月 ${result.lunarInfo.riGanZhi}日 ${result.lunarInfo.hourGanZhi ?? result.shiZhi}时',
@@ -89,6 +99,7 @@ class DaLiuRenStructuredFormatter
         'yueJian': result.lunarInfo.yueJian,
         'riJian': result.riZhi,
       },
+      'monthGeneralResolution': result.monthGeneralResolution?.toJson(),
       'tianPan': result.tianPan.fullDisplay,
       'shenJiang': result.shenJiangConfig.positions
           .map((position) => {
@@ -129,7 +140,7 @@ class DaLiuRenStructuredFormatter
 
   List<StructuredSection> _buildSections(
     DaLiuRenResult result, {
-    required String lunarDateText,
+    required String? lunarDateText,
     required DaLiuRenAnalysisReport report,
   }) {
     return [
@@ -239,11 +250,22 @@ class DaLiuRenStructuredFormatter
     return buffer.toString().trimRight();
   }
 
-  String _formatOverview(DaLiuRenResult result, String lunarDateText) {
+  String _formatOverview(DaLiuRenResult result, String? lunarDateText) {
     final buffer = StringBuffer();
-    buffer.writeln(
-      '- 起课：${_formatIsoDateTime(result.castTime)}（农历$lunarDateText）',
-    );
+    if (_isRawManual(result)) {
+      buffer.writeln('- 起课：原始四柱（未校历）');
+    } else {
+      buffer.writeln(
+        '- 起课：${_formatIsoDateTime(_displayWallTime(result))}'
+        '（农历${lunarDateText ?? '未知'}）',
+      );
+    }
+    final civilTime = result.civilTime;
+    if (civilTime != null) {
+      buffer.writeln(
+        '- 来源时差：${_formatUtcOffset(civilTime.sourceUtcOffsetMinutes)}',
+      );
+    }
     buffer.writeln(
       '- 四柱：${result.lunarInfo.yearGanZhi}年 '
       '${result.lunarInfo.monthGanZhi}月 '
@@ -255,6 +277,16 @@ class DaLiuRenStructuredFormatter
     buffer.writeln(
       '- 月将：${result.tianPan.yueJiang}将（${result.tianPan.yueJiang}加${result.shiZhi}时）',
     );
+    final resolution = result.monthGeneralResolution;
+    if (resolution != null) {
+      final source = switch (resolution.mode) {
+        DlrMonthGeneralResolutionMode.zhongQi =>
+          '${resolution.effectiveZhongQi ?? '中气'}后自动取将',
+        DlrMonthGeneralResolutionMode.manualOverride => '手动指定',
+      };
+      buffer.writeln('- 月将来源：$source');
+    }
+    buffer.writeln('- 节气：${result.lunarInfo.solarTerm ?? '未校历'}');
     buffer.writeln('- 昼夜：${_isDay(result) ? '昼占' : '夜占'}');
     buffer.writeln(
       '- 贵人：${_isDay(result) ? '昼贵' : '夜贵'}${result.shenJiangConfig.guiRenPosition}',
@@ -381,6 +413,33 @@ class DaLiuRenStructuredFormatter
 
   String _formatLunarDate(Lunar lunar) {
     return '${lunar.getMonthInChinese()}月${lunar.getDayInChinese()}';
+  }
+
+  String? _resolveLunarDateText(DaLiuRenResult result) {
+    if (_isRawManual(result)) {
+      return null;
+    }
+    final civilTime = result.civilTime;
+    if (civilTime != null) {
+      return DlrCastTimeService.formatLunarDate(civilTime);
+    }
+    return _formatLunarDate(Lunar.fromDate(result.castTime));
+  }
+
+  bool _isRawManual(DaLiuRenResult result) =>
+      result.civilTime == null &&
+      result.monthGeneralResolution?.mode ==
+          DlrMonthGeneralResolutionMode.manualOverride;
+
+  DateTime _displayWallTime(DaLiuRenResult result) =>
+      result.civilTime?.sourceWallTime ?? result.castTime;
+
+  String _formatUtcOffset(int minutes) {
+    final sign = minutes >= 0 ? '+' : '-';
+    final absolute = minutes.abs();
+    final hours = (absolute ~/ 60).toString().padLeft(2, '0');
+    final remainder = (absolute % 60).toString().padLeft(2, '0');
+    return 'UTC$sign$hours:$remainder';
   }
 
   String _formatIsoDateTime(DateTime dateTime) {

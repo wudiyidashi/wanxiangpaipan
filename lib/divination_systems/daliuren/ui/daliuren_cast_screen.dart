@@ -1,20 +1,31 @@
 import 'package:flutter/material.dart';
-import 'package:lunar/lunar.dart';
 import 'package:provider/provider.dart';
 
 import '../../../core/theme/app_colors.dart';
 import '../../../domain/divination_system.dart';
+import '../../../domain/services/daliuren/dlr_cast_time_service.dart';
 import '../../../domain/services/last_cast_method_service.dart';
 import '../../../presentation/widgets/antique/antique.dart';
 import '../../../presentation/widgets/cast/cast_form_sections.dart';
-import '../viewmodels/daliuren_viewmodel.dart';
+import '../models/dlr_cast_time.dart';
 import '../models/pan_params.dart';
+import '../viewmodels/daliuren_viewmodel.dart';
 import 'daliuren_cast_sections.dart';
 import 'daliuren_result_screen.dart';
 
 /// 大六壬统一起课界面（仿古风）
 class DaLiuRenCastScreen extends StatefulWidget {
-  const DaLiuRenCastScreen({super.key});
+  const DaLiuRenCastScreen({
+    super.key,
+    this.initialCastTime,
+    this.initialSourceUtcOffsetMinutes,
+  }) : assert(
+          initialSourceUtcOffsetMinutes == null || initialCastTime != null,
+          'An initial source offset requires an initial cast time.',
+        );
+
+  final DateTime? initialCastTime;
+  final int? initialSourceUtcOffsetMinutes;
 
   @override
   State<DaLiuRenCastScreen> createState() => _DaLiuRenCastScreenState();
@@ -65,7 +76,8 @@ class _DaLiuRenCastScreenState extends State<DaLiuRenCastScreen> {
 
   CastMethod _selectedMethod = CastMethod.time;
   bool _isLoading = false;
-  DateTime _timeCastTime = DateTime.now();
+  late DateTime _timeCastTime;
+  late int _timeSourceUtcOffsetMinutes;
 
   final TextEditingController _questionController = TextEditingController();
   final TextEditingController _numberController = TextEditingController();
@@ -90,15 +102,23 @@ class _DaLiuRenCastScreenState extends State<DaLiuRenCastScreen> {
   @override
   void initState() {
     super.initState();
-    final nowLunar = Lunar.fromDate(DateTime.now());
-    _yearGan = nowLunar.getYearGan();
-    _yearZhi = nowLunar.getYearZhi();
-    _monthGan = nowLunar.getMonthGan();
-    _monthZhi = nowLunar.getMonthZhi();
-    _dayGan = nowLunar.getDayGan();
-    _dayZhi = nowLunar.getDayZhi();
-    _hourGan = nowLunar.getTimeGan();
-    _hourZhi = nowLunar.getTimeZhi();
+    final now = widget.initialCastTime ?? DateTime.now();
+    _timeCastTime = now;
+    _timeSourceUtcOffsetMinutes =
+        widget.initialSourceUtcOffsetMinutes ?? now.timeZoneOffset.inMinutes;
+    final resolved = _resolveCastTime(
+      now,
+      _timeSourceUtcOffsetMinutes,
+    );
+    final pillars = resolved.pillars;
+    _yearGan = pillars.yearGan;
+    _yearZhi = pillars.yearGanZhi.substring(1);
+    _monthGan = pillars.monthGan;
+    _monthZhi = pillars.monthZhi;
+    _dayGan = pillars.dayGan;
+    _dayZhi = pillars.dayZhi;
+    _hourGan = pillars.hourGan;
+    _hourZhi = pillars.hourZhi;
     _loadLastMethod();
   }
 
@@ -136,10 +156,15 @@ class _DaLiuRenCastScreenState extends State<DaLiuRenCastScreen> {
       final viewModel = context.read<DaLiuRenViewModel>();
       final params = _buildPanParams();
       final now = DateTime.now();
+      final nowUtcOffsetMinutes = now.timeZoneOffset.inMinutes;
 
       switch (_selectedMethod) {
         case CastMethod.time:
-          await viewModel.castByTime(castTime: _timeCastTime, params: params);
+          await viewModel.castByTime(
+            castTime: _timeCastTime,
+            sourceUtcOffsetMinutes: _timeSourceUtcOffsetMinutes,
+            params: params,
+          );
         case CastMethod.reportNumber:
           final number = int.tryParse(_numberController.text.trim());
           if (number == null) {
@@ -150,6 +175,7 @@ class _DaLiuRenCastScreenState extends State<DaLiuRenCastScreen> {
           await viewModel.castByReportNumber(
             number,
             castTime: now,
+            sourceUtcOffsetMinutes: nowUtcOffsetMinutes,
             params: params,
           );
         case CastMethod.manual:
@@ -158,10 +184,15 @@ class _DaLiuRenCastScreenState extends State<DaLiuRenCastScreen> {
             monthGanZhi: '$_monthGan$_monthZhi',
             dayGanZhi: '$_dayGan$_dayZhi',
             hourGanZhi: '$_hourGan$_hourZhi',
+            monthGeneral: _manualMonthGeneral,
             params: params,
           );
         case CastMethod.computer:
-          await viewModel.castByComputer(castTime: now, params: params);
+          await viewModel.castByComputer(
+            castTime: now,
+            sourceUtcOffsetMinutes: nowUtcOffsetMinutes,
+            params: params,
+          );
         default:
           throw UnsupportedError('不支持的起课方式');
       }
@@ -243,13 +274,15 @@ class _DaLiuRenCastScreenState extends State<DaLiuRenCastScreen> {
     );
     if (picked != null) {
       setState(() {
-        _timeCastTime = DateTime(
+        final next = DateTime(
           picked.year,
           picked.month,
           picked.day,
           _timeCastTime.hour,
           _timeCastTime.minute,
         );
+        _timeCastTime = next;
+        _timeSourceUtcOffsetMinutes = next.timeZoneOffset.inMinutes;
       });
     }
   }
@@ -261,20 +294,37 @@ class _DaLiuRenCastScreenState extends State<DaLiuRenCastScreen> {
     );
     if (picked != null) {
       setState(() {
-        _timeCastTime = DateTime(
+        final next = DateTime(
           _timeCastTime.year,
           _timeCastTime.month,
           _timeCastTime.day,
           picked.hour,
           picked.minute,
         );
+        _timeCastTime = next;
+        _timeSourceUtcOffsetMinutes = next.timeZoneOffset.inMinutes;
       });
     }
   }
 
   void _useCurrentTimeCastTime() {
-    setState(() => _timeCastTime = DateTime.now());
+    final now = DateTime.now();
+    setState(() {
+      _timeCastTime = now;
+      _timeSourceUtcOffsetMinutes = now.timeZoneOffset.inMinutes;
+    });
   }
+
+  DlrResolvedCastTime _resolveCastTime(
+    DateTime instant,
+    int sourceUtcOffsetMinutes,
+  ) =>
+      DlrCastTimeService.resolve(
+        DlrCivilTime(
+          instant: instant,
+          sourceUtcOffsetMinutes: sourceUtcOffsetMinutes,
+        ),
+      );
 
   String _formatDateTime(DateTime value) {
     return '${value.year}年${_two(value.month)}月${_two(value.day)}日 '
@@ -357,13 +407,17 @@ class _DaLiuRenCastScreenState extends State<DaLiuRenCastScreen> {
   Widget _buildCastSection() {
     switch (_selectedMethod) {
       case CastMethod.time:
-        final lunar = Lunar.fromDate(_timeCastTime);
+        final resolved = _resolveCastTime(
+          _timeCastTime,
+          _timeSourceUtcOffsetMinutes,
+        );
+        final pillars = resolved.pillars;
         return DaLiuRenTimeCastSection(
-          yearGanZhi: '${lunar.getYearGan()}${lunar.getYearZhi()}',
-          monthGanZhi: '${lunar.getMonthGan()}${lunar.getMonthZhi()}',
-          dayGanZhi: '${lunar.getDayGan()}${lunar.getDayZhi()}',
-          timeGanZhi: '${lunar.getTimeGan()}${lunar.getTimeZhi()}',
-          dateTimeText: _formatDateTime(_timeCastTime),
+          yearGanZhi: pillars.yearGanZhi,
+          monthGanZhi: pillars.monthGanZhi,
+          dayGanZhi: pillars.dayGanZhi,
+          timeGanZhi: pillars.hourGanZhi,
+          dateTimeText: _formatDateTime(resolved.civilTime.sourceWallTime),
           isLoading: _isLoading,
           onCast: _isLoading ? null : _handleCast,
           onPickDate: _pickTimeCastDate,

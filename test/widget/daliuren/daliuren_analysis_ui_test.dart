@@ -5,6 +5,7 @@ import 'package:wanxiang_paipan/ai/service/ai_analysis_service.dart';
 import 'package:wanxiang_paipan/divination_systems/daliuren/daliuren_constants.dart';
 import 'package:wanxiang_paipan/divination_systems/daliuren/models/chuan.dart';
 import 'package:wanxiang_paipan/divination_systems/daliuren/models/daliuren_result.dart';
+import 'package:wanxiang_paipan/divination_systems/daliuren/models/dlr_cast_time.dart';
 import 'package:wanxiang_paipan/divination_systems/daliuren/models/dlr_rule_contract.dart';
 import 'package:wanxiang_paipan/divination_systems/daliuren/models/pan_params.dart';
 import 'package:wanxiang_paipan/divination_systems/daliuren/models/tianpan.dart';
@@ -19,6 +20,7 @@ import 'package:wanxiang_paipan/domain/services/daliuren/san_chuan_service.dart'
 import 'package:wanxiang_paipan/domain/services/daliuren/shen_jiang_service.dart';
 import 'package:wanxiang_paipan/domain/services/daliuren/shen_sha_service.dart';
 import 'package:wanxiang_paipan/domain/services/daliuren/si_ke_service.dart';
+import 'package:wanxiang_paipan/domain/services/daliuren/yue_jiang_service.dart';
 import 'package:wanxiang_paipan/domain/services/shared/analysis/models/polarity.dart';
 import 'package:wanxiang_paipan/domain/services/shared/analysis/models/verdict_models.dart';
 import 'package:wanxiang_paipan/models/lunar_info.dart';
@@ -273,6 +275,46 @@ void main() {
 
       expect(find.byType(DaLiuRenPanDiskDialog), findsOneWidget);
       expect(find.text('初→中→末弦线'), findsOneWidget);
+    });
+
+    testWidgets('权威 civil time 按来源 offset 显示，中气保持北京时', (tester) async {
+      final civilTime = DlrCivilTime(
+        instant: DateTime.utc(2022, 4, 20, 2, 24, 18),
+        sourceUtcOffsetMinutes: 330,
+      );
+      final resolution = YueJiangService.resolve(civilTime);
+      final result = resultK.copyWith(
+        castTime: DateTime.utc(2040, 12, 31, 23, 59),
+        civilTime: civilTime,
+        monthGeneralResolution: resolution,
+        lunarInfo: resultK.lunarInfo.copyWith(solarTerm: '谷雨'),
+      );
+
+      await tester.pumpWidget(buildScreen(result));
+      await tester.pumpAndSettle();
+
+      expect(find.text('2022-04-20 07:54 (UTC+05:30)'), findsOneWidget);
+      expect(find.text('谷　雨：'), findsOneWidget);
+      expect(find.text('2022年04月20日10时24分（北京时）'), findsOneWidget);
+      expect(find.textContaining('2040-12-31'), findsNothing);
+    });
+
+    testWidgets('raw 手工盘不显示操作时刻派生的历法事实', (tester) async {
+      final resolution = YueJiangService.manualOverride('戌');
+      final result = resultK.copyWith(
+        castTime: DateTime.utc(2040, 12, 31, 23, 59),
+        castMethod: CastMethod.manual,
+        civilTime: null,
+        monthGeneralResolution: resolution,
+        lunarInfo: resultK.lunarInfo.copyWith(solarTerm: null),
+      );
+
+      await tester.pumpWidget(buildScreen(result));
+      await tester.pumpAndSettle();
+
+      expect(find.text('未校历（原始四柱）'), findsOneWidget);
+      expect(find.text('戌（手动指定）'), findsOneWidget);
+      expect(find.textContaining('2040-12-31'), findsNothing);
     });
   });
 }

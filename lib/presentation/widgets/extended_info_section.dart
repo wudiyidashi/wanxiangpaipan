@@ -12,6 +12,7 @@ class ExtendedInfoSection extends StatelessWidget {
   final LunarInfo lunarInfo;
   final List<String> liuShen;
   final String? shenShaInfo;
+  final List<ExtendedInfoRow>? resolvedRows;
 
   const ExtendedInfoSection({
     super.key,
@@ -19,18 +20,12 @@ class ExtendedInfoSection extends StatelessWidget {
     required this.lunarInfo,
     required this.liuShen,
     this.shenShaInfo,
+    this.resolvedRows,
   });
 
   @override
   Widget build(BuildContext context) {
-    final lunarDate = lunar_pkg.Lunar.fromDate(castTime);
-    final displayHourZhi =
-        (lunarInfo.hourGanZhi != null && lunarInfo.hourGanZhi!.isNotEmpty)
-            ? lunarInfo.hourGanZhi!.substring(lunarInfo.hourGanZhi!.length - 1)
-            : lunarDate.getTimeZhi();
-    final lunarDateText =
-        '${castTime.year}年${lunarDate.getMonthInChinese()}月${lunarDate.getDayInChinese()}$displayHourZhi时';
-    final zhongQiList = _getUpcomingZhongQi(castTime);
+    final rows = resolvedRows ?? _buildLegacyRows();
 
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 8),
@@ -39,26 +34,34 @@ class ExtendedInfoSection extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            _buildInfoRow(
-              '阳历时',
-              _formatSolarDateTime(castTime),
-            ),
-            const SizedBox(height: 6),
-            _buildInfoRow(
-              '农历时',
-              lunarDateText,
-            ),
-            for (final item in zhongQiList) ...[
-              const SizedBox(height: 6),
-              _buildInfoRow(
-                _formatSolarTermLabel(item.name),
-                _formatSolarTermTime(item.solar),
-              ),
+            for (var index = 0; index < rows.length; index++) ...[
+              if (index > 0) const SizedBox(height: 6),
+              _buildInfoRow(rows[index].label, rows[index].value),
             ],
           ],
         ),
       ),
     );
+  }
+
+  List<ExtendedInfoRow> _buildLegacyRows() {
+    final lunarDate = lunar_pkg.Lunar.fromDate(castTime);
+    final displayHourZhi =
+        (lunarInfo.hourGanZhi != null && lunarInfo.hourGanZhi!.isNotEmpty)
+            ? lunarInfo.hourGanZhi!.substring(lunarInfo.hourGanZhi!.length - 1)
+            : lunarDate.getTimeZhi();
+    final lunarDateText =
+        '${castTime.year}年${lunarDate.getMonthInChinese()}月${lunarDate.getDayInChinese()}$displayHourZhi时';
+
+    return <ExtendedInfoRow>[
+      ExtendedInfoRow(label: '阳历时', value: _formatSolarDateTime(castTime)),
+      ExtendedInfoRow(label: '农历时', value: lunarDateText),
+      for (final item in _getUpcomingZhongQi(castTime))
+        ExtendedInfoRow(
+          label: _formatSolarTermLabel(item.name),
+          value: _formatSolarTermTime(item.solar),
+        ),
+    ];
   }
 
   Widget _buildInfoRow(String label, String value) {
@@ -138,6 +141,13 @@ class ExtendedInfoSection extends StatelessWidget {
 
     return entries.take(2).toList();
   }
+}
+
+class ExtendedInfoRow {
+  const ExtendedInfoRow({required this.label, required this.value});
+
+  final String label;
+  final String value;
 }
 
 class _ZhongQiEntry {

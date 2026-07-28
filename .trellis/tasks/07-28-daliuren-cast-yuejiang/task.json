@@ -3,7 +3,7 @@
   "name": "daliuren-cast-yuejiang",
   "title": "大六壬月将与起课输入正确性",
   "description": "修复精确交节月将、时区与自动/手动起课输入可复算性。",
-  "status": "planning",
+  "status": "in_progress",
   "dev_type": null,
   "scope": null,
   "package": null,

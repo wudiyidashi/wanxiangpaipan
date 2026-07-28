@@ -29,6 +29,13 @@ _$DaLiuRenResultImpl _$$DaLiuRenResultImplFromJson(Map<String, dynamic> json) =>
           ? null
           : DlrCastInputSnapshot.fromJson(
               json['castInputSnapshot'] as Map<String, dynamic>),
+      civilTime: json['civilTime'] == null
+          ? null
+          : DlrCivilTime.fromJson(json['civilTime'] as Map<String, dynamic>),
+      monthGeneralResolution: json['monthGeneralResolution'] == null
+          ? null
+          : DlrMonthGeneralResolution.fromJson(
+              json['monthGeneralResolution'] as Map<String, dynamic>),
       recastFromId: json['recastFromId'] as String?,
       questionId: json['questionId'] as String? ?? '',
       detailId: json['detailId'] as String? ?? '',
@@ -51,6 +58,8 @@ Map<String, dynamic> _$$DaLiuRenResultImplToJson(
       'panRuleSetVersion': instance.panRuleSetVersion,
       'evidenceCatalogVersion': instance.evidenceCatalogVersion,
       'castInputSnapshot': instance.castInputSnapshot?.toJson(),
+      'civilTime': instance.civilTime?.toJson(),
+      'monthGeneralResolution': instance.monthGeneralResolution?.toJson(),
       'recastFromId': instance.recastFromId,
       'questionId': instance.questionId,
       'detailId': instance.detailId,

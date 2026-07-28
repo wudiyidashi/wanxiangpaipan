@@ -1,6 +1,8 @@
 import 'package:lunar/lunar.dart';
 
 import '../../../divination_systems/daliuren/daliuren_constants.dart';
+import '../../../divination_systems/daliuren/models/dlr_cast_time.dart';
+import '../../../divination_systems/daliuren/models/dlr_rule_contract.dart';
 
 /// 月将计算服务
 ///
@@ -8,6 +10,15 @@ import '../../../divination_systems/daliuren/daliuren_constants.dart';
 /// 月将为太阳所在宫位的对冲。
 class YueJiangService {
   YueJiangService._();
+
+  static const String calendarEngine = 'lunar';
+  static const String calendarEngineVersion = '1.7.8';
+  static const String algorithmVersion = 'daliuren-yuejiang-fixed-beijing-v1';
+  static const int _beijingUtcOffsetMinutes = 480;
+  static const List<String> classicAttributionRuleIds = <String>[
+    'dlr.rule.pan.001.month-general-by-zhongqi',
+    'dlr.rule.pan.002.month-general-table',
+  ];
 
   static const Map<String, String> _qiToYueJiang = {
     '雨水': '亥',
@@ -72,31 +83,65 @@ class YueJiangService {
     return (yueJiang: yueJiang, name: name);
   }
 
-  /// 根据公历时间精确计算月将
-  ///
-  /// 规则不是“当前时刻恰好命中哪个节气”，而是取**最近已经发生的中气**。
-  /// 例如 2026-04-18 位于春分后、谷雨前，应取春分后的戌将。
-  static String getYueJiangByDateTime(
-    DateTime dateTime, {
-    String? fallbackYueJian,
-  }) {
-    final lunar = Solar.fromDate(dateTime).getLunar();
-    final currentQi = lunar.getCurrentQi()?.getName();
-    if (currentQi != null && _qiToYueJiang.containsKey(currentQi)) {
-      return _qiToYueJiang[currentQi]!;
+  /// Resolve the effective principal term at one absolute instant.
+  static DlrMonthGeneralResolution resolve(DlrCivilTime civilTime) {
+    final beijingWall = DlrCivilTime.wallTimeAtOffset(
+      civilTime.instantUtc,
+      _beijingUtcOffsetMinutes,
+    );
+    final lunar = Solar.fromDate(beijingWall).getLunar();
+    final previous = lunar.getPrevQi(false);
+    final next = lunar.getNextQi(false);
+    final previousInstant = _beijingSolarToInstant(previous.getSolar());
+    final nextInstant = _beijingSolarToInstant(next.getSolar());
+    if (previousInstant.isAfter(civilTime.instantUtc) ||
+        !civilTime.instantUtc.isBefore(nextInstant)) {
+      throw StateError('中气区间与绝对时刻不一致');
     }
-
-    final prevQi = lunar.getPrevQi().getName();
-    if (_qiToYueJiang.containsKey(prevQi)) {
-      return _qiToYueJiang[prevQi]!;
-    }
-
-    if (fallbackYueJian != null) {
-      return getYueJiang(fallbackYueJian);
-    }
-
-    throw StateError('无法根据时间 $dateTime 确定月将');
+    final name = previous.getName();
+    return DlrMonthGeneralResolution(
+      yueJiang: getYueJiangByZhongQi(name),
+      mode: DlrMonthGeneralResolutionMode.zhongQi,
+      effectiveZhongQi: name,
+      effectiveZhongQiInstantUtc: previousInstant,
+      calendarEngine: calendarEngine,
+      calendarEngineVersion: calendarEngineVersion,
+      algorithmVersion: algorithmVersion,
+      executionRuleRef: DlrRuleRef.projectPan(
+        DlrProjectPanRuleIds.monthGeneralByZhongQiInstant,
+      ),
+      classicAttributionRuleIds: classicAttributionRuleIds,
+    );
   }
+
+  static DlrMonthGeneralResolution manualOverride(String yueJiang) =>
+      DlrMonthGeneralResolution(
+        yueJiang: yueJiang,
+        mode: DlrMonthGeneralResolutionMode.manualOverride,
+        calendarEngine: 'manual-input',
+        calendarEngineVersion: '1.0.0',
+        algorithmVersion: 'daliuren-yuejiang-manual-v1',
+        executionRuleRef: DlrRuleRef.projectPan(
+          DlrProjectPanRuleIds.manualMonthGeneralOverride,
+        ),
+      );
+
+  static String getYueJiangByZhongQi(String zhongQi) {
+    final yueJiang = _qiToYueJiang[zhongQi];
+    if (yueJiang == null) {
+      throw StateError('未登记的中气: $zhongQi');
+    }
+    return yueJiang;
+  }
+
+  static DateTime _beijingSolarToInstant(Solar solar) => DateTime.utc(
+        solar.getYear(),
+        solar.getMonth(),
+        solar.getDay(),
+        solar.getHour(),
+        solar.getMinute(),
+        solar.getSecond(),
+      ).subtract(const Duration(minutes: _beijingUtcOffsetMinutes));
 
   /// 根据节气精确计算月将
   ///

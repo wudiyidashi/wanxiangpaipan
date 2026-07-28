@@ -1,1 +1,12 @@
-{"_example": "Fill with {\"file\": \"<path>\", \"reason\": \"<why>\"}. Put spec/research files only — no code paths. Run `python .trellis/scripts/get_context.py --mode packages` to list available specs. Delete this line once real entries are added."}
+{"file":".trellis/tasks/07-28-daliuren-classics-audit/prd.md","reason":"复核 C02 未偏离父任务底本、完整性和历史约束"}
+{"file":".trellis/tasks/07-28-daliuren-classics-audit/research/capability-matrix.md","reason":"复核自动月将、手工模式、ViewModel 和历法来源验收"}
+{"file":".trellis/tasks/archive/2026-07/07-28-daliuren-classics-evidence/research/guide-foundation-cases-independent-review.md","reason":"防止把现代秒级/时区行为冒充古籍事实"}
+{"file":".trellis/tasks/archive/2026-07/07-28-daliuren-rule-provenance/design.md","reason":"复核 pan/snapshot 升版、legacy/future 兼容和 project-pan 身份"}
+{"file":".trellis/tasks/07-28-daliuren-cast-yuejiang/research/yuejiang-calendar-evidence.md","reason":"独立核对边界 oracle、offset 和无 fallback 合同"}
+{"file":".trellis/spec/domain/index.md","reason":"检查 DLR 服务所有权与共享层边界"}
+{"file":".trellis/spec/domain/daliuren-pan-engine.md","reason":"检查古籍执行门槛、排盘兼容和下游 C03 边界"}
+{"file":".trellis/spec/domain/daliuren-rule-contract.md","reason":"检查稳定 ID、UTC snapshot、精确版本匹配和旧盘状态"}
+{"file":".trellis/spec/guides/cross-layer-thinking-guide.md","reason":"检查 ViewModel、系统、模型、JSON 与历史读取的完整数据流"}
+{"file":".trellis/spec/guides/code-reuse-thinking-guide.md","reason":"检查未复制现有时间/干支算法或制造奇门耦合"}
+{"file":".trellis/tasks/07-28-daliuren-cast-yuejiang/prd.md","reason":"逐项验证所有可观察验收标准"}
+{"file":".trellis/tasks/07-28-daliuren-cast-yuejiang/design.md","reason":"检查实现遵守冻结的时间、manual、provenance 与 rollback 合同"}
