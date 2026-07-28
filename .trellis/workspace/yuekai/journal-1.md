@@ -215,3 +215,36 @@
 ### Next Steps
 
 - None - task complete
+
+
+## Session 7: 大六壬 C01 规则来源与版本契约
+
+**Date**: 2026-07-28
+**Task**: 大六壬 C01 规则来源与版本契约
+**Branch**: `main`
+
+### Summary
+
+建立稳定规则身份、古籍执行批准门禁、排盘与分析版本、历史兼容状态及四种起课输入快照；完成定向与共享回归。
+
+### Main Changes
+
+- Detailed change bullets were not supplied; see the summary above.
+
+### Git Commits
+
+| Hash | Message |
+|------|---------|
+| `2c48089` | (see git log) |
+
+### Testing
+
+- Validation was not recorded for this session.
+
+### Status
+
+[OK] **Completed**
+
+### Next Steps
+
+- None - task complete

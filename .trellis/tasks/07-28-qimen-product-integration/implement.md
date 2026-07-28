@@ -2,16 +2,38 @@
 
 ## 0. Hard Dependency Gate
 
-- [ ] 0.1 确认 `07-28-qimen-pan-engine` 与 `07-28-qimen-analysis-engine` 已通过检查、提交并归档；未满足时不得启动本任务。
-- [ ] 0.2 记录两项提交、最终 schema/enum ID、fixture、analyzer/projection API 与 specs，运行其目标测试。
-- [ ] 0.3 将上游实际合同与本任务 PRD/design 逐项对照；存在实质差异时回到规划和用户评审门，不在 UI 中兼容猜测。
+- [x] 0.1 确认 `07-28-qimen-pan-engine` 与 `07-28-qimen-analysis-engine` 已通过检查、提交并归档；未满足时不得启动本任务。
+- [x] 0.2 记录两项提交、最终 schema/enum ID、fixture、analyzer/projection API 与 specs，运行其目标测试。
+- [x] 0.3 将上游实际合同与本任务 PRD/design 逐项对照；存在实质差异时回到规划和用户评审门，不在 UI 中兼容猜测。
+
+启动证据（2026-07-28）：
+
+- 排盘提交 `7d226a690fa411ca1fe74f021c0fa54dca875f2c`，任务已归档到
+  `.trellis/tasks/archive/2026-07/07-28-qimen-pan-engine`；`QimenResult` schema 为 `1`，
+  公开消费入口为 `QimenSystem.cast` / `validateInput` / `resultFromJson`。
+- 分析提交 `a83647e65befa69eb4d972b843ec343b020e3332`，证据提交 `2234996`，
+  任务已归档到 `.trellis/tasks/archive/2026-07/07-28-qimen-analysis-engine`；
+  report/projection schema 均为 `1`，规则集为
+  `qimen-shijia-zhuanpan-analysis/v1`，公开消费入口为
+  `QimenAnalyzer.analyze` / `analyzePersisted` 与
+  `QimenAnalysisProjection.fromReport`。
+- 分析黄金 fixture SHA-256：
+  `9DE7FAA2A9247AB6C4071E2D86BD51440FC0BD9BDF46DDCE96F09FB37BFC14A4`。
+- 排盘口径稳定 ID：定局 `chaiBu/maoShan/zhiRun/manual`，时间基准
+  `localCivil/beijing/trueSolar`，换日 `ziInitial/midnight`，寄宫
+  `kunTwo/yangEightYinTwo`，暗干
+  `dutyDoorHourStem/doorOriginEarthStem`，阴阳遁 `yang/yin`，三元
+  `upper/middle/lower`，问事
+  `general/career/wealth/relationship/health/study/travel/litigation`。
+- 产品规划与冻结合同逐项对照无实质差异；UI/formatter 只消费 pan/report/projection，
+  不导入排盘阶段 service，不持久化分析，不改写裁决。
 
 ## 1. 清点集成面并建立失败基线
 
-- [ ] 1.1 阅读统一术数接口、跨层/复用指南、父任务 integration map、两个上游 design/spec 和相关测试先例。
-- [ ] 1.2 运行 `rg "DivinationType\\." lib test`、`rg "DivinationType.values" lib test`、`rg "systemType" lib/ai lib/presentation lib/domain/services`，保存所有穷举和硬编码列表清单。
+- [x] 1.1 阅读统一术数接口、跨层/复用指南、父任务 integration map、两个上游 design/spec 和相关测试先例。
+- [x] 1.2 运行 `rg "DivinationType\\." lib test`、`rg "DivinationType.values" lib test`、`rg "systemType" lib/ai lib/presentation lib/domain/services`，保存所有穷举和硬编码列表清单。
 - [ ] 1.3 先新增 enum/registry/provider/data-management/AI 契约测试及 Qimen UI factory 类型错误测试，确认未接入状态下按预期失败。
-- [ ] 1.4 确认通用 Drift 表足够，不创建 migration；若发现存储合同不符，暂停并回到设计评审。
+- [x] 1.4 确认通用 Drift 表足够，不创建 migration；若发现存储合同不符，暂停并回到设计评审。
 
 ## 2. ViewModel 与起局页
 

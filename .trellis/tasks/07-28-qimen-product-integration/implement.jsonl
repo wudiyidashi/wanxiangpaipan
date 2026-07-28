@@ -2,6 +2,6 @@
 {"file": ".trellis/spec/guides/code-reuse-thinking-guide.md", "reason": "复用统一页面骨架、注册表、ViewModel、仓储和共享组件"}
 {"file": "docs/architecture/divination-system-interface.md", "reason": "UI factory、系统注册、结果摘要和历史重开合同"}
 {"file": ".trellis/tasks/07-28-qimen-module/research/integration-map.md", "reason": "完整接入点、硬编码穷举点与验证面"}
-{"file": ".trellis/tasks/07-28-qimen-pan-engine/design.md", "reason": "起局表单与九宫结果页消费的排盘模型合同"}
-{"file": ".trellis/tasks/07-28-qimen-analysis-engine/design.md", "reason": "结果页与 formatter 消费的分析报告合同"}
+{"file": ".trellis/tasks/archive/2026-07/07-28-qimen-pan-engine/design.md", "reason": "起局表单与九宫结果页消费的排盘模型合同"}
+{"file": ".trellis/tasks/archive/2026-07/07-28-qimen-analysis-engine/design.md", "reason": "结果页与 formatter 消费的分析报告合同"}
 {"file": ".trellis/tasks/07-28-qimen-product-integration/design.md", "reason": "本子任务 UI、状态、持久化、AI 与资源设计"}

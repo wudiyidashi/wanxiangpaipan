@@ -8,7 +8,7 @@
 
 <!-- @@@auto:current-status -->
 - **Active File**: `journal-1.md`
-- **Total Sessions**: 6
+- **Total Sessions**: 7
 - **Last Active**: 2026-07-28
 <!-- @@@/auto:current-status -->
 
@@ -19,7 +19,7 @@
 <!-- @@@auto:active-documents -->
 | File | Lines | Status |
 |------|-------|--------|
-| `journal-1.md` | ~217 | Active |
+| `journal-1.md` | ~250 | Active |
 <!-- @@@/auto:active-documents -->
 
 ---
@@ -29,6 +29,7 @@
 <!-- @@@auto:session-history -->
 | # | Date | Title | Commits | Branch |
 |---|------|-------|---------|--------|
+| 7 | 2026-07-28 | 大六壬 C01 规则来源与版本契约 | `2c48089` | `main` |
 | 6 | 2026-07-28 | 奇门遁甲分析引擎 | `a83647e`, `2234996` | `main` |
 | 5 | 2026-07-28 | 奇门排盘与历法引擎 | `06c9f56`, `7d226a6` | `main` |
 | 4 | 2026-07-25 | 六爻裁决层：受力求值+决策表+40例黄金断例 | `91591d7`, `6c7b16d` | `main` |
