@@ -77,6 +77,8 @@ docs/research/daliuren/
 
 任何 expected 字段不得由 app service 或规则 registry 动态生成。缺时间、时区、性别等信息时保留 unknown，并限制该课例可验证的层级。
 
+《断案》《存验》若只有固定转录或版本暂缺的网页，只登记 C/locator-only 候选。B 级完整课例可由已固定馆藏和页码体系的《指南》补足，但必须保留原书优先检索失败的记录，且不能借单张课例提升整套算法证据等级。
+
 ## 6. 校验器
 
 `validate.dart` 使用 `dart:convert` 读取结构化 JSON，并实施：

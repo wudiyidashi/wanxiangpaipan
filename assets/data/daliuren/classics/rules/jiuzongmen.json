@@ -1,0 +1,477 @@
+{
+  "schemaVersion": "1.0.0",
+  "family": "jiuzongmen",
+  "catalogStatus": "partial",
+  "description": "九宗门恰好九法的候选规则目录。",
+  "expectedEntryCount": 9,
+  "entries": [
+    {
+      "ruleId": "dlr.rule.jiuzongmen.001.zeike",
+      "family": "jiuzongmen",
+      "subfamily": "threeTransmissionSelection",
+      "ordinal": 1,
+      "traditionalName": "贼克法",
+      "adoptedStatus": "pending",
+      "conditionsSummary": "四课有克时先取下贼上；没有下贼上才取上克下，初传取所选课上神。",
+      "prioritySummary": "同规则族内的优先关系尚未由影印页冻结；不得按目录顺序推断执行优先级。",
+      "interpretation": "影印页已完成首次视觉定位；独立复核、异文裁决与完整外例完成前不批准执行扩展。",
+      "evidenceLevel": "C",
+      "locatorOnly": false,
+      "executableApproved": false,
+      "sourceRefs": [
+        {
+          "sourceId": "dlr.source.siku-liuren-daquan",
+          "referenceKind": "scan",
+          "volume": "卷一",
+          "scanLeaf": 11,
+          "printedLeaf": "1a",
+          "pdfPage": 11,
+          "imageLabel": null,
+          "locator": null,
+          "shortQuote": "取课先从下贼呼，如无下贼上克初。",
+          "verifiedBy": [
+            {
+              "reviewer": "C00 first-pass scan audit",
+              "date": "2026-07-28"
+            }
+          ]
+        },
+        {
+          "sourceId": "dlr.source.daquan-transcription-aa7bc942",
+          "referenceKind": "locator",
+          "volume": null,
+          "scanLeaf": null,
+          "printedLeaf": null,
+          "pdfPage": null,
+          "imageLabel": null,
+          "locator": "docs/六壬大全/001巻一 起例.md:L9-L11",
+          "shortQuote": "取课先从下贼呼，如无下贼上克初。",
+          "verifiedBy": []
+        }
+      ],
+      "variantGroupId": null,
+      "adoptedVariantId": null,
+      "fixtureIds": [
+        "dlr.case.cunyan.dingchou-yiyou-pregnancy"
+      ],
+      "targetCapabilityId": "daliuren.jiuzongmen.zeike",
+      "targetCodeDomain": "lib/domain/services/daliuren/san_chuan_service.dart",
+      "notes": []
+    },
+    {
+      "ruleId": "dlr.rule.jiuzongmen.002.biyong",
+      "family": "jiuzongmen",
+      "subfamily": "threeTransmissionSelection",
+      "ordinal": 2,
+      "traditionalName": "比用法",
+      "adoptedStatus": "pending",
+      "conditionsSummary": "同向多克候选按日干阴阳取相比者；俱比或俱不比转涉害。",
+      "prioritySummary": "同规则族内的优先关系尚未由影印页冻结；不得按目录顺序推断执行优先级。",
+      "interpretation": "影印页已完成首次视觉定位；独立复核、异文裁决与完整外例完成前不批准执行扩展。",
+      "evidenceLevel": "C",
+      "locatorOnly": false,
+      "executableApproved": false,
+      "sourceRefs": [
+        {
+          "sourceId": "dlr.source.siku-liuren-daquan",
+          "referenceKind": "scan",
+          "volume": "卷一",
+          "scanLeaf": 11,
+          "printedLeaf": "1a",
+          "pdfPage": 11,
+          "imageLabel": null,
+          "locator": null,
+          "shortQuote": "阳日用阳阴用阴。若或俱比俱不比，立法别有涉害陈。",
+          "verifiedBy": [
+            {
+              "reviewer": "C00 first-pass scan audit",
+              "date": "2026-07-28"
+            }
+          ]
+        },
+        {
+          "sourceId": "dlr.source.daquan-transcription-aa7bc942",
+          "referenceKind": "locator",
+          "volume": null,
+          "scanLeaf": null,
+          "printedLeaf": null,
+          "pdfPage": null,
+          "imageLabel": null,
+          "locator": "docs/六壬大全/001巻一 起例.md:L13-L15",
+          "shortQuote": "阳日用阳阴用阴。若或俱比俱不比，立法别有涉害陈。",
+          "verifiedBy": []
+        }
+      ],
+      "variantGroupId": null,
+      "adoptedVariantId": null,
+      "fixtureIds": [
+        "dlr.case.cunyan.renwu-bingxu-exam",
+        "dlr.case.cunyan.wuzi-bingzi-promotion"
+      ],
+      "targetCapabilityId": "daliuren.jiuzongmen.biyong",
+      "targetCodeDomain": "lib/domain/services/daliuren/san_chuan_service.dart",
+      "notes": []
+    },
+    {
+      "ruleId": "dlr.rule.jiuzongmen.003.shehai",
+      "family": "jiuzongmen",
+      "subfamily": "threeTransmissionSelection",
+      "ordinal": 3,
+      "traditionalName": "涉害法",
+      "adoptedStatus": "pending",
+      "conditionsSummary": "候选沿地盘归本家计涉害深浅；并列再按孟仲与刚柔先见裁决。",
+      "prioritySummary": "同规则族内的优先关系尚未由影印页冻结；不得按目录顺序推断执行优先级。",
+      "interpretation": "影印页已完成首次视觉定位；独立复核、异文裁决与完整外例完成前不批准执行扩展。",
+      "evidenceLevel": "C",
+      "locatorOnly": false,
+      "executableApproved": false,
+      "sourceRefs": [
+        {
+          "sourceId": "dlr.source.siku-liuren-daquan",
+          "referenceKind": "scan",
+          "volume": "卷一",
+          "scanLeaf": 12,
+          "printedLeaf": "1b",
+          "pdfPage": 12,
+          "imageLabel": null,
+          "locator": null,
+          "shortQuote": "涉害行来本家止，路逢多克为用取。孟深仲浅季当休，复等柔辰刚日宜。",
+          "verifiedBy": [
+            {
+              "reviewer": "C00 first-pass scan audit",
+              "date": "2026-07-28"
+            }
+          ]
+        },
+        {
+          "sourceId": "dlr.source.daquan-transcription-aa7bc942",
+          "referenceKind": "locator",
+          "volume": null,
+          "scanLeaf": null,
+          "printedLeaf": null,
+          "pdfPage": null,
+          "imageLabel": null,
+          "locator": "docs/六壬大全/001巻一 起例.md:L17-L19",
+          "shortQuote": "涉害行来本家止，路逢多克为用取。孟深仲浅季当休，复等柔辰刚日宜。",
+          "verifiedBy": []
+        }
+      ],
+      "variantGroupId": "dlr.variant.shehai-tie-break",
+      "adoptedVariantId": null,
+      "fixtureIds": [
+        "dlr.case.zhinan.gengyin-gengchen-ma-lianzhuang"
+      ],
+      "targetCapabilityId": "daliuren.jiuzongmen.shehai",
+      "targetCodeDomain": "lib/domain/services/daliuren/san_chuan_service.dart",
+      "notes": []
+    },
+    {
+      "ruleId": "dlr.rule.jiuzongmen.004.yaoke",
+      "family": "jiuzongmen",
+      "subfamily": "threeTransmissionSelection",
+      "ordinal": 4,
+      "traditionalName": "遥克法",
+      "adoptedStatus": "pending",
+      "conditionsSummary": "四课无直接克时先取上神遥克日干（蒿矢），再取日干遥克上神（弹射）；多者比用。",
+      "prioritySummary": "同规则族内的优先关系尚未由影印页冻结；不得按目录顺序推断执行优先级。",
+      "interpretation": "影印页已完成首次视觉定位；独立复核、异文裁决与完整外例完成前不批准执行扩展。",
+      "evidenceLevel": "C",
+      "locatorOnly": false,
+      "executableApproved": false,
+      "sourceRefs": [
+        {
+          "sourceId": "dlr.source.siku-liuren-daquan",
+          "referenceKind": "scan",
+          "volume": "卷一",
+          "scanLeaf": 12,
+          "printedLeaf": "1b",
+          "pdfPage": 12,
+          "imageLabel": null,
+          "locator": null,
+          "shortQuote": "神遥克日曰蒿矢，日遥克神曰弹射。",
+          "verifiedBy": [
+            {
+              "reviewer": "C00 first-pass scan audit",
+              "date": "2026-07-28"
+            }
+          ]
+        },
+        {
+          "sourceId": "dlr.source.daquan-transcription-aa7bc942",
+          "referenceKind": "locator",
+          "volume": null,
+          "scanLeaf": null,
+          "printedLeaf": null,
+          "pdfPage": null,
+          "imageLabel": null,
+          "locator": "docs/六壬大全/001巻一 起例.md:L21-L23",
+          "shortQuote": "神遥克日曰蒿矢，日遥克神曰弹射。",
+          "verifiedBy": []
+        }
+      ],
+      "variantGroupId": null,
+      "adoptedVariantId": null,
+      "fixtureIds": [],
+      "targetCapabilityId": "daliuren.jiuzongmen.yaoke",
+      "targetCodeDomain": "lib/domain/services/daliuren/san_chuan_service.dart",
+      "notes": []
+    },
+    {
+      "ruleId": "dlr.rule.jiuzongmen.005.maoxing",
+      "family": "jiuzongmen",
+      "subfamily": "threeTransmissionSelection",
+      "ordinal": 5,
+      "traditionalName": "昴星法",
+      "adoptedStatus": "pending",
+      "conditionsSummary": "四课全且无直接克、无遥克；刚日仰视地盘酉上，柔日俯视天盘酉所临地盘。",
+      "prioritySummary": "同规则族内的优先关系尚未由影印页冻结；不得按目录顺序推断执行优先级。",
+      "interpretation": "影印页已完成首次视觉定位；独立复核、异文裁决与完整外例完成前不批准执行扩展。",
+      "evidenceLevel": "C",
+      "locatorOnly": false,
+      "executableApproved": false,
+      "sourceRefs": [
+        {
+          "sourceId": "dlr.source.siku-liuren-daquan",
+          "referenceKind": "scan",
+          "volume": "卷一",
+          "scanLeaf": 13,
+          "printedLeaf": "2a",
+          "pdfPage": 13,
+          "imageLabel": null,
+          "locator": null,
+          "shortQuote": "无遥无克昴星穷，阳仰阴俯酉位中。",
+          "verifiedBy": [
+            {
+              "reviewer": "C00 first-pass scan audit",
+              "date": "2026-07-28"
+            }
+          ]
+        },
+        {
+          "sourceId": "dlr.source.daquan-transcription-aa7bc942",
+          "referenceKind": "locator",
+          "volume": null,
+          "scanLeaf": null,
+          "printedLeaf": null,
+          "pdfPage": null,
+          "imageLabel": null,
+          "locator": "docs/六壬大全/001巻一 起例.md:L25-L27",
+          "shortQuote": "无遥无克昴星穷，阳仰阴俯酉位中。",
+          "verifiedBy": []
+        }
+      ],
+      "variantGroupId": null,
+      "adoptedVariantId": null,
+      "fixtureIds": [],
+      "targetCapabilityId": "daliuren.jiuzongmen.maoxing",
+      "targetCodeDomain": "lib/domain/services/daliuren/san_chuan_service.dart",
+      "notes": []
+    },
+    {
+      "ruleId": "dlr.rule.jiuzongmen.006.bieze",
+      "family": "jiuzongmen",
+      "subfamily": "threeTransmissionSelection",
+      "ordinal": 6,
+      "traditionalName": "别责法",
+      "adoptedStatus": "pending",
+      "conditionsSummary": "三课备且无克、无遥克；刚日取干合之寄宫上神，柔日取支三合前辰，中末皆干上。",
+      "prioritySummary": "同规则族内的优先关系尚未由影印页冻结；不得按目录顺序推断执行优先级。",
+      "interpretation": "影印页已完成首次视觉定位；独立复核、异文裁决与完整外例完成前不批准执行扩展。",
+      "evidenceLevel": "C",
+      "locatorOnly": false,
+      "executableApproved": false,
+      "sourceRefs": [
+        {
+          "sourceId": "dlr.source.siku-liuren-daquan",
+          "referenceKind": "scan",
+          "volume": "卷一",
+          "scanLeaf": 13,
+          "printedLeaf": "2a",
+          "pdfPage": 13,
+          "imageLabel": null,
+          "locator": null,
+          "shortQuote": "刚日干合上头神，柔日支前三合取。",
+          "verifiedBy": [
+            {
+              "reviewer": "C00 first-pass scan audit",
+              "date": "2026-07-28"
+            }
+          ]
+        },
+        {
+          "sourceId": "dlr.source.daquan-transcription-aa7bc942",
+          "referenceKind": "locator",
+          "volume": null,
+          "scanLeaf": null,
+          "printedLeaf": null,
+          "pdfPage": null,
+          "imageLabel": null,
+          "locator": "docs/六壬大全/001巻一 起例.md:L29-L31",
+          "shortQuote": "刚日干合上头神，柔日支前三合取。",
+          "verifiedBy": []
+        }
+      ],
+      "variantGroupId": "dlr.variant.bieze-yang-method",
+      "adoptedVariantId": null,
+      "fixtureIds": [],
+      "targetCapabilityId": "daliuren.jiuzongmen.bieze",
+      "targetCodeDomain": "lib/domain/services/daliuren/san_chuan_service.dart",
+      "notes": []
+    },
+    {
+      "ruleId": "dlr.rule.jiuzongmen.007.bazhuan",
+      "family": "jiuzongmen",
+      "subfamily": "threeTransmissionSelection",
+      "ordinal": 7,
+      "traditionalName": "八专法",
+      "adoptedStatus": "pending",
+      "conditionsSummary": "干支同位、课内无克；阳日从日上顺数三，阴日从辰阴逆数三，中末并日上。",
+      "prioritySummary": "同规则族内的优先关系尚未由影印页冻结；不得按目录顺序推断执行优先级。",
+      "interpretation": "影印页已完成首次视觉定位；独立复核、异文裁决与完整外例完成前不批准执行扩展。",
+      "evidenceLevel": "C",
+      "locatorOnly": false,
+      "executableApproved": false,
+      "sourceRefs": [
+        {
+          "sourceId": "dlr.source.siku-liuren-daquan",
+          "referenceKind": "scan",
+          "volume": "卷一",
+          "scanLeaf": 14,
+          "printedLeaf": "2b",
+          "pdfPage": 14,
+          "imageLabel": null,
+          "locator": null,
+          "shortQuote": "两课无克号八专，阳日日阳顺行三……阴日辰阴逆三位。",
+          "verifiedBy": [
+            {
+              "reviewer": "C00 first-pass scan audit",
+              "date": "2026-07-28"
+            }
+          ]
+        },
+        {
+          "sourceId": "dlr.source.daquan-transcription-aa7bc942",
+          "referenceKind": "locator",
+          "volume": null,
+          "scanLeaf": null,
+          "printedLeaf": null,
+          "pdfPage": null,
+          "imageLabel": null,
+          "locator": "docs/六壬大全/001巻一 起例.md:L33-L35",
+          "shortQuote": "两课无克号八专，阳日日阳顺行三……阴日辰阴逆三位。",
+          "verifiedBy": []
+        }
+      ],
+      "variantGroupId": "dlr.variant.bazhuan-with-ke-label",
+      "adoptedVariantId": null,
+      "fixtureIds": [],
+      "targetCapabilityId": "daliuren.jiuzongmen.bazhuan",
+      "targetCodeDomain": "lib/domain/services/daliuren/san_chuan_service.dart",
+      "notes": []
+    },
+    {
+      "ruleId": "dlr.rule.jiuzongmen.008.fuyin",
+      "family": "jiuzongmen",
+      "subfamily": "threeTransmissionSelection",
+      "ordinal": 8,
+      "traditionalName": "伏吟法",
+      "adoptedStatus": "pending",
+      "conditionsSummary": "天地盘同位；有克按克取用，无克刚取干上柔取支上，中末走刑链，自刑按日辰与冲退路。",
+      "prioritySummary": "同规则族内的优先关系尚未由影印页冻结；不得按目录顺序推断执行优先级。",
+      "interpretation": "影印页已完成首次视觉定位；独立复核、异文裁决与完整外例完成前不批准执行扩展。",
+      "evidenceLevel": "C",
+      "locatorOnly": false,
+      "executableApproved": false,
+      "sourceRefs": [
+        {
+          "sourceId": "dlr.source.siku-liuren-daquan",
+          "referenceKind": "scan",
+          "volume": "卷一",
+          "scanLeaf": 14,
+          "printedLeaf": "2b",
+          "pdfPage": 14,
+          "imageLabel": null,
+          "locator": null,
+          "shortQuote": "伏吟有克还为用，无克刚干柔取辰。迤逦刑之作中末。",
+          "verifiedBy": [
+            {
+              "reviewer": "C00 first-pass scan audit",
+              "date": "2026-07-28"
+            }
+          ]
+        },
+        {
+          "sourceId": "dlr.source.daquan-transcription-aa7bc942",
+          "referenceKind": "locator",
+          "volume": null,
+          "scanLeaf": null,
+          "printedLeaf": null,
+          "pdfPage": null,
+          "imageLabel": null,
+          "locator": "docs/六壬大全/001巻一 起例.md:L37-L39",
+          "shortQuote": "伏吟有克还为用，无克刚干柔取辰。迤逦刑之作中末。",
+          "verifiedBy": []
+        }
+      ],
+      "variantGroupId": null,
+      "adoptedVariantId": null,
+      "fixtureIds": [],
+      "targetCapabilityId": "daliuren.jiuzongmen.fuyin",
+      "targetCodeDomain": "lib/domain/services/daliuren/san_chuan_service.dart",
+      "notes": []
+    },
+    {
+      "ruleId": "dlr.rule.jiuzongmen.009.fanyin",
+      "family": "jiuzongmen",
+      "subfamily": "threeTransmissionSelection",
+      "ordinal": 9,
+      "traditionalName": "返吟法",
+      "adoptedStatus": "pending",
+      "conditionsSummary": "天地盘相冲；有克按克取用，无克限丁己辛之丑未六日取井栏射。",
+      "prioritySummary": "同规则族内的优先关系尚未由影印页冻结；不得按目录顺序推断执行优先级。",
+      "interpretation": "影印页已完成首次视觉定位；独立复核、异文裁决与完整外例完成前不批准执行扩展。",
+      "evidenceLevel": "C",
+      "locatorOnly": false,
+      "executableApproved": false,
+      "sourceRefs": [
+        {
+          "sourceId": "dlr.source.siku-liuren-daquan",
+          "referenceKind": "scan",
+          "volume": "卷一",
+          "scanLeaf": 15,
+          "printedLeaf": "3a",
+          "pdfPage": 15,
+          "imageLabel": null,
+          "locator": null,
+          "shortQuote": "若知六日该无克，丑未同干丁己辛。",
+          "verifiedBy": [
+            {
+              "reviewer": "C00 first-pass scan audit",
+              "date": "2026-07-28"
+            }
+          ]
+        },
+        {
+          "sourceId": "dlr.source.daquan-transcription-aa7bc942",
+          "referenceKind": "locator",
+          "volume": null,
+          "scanLeaf": null,
+          "printedLeaf": null,
+          "pdfPage": null,
+          "imageLabel": null,
+          "locator": "docs/六壬大全/001巻一 起例.md:L41-L43",
+          "shortQuote": "若知六日该无克，丑未同干丁己辛。",
+          "verifiedBy": []
+        }
+      ],
+      "variantGroupId": "dlr.variant.fanyin-terminology",
+      "adoptedVariantId": null,
+      "fixtureIds": [
+        "dlr.case.cunyan.wuzi-bingzi-promotion"
+      ],
+      "targetCapabilityId": "daliuren.jiuzongmen.fanyin",
+      "targetCodeDomain": "lib/domain/services/daliuren/san_chuan_service.dart",
+      "notes": []
+    }
+  ]
+}

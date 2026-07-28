@@ -6,6 +6,8 @@
 
 ## Findings
 
+> 后续状态说明：本文件保留首次核页当时的状态。`guide-foundation-cases-independent-review.md` 已完成《指南》PDF 6 及 PDF 54、56 的独立复核，`guide-shehai-case-independent-review.md` 已补 PDF 44 涉害／顾祖完整盘；`noble-direction-independent-recheck.md` 已补卷二贵人/顺逆上下文。最终采用状态以结构化 registry 和这些后续报告为准。
+
 ### Evidence policy used in this report
 
 Only the following statuses are used:

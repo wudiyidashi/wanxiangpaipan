@@ -1,0 +1,589 @@
+{
+  "schemaVersion": "1.0.0",
+  "variants": [
+    {
+      "variantGroupId": "dlr.variant.shensha-zhi-hai-second-value",
+      "topic": "支害十二值第二字",
+      "affectedCapabilities": [
+        "daliuren.shensha.053"
+      ],
+      "impact": [
+        "决定丑日支害所临之支；任何修字都会改变神煞事实。"
+      ],
+      "status": "unresolved",
+      "configurable": false,
+      "adoptedVariantId": null,
+      "adoptionRationale": "主底本影印第二值似“子”，与常见成对六害结构冲突；没有异本复核前不得按常识改字。",
+      "nonAdoptedDisplayStrategy": "保留主底本逐字短引和 disputed 状态，不提供运行时配置。",
+      "blockingRuleIds": [
+        "dlr.rule.shensha.053"
+      ],
+      "options": [
+        {
+          "variantId": "siku-literal-zi",
+          "label": "主底本作子",
+          "evidenceLevel": "B",
+          "sourceRefs": [
+            {
+              "sourceId": "dlr.source.siku-liuren-daquan",
+              "referenceKind": "scan",
+              "volume": "卷一",
+              "scanLeaf": 33,
+              "printedLeaf": "12a",
+              "pdfPage": 33,
+              "imageLabel": null,
+              "locator": null,
+              "shortQuote": "支害未子巳辰卯寅丑子亥戌酉申。"
+            }
+          ],
+          "summary": "四库影印所见第二值似子，按原字保存但不批准执行。"
+        },
+        {
+          "variantId": "symmetric-liuhai-wu",
+          "label": "成对六害作午",
+          "evidenceLevel": "D",
+          "sourceRefs": [],
+          "summary": "按常见六害结构推得午，但本任务未取得可核异本页，不能采用。"
+        }
+      ]
+    },
+    {
+      "variantGroupId": "dlr.variant.shensha-guan-identity",
+      "topic": "单字关与时煞、关神的身份关系",
+      "affectedCapabilities": [
+        "daliuren.shensha.054",
+        "daliuren.shensha.182",
+        "daliuren.shensha.188"
+      ],
+      "impact": [
+        "影响三个题名应独立实现、合并为异名，或保留为不可执行候选。"
+      ],
+      "status": "unresolved",
+      "configurable": false,
+      "adoptedVariantId": null,
+      "adoptionRationale": "PDF 33 清楚见单字“關”，固定转录却作“时煞”；PDF 39 又独立列关神与时煞，现有证据不能冻结三者关系。",
+      "nonAdoptedDisplayStrategy": "三项分别登记；单字关保持 C/disputed，禁止按名称猜测合并。",
+      "blockingRuleIds": [
+        "dlr.rule.shensha.054",
+        "dlr.rule.shensha.182",
+        "dlr.rule.shensha.188"
+      ],
+      "options": [
+        {
+          "variantId": "scan-distinct-guan",
+          "label": "影印单列关",
+          "evidenceLevel": "C",
+          "sourceRefs": [
+            {
+              "sourceId": "dlr.source.siku-liuren-daquan",
+              "referenceKind": "scan",
+              "volume": "卷一",
+              "scanLeaf": 33,
+              "printedLeaf": "12a",
+              "pdfPage": 33,
+              "imageLabel": null,
+              "locator": null,
+              "shortQuote": "關巳寅亥申巳寅亥申巳寅亥申。"
+            },
+            {
+              "sourceId": "dlr.source.siku-liuren-daquan",
+              "referenceKind": "scan",
+              "volume": "卷一",
+              "scanLeaf": 39,
+              "printedLeaf": null,
+              "pdfPage": 39,
+              "imageLabel": null,
+              "locator": null,
+              "shortQuote": "逐月神煞表另列关神与时煞。"
+            }
+          ],
+          "summary": "按 PDF 33 单字题头另立候选；关系仍须异本或上下文复核。"
+        },
+        {
+          "variantId": "transcription-as-shisha",
+          "label": "固定转录作时煞",
+          "evidenceLevel": "C",
+          "sourceRefs": [
+            {
+              "sourceId": "dlr.source.daquan-transcription-aa7bc942",
+              "referenceKind": "locator",
+              "volume": null,
+              "scanLeaf": null,
+              "printedLeaf": null,
+              "pdfPage": null,
+              "imageLabel": null,
+              "locator": "docs/六壬大全/001巻一 起例.md:L141-L145",
+              "shortQuote": "支害……时煞……支仪。"
+            }
+          ],
+          "summary": "固定转录把同列写作时煞，但不能反向覆盖影印字形。"
+        }
+      ]
+    },
+    {
+      "variantGroupId": "dlr.variant.shensha-gushen-guchen-identity",
+      "topic": "孤神与孤辰的身份关系",
+      "affectedCapabilities": [
+        "daliuren.shensha.104",
+        "daliuren.shensha.193"
+      ],
+      "impact": [
+        "影响季节公式孤神与逐月表孤辰应独立实现，还是作为近名异文归并。"
+      ],
+      "status": "unresolved",
+      "configurable": false,
+      "adoptedVariantId": null,
+      "adoptionRationale": "PDF 36 正文明确列“孤神”，PDF 39、41、42 逐月表另见“孤辰”；现有证据支持分别登记，但不足以冻结 typed 规则间关系。",
+      "nonAdoptedDisplayStrategy": "两项分别登记；禁止用逐月表 OCR 校正把正文孤神静默改成孤辰。",
+      "blockingRuleIds": [
+        "dlr.rule.shensha.104",
+        "dlr.rule.shensha.193"
+      ],
+      "options": [
+        {
+          "variantId": "scan-distinct-identities",
+          "label": "影印分别作孤神、孤辰",
+          "evidenceLevel": "B",
+          "sourceRefs": [
+            {
+              "sourceId": "dlr.source.siku-liuren-daquan",
+              "referenceKind": "scan",
+              "volume": "卷一",
+              "scanLeaf": 36,
+              "printedLeaf": "13b",
+              "pdfPage": 36,
+              "imageLabel": null,
+              "locator": null,
+              "shortQuote": "喝散、禁神、孤神：春巳夏申秋亥冬寅。"
+            },
+            {
+              "sourceId": "dlr.source.siku-liuren-daquan",
+              "referenceKind": "scan",
+              "volume": "卷一",
+              "scanLeaf": 39,
+              "printedLeaf": null,
+              "pdfPage": 39,
+              "imageLabel": null,
+              "locator": null,
+              "shortQuote": "逐月神煞表另列孤辰。"
+            }
+          ],
+          "summary": "按各自影印题名保留两个目录身份，typed 关系仍待 C06 裁决。"
+        },
+        {
+          "variantId": "merge-as-near-name-variant",
+          "label": "按近名合并",
+          "evidenceLevel": "D",
+          "sourceRefs": [],
+          "summary": "仅凭名称相近推断同一规则，缺少本任务可核版本依据，不采用。"
+        }
+      ]
+    },
+    {
+      "variantGroupId": "dlr.variant.bifa-076-wording",
+      "topic": "毕法第七十六法害/祸字形",
+      "affectedCapabilities": [
+        "daliuren.bifa.076"
+      ],
+      "impact": [
+        "只影响规范题名、检索和证据展示；typed 条件尚未批准。"
+      ],
+      "status": "unresolved",
+      "configurable": false,
+      "adoptedVariantId": null,
+      "adoptionRationale": "同一底本卷首目录作“害相随”，卷十详细题句作“祸相随”，不能无说明择一。",
+      "nonAdoptedDisplayStrategy": "规范题名并列两形并标未定，不提供运行时配置。",
+      "blockingRuleIds": [
+        "dlr.rule.bifa.076"
+      ],
+      "options": [
+        {
+          "variantId": "index-hai",
+          "label": "卷首目录害相随",
+          "evidenceLevel": "C",
+          "sourceRefs": [
+            {
+              "sourceId": "dlr.source.siku-liuren-daquan",
+              "referenceKind": "locator",
+              "volume": null,
+              "scanLeaf": null,
+              "printedLeaf": null,
+              "pdfPage": null,
+              "imageLabel": null,
+              "locator": "卷九卷首目录 PDF 3-8",
+              "shortQuote": "彼此猜忌害相隨。"
+            }
+          ],
+          "summary": "实体卷首目录所见字形；精确目录叶尚未在 rule sourceRef 单列。"
+        },
+        {
+          "variantId": "detail-huo",
+          "label": "详细题句祸相随",
+          "evidenceLevel": "B",
+          "sourceRefs": [
+            {
+              "sourceId": "dlr.source.siku-liuren-daquan",
+              "referenceKind": "scan",
+              "volume": "卷十",
+              "scanLeaf": 65,
+              "printedLeaf": null,
+              "pdfPage": 65,
+              "imageLabel": null,
+              "locator": null,
+              "shortQuote": "彼此猜忌禍相隨。"
+            }
+          ],
+          "summary": "卷十详细题句起始页作祸相随。"
+        }
+      ]
+    },
+    {
+      "variantGroupId": "dlr.variant.gui-ren-table",
+      "topic": "十干昼夜贵人表",
+      "affectedCapabilities": [
+        "daliuren.shenjiang.yangGuiTable",
+        "daliuren.shenjiang.yinGuiTable"
+      ],
+      "impact": [
+        "改变所选贵人天盘支。",
+        "连锁改变十二天将、四课乘将与三传乘将。"
+      ],
+      "status": "unresolved",
+      "configurable": false,
+      "adoptedVariantId": null,
+      "adoptionRationale": "固定转录只有 C 级 locator；候选《直指》虽有完整影印表，却与当前表在五干冲突且版本仍未批准。",
+      "nonAdoptedDisplayStrategy": "不提供运行时配置；显示整表版本差异，并明确项目的仅甲日特例不能代表《直指》版本。",
+      "blockingRuleIds": [
+        "dlr.rule.shenjiang.002.yang-gui-table",
+        "dlr.rule.shenjiang.003.yin-gui-table"
+      ],
+      "options": [
+        {
+          "variantId": "cunyan-fixed-table",
+          "label": "《六壬存验》固定转录表",
+          "evidenceLevel": "C",
+          "sourceRefs": [
+            {
+              "sourceId": "dlr.source.cunyan-transcription-d2a44794",
+              "referenceKind": "locator",
+              "volume": null,
+              "scanLeaf": null,
+              "printedLeaf": null,
+              "pdfPage": null,
+              "imageLabel": null,
+              "locator": "六壬存验-清-吴师青.txt:L347-L349",
+              "shortQuote": "阳贵：甲丑，己子……阴贵：甲未，己申……"
+            }
+          ],
+          "summary": "阳贵甲丑、己子等，阴贵甲未、己申等；尚无对应影印页。"
+        },
+        {
+          "variantId": "siku-adopted-table-unlocated",
+          "label": "四库本采用表",
+          "evidenceLevel": "D",
+          "sourceRefs": [],
+          "summary": "正面采用的贵人表尚未在主底本影印页中定位，不能由现有代码反推。"
+        },
+        {
+          "variantId": "yuding-zhizhi-complete-table",
+          "label": "《御定六壬直指》完整表",
+          "evidenceLevel": "C",
+          "sourceRefs": [
+            {
+              "sourceId": "dlr.source.yuding-liuren-zhizhi-candidate",
+              "referenceKind": "locator",
+              "volume": null,
+              "scanLeaf": null,
+              "printedLeaf": null,
+              "pdfPage": null,
+              "imageLabel": null,
+              "locator": "卷上 PDF 18 / scan leaf 17 / printed leaf 七",
+              "shortQuote": "正时自卯至申用昼贵……庚戊见牛甲在羊……甲贵阴牛庚戊羊。"
+            }
+          ],
+          "summary": "阳贵甲未乙申丙酉辛寅壬卯，阴贵相应对调；与当前表在甲乙丙辛壬五干冲突。"
+        },
+        {
+          "variantId": "project-jia-only-alternative",
+          "label": "项目仅甲日互换特例",
+          "evidenceLevel": "D",
+          "sourceRefs": [],
+          "summary": "现有配置只交换甲日，不能代表候选《直指》同时交换五干的完整版本。"
+        }
+      ]
+    },
+    {
+      "variantGroupId": "dlr.variant.gui-ren-direction",
+      "topic": "十二天将顺逆的决定依据",
+      "affectedCapabilities": [
+        "daliuren.shenjiang.actualDirection",
+        "daliuren.shenjiang.dualCoordinates"
+      ],
+      "impact": [
+        "改变十二天将在天盘支与地盘宫的完整分布。",
+        "会改变四课、三传所乘天将及其后续分析。"
+      ],
+      "status": "unresolved",
+      "configurable": false,
+      "adoptedVariantId": null,
+      "adoptionRationale": "主底本确认地盘定顺逆，但六支分区仍含天门地户方位推导；昼顺夜逆图又明言近不用。",
+      "nonAdoptedDisplayStrategy": "不提供运行时配置；在证据详情列出两项候选和主底本的否定说明。",
+      "blockingRuleIds": [
+        "dlr.rule.shenjiang.004.direction-by-earth-palace",
+        "dlr.rule.shenjiang.006.dual-coordinate-layout"
+      ],
+      "options": [
+        {
+          "variantId": "landing-palace-six-zones",
+          "label": "贵人落地宫分顺逆六位",
+          "evidenceLevel": "C",
+          "sourceRefs": [
+            {
+              "sourceId": "dlr.source.cunyan-transcription-d2a44794",
+              "referenceKind": "locator",
+              "volume": null,
+              "scanLeaf": null,
+              "printedLeaf": null,
+              "pdfPage": null,
+              "imageLabel": null,
+              "locator": "六壬存验-清-吴师青.txt:L329",
+              "shortQuote": "贵临地盘亥子丑寅卯辰六位顺行……巳午未申酉戌六位逆行。"
+            }
+          ],
+          "summary": "先求天盘贵人所临地宫，再按亥至辰顺、巳至戌逆；只有固定转录。"
+        },
+        {
+          "variantId": "siku-heaven-earth-gate-direction",
+          "label": "主底本天门地户定顺逆",
+          "evidenceLevel": "C",
+          "sourceRefs": [
+            {
+              "sourceId": "dlr.source.siku-liuren-daquan",
+              "referenceKind": "scan",
+              "volume": "卷二",
+              "scanLeaf": 59,
+              "printedLeaf": null,
+              "pdfPage": 59,
+              "imageLabel": null,
+              "locator": null,
+              "shortQuote": "地盘一定顺逆之序，顺布者则背天门，逆布者则向地户。"
+            },
+            {
+              "sourceId": "dlr.source.siku-liuren-daquan",
+              "referenceKind": "scan",
+              "volume": "卷二",
+              "scanLeaf": 62,
+              "printedLeaf": null,
+              "pdfPage": 62,
+              "imageLabel": null,
+              "locator": null,
+              "shortQuote": "顺治谓在天门之前、地户之后；逆治谓在地户之前、天门之后。"
+            }
+          ],
+          "summary": "卷二直接规定以地盘和天门地户定顺逆，但未逐支枚举亥至辰与巳至戌两区。"
+        },
+        {
+          "variantId": "day-forward-night-reverse-disused",
+          "label": "昼顺夜逆图说",
+          "evidenceLevel": "C",
+          "sourceRefs": [
+            {
+              "sourceId": "dlr.source.siku-liuren-daquan",
+              "referenceKind": "scan",
+              "volume": "卷一",
+              "scanLeaf": 100,
+              "printedLeaf": "45b",
+              "pdfPage": 100,
+              "imageLabel": null,
+              "locator": null,
+              "shortQuote": "此贵神昼顺行夜逆行……其说甚有理而近不用。"
+            }
+          ],
+          "summary": "主底本影印页记录该说但明确称近不用，不能作为采用依据。"
+        }
+      ]
+    },
+    {
+      "variantGroupId": "dlr.variant.shehai-tie-break",
+      "topic": "涉害同深候选的孟仲季与刚柔决胜",
+      "affectedCapabilities": [
+        "daliuren.jiuzongmen.shehai"
+      ],
+      "impact": [
+        "并列候选可产生不同初传，继而改变中末传。"
+      ],
+      "status": "unresolved",
+      "configurable": false,
+      "adoptedVariantId": null,
+      "adoptionRationale": "主底本页面只有首次视觉定位，细部解释和其他传承差异尚未独立复核。",
+      "nonAdoptedDisplayStrategy": "保留候选说明；不得把服务现状包装成唯一古法。",
+      "blockingRuleIds": [
+        "dlr.rule.jiuzongmen.003.shehai"
+      ],
+      "options": [
+        {
+          "variantId": "meng-zhong-then-gang-rou",
+          "label": "孟仲后以刚柔先见",
+          "evidenceLevel": "C",
+          "sourceRefs": [
+            {
+              "sourceId": "dlr.source.daquan-transcription-aa7bc942",
+              "referenceKind": "locator",
+              "volume": null,
+              "scanLeaf": null,
+              "printedLeaf": null,
+              "pdfPage": null,
+              "imageLabel": null,
+              "locator": "docs/六壬大全/001巻一 起例.md:L17-L19",
+              "shortQuote": "孟深仲浅季当休，复等柔辰刚日宜。"
+            }
+          ],
+          "summary": "固定转录称孟深仲浅季休，复等则柔辰刚日；尚待逐字二审。"
+        },
+        {
+          "variantId": "alternative-depth-tie-break",
+          "label": "其他涉害决胜次序",
+          "evidenceLevel": "D",
+          "sourceRefs": [],
+          "summary": "父任务已知存在传承差异，但尚无固定版本与页级短引可登记。"
+        }
+      ]
+    },
+    {
+      "variantGroupId": "dlr.variant.bieze-yang-method",
+      "topic": "别责刚日发用位置",
+      "affectedCapabilities": [
+        "daliuren.jiuzongmen.bieze"
+      ],
+      "impact": [
+        "刚日别责可能产生不同初传。"
+      ],
+      "status": "unresolved",
+      "configurable": false,
+      "adoptedVariantId": null,
+      "adoptionRationale": "固定转录支持干合上头神候选，但寄宫上神与本位取法的版本差异尚未完成影印裁决。",
+      "nonAdoptedDisplayStrategy": "不提供配置；保留异文并阻塞确定性扩展。",
+      "blockingRuleIds": [
+        "dlr.rule.jiuzongmen.006.bieze"
+      ],
+      "options": [
+        {
+          "variantId": "combined-stem-lodging-upper",
+          "label": "干合寄宫上神",
+          "evidenceLevel": "C",
+          "sourceRefs": [
+            {
+              "sourceId": "dlr.source.daquan-transcription-aa7bc942",
+              "referenceKind": "locator",
+              "volume": null,
+              "scanLeaf": null,
+              "printedLeaf": null,
+              "pdfPage": null,
+              "imageLabel": null,
+              "locator": "docs/六壬大全/001巻一 起例.md:L29-L31",
+              "shortQuote": "刚日干合上头神，柔日支前三合取。"
+            }
+          ],
+          "summary": "按干合之干的寄宫再取天盘上神。"
+        },
+        {
+          "variantId": "combined-stem-native-position",
+          "label": "干合本位取用",
+          "evidenceLevel": "D",
+          "sourceRefs": [],
+          "summary": "差异候选尚无本任务可核的固定底本页。"
+        }
+      ]
+    },
+    {
+      "variantGroupId": "dlr.variant.bazhuan-with-ke-label",
+      "topic": "八专有克时的课体归属",
+      "affectedCapabilities": [
+        "daliuren.jiuzongmen.bazhuan"
+      ],
+      "impact": [
+        "影响取传分派 trace 与课体显示，但不应凭标签改写克贼事实。"
+      ],
+      "status": "unresolved",
+      "configurable": false,
+      "adoptedVariantId": null,
+      "adoptionRationale": "主底本候选文字以两课无克为八专，现有代码的有克标注策略没有独立古籍依据。",
+      "nonAdoptedDisplayStrategy": "显示真实取传路径；八专标签异文只进证据详情。",
+      "blockingRuleIds": [
+        "dlr.rule.jiuzongmen.007.bazhuan"
+      ],
+      "options": [
+        {
+          "variantId": "no-overcoming-only",
+          "label": "仅两课无克称八专",
+          "evidenceLevel": "C",
+          "sourceRefs": [
+            {
+              "sourceId": "dlr.source.daquan-transcription-aa7bc942",
+              "referenceKind": "locator",
+              "volume": null,
+              "scanLeaf": null,
+              "printedLeaf": null,
+              "pdfPage": null,
+              "imageLabel": null,
+              "locator": "docs/六壬大全/001巻一 起例.md:L33-L35",
+              "shortQuote": "两课无克号八专。"
+            }
+          ],
+          "summary": "固定转录以两课无克作为八专入口。"
+        },
+        {
+          "variantId": "retain-label-when-overcoming",
+          "label": "有克仍保留八专标签",
+          "evidenceLevel": "D",
+          "sourceRefs": [],
+          "summary": "这是需要审计的项目行为，不能由当前代码自证为古法。"
+        }
+      ]
+    },
+    {
+      "variantGroupId": "dlr.variant.fanyin-terminology",
+      "topic": "返吟与反吟字形归一",
+      "affectedCapabilities": [
+        "daliuren.jiuzongmen.fanyin"
+      ],
+      "impact": [
+        "只影响稳定展示词和检索别名，不改变盘面或三传。"
+      ],
+      "status": "rejected",
+      "configurable": false,
+      "adoptedVariantId": null,
+      "adoptionRationale": "字形差异没有实质盘面影响，不满足运行时可配置条件；机器 ID 统一使用 fanyin。",
+      "nonAdoptedDisplayStrategy": "正文统一显示反吟，证据短引保留原页返吟字形并建立检索别名。",
+      "blockingRuleIds": [],
+      "options": [
+        {
+          "variantId": "return-character",
+          "label": "返吟",
+          "evidenceLevel": "C",
+          "sourceRefs": [
+            {
+              "sourceId": "dlr.source.siku-liuren-daquan",
+              "referenceKind": "scan",
+              "volume": "卷一",
+              "scanLeaf": 15,
+              "printedLeaf": "3a",
+              "pdfPage": 15,
+              "imageLabel": null,
+              "locator": null,
+              "shortQuote": "返吟有克亦为用，无克别有井栏名。"
+            }
+          ],
+          "summary": "四库影印页与固定转录所见字形。"
+        },
+        {
+          "variantId": "opposition-character",
+          "label": "反吟",
+          "evidenceLevel": "D",
+          "sourceRefs": [],
+          "summary": "项目统一展示字形；只作为别名归一，不声称是另一套古法。"
+        }
+      ]
+    }
+  ]
+}

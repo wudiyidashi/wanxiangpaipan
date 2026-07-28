@@ -1,0 +1,124 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://wanxiang-paipan.local/schema/daliuren/classics/variant.schema.json",
+  "title": "Da Liu Ren classic variant decisions",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schemaVersion", "variants"],
+  "properties": {
+    "schemaVersion": {"const": "1.0.0"},
+    "variants": {
+      "type": "array",
+      "items": {"$ref": "#/$defs/variant"}
+    }
+  },
+  "$defs": {
+    "sourceRef": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "sourceId",
+        "referenceKind",
+        "volume",
+        "scanLeaf",
+        "printedLeaf",
+        "pdfPage",
+        "imageLabel",
+        "locator",
+        "shortQuote"
+      ],
+      "properties": {
+        "sourceId": {
+          "type": "string",
+          "pattern": "^dlr\\.source\\.[a-z0-9][a-z0-9.-]*$"
+        },
+        "referenceKind": {"enum": ["scan", "locator"]},
+        "volume": {"type": ["string", "null"]},
+        "scanLeaf": {"type": ["integer", "null"], "minimum": 0},
+        "printedLeaf": {"type": ["string", "null"]},
+        "pdfPage": {"type": ["integer", "null"], "minimum": 1},
+        "imageLabel": {"type": ["string", "null"]},
+        "locator": {"type": ["string", "null"]},
+        "shortQuote": {"type": "string", "minLength": 1}
+      }
+    },
+    "option": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "variantId",
+        "label",
+        "evidenceLevel",
+        "sourceRefs",
+        "summary"
+      ],
+      "properties": {
+        "variantId": {
+          "type": "string",
+          "pattern": "^[a-z0-9][a-z0-9.-]*$"
+        },
+        "label": {"type": "string", "minLength": 1},
+        "evidenceLevel": {"enum": ["A", "B", "C", "D"]},
+        "sourceRefs": {
+          "type": "array",
+          "items": {"$ref": "#/$defs/sourceRef"}
+        },
+        "summary": {"type": "string", "minLength": 1}
+      }
+    },
+    "variant": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "variantGroupId",
+        "topic",
+        "affectedCapabilities",
+        "impact",
+        "status",
+        "configurable",
+        "adoptedVariantId",
+        "adoptionRationale",
+        "nonAdoptedDisplayStrategy",
+        "blockingRuleIds",
+        "options"
+      ],
+      "properties": {
+        "variantGroupId": {
+          "type": "string",
+          "pattern": "^dlr\\.variant\\.[a-z0-9][a-z0-9.-]*$"
+        },
+        "topic": {"type": "string", "minLength": 1},
+        "affectedCapabilities": {
+          "type": "array",
+          "minItems": 1,
+          "items": {"type": "string", "minLength": 1}
+        },
+        "impact": {
+          "type": "array",
+          "minItems": 1,
+          "items": {"type": "string", "minLength": 1}
+        },
+        "status": {"enum": ["unresolved", "provisional", "adopted", "rejected"]},
+        "configurable": {"type": "boolean"},
+        "adoptedVariantId": {
+          "type": ["string", "null"],
+          "pattern": "^[a-z0-9][a-z0-9.-]*$"
+        },
+        "adoptionRationale": {"type": "string", "minLength": 1},
+        "nonAdoptedDisplayStrategy": {"type": "string", "minLength": 1},
+        "blockingRuleIds": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "pattern": "^dlr\\.rule\\.[a-zA-Z0-9][a-zA-Z0-9.-]*$"
+          }
+        },
+        "options": {
+          "type": "array",
+          "minItems": 2,
+          "items": {"$ref": "#/$defs/option"}
+        }
+      }
+    }
+  }
+}

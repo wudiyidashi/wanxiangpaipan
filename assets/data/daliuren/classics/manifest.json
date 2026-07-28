@@ -1,0 +1,62 @@
+{
+  "schemaVersion": "1.0.0",
+  "registryId": "daliuren-classics-evidence-v1",
+  "sourceFile": "sources.json",
+  "variantFile": "variants.json",
+  "schemaFiles": [
+    "schema/source.schema.json",
+    "schema/rule.schema.json",
+    "schema/variant.schema.json",
+    "schema/case.schema.json"
+  ],
+  "ruleFiles": [
+    "rules/pan.json",
+    "rules/shenjiang.json",
+    "rules/jiuzongmen.json",
+    "rules/derived-facts.json",
+    "rules/shensha.json",
+    "rules/kejing.json",
+    "rules/bifa.json",
+    "rules/nianming.json",
+    "rules/class-spirit.json",
+    "rules/judgment.json",
+    "rules/timing.json"
+  ],
+  "caseFiles": [
+    "cases/duanan.json",
+    "cases/cunyan.json",
+    "cases/zhinan.json"
+  ],
+  "requiredFamilies": [
+    "pan",
+    "shenjiang",
+    "jiuzongmen",
+    "derivedFacts",
+    "shensha",
+    "kejing",
+    "bifa",
+    "nianming",
+    "classSpirit",
+    "judgment",
+    "timing"
+  ],
+  "exactRuleCounts": {
+    "shensha": 238,
+    "kejing": 64,
+    "bifa": 100
+  },
+  "maxShortQuoteCharacters": 160,
+  "forbiddenExtensions": [
+    ".pdf",
+    ".djvu",
+    ".tif",
+    ".tiff",
+    ".jpg",
+    ".jpeg",
+    ".png",
+    ".webp",
+    ".epub",
+    ".mobi"
+  ],
+  "coverageReportPath": "docs/research/daliuren/evidence-coverage.md"
+}

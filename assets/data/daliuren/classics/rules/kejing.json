@@ -1,0 +1,3743 @@
+{
+  "schemaVersion": "1.0.0",
+  "family": "kejing",
+  "catalogStatus": "partial",
+  "description": "恰好六十四个稳定课经 ID；目录身份、起始影印页与短引均完成 B 级独立二审。",
+  "expectedEntryCount": 64,
+  "entries": [
+    {
+      "ruleId": "dlr.rule.kejing.001",
+      "family": "kejing",
+      "subfamily": "kejingCatalog",
+      "ordinal": 1,
+      "traditionalName": "元首课",
+      "adoptedStatus": "adopted",
+      "conditionsSummary": "本条只冻结六十四课经目录身份；typed 命中条件须由影印正文和独立正反例另行批准。",
+      "prioritySummary": "同规则族内的优先关系尚未由影印页冻结；不得按目录顺序推断执行优先级。",
+      "interpretation": "主底本题名、起始影印页与短引已完成独立二审；本条不批准完整充分必要条件或执行优先级。",
+      "evidenceLevel": "B",
+      "locatorOnly": false,
+      "executableApproved": false,
+      "sourceRefs": [
+        {
+          "sourceId": "dlr.source.siku-liuren-daquan",
+          "referenceKind": "scan",
+          "volume": "卷四至五",
+          "scanLeaf": 35,
+          "printedLeaf": null,
+          "pdfPage": 35,
+          "imageLabel": null,
+          "locator": null,
+          "shortQuote": "凡一上克下，餘課無克，為元首課，象天如君克臣必順。",
+          "verifiedBy": [
+            {
+              "reviewer": "C00 catalog first-pass scan audit",
+              "date": "2026-07-28"
+            },
+            {
+              "reviewer": "c00_kejing_recheck (Codex)",
+              "date": "2026-07-28"
+            }
+          ]
+        },
+        {
+          "sourceId": "dlr.source.daquan-transcription-aa7bc942",
+          "referenceKind": "locator",
+          "volume": null,
+          "scanLeaf": null,
+          "printedLeaf": null,
+          "pdfPage": null,
+          "imageLabel": null,
+          "locator": "docs/六壬大全/007巻七 课经集（一）.md:L3",
+          "shortQuote": "元首课",
+          "verifiedBy": []
+        }
+      ],
+      "variantGroupId": null,
+      "adoptedVariantId": null,
+      "fixtureIds": [],
+      "targetCapabilityId": "daliuren.kejing.001",
+      "targetCodeDomain": "lib/domain/services/daliuren/kejing/",
+      "notes": [
+        "B 级只覆盖目录身份、起始影印页与本条短引；typed 条件、重叠关系、优先级和正反 fixture 仍待后续批准。",
+        "printed leaf 未建立独立映射，继续保持 null。"
+      ]
+    },
+    {
+      "ruleId": "dlr.rule.kejing.002",
+      "family": "kejing",
+      "subfamily": "kejingCatalog",
+      "ordinal": 2,
+      "traditionalName": "重审课",
+      "adoptedStatus": "adopted",
+      "conditionsSummary": "本条只冻结六十四课经目录身份；typed 命中条件须由影印正文和独立正反例另行批准。",
+      "prioritySummary": "同规则族内的优先关系尚未由影印页冻结；不得按目录顺序推断执行优先级。",
+      "interpretation": "主底本题名、起始影印页与短引已完成独立二审；本条不批准完整充分必要条件或执行优先级。",
+      "evidenceLevel": "B",
+      "locatorOnly": false,
+      "executableApproved": false,
+      "sourceRefs": [
+        {
+          "sourceId": "dlr.source.siku-liuren-daquan",
+          "referenceKind": "scan",
+          "volume": "卷四至五",
+          "scanLeaf": 49,
+          "printedLeaf": null,
+          "pdfPage": 49,
+          "imageLabel": null,
+          "locator": null,
+          "shortQuote": "凡一下賊上，餘課無克，為重審課，象地事逆，以下犯上。",
+          "verifiedBy": [
+            {
+              "reviewer": "C00 catalog first-pass scan audit",
+              "date": "2026-07-28"
+            },
+            {
+              "reviewer": "c00_kejing_recheck (Codex)",
+              "date": "2026-07-28"
+            }
+          ]
+        },
+        {
+          "sourceId": "dlr.source.daquan-transcription-aa7bc942",
+          "referenceKind": "locator",
+          "volume": null,
+          "scanLeaf": null,
+          "printedLeaf": null,
+          "pdfPage": null,
+          "imageLabel": null,
+          "locator": "docs/六壬大全/007巻七 课经集（一）.md:L101",
+          "shortQuote": "重审课",
+          "verifiedBy": []
+        }
+      ],
+      "variantGroupId": null,
+      "adoptedVariantId": null,
+      "fixtureIds": [
+        "dlr.case.cunyan.dingchou-yiyou-pregnancy",
+        "dlr.case.zhinan.renyin-guimao-liu-tuizhai",
+        "dlr.case.zhinan.yiwei-jimao-feng-yunsheng"
+      ],
+      "targetCapabilityId": "daliuren.kejing.002",
+      "targetCodeDomain": "lib/domain/services/daliuren/kejing/",
+      "notes": [
+        "B 级只覆盖目录身份、起始影印页与本条短引；typed 条件、重叠关系、优先级和正反 fixture 仍待后续批准。",
+        "printed leaf 未建立独立映射，继续保持 null。"
+      ]
+    },
+    {
+      "ruleId": "dlr.rule.kejing.003",
+      "family": "kejing",
+      "subfamily": "kejingCatalog",
+      "ordinal": 3,
+      "traditionalName": "知一课",
+      "adoptedStatus": "adopted",
+      "conditionsSummary": "本条只冻结六十四课经目录身份；typed 命中条件须由影印正文和独立正反例另行批准。",
+      "prioritySummary": "同规则族内的优先关系尚未由影印页冻结；不得按目录顺序推断执行优先级。",
+      "interpretation": "主底本题名、起始影印页与短引已完成独立二审；本条不批准完整充分必要条件或执行优先级。",
+      "evidenceLevel": "B",
+      "locatorOnly": false,
+      "executableApproved": false,
+      "sourceRefs": [
+        {
+          "sourceId": "dlr.source.siku-liuren-daquan",
+          "referenceKind": "scan",
+          "volume": "卷四至五",
+          "scanLeaf": 57,
+          "printedLeaf": null,
+          "pdfPage": 57,
+          "imageLabel": null,
+          "locator": null,
+          "shortQuote": "凡課有二上克下，或二下克上，擇課之陰陽與今日比者而為用神，曰知一課。",
+          "verifiedBy": [
+            {
+              "reviewer": "C00 catalog first-pass scan audit",
+              "date": "2026-07-28"
+            },
+            {
+              "reviewer": "c00_kejing_recheck (Codex)",
+              "date": "2026-07-28"
+            }
+          ]
+        },
+        {
+          "sourceId": "dlr.source.daquan-transcription-aa7bc942",
+          "referenceKind": "locator",
+          "volume": null,
+          "scanLeaf": null,
+          "printedLeaf": null,
+          "pdfPage": null,
+          "imageLabel": null,
+          "locator": "docs/六壬大全/007巻七 课经集（一）.md:L171",
+          "shortQuote": "知一课",
+          "verifiedBy": []
+        }
+      ],
+      "variantGroupId": null,
+      "adoptedVariantId": null,
+      "fixtureIds": [
+        "dlr.case.cunyan.renwu-bingxu-exam",
+        "dlr.case.cunyan.wuzi-bingzi-promotion"
+      ],
+      "targetCapabilityId": "daliuren.kejing.003",
+      "targetCodeDomain": "lib/domain/services/daliuren/kejing/",
+      "notes": [
+        "B 级只覆盖目录身份、起始影印页与本条短引；typed 条件、重叠关系、优先级和正反 fixture 仍待后续批准。",
+        "printed leaf 未建立独立映射，继续保持 null。"
+      ]
+    },
+    {
+      "ruleId": "dlr.rule.kejing.004",
+      "family": "kejing",
+      "subfamily": "kejingCatalog",
+      "ordinal": 4,
+      "traditionalName": "涉害课",
+      "adoptedStatus": "adopted",
+      "conditionsSummary": "本条只冻结六十四课经目录身份；typed 命中条件须由影印正文和独立正反例另行批准。",
+      "prioritySummary": "同规则族内的优先关系尚未由影印页冻结；不得按目录顺序推断执行优先级。",
+      "interpretation": "主底本题名、起始影印页与短引已完成独立二审；本条不批准完整充分必要条件或执行优先级。",
+      "evidenceLevel": "B",
+      "locatorOnly": false,
+      "executableApproved": false,
+      "sourceRefs": [
+        {
+          "sourceId": "dlr.source.siku-liuren-daquan",
+          "referenceKind": "scan",
+          "volume": "卷四至五",
+          "scanLeaf": 64,
+          "printedLeaf": null,
+          "pdfPage": 64,
+          "imageLabel": null,
+          "locator": null,
+          "shortQuote": "凡課有二上克下，或二下克上，與今日俱比俱不比，則以涉地盤歸本家受克深處為用，為涉害課。",
+          "verifiedBy": [
+            {
+              "reviewer": "C00 catalog first-pass scan audit",
+              "date": "2026-07-28"
+            },
+            {
+              "reviewer": "c00_kejing_recheck (Codex)",
+              "date": "2026-07-28"
+            }
+          ]
+        },
+        {
+          "sourceId": "dlr.source.daquan-transcription-aa7bc942",
+          "referenceKind": "locator",
+          "volume": null,
+          "scanLeaf": null,
+          "printedLeaf": null,
+          "pdfPage": null,
+          "imageLabel": null,
+          "locator": "docs/六壬大全/007巻七 课经集（一）.md:L253-L255",
+          "shortQuote": "涉害课",
+          "verifiedBy": []
+        }
+      ],
+      "variantGroupId": null,
+      "adoptedVariantId": null,
+      "fixtureIds": [
+        "dlr.case.zhinan.gengyin-gengchen-ma-lianzhuang"
+      ],
+      "targetCapabilityId": "daliuren.kejing.004",
+      "targetCodeDomain": "lib/domain/services/daliuren/kejing/",
+      "notes": [
+        "B 级只覆盖目录身份、起始影印页与本条短引；typed 条件、重叠关系、优先级和正反 fixture 仍待后续批准。",
+        "printed leaf 未建立独立映射，继续保持 null。"
+      ]
+    },
+    {
+      "ruleId": "dlr.rule.kejing.005",
+      "family": "kejing",
+      "subfamily": "kejingCatalog",
+      "ordinal": 5,
+      "traditionalName": "遥克课",
+      "adoptedStatus": "adopted",
+      "conditionsSummary": "本条只冻结六十四课经目录身份；typed 命中条件须由影印正文和独立正反例另行批准。",
+      "prioritySummary": "同规则族内的优先关系尚未由影印页冻结；不得按目录顺序推断执行优先级。",
+      "interpretation": "主底本题名、起始影印页与短引已完成独立二审；本条不批准完整充分必要条件或执行优先级。",
+      "evidenceLevel": "B",
+      "locatorOnly": false,
+      "executableApproved": false,
+      "sourceRefs": [
+        {
+          "sourceId": "dlr.source.siku-liuren-daquan",
+          "referenceKind": "scan",
+          "volume": "卷四至五",
+          "scanLeaf": 81,
+          "printedLeaf": null,
+          "pdfPage": 81,
+          "imageLabel": null,
+          "locator": null,
+          "shortQuote": "凡課無克，取日干與四課上神相克者為用，曰遙克課。",
+          "verifiedBy": [
+            {
+              "reviewer": "C00 catalog first-pass scan audit",
+              "date": "2026-07-28"
+            },
+            {
+              "reviewer": "c00_kejing_recheck (Codex)",
+              "date": "2026-07-28"
+            }
+          ]
+        },
+        {
+          "sourceId": "dlr.source.daquan-transcription-aa7bc942",
+          "referenceKind": "locator",
+          "volume": null,
+          "scanLeaf": null,
+          "printedLeaf": null,
+          "pdfPage": null,
+          "imageLabel": null,
+          "locator": "docs/六壬大全/007巻七 课经集（一）.md:L443",
+          "shortQuote": "遥克课",
+          "verifiedBy": []
+        }
+      ],
+      "variantGroupId": null,
+      "adoptedVariantId": null,
+      "fixtureIds": [],
+      "targetCapabilityId": "daliuren.kejing.005",
+      "targetCodeDomain": "lib/domain/services/daliuren/kejing/",
+      "notes": [
+        "B 级只覆盖目录身份、起始影印页与本条短引；typed 条件、重叠关系、优先级和正反 fixture 仍待后续批准。",
+        "printed leaf 未建立独立映射，继续保持 null。"
+      ]
+    },
+    {
+      "ruleId": "dlr.rule.kejing.006",
+      "family": "kejing",
+      "subfamily": "kejingCatalog",
+      "ordinal": 6,
+      "traditionalName": "昴星课",
+      "adoptedStatus": "adopted",
+      "conditionsSummary": "本条只冻结六十四课经目录身份；typed 命中条件须由影印正文和独立正反例另行批准。",
+      "prioritySummary": "同规则族内的优先关系尚未由影印页冻结；不得按目录顺序推断执行优先级。",
+      "interpretation": "主底本题名、起始影印页与短引已完成独立二审；本条不批准完整充分必要条件或执行优先级。",
+      "evidenceLevel": "B",
+      "locatorOnly": false,
+      "executableApproved": false,
+      "sourceRefs": [
+        {
+          "sourceId": "dlr.source.siku-liuren-daquan",
+          "referenceKind": "scan",
+          "volume": "卷四至五",
+          "scanLeaf": 93,
+          "printedLeaf": null,
+          "pdfPage": 93,
+          "imageLabel": null,
+          "locator": null,
+          "shortQuote": "凡四課上下無相克，又無遙克，取從魁上下神為用，曰昴星課。",
+          "verifiedBy": [
+            {
+              "reviewer": "C00 catalog first-pass scan audit",
+              "date": "2026-07-28"
+            },
+            {
+              "reviewer": "c00_kejing_recheck (Codex)",
+              "date": "2026-07-28"
+            }
+          ]
+        },
+        {
+          "sourceId": "dlr.source.daquan-transcription-aa7bc942",
+          "referenceKind": "locator",
+          "volume": null,
+          "scanLeaf": null,
+          "printedLeaf": null,
+          "pdfPage": null,
+          "imageLabel": null,
+          "locator": "docs/六壬大全/007巻七 课经集（一）.md:L585",
+          "shortQuote": "昴星课",
+          "verifiedBy": []
+        }
+      ],
+      "variantGroupId": null,
+      "adoptedVariantId": null,
+      "fixtureIds": [],
+      "targetCapabilityId": "daliuren.kejing.006",
+      "targetCodeDomain": "lib/domain/services/daliuren/kejing/",
+      "notes": [
+        "B 级只覆盖目录身份、起始影印页与本条短引；typed 条件、重叠关系、优先级和正反 fixture 仍待后续批准。",
+        "printed leaf 未建立独立映射，继续保持 null。"
+      ]
+    },
+    {
+      "ruleId": "dlr.rule.kejing.007",
+      "family": "kejing",
+      "subfamily": "kejingCatalog",
+      "ordinal": 7,
+      "traditionalName": "别责课",
+      "adoptedStatus": "adopted",
+      "conditionsSummary": "本条只冻结六十四课经目录身份；typed 命中条件须由影印正文和独立正反例另行批准。",
+      "prioritySummary": "同规则族内的优先关系尚未由影印页冻结；不得按目录顺序推断执行优先级。",
+      "interpretation": "主底本题名、起始影印页与短引已完成独立二审；本条不批准完整充分必要条件或执行优先级。",
+      "evidenceLevel": "B",
+      "locatorOnly": false,
+      "executableApproved": false,
+      "sourceRefs": [
+        {
+          "sourceId": "dlr.source.siku-liuren-daquan",
+          "referenceKind": "scan",
+          "volume": "卷四至五",
+          "scanLeaf": 104,
+          "printedLeaf": null,
+          "pdfPage": 104,
+          "imageLabel": null,
+          "locator": null,
+          "shortQuote": "凡三課無克，別取一神為用，曰別責格。",
+          "verifiedBy": [
+            {
+              "reviewer": "C00 catalog first-pass scan audit",
+              "date": "2026-07-28"
+            },
+            {
+              "reviewer": "c00_kejing_recheck (Codex)",
+              "date": "2026-07-28"
+            }
+          ]
+        },
+        {
+          "sourceId": "dlr.source.daquan-transcription-aa7bc942",
+          "referenceKind": "locator",
+          "volume": null,
+          "scanLeaf": null,
+          "printedLeaf": null,
+          "pdfPage": null,
+          "imageLabel": null,
+          "locator": "docs/六壬大全/007巻七 课经集（一）.md:L689",
+          "shortQuote": "别责课",
+          "verifiedBy": []
+        }
+      ],
+      "variantGroupId": null,
+      "adoptedVariantId": null,
+      "fixtureIds": [],
+      "targetCapabilityId": "daliuren.kejing.007",
+      "targetCodeDomain": "lib/domain/services/daliuren/kejing/",
+      "notes": [
+        "B 级只覆盖目录身份、起始影印页与本条短引；typed 条件、重叠关系、优先级和正反 fixture 仍待后续批准。",
+        "printed leaf 未建立独立映射，继续保持 null。"
+      ]
+    },
+    {
+      "ruleId": "dlr.rule.kejing.008",
+      "family": "kejing",
+      "subfamily": "kejingCatalog",
+      "ordinal": 8,
+      "traditionalName": "八专课",
+      "adoptedStatus": "adopted",
+      "conditionsSummary": "本条只冻结六十四课经目录身份；typed 命中条件须由影印正文和独立正反例另行批准。",
+      "prioritySummary": "同规则族内的优先关系尚未由影印页冻结；不得按目录顺序推断执行优先级。",
+      "interpretation": "主底本题名、起始影印页与短引已完成独立二审；本条不批准完整充分必要条件或执行优先级。",
+      "evidenceLevel": "B",
+      "locatorOnly": false,
+      "executableApproved": false,
+      "sourceRefs": [
+        {
+          "sourceId": "dlr.source.siku-liuren-daquan",
+          "referenceKind": "scan",
+          "volume": "卷四至五",
+          "scanLeaf": 109,
+          "printedLeaf": null,
+          "pdfPage": 109,
+          "imageLabel": null,
+          "locator": null,
+          "shortQuote": "凡干支同位無克，取陽順陰逆三神為用，曰八專課。",
+          "verifiedBy": [
+            {
+              "reviewer": "C00 catalog first-pass scan audit",
+              "date": "2026-07-28"
+            },
+            {
+              "reviewer": "c00_kejing_recheck (Codex)",
+              "date": "2026-07-28"
+            }
+          ]
+        },
+        {
+          "sourceId": "dlr.source.daquan-transcription-aa7bc942",
+          "referenceKind": "locator",
+          "volume": null,
+          "scanLeaf": null,
+          "printedLeaf": null,
+          "pdfPage": null,
+          "imageLabel": null,
+          "locator": "docs/六壬大全/007巻七 课经集（一）.md:L731",
+          "shortQuote": "八专课",
+          "verifiedBy": []
+        }
+      ],
+      "variantGroupId": null,
+      "adoptedVariantId": null,
+      "fixtureIds": [],
+      "targetCapabilityId": "daliuren.kejing.008",
+      "targetCodeDomain": "lib/domain/services/daliuren/kejing/",
+      "notes": [
+        "B 级只覆盖目录身份、起始影印页与本条短引；typed 条件、重叠关系、优先级和正反 fixture 仍待后续批准。",
+        "printed leaf 未建立独立映射，继续保持 null。"
+      ]
+    },
+    {
+      "ruleId": "dlr.rule.kejing.009",
+      "family": "kejing",
+      "subfamily": "kejingCatalog",
+      "ordinal": 9,
+      "traditionalName": "伏吟课",
+      "adoptedStatus": "adopted",
+      "conditionsSummary": "本条只冻结六十四课经目录身份；typed 命中条件须由影印正文和独立正反例另行批准。",
+      "prioritySummary": "同规则族内的优先关系尚未由影印页冻结；不得按目录顺序推断执行优先级。",
+      "interpretation": "主底本题名、起始影印页与短引已完成独立二审；本条不批准完整充分必要条件或执行优先级。",
+      "evidenceLevel": "B",
+      "locatorOnly": false,
+      "executableApproved": false,
+      "sourceRefs": [
+        {
+          "sourceId": "dlr.source.siku-liuren-daquan",
+          "referenceKind": "scan",
+          "volume": "卷四至五",
+          "scanLeaf": 120,
+          "printedLeaf": null,
+          "pdfPage": 120,
+          "imageLabel": null,
+          "locator": null,
+          "shortQuote": "定章曰：此謂日辰合為一神，陰陽不相克，剛日從陽順數至三神。",
+          "verifiedBy": [
+            {
+              "reviewer": "C00 catalog first-pass scan audit",
+              "date": "2026-07-28"
+            },
+            {
+              "reviewer": "c00_kejing_recheck (Codex)",
+              "date": "2026-07-28"
+            }
+          ]
+        },
+        {
+          "sourceId": "dlr.source.daquan-transcription-aa7bc942",
+          "referenceKind": "locator",
+          "volume": null,
+          "scanLeaf": null,
+          "printedLeaf": null,
+          "pdfPage": null,
+          "imageLabel": null,
+          "locator": "docs/六壬大全/007巻七 课经集（一）.md:L871",
+          "shortQuote": "伏吟课",
+          "verifiedBy": []
+        }
+      ],
+      "variantGroupId": null,
+      "adoptedVariantId": null,
+      "fixtureIds": [],
+      "targetCapabilityId": "daliuren.kejing.009",
+      "targetCodeDomain": "lib/domain/services/daliuren/kejing/",
+      "notes": [
+        "B 级只覆盖目录身份、起始影印页与本条短引；typed 条件、重叠关系、优先级和正反 fixture 仍待后续批准。",
+        "printed leaf 未建立独立映射，继续保持 null。"
+      ]
+    },
+    {
+      "ruleId": "dlr.rule.kejing.010",
+      "family": "kejing",
+      "subfamily": "kejingCatalog",
+      "ordinal": 10,
+      "traditionalName": "返吟课",
+      "adoptedStatus": "adopted",
+      "conditionsSummary": "本条只冻结六十四课经目录身份；typed 命中条件须由影印正文和独立正反例另行批准。",
+      "prioritySummary": "同规则族内的优先关系尚未由影印页冻结；不得按目录顺序推断执行优先级。",
+      "interpretation": "主底本题名、起始影印页与短引已完成独立二审；本条不批准完整充分必要条件或执行优先级。",
+      "evidenceLevel": "B",
+      "locatorOnly": false,
+      "executableApproved": false,
+      "sourceRefs": [
+        {
+          "sourceId": "dlr.source.siku-liuren-daquan",
+          "referenceKind": "scan",
+          "volume": "卷四至五",
+          "scanLeaf": 136,
+          "printedLeaf": null,
+          "pdfPage": 136,
+          "imageLabel": null,
+          "locator": null,
+          "shortQuote": "凡課十二神各居沖位，取相克為用，曰返吟課。",
+          "verifiedBy": [
+            {
+              "reviewer": "C00 catalog first-pass scan audit",
+              "date": "2026-07-28"
+            },
+            {
+              "reviewer": "c00_kejing_recheck (Codex)",
+              "date": "2026-07-28"
+            }
+          ]
+        },
+        {
+          "sourceId": "dlr.source.daquan-transcription-aa7bc942",
+          "referenceKind": "locator",
+          "volume": null,
+          "scanLeaf": null,
+          "printedLeaf": null,
+          "pdfPage": null,
+          "imageLabel": null,
+          "locator": "docs/六壬大全/007巻七 课经集（一）.md:L1049",
+          "shortQuote": "返吟课",
+          "verifiedBy": []
+        }
+      ],
+      "variantGroupId": null,
+      "adoptedVariantId": null,
+      "fixtureIds": [
+        "dlr.case.cunyan.wuzi-bingzi-promotion"
+      ],
+      "targetCapabilityId": "daliuren.kejing.010",
+      "targetCodeDomain": "lib/domain/services/daliuren/kejing/",
+      "notes": [
+        "产品展示统一使用“反吟”，传统名原样保留。",
+        "B 级只覆盖目录身份、起始影印页与本条短引；typed 条件、重叠关系、优先级和正反 fixture 仍待后续批准。",
+        "printed leaf 未建立独立映射，继续保持 null。"
+      ]
+    },
+    {
+      "ruleId": "dlr.rule.kejing.011",
+      "family": "kejing",
+      "subfamily": "kejingCatalog",
+      "ordinal": 11,
+      "traditionalName": "三光课",
+      "adoptedStatus": "adopted",
+      "conditionsSummary": "本条只冻结六十四课经目录身份；typed 命中条件须由影印正文和独立正反例另行批准。",
+      "prioritySummary": "同规则族内的优先关系尚未由影印页冻结；不得按目录顺序推断执行优先级。",
+      "interpretation": "主底本题名、起始影印页与短引已完成独立二审；本条不批准完整充分必要条件或执行优先级。",
+      "evidenceLevel": "B",
+      "locatorOnly": false,
+      "executableApproved": false,
+      "sourceRefs": [
+        {
+          "sourceId": "dlr.source.siku-liuren-daquan",
+          "referenceKind": "scan",
+          "volume": "卷四至五",
+          "scanLeaf": 147,
+          "printedLeaf": null,
+          "pdfPage": 147,
+          "imageLabel": null,
+          "locator": null,
+          "shortQuote": "凡課用神日辰旺相，吉神在中，為三光課。",
+          "verifiedBy": [
+            {
+              "reviewer": "C00 catalog first-pass scan audit",
+              "date": "2026-07-28"
+            },
+            {
+              "reviewer": "c00_kejing_recheck (Codex)",
+              "date": "2026-07-28"
+            }
+          ]
+        },
+        {
+          "sourceId": "dlr.source.daquan-transcription-aa7bc942",
+          "referenceKind": "locator",
+          "volume": null,
+          "scanLeaf": null,
+          "printedLeaf": null,
+          "pdfPage": null,
+          "imageLabel": null,
+          "locator": "docs/六壬大全/007巻七 课经集（一）.md:L1167",
+          "shortQuote": "三光课",
+          "verifiedBy": []
+        }
+      ],
+      "variantGroupId": null,
+      "adoptedVariantId": null,
+      "fixtureIds": [],
+      "targetCapabilityId": "daliuren.kejing.011",
+      "targetCodeDomain": "lib/domain/services/daliuren/kejing/",
+      "notes": [
+        "B 级只覆盖目录身份、起始影印页与本条短引；typed 条件、重叠关系、优先级和正反 fixture 仍待后续批准。",
+        "printed leaf 未建立独立映射，继续保持 null。"
+      ]
+    },
+    {
+      "ruleId": "dlr.rule.kejing.012",
+      "family": "kejing",
+      "subfamily": "kejingCatalog",
+      "ordinal": 12,
+      "traditionalName": "三阳课",
+      "adoptedStatus": "adopted",
+      "conditionsSummary": "本条只冻结六十四课经目录身份；typed 命中条件须由影印正文和独立正反例另行批准。",
+      "prioritySummary": "同规则族内的优先关系尚未由影印页冻结；不得按目录顺序推断执行优先级。",
+      "interpretation": "主底本题名、起始影印页与短引已完成独立二审；本条不批准完整充分必要条件或执行优先级。",
+      "evidenceLevel": "B",
+      "locatorOnly": false,
+      "executableApproved": false,
+      "sourceRefs": [
+        {
+          "sourceId": "dlr.source.siku-liuren-daquan",
+          "referenceKind": "scan",
+          "volume": "卷四至五",
+          "scanLeaf": 154,
+          "printedLeaf": null,
+          "pdfPage": 154,
+          "imageLabel": null,
+          "locator": null,
+          "shortQuote": "凡課天乙順行，日辰有氣，居前旺相，氣發用，為三陽課。",
+          "verifiedBy": [
+            {
+              "reviewer": "C00 catalog first-pass scan audit",
+              "date": "2026-07-28"
+            },
+            {
+              "reviewer": "c00_kejing_recheck (Codex)",
+              "date": "2026-07-28"
+            }
+          ]
+        },
+        {
+          "sourceId": "dlr.source.daquan-transcription-aa7bc942",
+          "referenceKind": "locator",
+          "volume": null,
+          "scanLeaf": null,
+          "printedLeaf": null,
+          "pdfPage": null,
+          "imageLabel": null,
+          "locator": "docs/六壬大全/007巻七 课经集（一）.md:L1265",
+          "shortQuote": "三阳课",
+          "verifiedBy": []
+        }
+      ],
+      "variantGroupId": null,
+      "adoptedVariantId": null,
+      "fixtureIds": [],
+      "targetCapabilityId": "daliuren.kejing.012",
+      "targetCodeDomain": "lib/domain/services/daliuren/kejing/",
+      "notes": [
+        "B 级只覆盖目录身份、起始影印页与本条短引；typed 条件、重叠关系、优先级和正反 fixture 仍待后续批准。",
+        "printed leaf 未建立独立映射，继续保持 null。"
+      ]
+    },
+    {
+      "ruleId": "dlr.rule.kejing.013",
+      "family": "kejing",
+      "subfamily": "kejingCatalog",
+      "ordinal": 13,
+      "traditionalName": "三奇课",
+      "adoptedStatus": "adopted",
+      "conditionsSummary": "本条只冻结六十四课经目录身份；typed 命中条件须由影印正文和独立正反例另行批准。",
+      "prioritySummary": "同规则族内的优先关系尚未由影印页冻结；不得按目录顺序推断执行优先级。",
+      "interpretation": "主底本题名、起始影印页与短引已完成独立二审；本条不批准完整充分必要条件或执行优先级。",
+      "evidenceLevel": "B",
+      "locatorOnly": false,
+      "executableApproved": false,
+      "sourceRefs": [
+        {
+          "sourceId": "dlr.source.siku-liuren-daquan",
+          "referenceKind": "scan",
+          "volume": "卷四至五",
+          "scanLeaf": 160,
+          "printedLeaf": null,
+          "pdfPage": 160,
+          "imageLabel": null,
+          "locator": null,
+          "shortQuote": "凡課得旬日之奇發用，或入傳，為三奇課。",
+          "verifiedBy": [
+            {
+              "reviewer": "C00 catalog first-pass scan audit",
+              "date": "2026-07-28"
+            },
+            {
+              "reviewer": "c00_kejing_recheck (Codex)",
+              "date": "2026-07-28"
+            }
+          ]
+        },
+        {
+          "sourceId": "dlr.source.daquan-transcription-aa7bc942",
+          "referenceKind": "locator",
+          "volume": null,
+          "scanLeaf": null,
+          "printedLeaf": null,
+          "pdfPage": null,
+          "imageLabel": null,
+          "locator": "docs/六壬大全/007巻七 课经集（一）.md:L1321",
+          "shortQuote": "三奇课",
+          "verifiedBy": []
+        }
+      ],
+      "variantGroupId": null,
+      "adoptedVariantId": null,
+      "fixtureIds": [],
+      "targetCapabilityId": "daliuren.kejing.013",
+      "targetCodeDomain": "lib/domain/services/daliuren/kejing/",
+      "notes": [
+        "B 级只覆盖目录身份、起始影印页与本条短引；typed 条件、重叠关系、优先级和正反 fixture 仍待后续批准。",
+        "printed leaf 未建立独立映射，继续保持 null。"
+      ]
+    },
+    {
+      "ruleId": "dlr.rule.kejing.014",
+      "family": "kejing",
+      "subfamily": "kejingCatalog",
+      "ordinal": 14,
+      "traditionalName": "六仪课",
+      "adoptedStatus": "adopted",
+      "conditionsSummary": "本条只冻结六十四课经目录身份；typed 命中条件须由影印正文和独立正反例另行批准。",
+      "prioritySummary": "同规则族内的优先关系尚未由影印页冻结；不得按目录顺序推断执行优先级。",
+      "interpretation": "主底本题名、起始影印页与短引已完成独立二审；本条不批准完整充分必要条件或执行优先级。",
+      "evidenceLevel": "B",
+      "locatorOnly": false,
+      "executableApproved": false,
+      "sourceRefs": [
+        {
+          "sourceId": "dlr.source.siku-liuren-daquan",
+          "referenceKind": "scan",
+          "volume": "卷四至五",
+          "scanLeaf": 170,
+          "printedLeaf": null,
+          "pdfPage": 170,
+          "imageLabel": null,
+          "locator": null,
+          "shortQuote": "凡課的旬首之儀發用，或入傳，為六儀課。",
+          "verifiedBy": [
+            {
+              "reviewer": "C00 catalog first-pass scan audit",
+              "date": "2026-07-28"
+            },
+            {
+              "reviewer": "c00_kejing_recheck (Codex)",
+              "date": "2026-07-28"
+            }
+          ]
+        },
+        {
+          "sourceId": "dlr.source.daquan-transcription-aa7bc942",
+          "referenceKind": "locator",
+          "volume": null,
+          "scanLeaf": null,
+          "printedLeaf": null,
+          "pdfPage": null,
+          "imageLabel": null,
+          "locator": "docs/六壬大全/007巻七 课经集（一）.md:L1413",
+          "shortQuote": "六仪课",
+          "verifiedBy": []
+        }
+      ],
+      "variantGroupId": null,
+      "adoptedVariantId": null,
+      "fixtureIds": [],
+      "targetCapabilityId": "daliuren.kejing.014",
+      "targetCodeDomain": "lib/domain/services/daliuren/kejing/",
+      "notes": [
+        "B 级只覆盖目录身份、起始影印页与本条短引；typed 条件、重叠关系、优先级和正反 fixture 仍待后续批准。",
+        "printed leaf 未建立独立映射，继续保持 null。"
+      ]
+    },
+    {
+      "ruleId": "dlr.rule.kejing.015",
+      "family": "kejing",
+      "subfamily": "kejingCatalog",
+      "ordinal": 15,
+      "traditionalName": "时泰课",
+      "adoptedStatus": "adopted",
+      "conditionsSummary": "本条只冻结六十四课经目录身份；typed 命中条件须由影印正文和独立正反例另行批准。",
+      "prioritySummary": "同规则族内的优先关系尚未由影印页冻结；不得按目录顺序推断执行优先级。",
+      "interpretation": "主底本题名、起始影印页与短引已完成独立二审；本条不批准完整充分必要条件或执行优先级。",
+      "evidenceLevel": "B",
+      "locatorOnly": false,
+      "executableApproved": false,
+      "sourceRefs": [
+        {
+          "sourceId": "dlr.source.siku-liuren-daquan",
+          "referenceKind": "scan",
+          "volume": "卷四至五",
+          "scanLeaf": 176,
+          "printedLeaf": null,
+          "pdfPage": 176,
+          "imageLabel": null,
+          "locator": null,
+          "shortQuote": "凡課用起太歲月建，乘青龍六合，又帶財德之神，為時泰課。",
+          "verifiedBy": [
+            {
+              "reviewer": "C00 catalog first-pass scan audit",
+              "date": "2026-07-28"
+            },
+            {
+              "reviewer": "c00_kejing_recheck (Codex)",
+              "date": "2026-07-28"
+            }
+          ]
+        },
+        {
+          "sourceId": "dlr.source.daquan-transcription-aa7bc942",
+          "referenceKind": "locator",
+          "volume": null,
+          "scanLeaf": null,
+          "printedLeaf": null,
+          "pdfPage": null,
+          "imageLabel": null,
+          "locator": "docs/六壬大全/007巻七 课经集（一）.md:L1493",
+          "shortQuote": "时泰课",
+          "verifiedBy": []
+        }
+      ],
+      "variantGroupId": null,
+      "adoptedVariantId": null,
+      "fixtureIds": [],
+      "targetCapabilityId": "daliuren.kejing.015",
+      "targetCodeDomain": "lib/domain/services/daliuren/kejing/",
+      "notes": [
+        "B 级只覆盖目录身份、起始影印页与本条短引；typed 条件、重叠关系、优先级和正反 fixture 仍待后续批准。",
+        "printed leaf 未建立独立映射，继续保持 null。"
+      ]
+    },
+    {
+      "ruleId": "dlr.rule.kejing.016",
+      "family": "kejing",
+      "subfamily": "kejingCatalog",
+      "ordinal": 16,
+      "traditionalName": "龙德课",
+      "adoptedStatus": "adopted",
+      "conditionsSummary": "本条只冻结六十四课经目录身份；typed 命中条件须由影印正文和独立正反例另行批准。",
+      "prioritySummary": "同规则族内的优先关系尚未由影印页冻结；不得按目录顺序推断执行优先级。",
+      "interpretation": "主底本题名、起始影印页与短引已完成独立二审；本条不批准完整充分必要条件或执行优先级。",
+      "evidenceLevel": "B",
+      "locatorOnly": false,
+      "executableApproved": false,
+      "sourceRefs": [
+        {
+          "sourceId": "dlr.source.siku-liuren-daquan",
+          "referenceKind": "scan",
+          "volume": "卷四至五",
+          "scanLeaf": 179,
+          "printedLeaf": null,
+          "pdfPage": 179,
+          "imageLabel": null,
+          "locator": null,
+          "shortQuote": "凡太歲月將乘貴人發用，為龍德課。",
+          "verifiedBy": [
+            {
+              "reviewer": "C00 catalog first-pass scan audit",
+              "date": "2026-07-28"
+            },
+            {
+              "reviewer": "c00_kejing_recheck (Codex)",
+              "date": "2026-07-28"
+            }
+          ]
+        },
+        {
+          "sourceId": "dlr.source.daquan-transcription-aa7bc942",
+          "referenceKind": "locator",
+          "volume": null,
+          "scanLeaf": null,
+          "printedLeaf": null,
+          "pdfPage": null,
+          "imageLabel": null,
+          "locator": "docs/六壬大全/007巻七 课经集（一）.md:L1531",
+          "shortQuote": "龙德课",
+          "verifiedBy": []
+        }
+      ],
+      "variantGroupId": null,
+      "adoptedVariantId": null,
+      "fixtureIds": [],
+      "targetCapabilityId": "daliuren.kejing.016",
+      "targetCodeDomain": "lib/domain/services/daliuren/kejing/",
+      "notes": [
+        "B 级只覆盖目录身份、起始影印页与本条短引；typed 条件、重叠关系、优先级和正反 fixture 仍待后续批准。",
+        "printed leaf 未建立独立映射，继续保持 null。"
+      ]
+    },
+    {
+      "ruleId": "dlr.rule.kejing.017",
+      "family": "kejing",
+      "subfamily": "kejingCatalog",
+      "ordinal": 17,
+      "traditionalName": "官爵课",
+      "adoptedStatus": "adopted",
+      "conditionsSummary": "本条只冻结六十四课经目录身份；typed 命中条件须由影印正文和独立正反例另行批准。",
+      "prioritySummary": "同规则族内的优先关系尚未由影印页冻结；不得按目录顺序推断执行优先级。",
+      "interpretation": "主底本题名、起始影印页与短引已完成独立二审；本条不批准完整充分必要条件或执行优先级。",
+      "evidenceLevel": "B",
+      "locatorOnly": false,
+      "executableApproved": false,
+      "sourceRefs": [
+        {
+          "sourceId": "dlr.source.siku-liuren-daquan",
+          "referenceKind": "scan",
+          "volume": "卷六",
+          "scanLeaf": 3,
+          "printedLeaf": null,
+          "pdfPage": 3,
+          "imageLabel": null,
+          "locator": null,
+          "shortQuote": "凡課得歲月年命驛馬發用，又天魁太常入傳，為官爵課。",
+          "verifiedBy": [
+            {
+              "reviewer": "C00 catalog first-pass scan audit",
+              "date": "2026-07-28"
+            },
+            {
+              "reviewer": "c00_kejing_recheck (Codex)",
+              "date": "2026-07-28"
+            }
+          ]
+        },
+        {
+          "sourceId": "dlr.source.daquan-transcription-aa7bc942",
+          "referenceKind": "locator",
+          "volume": null,
+          "scanLeaf": null,
+          "printedLeaf": null,
+          "pdfPage": null,
+          "imageLabel": null,
+          "locator": "docs/六壬大全/008巻八 课经集（二）.md:L3",
+          "shortQuote": "官爵课",
+          "verifiedBy": []
+        }
+      ],
+      "variantGroupId": null,
+      "adoptedVariantId": null,
+      "fixtureIds": [],
+      "targetCapabilityId": "daliuren.kejing.017",
+      "targetCodeDomain": "lib/domain/services/daliuren/kejing/",
+      "notes": [
+        "B 级只覆盖目录身份、起始影印页与本条短引；typed 条件、重叠关系、优先级和正反 fixture 仍待后续批准。",
+        "printed leaf 未建立独立映射，继续保持 null。"
+      ]
+    },
+    {
+      "ruleId": "dlr.rule.kejing.018",
+      "family": "kejing",
+      "subfamily": "kejingCatalog",
+      "ordinal": 18,
+      "traditionalName": "富贵课",
+      "adoptedStatus": "adopted",
+      "conditionsSummary": "本条只冻结六十四课经目录身份；typed 命中条件须由影印正文和独立正反例另行批准。",
+      "prioritySummary": "同规则族内的优先关系尚未由影印页冻结；不得按目录顺序推断执行优先级。",
+      "interpretation": "主底本题名、起始影印页与短引已完成独立二审；本条不批准完整充分必要条件或执行优先级。",
+      "evidenceLevel": "B",
+      "locatorOnly": false,
+      "executableApproved": false,
+      "sourceRefs": [
+        {
+          "sourceId": "dlr.source.siku-liuren-daquan",
+          "referenceKind": "scan",
+          "volume": "卷六",
+          "scanLeaf": 9,
+          "printedLeaf": null,
+          "pdfPage": 9,
+          "imageLabel": null,
+          "locator": null,
+          "shortQuote": "凡課得天乙乘旺相氣，上下相生，更臨日辰年命發用，為富貴課。",
+          "verifiedBy": [
+            {
+              "reviewer": "C00 catalog first-pass scan audit",
+              "date": "2026-07-28"
+            },
+            {
+              "reviewer": "c00_kejing_recheck (Codex)",
+              "date": "2026-07-28"
+            }
+          ]
+        },
+        {
+          "sourceId": "dlr.source.daquan-transcription-aa7bc942",
+          "referenceKind": "locator",
+          "volume": null,
+          "scanLeaf": null,
+          "printedLeaf": null,
+          "pdfPage": null,
+          "imageLabel": null,
+          "locator": "docs/六壬大全/008巻八 课经集（二）.md:L83",
+          "shortQuote": "富贵课",
+          "verifiedBy": []
+        }
+      ],
+      "variantGroupId": null,
+      "adoptedVariantId": null,
+      "fixtureIds": [],
+      "targetCapabilityId": "daliuren.kejing.018",
+      "targetCodeDomain": "lib/domain/services/daliuren/kejing/",
+      "notes": [
+        "B 级只覆盖目录身份、起始影印页与本条短引；typed 条件、重叠关系、优先级和正反 fixture 仍待后续批准。",
+        "printed leaf 未建立独立映射，继续保持 null。"
+      ]
+    },
+    {
+      "ruleId": "dlr.rule.kejing.019",
+      "family": "kejing",
+      "subfamily": "kejingCatalog",
+      "ordinal": 19,
+      "traditionalName": "轩盖课",
+      "adoptedStatus": "adopted",
+      "conditionsSummary": "本条只冻结六十四课经目录身份；typed 命中条件须由影印正文和独立正反例另行批准。",
+      "prioritySummary": "同规则族内的优先关系尚未由影印页冻结；不得按目录顺序推断执行优先级。",
+      "interpretation": "主底本题名、起始影印页与短引已完成独立二审；本条不批准完整充分必要条件或执行优先级。",
+      "evidenceLevel": "B",
+      "locatorOnly": false,
+      "executableApproved": false,
+      "sourceRefs": [
+        {
+          "sourceId": "dlr.source.siku-liuren-daquan",
+          "referenceKind": "scan",
+          "volume": "卷六",
+          "scanLeaf": 16,
+          "printedLeaf": null,
+          "pdfPage": 16,
+          "imageLabel": null,
+          "locator": null,
+          "shortQuote": "凡課的勝光為用，遇太沖神后，為軒蓋課。",
+          "verifiedBy": [
+            {
+              "reviewer": "C00 catalog first-pass scan audit",
+              "date": "2026-07-28"
+            },
+            {
+              "reviewer": "c00_kejing_recheck (Codex)",
+              "date": "2026-07-28"
+            }
+          ]
+        },
+        {
+          "sourceId": "dlr.source.daquan-transcription-aa7bc942",
+          "referenceKind": "locator",
+          "volume": null,
+          "scanLeaf": null,
+          "printedLeaf": null,
+          "pdfPage": null,
+          "imageLabel": null,
+          "locator": "docs/六壬大全/008巻八 课经集（二）.md:L143",
+          "shortQuote": "轩盖课",
+          "verifiedBy": []
+        }
+      ],
+      "variantGroupId": null,
+      "adoptedVariantId": null,
+      "fixtureIds": [],
+      "targetCapabilityId": "daliuren.kejing.019",
+      "targetCodeDomain": "lib/domain/services/daliuren/kejing/",
+      "notes": [
+        "B 级只覆盖目录身份、起始影印页与本条短引；typed 条件、重叠关系、优先级和正反 fixture 仍待后续批准。",
+        "printed leaf 未建立独立映射，继续保持 null。"
+      ]
+    },
+    {
+      "ruleId": "dlr.rule.kejing.020",
+      "family": "kejing",
+      "subfamily": "kejingCatalog",
+      "ordinal": 20,
+      "traditionalName": "铸印课",
+      "adoptedStatus": "adopted",
+      "conditionsSummary": "本条只冻结六十四课经目录身份；typed 命中条件须由影印正文和独立正反例另行批准。",
+      "prioritySummary": "同规则族内的优先关系尚未由影印页冻结；不得按目录顺序推断执行优先级。",
+      "interpretation": "主底本题名、起始影印页与短引已完成独立二审；本条不批准完整充分必要条件或执行优先级。",
+      "evidenceLevel": "B",
+      "locatorOnly": false,
+      "executableApproved": false,
+      "sourceRefs": [
+        {
+          "sourceId": "dlr.source.siku-liuren-daquan",
+          "referenceKind": "scan",
+          "volume": "卷六",
+          "scanLeaf": 21,
+          "printedLeaf": null,
+          "pdfPage": 21,
+          "imageLabel": null,
+          "locator": null,
+          "shortQuote": "凡課得戌加巳，申傳，為鑄印課。",
+          "verifiedBy": [
+            {
+              "reviewer": "C00 catalog first-pass scan audit",
+              "date": "2026-07-28"
+            },
+            {
+              "reviewer": "c00_kejing_recheck (Codex)",
+              "date": "2026-07-28"
+            }
+          ]
+        },
+        {
+          "sourceId": "dlr.source.daquan-transcription-aa7bc942",
+          "referenceKind": "locator",
+          "volume": null,
+          "scanLeaf": null,
+          "printedLeaf": null,
+          "pdfPage": null,
+          "imageLabel": null,
+          "locator": "docs/六壬大全/008巻八 课经集（二）.md:L197",
+          "shortQuote": "铸印课",
+          "verifiedBy": []
+        }
+      ],
+      "variantGroupId": null,
+      "adoptedVariantId": null,
+      "fixtureIds": [],
+      "targetCapabilityId": "daliuren.kejing.020",
+      "targetCodeDomain": "lib/domain/services/daliuren/kejing/",
+      "notes": [
+        "B 级只覆盖目录身份、起始影印页与本条短引；typed 条件、重叠关系、优先级和正反 fixture 仍待后续批准。",
+        "printed leaf 未建立独立映射，继续保持 null。"
+      ]
+    },
+    {
+      "ruleId": "dlr.rule.kejing.021",
+      "family": "kejing",
+      "subfamily": "kejingCatalog",
+      "ordinal": 21,
+      "traditionalName": "斫轮课",
+      "adoptedStatus": "adopted",
+      "conditionsSummary": "本条只冻结六十四课经目录身份；typed 命中条件须由影印正文和独立正反例另行批准。",
+      "prioritySummary": "同规则族内的优先关系尚未由影印页冻结；不得按目录顺序推断执行优先级。",
+      "interpretation": "主底本题名、起始影印页与短引已完成独立二审；本条不批准完整充分必要条件或执行优先级。",
+      "evidenceLevel": "B",
+      "locatorOnly": false,
+      "executableApproved": false,
+      "sourceRefs": [
+        {
+          "sourceId": "dlr.source.siku-liuren-daquan",
+          "referenceKind": "scan",
+          "volume": "卷六",
+          "scanLeaf": 27,
+          "printedLeaf": null,
+          "pdfPage": 27,
+          "imageLabel": null,
+          "locator": null,
+          "shortQuote": "凡課卯加庚或加辛為用，曰斫輪課。",
+          "verifiedBy": [
+            {
+              "reviewer": "C00 catalog first-pass scan audit",
+              "date": "2026-07-28"
+            },
+            {
+              "reviewer": "c00_kejing_recheck (Codex)",
+              "date": "2026-07-28"
+            }
+          ]
+        },
+        {
+          "sourceId": "dlr.source.daquan-transcription-aa7bc942",
+          "referenceKind": "locator",
+          "volume": null,
+          "scanLeaf": null,
+          "printedLeaf": null,
+          "pdfPage": null,
+          "imageLabel": null,
+          "locator": "docs/六壬大全/008巻八 课经集（二）.md:L257",
+          "shortQuote": "斫轮课",
+          "verifiedBy": []
+        }
+      ],
+      "variantGroupId": null,
+      "adoptedVariantId": null,
+      "fixtureIds": [],
+      "targetCapabilityId": "daliuren.kejing.021",
+      "targetCodeDomain": "lib/domain/services/daliuren/kejing/",
+      "notes": [
+        "B 级只覆盖目录身份、起始影印页与本条短引；typed 条件、重叠关系、优先级和正反 fixture 仍待后续批准。",
+        "printed leaf 未建立独立映射，继续保持 null。"
+      ]
+    },
+    {
+      "ruleId": "dlr.rule.kejing.022",
+      "family": "kejing",
+      "subfamily": "kejingCatalog",
+      "ordinal": 22,
+      "traditionalName": "引从课",
+      "adoptedStatus": "adopted",
+      "conditionsSummary": "本条只冻结六十四课经目录身份；typed 命中条件须由影印正文和独立正反例另行批准。",
+      "prioritySummary": "同规则族内的优先关系尚未由影印页冻结；不得按目录顺序推断执行优先级。",
+      "interpretation": "主底本题名、起始影印页与短引已完成独立二审；本条不批准完整充分必要条件或执行优先级。",
+      "evidenceLevel": "B",
+      "locatorOnly": false,
+      "executableApproved": false,
+      "sourceRefs": [
+        {
+          "sourceId": "dlr.source.siku-liuren-daquan",
+          "referenceKind": "scan",
+          "volume": "卷六",
+          "scanLeaf": 35,
+          "printedLeaf": null,
+          "pdfPage": 35,
+          "imageLabel": null,
+          "locator": null,
+          "shortQuote": "凡課日辰干支前後上神發用為初末傳，曰引從課。",
+          "verifiedBy": [
+            {
+              "reviewer": "C00 catalog first-pass scan audit",
+              "date": "2026-07-28"
+            },
+            {
+              "reviewer": "c00_kejing_recheck (Codex)",
+              "date": "2026-07-28"
+            }
+          ]
+        },
+        {
+          "sourceId": "dlr.source.daquan-transcription-aa7bc942",
+          "referenceKind": "locator",
+          "volume": null,
+          "scanLeaf": null,
+          "printedLeaf": null,
+          "pdfPage": null,
+          "imageLabel": null,
+          "locator": "docs/六壬大全/008巻八 课经集（二）.md:L321",
+          "shortQuote": "引从课",
+          "verifiedBy": []
+        }
+      ],
+      "variantGroupId": null,
+      "adoptedVariantId": null,
+      "fixtureIds": [],
+      "targetCapabilityId": "daliuren.kejing.022",
+      "targetCodeDomain": "lib/domain/services/daliuren/kejing/",
+      "notes": [
+        "B 级只覆盖目录身份、起始影印页与本条短引；typed 条件、重叠关系、优先级和正反 fixture 仍待后续批准。",
+        "printed leaf 未建立独立映射，继续保持 null。"
+      ]
+    },
+    {
+      "ruleId": "dlr.rule.kejing.023",
+      "family": "kejing",
+      "subfamily": "kejingCatalog",
+      "ordinal": 23,
+      "traditionalName": "亨通课",
+      "adoptedStatus": "adopted",
+      "conditionsSummary": "本条只冻结六十四课经目录身份；typed 命中条件须由影印正文和独立正反例另行批准。",
+      "prioritySummary": "同规则族内的优先关系尚未由影印页冻结；不得按目录顺序推断执行优先级。",
+      "interpretation": "主底本题名、起始影印页与短引已完成独立二审；本条不批准完整充分必要条件或执行优先级。",
+      "evidenceLevel": "B",
+      "locatorOnly": false,
+      "executableApproved": false,
+      "sourceRefs": [
+        {
+          "sourceId": "dlr.source.siku-liuren-daquan",
+          "referenceKind": "scan",
+          "volume": "卷六",
+          "scanLeaf": 38,
+          "printedLeaf": null,
+          "pdfPage": 38,
+          "imageLabel": null,
+          "locator": null,
+          "shortQuote": "凡課用神生日，及三傳遞生日干，或干支俱互生旺，為亨通課。",
+          "verifiedBy": [
+            {
+              "reviewer": "C00 catalog first-pass scan audit",
+              "date": "2026-07-28"
+            },
+            {
+              "reviewer": "c00_kejing_recheck (Codex)",
+              "date": "2026-07-28"
+            }
+          ]
+        },
+        {
+          "sourceId": "dlr.source.daquan-transcription-aa7bc942",
+          "referenceKind": "locator",
+          "volume": null,
+          "scanLeaf": null,
+          "printedLeaf": null,
+          "pdfPage": null,
+          "imageLabel": null,
+          "locator": "docs/六壬大全/008巻八 课经集（二）.md:L355",
+          "shortQuote": "亨通课",
+          "verifiedBy": []
+        }
+      ],
+      "variantGroupId": null,
+      "adoptedVariantId": null,
+      "fixtureIds": [],
+      "targetCapabilityId": "daliuren.kejing.023",
+      "targetCodeDomain": "lib/domain/services/daliuren/kejing/",
+      "notes": [
+        "B 级只覆盖目录身份、起始影印页与本条短引；typed 条件、重叠关系、优先级和正反 fixture 仍待后续批准。",
+        "printed leaf 未建立独立映射，继续保持 null。"
+      ]
+    },
+    {
+      "ruleId": "dlr.rule.kejing.024",
+      "family": "kejing",
+      "subfamily": "kejingCatalog",
+      "ordinal": 24,
+      "traditionalName": "繁昌课",
+      "adoptedStatus": "adopted",
+      "conditionsSummary": "本条只冻结六十四课经目录身份；typed 命中条件须由影印正文和独立正反例另行批准。",
+      "prioritySummary": "同规则族内的优先关系尚未由影印页冻结；不得按目录顺序推断执行优先级。",
+      "interpretation": "主底本题名、起始影印页与短引已完成独立二审；本条不批准完整充分必要条件或执行优先级。",
+      "evidenceLevel": "B",
+      "locatorOnly": false,
+      "executableApproved": false,
+      "sourceRefs": [
+        {
+          "sourceId": "dlr.source.siku-liuren-daquan",
+          "referenceKind": "scan",
+          "volume": "卷六",
+          "scanLeaf": 43,
+          "printedLeaf": null,
+          "pdfPage": 43,
+          "imageLabel": null,
+          "locator": null,
+          "shortQuote": "凡夫妻年立德方發用，為繁昌課。",
+          "verifiedBy": [
+            {
+              "reviewer": "C00 catalog first-pass scan audit",
+              "date": "2026-07-28"
+            },
+            {
+              "reviewer": "c00_kejing_recheck (Codex)",
+              "date": "2026-07-28"
+            }
+          ]
+        },
+        {
+          "sourceId": "dlr.source.daquan-transcription-aa7bc942",
+          "referenceKind": "locator",
+          "volume": null,
+          "scanLeaf": null,
+          "printedLeaf": null,
+          "pdfPage": null,
+          "imageLabel": null,
+          "locator": "docs/六壬大全/008巻八 课经集（二）.md:L389",
+          "shortQuote": "繁昌课",
+          "verifiedBy": []
+        }
+      ],
+      "variantGroupId": null,
+      "adoptedVariantId": null,
+      "fixtureIds": [],
+      "targetCapabilityId": "daliuren.kejing.024",
+      "targetCodeDomain": "lib/domain/services/daliuren/kejing/",
+      "notes": [
+        "B 级只覆盖目录身份、起始影印页与本条短引；typed 条件、重叠关系、优先级和正反 fixture 仍待后续批准。",
+        "printed leaf 未建立独立映射，继续保持 null。"
+      ]
+    },
+    {
+      "ruleId": "dlr.rule.kejing.025",
+      "family": "kejing",
+      "subfamily": "kejingCatalog",
+      "ordinal": 25,
+      "traditionalName": "荣华课",
+      "adoptedStatus": "adopted",
+      "conditionsSummary": "本条只冻结六十四课经目录身份；typed 命中条件须由影印正文和独立正反例另行批准。",
+      "prioritySummary": "同规则族内的优先关系尚未由影印页冻结；不得按目录顺序推断执行优先级。",
+      "interpretation": "主底本题名、起始影印页与短引已完成独立二审；本条不批准完整充分必要条件或执行优先级。",
+      "evidenceLevel": "B",
+      "locatorOnly": false,
+      "executableApproved": false,
+      "sourceRefs": [
+        {
+          "sourceId": "dlr.source.siku-liuren-daquan",
+          "referenceKind": "scan",
+          "volume": "卷六",
+          "scanLeaf": 53,
+          "printedLeaf": null,
+          "pdfPage": 53,
+          "imageLabel": null,
+          "locator": null,
+          "shortQuote": "凡祿馬貴人臨干支年命，併旺相氣發用入傳，更乘吉將，為榮華課。",
+          "verifiedBy": [
+            {
+              "reviewer": "C00 catalog first-pass scan audit",
+              "date": "2026-07-28"
+            },
+            {
+              "reviewer": "c00_kejing_recheck (Codex)",
+              "date": "2026-07-28"
+            }
+          ]
+        },
+        {
+          "sourceId": "dlr.source.daquan-transcription-aa7bc942",
+          "referenceKind": "locator",
+          "volume": null,
+          "scanLeaf": null,
+          "printedLeaf": null,
+          "pdfPage": null,
+          "imageLabel": null,
+          "locator": "docs/六壬大全/008巻八 课经集（二）.md:L499",
+          "shortQuote": "荣华课",
+          "verifiedBy": []
+        }
+      ],
+      "variantGroupId": null,
+      "adoptedVariantId": null,
+      "fixtureIds": [],
+      "targetCapabilityId": "daliuren.kejing.025",
+      "targetCodeDomain": "lib/domain/services/daliuren/kejing/",
+      "notes": [
+        "B 级只覆盖目录身份、起始影印页与本条短引；typed 条件、重叠关系、优先级和正反 fixture 仍待后续批准。",
+        "printed leaf 未建立独立映射，继续保持 null。"
+      ]
+    },
+    {
+      "ruleId": "dlr.rule.kejing.026",
+      "family": "kejing",
+      "subfamily": "kejingCatalog",
+      "ordinal": 26,
+      "traditionalName": "德庆课",
+      "adoptedStatus": "adopted",
+      "conditionsSummary": "本条只冻结六十四课经目录身份；typed 命中条件须由影印正文和独立正反例另行批准。",
+      "prioritySummary": "同规则族内的优先关系尚未由影印页冻结；不得按目录顺序推断执行优先级。",
+      "interpretation": "主底本题名、起始影印页与短引已完成独立二审；本条不批准完整充分必要条件或执行优先级。",
+      "evidenceLevel": "B",
+      "locatorOnly": false,
+      "executableApproved": false,
+      "sourceRefs": [
+        {
+          "sourceId": "dlr.source.siku-liuren-daquan",
+          "referenceKind": "scan",
+          "volume": "卷六",
+          "scanLeaf": 59,
+          "printedLeaf": null,
+          "pdfPage": 59,
+          "imageLabel": null,
+          "locator": null,
+          "shortQuote": "凡課日辰干支德神及天月二德發用，併在年命乘吉將，為德慶課。",
+          "verifiedBy": [
+            {
+              "reviewer": "C00 catalog first-pass scan audit",
+              "date": "2026-07-28"
+            },
+            {
+              "reviewer": "c00_kejing_recheck (Codex)",
+              "date": "2026-07-28"
+            }
+          ]
+        },
+        {
+          "sourceId": "dlr.source.daquan-transcription-aa7bc942",
+          "referenceKind": "locator",
+          "volume": null,
+          "scanLeaf": null,
+          "printedLeaf": null,
+          "pdfPage": null,
+          "imageLabel": null,
+          "locator": "docs/六壬大全/008巻八 课经集（二）.md:L555",
+          "shortQuote": "德庆课",
+          "verifiedBy": []
+        }
+      ],
+      "variantGroupId": null,
+      "adoptedVariantId": null,
+      "fixtureIds": [],
+      "targetCapabilityId": "daliuren.kejing.026",
+      "targetCodeDomain": "lib/domain/services/daliuren/kejing/",
+      "notes": [
+        "B 级只覆盖目录身份、起始影印页与本条短引；typed 条件、重叠关系、优先级和正反 fixture 仍待后续批准。",
+        "printed leaf 未建立独立映射，继续保持 null。"
+      ]
+    },
+    {
+      "ruleId": "dlr.rule.kejing.027",
+      "family": "kejing",
+      "subfamily": "kejingCatalog",
+      "ordinal": 27,
+      "traditionalName": "合欢课",
+      "adoptedStatus": "adopted",
+      "conditionsSummary": "本条只冻结六十四课经目录身份；typed 命中条件须由影印正文和独立正反例另行批准。",
+      "prioritySummary": "同规则族内的优先关系尚未由影印页冻结；不得按目录顺序推断执行优先级。",
+      "interpretation": "主底本题名、起始影印页与短引已完成独立二审；本条不批准完整充分必要条件或执行优先级。",
+      "evidenceLevel": "B",
+      "locatorOnly": false,
+      "executableApproved": false,
+      "sourceRefs": [
+        {
+          "sourceId": "dlr.source.siku-liuren-daquan",
+          "referenceKind": "scan",
+          "volume": "卷六",
+          "scanLeaf": 62,
+          "printedLeaf": null,
+          "pdfPage": 62,
+          "imageLabel": null,
+          "locator": null,
+          "shortQuote": "凡課日辰遇天干作合，及支三合六合發用，併占人年命俱乘吉將，為合歡課。",
+          "verifiedBy": [
+            {
+              "reviewer": "C00 catalog first-pass scan audit",
+              "date": "2026-07-28"
+            },
+            {
+              "reviewer": "c00_kejing_recheck (Codex)",
+              "date": "2026-07-28"
+            }
+          ]
+        },
+        {
+          "sourceId": "dlr.source.daquan-transcription-aa7bc942",
+          "referenceKind": "locator",
+          "volume": null,
+          "scanLeaf": null,
+          "printedLeaf": null,
+          "pdfPage": null,
+          "imageLabel": null,
+          "locator": "docs/六壬大全/008巻八 课经集（二）.md:L585",
+          "shortQuote": "合欢课",
+          "verifiedBy": []
+        }
+      ],
+      "variantGroupId": null,
+      "adoptedVariantId": null,
+      "fixtureIds": [],
+      "targetCapabilityId": "daliuren.kejing.027",
+      "targetCodeDomain": "lib/domain/services/daliuren/kejing/",
+      "notes": [
+        "B 级只覆盖目录身份、起始影印页与本条短引；typed 条件、重叠关系、优先级和正反 fixture 仍待后续批准。",
+        "printed leaf 未建立独立映射，继续保持 null。"
+      ]
+    },
+    {
+      "ruleId": "dlr.rule.kejing.028",
+      "family": "kejing",
+      "subfamily": "kejingCatalog",
+      "ordinal": 28,
+      "traditionalName": "和美课",
+      "adoptedStatus": "adopted",
+      "conditionsSummary": "本条只冻结六十四课经目录身份；typed 命中条件须由影印正文和独立正反例另行批准。",
+      "prioritySummary": "同规则族内的优先关系尚未由影印页冻结；不得按目录顺序推断执行优先级。",
+      "interpretation": "主底本题名、起始影印页与短引已完成独立二审；本条不批准完整充分必要条件或执行优先级。",
+      "evidenceLevel": "B",
+      "locatorOnly": false,
+      "executableApproved": false,
+      "sourceRefs": [
+        {
+          "sourceId": "dlr.source.siku-liuren-daquan",
+          "referenceKind": "scan",
+          "volume": "卷六",
+          "scanLeaf": 68,
+          "printedLeaf": null,
+          "pdfPage": 68,
+          "imageLabel": null,
+          "locator": null,
+          "shortQuote": "凡課干支遇三合六合，上下遞互相合，取為和美課。",
+          "verifiedBy": [
+            {
+              "reviewer": "C00 catalog first-pass scan audit",
+              "date": "2026-07-28"
+            },
+            {
+              "reviewer": "c00_kejing_recheck (Codex)",
+              "date": "2026-07-28"
+            }
+          ]
+        },
+        {
+          "sourceId": "dlr.source.daquan-transcription-aa7bc942",
+          "referenceKind": "locator",
+          "volume": null,
+          "scanLeaf": null,
+          "printedLeaf": null,
+          "pdfPage": null,
+          "imageLabel": null,
+          "locator": "docs/六壬大全/008巻八 课经集（二）.md:L619",
+          "shortQuote": "和美课",
+          "verifiedBy": []
+        }
+      ],
+      "variantGroupId": null,
+      "adoptedVariantId": null,
+      "fixtureIds": [],
+      "targetCapabilityId": "daliuren.kejing.028",
+      "targetCodeDomain": "lib/domain/services/daliuren/kejing/",
+      "notes": [
+        "B 级只覆盖目录身份、起始影印页与本条短引；typed 条件、重叠关系、优先级和正反 fixture 仍待后续批准。",
+        "printed leaf 未建立独立映射，继续保持 null。"
+      ]
+    },
+    {
+      "ruleId": "dlr.rule.kejing.029",
+      "family": "kejing",
+      "subfamily": "kejingCatalog",
+      "ordinal": 29,
+      "traditionalName": "斩关课",
+      "adoptedStatus": "adopted",
+      "conditionsSummary": "本条只冻结六十四课经目录身份；typed 命中条件须由影印正文和独立正反例另行批准。",
+      "prioritySummary": "同规则族内的优先关系尚未由影印页冻结；不得按目录顺序推断执行优先级。",
+      "interpretation": "主底本题名、起始影印页与短引已完成独立二审；本条不批准完整充分必要条件或执行优先级。",
+      "evidenceLevel": "B",
+      "locatorOnly": false,
+      "executableApproved": false,
+      "sourceRefs": [
+        {
+          "sourceId": "dlr.source.siku-liuren-daquan",
+          "referenceKind": "scan",
+          "volume": "卷六",
+          "scanLeaf": 73,
+          "printedLeaf": null,
+          "pdfPage": 73,
+          "imageLabel": null,
+          "locator": null,
+          "shortQuote": "凡卦魁罡加日辰發用，為斬關課。",
+          "verifiedBy": [
+            {
+              "reviewer": "C00 catalog first-pass scan audit",
+              "date": "2026-07-28"
+            },
+            {
+              "reviewer": "c00_kejing_recheck (Codex)",
+              "date": "2026-07-28"
+            }
+          ]
+        },
+        {
+          "sourceId": "dlr.source.daquan-transcription-aa7bc942",
+          "referenceKind": "locator",
+          "volume": null,
+          "scanLeaf": null,
+          "printedLeaf": null,
+          "pdfPage": null,
+          "imageLabel": null,
+          "locator": "docs/六壬大全/008巻八 课经集（二）.md:L647",
+          "shortQuote": "斩关课",
+          "verifiedBy": []
+        }
+      ],
+      "variantGroupId": null,
+      "adoptedVariantId": null,
+      "fixtureIds": [
+        "dlr.case.zhinan.renyin-guimao-liu-tuizhai"
+      ],
+      "targetCapabilityId": "daliuren.kejing.029",
+      "targetCodeDomain": "lib/domain/services/daliuren/kejing/",
+      "notes": [
+        "B 级只覆盖目录身份、起始影印页与本条短引；typed 条件、重叠关系、优先级和正反 fixture 仍待后续批准。",
+        "printed leaf 未建立独立映射，继续保持 null。"
+      ]
+    },
+    {
+      "ruleId": "dlr.rule.kejing.030",
+      "family": "kejing",
+      "subfamily": "kejingCatalog",
+      "ordinal": 30,
+      "traditionalName": "闭口课",
+      "adoptedStatus": "adopted",
+      "conditionsSummary": "本条只冻结六十四课经目录身份；typed 命中条件须由影印正文和独立正反例另行批准。",
+      "prioritySummary": "同规则族内的优先关系尚未由影印页冻结；不得按目录顺序推断执行优先级。",
+      "interpretation": "主底本题名、起始影印页与短引已完成独立二审；本条不批准完整充分必要条件或执行优先级。",
+      "evidenceLevel": "B",
+      "locatorOnly": false,
+      "executableApproved": false,
+      "sourceRefs": [
+        {
+          "sourceId": "dlr.source.siku-liuren-daquan",
+          "referenceKind": "scan",
+          "volume": "卷六",
+          "scanLeaf": 85,
+          "printedLeaf": null,
+          "pdfPage": 85,
+          "imageLabel": null,
+          "locator": null,
+          "shortQuote": "凡旬尾加旬首，或旬首乘玄武，或旬首位上神乘玄武發用者，為閉口課。",
+          "verifiedBy": [
+            {
+              "reviewer": "C00 catalog first-pass scan audit",
+              "date": "2026-07-28"
+            },
+            {
+              "reviewer": "c00_kejing_recheck (Codex)",
+              "date": "2026-07-28"
+            }
+          ]
+        },
+        {
+          "sourceId": "dlr.source.daquan-transcription-aa7bc942",
+          "referenceKind": "locator",
+          "volume": null,
+          "scanLeaf": null,
+          "printedLeaf": null,
+          "pdfPage": null,
+          "imageLabel": null,
+          "locator": "docs/六壬大全/008巻八 课经集（二）.md:L739",
+          "shortQuote": "闭口课",
+          "verifiedBy": []
+        }
+      ],
+      "variantGroupId": null,
+      "adoptedVariantId": null,
+      "fixtureIds": [],
+      "targetCapabilityId": "daliuren.kejing.030",
+      "targetCodeDomain": "lib/domain/services/daliuren/kejing/",
+      "notes": [
+        "B 级只覆盖目录身份、起始影印页与本条短引；typed 条件、重叠关系、优先级和正反 fixture 仍待后续批准。",
+        "printed leaf 未建立独立映射，继续保持 null。"
+      ]
+    },
+    {
+      "ruleId": "dlr.rule.kejing.031",
+      "family": "kejing",
+      "subfamily": "kejingCatalog",
+      "ordinal": 31,
+      "traditionalName": "游子课",
+      "adoptedStatus": "adopted",
+      "conditionsSummary": "本条只冻结六十四课经目录身份；typed 命中条件须由影印正文和独立正反例另行批准。",
+      "prioritySummary": "同规则族内的优先关系尚未由影印页冻结；不得按目录顺序推断执行优先级。",
+      "interpretation": "主底本题名、起始影印页与短引已完成独立二审；本条不批准完整充分必要条件或执行优先级。",
+      "evidenceLevel": "B",
+      "locatorOnly": false,
+      "executableApproved": false,
+      "sourceRefs": [
+        {
+          "sourceId": "dlr.source.siku-liuren-daquan",
+          "referenceKind": "scan",
+          "volume": "卷六",
+          "scanLeaf": 105,
+          "printedLeaf": null,
+          "pdfPage": 105,
+          "imageLabel": null,
+          "locator": null,
+          "shortQuote": "凡課三傳皆土，遇旬丁天馬為用，曰游子課。",
+          "verifiedBy": [
+            {
+              "reviewer": "C00 catalog first-pass scan audit",
+              "date": "2026-07-28"
+            },
+            {
+              "reviewer": "c00_kejing_recheck (Codex)",
+              "date": "2026-07-28"
+            }
+          ]
+        },
+        {
+          "sourceId": "dlr.source.daquan-transcription-aa7bc942",
+          "referenceKind": "locator",
+          "volume": null,
+          "scanLeaf": null,
+          "printedLeaf": null,
+          "pdfPage": null,
+          "imageLabel": null,
+          "locator": "docs/六壬大全/009巻九 课经集（三）.md:L3",
+          "shortQuote": "游子课",
+          "verifiedBy": []
+        }
+      ],
+      "variantGroupId": null,
+      "adoptedVariantId": null,
+      "fixtureIds": [],
+      "targetCapabilityId": "daliuren.kejing.031",
+      "targetCodeDomain": "lib/domain/services/daliuren/kejing/",
+      "notes": [
+        "B 级只覆盖目录身份、起始影印页与本条短引；typed 条件、重叠关系、优先级和正反 fixture 仍待后续批准。",
+        "printed leaf 未建立独立映射，继续保持 null。"
+      ]
+    },
+    {
+      "ruleId": "dlr.rule.kejing.032",
+      "family": "kejing",
+      "subfamily": "kejingCatalog",
+      "ordinal": 32,
+      "traditionalName": "三交课",
+      "adoptedStatus": "adopted",
+      "conditionsSummary": "本条只冻结六十四课经目录身份；typed 命中条件须由影印正文和独立正反例另行批准。",
+      "prioritySummary": "同规则族内的优先关系尚未由影印页冻结；不得按目录顺序推断执行优先级。",
+      "interpretation": "主底本题名、起始影印页与短引已完成独立二审；本条不批准完整充分必要条件或执行优先级。",
+      "evidenceLevel": "B",
+      "locatorOnly": false,
+      "executableApproved": false,
+      "sourceRefs": [
+        {
+          "sourceId": "dlr.source.siku-liuren-daquan",
+          "referenceKind": "scan",
+          "volume": "卷六",
+          "scanLeaf": 113,
+          "printedLeaf": null,
+          "pdfPage": 113,
+          "imageLabel": null,
+          "locator": null,
+          "shortQuote": "凡四仲日占，四仲加日辰，三傳皆仲，皆逢陰合，為三交課。",
+          "verifiedBy": [
+            {
+              "reviewer": "C00 catalog first-pass scan audit",
+              "date": "2026-07-28"
+            },
+            {
+              "reviewer": "c00_kejing_recheck (Codex)",
+              "date": "2026-07-28"
+            }
+          ]
+        },
+        {
+          "sourceId": "dlr.source.daquan-transcription-aa7bc942",
+          "referenceKind": "locator",
+          "volume": null,
+          "scanLeaf": null,
+          "printedLeaf": null,
+          "pdfPage": null,
+          "imageLabel": null,
+          "locator": "docs/六壬大全/009巻九 课经集（三）.md:L71",
+          "shortQuote": "三交课",
+          "verifiedBy": []
+        }
+      ],
+      "variantGroupId": null,
+      "adoptedVariantId": null,
+      "fixtureIds": [],
+      "targetCapabilityId": "daliuren.kejing.032",
+      "targetCodeDomain": "lib/domain/services/daliuren/kejing/",
+      "notes": [
+        "B 级只覆盖目录身份、起始影印页与本条短引；typed 条件、重叠关系、优先级和正反 fixture 仍待后续批准。",
+        "printed leaf 未建立独立映射，继续保持 null。"
+      ]
+    },
+    {
+      "ruleId": "dlr.rule.kejing.033",
+      "family": "kejing",
+      "subfamily": "kejingCatalog",
+      "ordinal": 33,
+      "traditionalName": "赘婿课",
+      "adoptedStatus": "adopted",
+      "conditionsSummary": "本条只冻结六十四课经目录身份；typed 命中条件须由影印正文和独立正反例另行批准。",
+      "prioritySummary": "同规则族内的优先关系尚未由影印页冻结；不得按目录顺序推断执行优先级。",
+      "interpretation": "主底本题名、起始影印页与短引已完成独立二审；本条不批准完整充分必要条件或执行优先级。",
+      "evidenceLevel": "B",
+      "locatorOnly": false,
+      "executableApproved": false,
+      "sourceRefs": [
+        {
+          "sourceId": "dlr.source.siku-liuren-daquan",
+          "referenceKind": "scan",
+          "volume": "卷六",
+          "scanLeaf": 132,
+          "printedLeaf": null,
+          "pdfPage": 132,
+          "imageLabel": null,
+          "locator": null,
+          "shortQuote": "凡課日干剋辰，又自加臨為用，曰贅婿課。",
+          "verifiedBy": [
+            {
+              "reviewer": "C00 catalog first-pass scan audit",
+              "date": "2026-07-28"
+            },
+            {
+              "reviewer": "c00_kejing_recheck (Codex)",
+              "date": "2026-07-28"
+            }
+          ]
+        },
+        {
+          "sourceId": "dlr.source.daquan-transcription-aa7bc942",
+          "referenceKind": "locator",
+          "volume": null,
+          "scanLeaf": null,
+          "printedLeaf": null,
+          "pdfPage": null,
+          "imageLabel": null,
+          "locator": "docs/六壬大全/009巻九 课经集（三）.md:L215",
+          "shortQuote": "赘婿课",
+          "verifiedBy": []
+        }
+      ],
+      "variantGroupId": null,
+      "adoptedVariantId": null,
+      "fixtureIds": [],
+      "targetCapabilityId": "daliuren.kejing.033",
+      "targetCodeDomain": "lib/domain/services/daliuren/kejing/",
+      "notes": [
+        "B 级只覆盖目录身份、起始影印页与本条短引；typed 条件、重叠关系、优先级和正反 fixture 仍待后续批准。",
+        "printed leaf 未建立独立映射，继续保持 null。"
+      ]
+    },
+    {
+      "ruleId": "dlr.rule.kejing.034",
+      "family": "kejing",
+      "subfamily": "kejingCatalog",
+      "ordinal": 34,
+      "traditionalName": "冲破课",
+      "adoptedStatus": "adopted",
+      "conditionsSummary": "本条只冻结六十四课经目录身份；typed 命中条件须由影印正文和独立正反例另行批准。",
+      "prioritySummary": "同规则族内的优先关系尚未由影印页冻结；不得按目录顺序推断执行优先级。",
+      "interpretation": "主底本题名、起始影印页与短引已完成独立二审；本条不批准完整充分必要条件或执行优先级。",
+      "evidenceLevel": "B",
+      "locatorOnly": false,
+      "executableApproved": false,
+      "sourceRefs": [
+        {
+          "sourceId": "dlr.source.siku-liuren-daquan",
+          "referenceKind": "scan",
+          "volume": "卷六",
+          "scanLeaf": 140,
+          "printedLeaf": null,
+          "pdfPage": 140,
+          "imageLabel": null,
+          "locator": null,
+          "shortQuote": "凡課日辰之沖神加破為用，曰沖破課。",
+          "verifiedBy": [
+            {
+              "reviewer": "C00 catalog first-pass scan audit",
+              "date": "2026-07-28"
+            },
+            {
+              "reviewer": "c00_kejing_recheck (Codex)",
+              "date": "2026-07-28"
+            }
+          ]
+        },
+        {
+          "sourceId": "dlr.source.daquan-transcription-aa7bc942",
+          "referenceKind": "locator",
+          "volume": null,
+          "scanLeaf": null,
+          "printedLeaf": null,
+          "pdfPage": null,
+          "imageLabel": null,
+          "locator": "docs/六壬大全/009巻九 课经集（三）.md:L303",
+          "shortQuote": "冲破课",
+          "verifiedBy": []
+        }
+      ],
+      "variantGroupId": null,
+      "adoptedVariantId": null,
+      "fixtureIds": [],
+      "targetCapabilityId": "daliuren.kejing.034",
+      "targetCodeDomain": "lib/domain/services/daliuren/kejing/",
+      "notes": [
+        "B 级只覆盖目录身份、起始影印页与本条短引；typed 条件、重叠关系、优先级和正反 fixture 仍待后续批准。",
+        "printed leaf 未建立独立映射，继续保持 null。"
+      ]
+    },
+    {
+      "ruleId": "dlr.rule.kejing.035",
+      "family": "kejing",
+      "subfamily": "kejingCatalog",
+      "ordinal": 35,
+      "traditionalName": "淫泆课",
+      "adoptedStatus": "adopted",
+      "conditionsSummary": "本条只冻结六十四课经目录身份；typed 命中条件须由影印正文和独立正反例另行批准。",
+      "prioritySummary": "同规则族内的优先关系尚未由影印页冻结；不得按目录顺序推断执行优先级。",
+      "interpretation": "主底本题名、起始影印页与短引已完成独立二审；本条不批准完整充分必要条件或执行优先级。",
+      "evidenceLevel": "B",
+      "locatorOnly": false,
+      "executableApproved": false,
+      "sourceRefs": [
+        {
+          "sourceId": "dlr.source.siku-liuren-daquan",
+          "referenceKind": "scan",
+          "volume": "卷六",
+          "scanLeaf": 146,
+          "printedLeaf": null,
+          "pdfPage": 146,
+          "imageLabel": null,
+          "locator": null,
+          "shortQuote": "凡課初傳卯酉為用，將乘后合，為淫泆課。",
+          "verifiedBy": [
+            {
+              "reviewer": "C00 catalog first-pass scan audit",
+              "date": "2026-07-28"
+            },
+            {
+              "reviewer": "c00_kejing_recheck (Codex)",
+              "date": "2026-07-28"
+            }
+          ]
+        },
+        {
+          "sourceId": "dlr.source.daquan-transcription-aa7bc942",
+          "referenceKind": "locator",
+          "volume": null,
+          "scanLeaf": null,
+          "printedLeaf": null,
+          "pdfPage": null,
+          "imageLabel": null,
+          "locator": "docs/六壬大全/009巻九 课经集（三）.md:L339",
+          "shortQuote": "淫泆课",
+          "verifiedBy": []
+        }
+      ],
+      "variantGroupId": null,
+      "adoptedVariantId": null,
+      "fixtureIds": [],
+      "targetCapabilityId": "daliuren.kejing.035",
+      "targetCodeDomain": "lib/domain/services/daliuren/kejing/",
+      "notes": [
+        "B 级只覆盖目录身份、起始影印页与本条短引；typed 条件、重叠关系、优先级和正反 fixture 仍待后续批准。",
+        "printed leaf 未建立独立映射，继续保持 null。"
+      ]
+    },
+    {
+      "ruleId": "dlr.rule.kejing.036",
+      "family": "kejing",
+      "subfamily": "kejingCatalog",
+      "ordinal": 36,
+      "traditionalName": "无淫课",
+      "adoptedStatus": "adopted",
+      "conditionsSummary": "本条只冻结六十四课经目录身份；typed 命中条件须由影印正文和独立正反例另行批准。",
+      "prioritySummary": "同规则族内的优先关系尚未由影印页冻结；不得按目录顺序推断执行优先级。",
+      "interpretation": "主底本题名、起始影印页与短引已完成独立二审；本条不批准完整充分必要条件或执行优先级。",
+      "evidenceLevel": "B",
+      "locatorOnly": false,
+      "executableApproved": false,
+      "sourceRefs": [
+        {
+          "sourceId": "dlr.source.siku-liuren-daquan",
+          "referenceKind": "scan",
+          "volume": "卷七",
+          "scanLeaf": 3,
+          "printedLeaf": null,
+          "pdfPage": 3,
+          "imageLabel": null,
+          "locator": null,
+          "shortQuote": "凡四課有尅缺一為不備，及日辰交互相尅，為無淫課。",
+          "verifiedBy": [
+            {
+              "reviewer": "C00 catalog first-pass scan audit",
+              "date": "2026-07-28"
+            },
+            {
+              "reviewer": "c00_kejing_recheck (Codex)",
+              "date": "2026-07-28"
+            }
+          ]
+        },
+        {
+          "sourceId": "dlr.source.daquan-transcription-aa7bc942",
+          "referenceKind": "locator",
+          "volume": null,
+          "scanLeaf": null,
+          "printedLeaf": null,
+          "pdfPage": null,
+          "imageLabel": null,
+          "locator": "docs/六壬大全/009巻九 课经集（三）.md:L419",
+          "shortQuote": "芜淫课",
+          "verifiedBy": []
+        }
+      ],
+      "variantGroupId": null,
+      "adoptedVariantId": null,
+      "fixtureIds": [],
+      "targetCapabilityId": "daliuren.kejing.036",
+      "targetCodeDomain": "lib/domain/services/daliuren/kejing/",
+      "notes": [
+        "主底本题名为“無淫課”；固定转录“芜淫课”仅登记为异文，不作为 adopted 目录名。",
+        "B 级只覆盖目录身份、起始影印页与本条短引；typed 条件、重叠关系、优先级和正反 fixture 仍待后续批准。",
+        "printed leaf 未建立独立映射，继续保持 null。"
+      ]
+    },
+    {
+      "ruleId": "dlr.rule.kejing.037",
+      "family": "kejing",
+      "subfamily": "kejingCatalog",
+      "ordinal": 37,
+      "traditionalName": "解离课",
+      "adoptedStatus": "adopted",
+      "conditionsSummary": "本条只冻结六十四课经目录身份；typed 命中条件须由影印正文和独立正反例另行批准。",
+      "prioritySummary": "同规则族内的优先关系尚未由影印页冻结；不得按目录顺序推断执行优先级。",
+      "interpretation": "主底本题名、起始影印页与短引已完成独立二审；本条不批准完整充分必要条件或执行优先级。",
+      "evidenceLevel": "B",
+      "locatorOnly": false,
+      "executableApproved": false,
+      "sourceRefs": [
+        {
+          "sourceId": "dlr.source.siku-liuren-daquan",
+          "referenceKind": "scan",
+          "volume": "卷七",
+          "scanLeaf": 12,
+          "printedLeaf": null,
+          "pdfPage": 12,
+          "imageLabel": null,
+          "locator": null,
+          "shortQuote": "凡夫妻行年沖克，及上下神互相克賊，為解離格。",
+          "verifiedBy": [
+            {
+              "reviewer": "C00 catalog first-pass scan audit",
+              "date": "2026-07-28"
+            },
+            {
+              "reviewer": "c00_kejing_recheck (Codex)",
+              "date": "2026-07-28"
+            }
+          ]
+        },
+        {
+          "sourceId": "dlr.source.daquan-transcription-aa7bc942",
+          "referenceKind": "locator",
+          "volume": null,
+          "scanLeaf": null,
+          "printedLeaf": null,
+          "pdfPage": null,
+          "imageLabel": null,
+          "locator": "docs/六壬大全/009巻九 课经集（三）.md:L559",
+          "shortQuote": "解离课",
+          "verifiedBy": []
+        }
+      ],
+      "variantGroupId": null,
+      "adoptedVariantId": null,
+      "fixtureIds": [],
+      "targetCapabilityId": "daliuren.kejing.037",
+      "targetCodeDomain": "lib/domain/services/daliuren/kejing/",
+      "notes": [
+        "主底本题名后缀作“解離格”；规范目录统一使用“解离课”。",
+        "B 级只覆盖目录身份、起始影印页与本条短引；typed 条件、重叠关系、优先级和正反 fixture 仍待后续批准。",
+        "printed leaf 未建立独立映射，继续保持 null。"
+      ]
+    },
+    {
+      "ruleId": "dlr.rule.kejing.038",
+      "family": "kejing",
+      "subfamily": "kejingCatalog",
+      "ordinal": 38,
+      "traditionalName": "度厄课",
+      "adoptedStatus": "adopted",
+      "conditionsSummary": "本条只冻结六十四课经目录身份；typed 命中条件须由影印正文和独立正反例另行批准。",
+      "prioritySummary": "同规则族内的优先关系尚未由影印页冻结；不得按目录顺序推断执行优先级。",
+      "interpretation": "主底本题名、起始影印页与短引已完成独立二审；本条不批准完整充分必要条件或执行优先级。",
+      "evidenceLevel": "B",
+      "locatorOnly": false,
+      "executableApproved": false,
+      "sourceRefs": [
+        {
+          "sourceId": "dlr.source.siku-liuren-daquan",
+          "referenceKind": "scan",
+          "volume": "卷七",
+          "scanLeaf": 28,
+          "printedLeaf": null,
+          "pdfPage": 28,
+          "imageLabel": null,
+          "locator": null,
+          "shortQuote": "度厄：三上克下曰幼度厄，三下賊上曰長度厄。",
+          "verifiedBy": [
+            {
+              "reviewer": "C00 catalog first-pass scan audit",
+              "date": "2026-07-28"
+            },
+            {
+              "reviewer": "c00_kejing_recheck (Codex)",
+              "date": "2026-07-28"
+            }
+          ]
+        },
+        {
+          "sourceId": "dlr.source.daquan-transcription-aa7bc942",
+          "referenceKind": "locator",
+          "volume": null,
+          "scanLeaf": null,
+          "printedLeaf": null,
+          "pdfPage": null,
+          "imageLabel": null,
+          "locator": "docs/六壬大全/009巻九 课经集（三）.md:L725",
+          "shortQuote": "度厄课",
+          "verifiedBy": []
+        }
+      ],
+      "variantGroupId": null,
+      "adoptedVariantId": null,
+      "fixtureIds": [],
+      "targetCapabilityId": "daliuren.kejing.038",
+      "targetCodeDomain": "lib/domain/services/daliuren/kejing/",
+      "notes": [
+        "B 级只覆盖目录身份、起始影印页与本条短引；typed 条件、重叠关系、优先级和正反 fixture 仍待后续批准。",
+        "printed leaf 未建立独立映射，继续保持 null。"
+      ]
+    },
+    {
+      "ruleId": "dlr.rule.kejing.039",
+      "family": "kejing",
+      "subfamily": "kejingCatalog",
+      "ordinal": 39,
+      "traditionalName": "无禄绝嗣课",
+      "adoptedStatus": "adopted",
+      "conditionsSummary": "本条只冻结六十四课经目录身份；typed 命中条件须由影印正文和独立正反例另行批准。",
+      "prioritySummary": "同规则族内的优先关系尚未由影印页冻结；不得按目录顺序推断执行优先级。",
+      "interpretation": "主底本题名、起始影印页与短引已完成独立二审；本条不批准完整充分必要条件或执行优先级。",
+      "evidenceLevel": "B",
+      "locatorOnly": false,
+      "executableApproved": false,
+      "sourceRefs": [
+        {
+          "sourceId": "dlr.source.siku-liuren-daquan",
+          "referenceKind": "scan",
+          "volume": "卷七",
+          "scanLeaf": 31,
+          "printedLeaf": null,
+          "pdfPage": 31,
+          "imageLabel": null,
+          "locator": null,
+          "shortQuote": "凡課四上俱克下，為無祿課。",
+          "verifiedBy": [
+            {
+              "reviewer": "C00 catalog first-pass scan audit",
+              "date": "2026-07-28"
+            },
+            {
+              "reviewer": "c00_kejing_recheck (Codex)",
+              "date": "2026-07-28"
+            }
+          ]
+        },
+        {
+          "sourceId": "dlr.source.daquan-transcription-aa7bc942",
+          "referenceKind": "locator",
+          "volume": null,
+          "scanLeaf": null,
+          "printedLeaf": null,
+          "pdfPage": null,
+          "imageLabel": null,
+          "locator": "docs/六壬大全/009巻九 课经集（三）.md:L815",
+          "shortQuote": "无禄绝嗣课",
+          "verifiedBy": []
+        }
+      ],
+      "variantGroupId": null,
+      "adoptedVariantId": null,
+      "fixtureIds": [],
+      "targetCapabilityId": "daliuren.kejing.039",
+      "targetCodeDomain": "lib/domain/services/daliuren/kejing/",
+      "notes": [
+        "B 级只覆盖目录身份、起始影印页与本条短引；typed 条件、重叠关系、优先级和正反 fixture 仍待后续批准。",
+        "printed leaf 未建立独立映射，继续保持 null。"
+      ]
+    },
+    {
+      "ruleId": "dlr.rule.kejing.040",
+      "family": "kejing",
+      "subfamily": "kejingCatalog",
+      "ordinal": 40,
+      "traditionalName": "迍福课",
+      "adoptedStatus": "adopted",
+      "conditionsSummary": "本条只冻结六十四课经目录身份；typed 命中条件须由影印正文和独立正反例另行批准。",
+      "prioritySummary": "同规则族内的优先关系尚未由影印页冻结；不得按目录顺序推断执行优先级。",
+      "interpretation": "主底本题名、起始影印页与短引已完成独立二审；本条不批准完整充分必要条件或执行优先级。",
+      "evidenceLevel": "B",
+      "locatorOnly": false,
+      "executableApproved": false,
+      "sourceRefs": [
+        {
+          "sourceId": "dlr.source.siku-liuren-daquan",
+          "referenceKind": "scan",
+          "volume": "卷七",
+          "scanLeaf": 41,
+          "printedLeaf": null,
+          "pdfPage": 41,
+          "imageLabel": null,
+          "locator": null,
+          "shortQuote": "凡八迍課得五福，為迍福課。",
+          "verifiedBy": [
+            {
+              "reviewer": "C00 catalog first-pass scan audit",
+              "date": "2026-07-28"
+            },
+            {
+              "reviewer": "c00_kejing_recheck (Codex)",
+              "date": "2026-07-28"
+            }
+          ]
+        },
+        {
+          "sourceId": "dlr.source.daquan-transcription-aa7bc942",
+          "referenceKind": "locator",
+          "volume": null,
+          "scanLeaf": null,
+          "printedLeaf": null,
+          "pdfPage": null,
+          "imageLabel": null,
+          "locator": "docs/六壬大全/009巻九 课经集（三）.md:L951",
+          "shortQuote": "迍福课",
+          "verifiedBy": []
+        }
+      ],
+      "variantGroupId": null,
+      "adoptedVariantId": null,
+      "fixtureIds": [],
+      "targetCapabilityId": "daliuren.kejing.040",
+      "targetCodeDomain": "lib/domain/services/daliuren/kejing/",
+      "notes": [
+        "B 级只覆盖目录身份、起始影印页与本条短引；typed 条件、重叠关系、优先级和正反 fixture 仍待后续批准。",
+        "printed leaf 未建立独立映射，继续保持 null。"
+      ]
+    },
+    {
+      "ruleId": "dlr.rule.kejing.041",
+      "family": "kejing",
+      "subfamily": "kejingCatalog",
+      "ordinal": 41,
+      "traditionalName": "侵害课",
+      "adoptedStatus": "adopted",
+      "conditionsSummary": "本条只冻结六十四课经目录身份；typed 命中条件须由影印正文和独立正反例另行批准。",
+      "prioritySummary": "同规则族内的优先关系尚未由影印页冻结；不得按目录顺序推断执行优先级。",
+      "interpretation": "主底本题名、起始影印页与短引已完成独立二审；本条不批准完整充分必要条件或执行优先级。",
+      "evidenceLevel": "B",
+      "locatorOnly": false,
+      "executableApproved": false,
+      "sourceRefs": [
+        {
+          "sourceId": "dlr.source.siku-liuren-daquan",
+          "referenceKind": "scan",
+          "volume": "卷七",
+          "scanLeaf": 48,
+          "printedLeaf": null,
+          "pdfPage": 48,
+          "imageLabel": null,
+          "locator": null,
+          "shortQuote": "凡課日辰六害相加，並行年為用，為侵害課。",
+          "verifiedBy": [
+            {
+              "reviewer": "C00 catalog first-pass scan audit",
+              "date": "2026-07-28"
+            },
+            {
+              "reviewer": "c00_kejing_recheck (Codex)",
+              "date": "2026-07-28"
+            }
+          ]
+        },
+        {
+          "sourceId": "dlr.source.daquan-transcription-aa7bc942",
+          "referenceKind": "locator",
+          "volume": null,
+          "scanLeaf": null,
+          "printedLeaf": null,
+          "pdfPage": null,
+          "imageLabel": null,
+          "locator": "docs/六壬大全/009巻九 课经集（三）.md:L1003",
+          "shortQuote": "侵害课",
+          "verifiedBy": []
+        }
+      ],
+      "variantGroupId": null,
+      "adoptedVariantId": null,
+      "fixtureIds": [],
+      "targetCapabilityId": "daliuren.kejing.041",
+      "targetCodeDomain": "lib/domain/services/daliuren/kejing/",
+      "notes": [
+        "B 级只覆盖目录身份、起始影印页与本条短引；typed 条件、重叠关系、优先级和正反 fixture 仍待后续批准。",
+        "printed leaf 未建立独立映射，继续保持 null。"
+      ]
+    },
+    {
+      "ruleId": "dlr.rule.kejing.042",
+      "family": "kejing",
+      "subfamily": "kejingCatalog",
+      "ordinal": 42,
+      "traditionalName": "刑伤课",
+      "adoptedStatus": "adopted",
+      "conditionsSummary": "本条只冻结六十四课经目录身份；typed 命中条件须由影印正文和独立正反例另行批准。",
+      "prioritySummary": "同规则族内的优先关系尚未由影印页冻结；不得按目录顺序推断执行优先级。",
+      "interpretation": "主底本题名、起始影印页与短引已完成独立二审；本条不批准完整充分必要条件或执行优先级。",
+      "evidenceLevel": "B",
+      "locatorOnly": false,
+      "executableApproved": false,
+      "sourceRefs": [
+        {
+          "sourceId": "dlr.source.siku-liuren-daquan",
+          "referenceKind": "scan",
+          "volume": "卷七",
+          "scanLeaf": 51,
+          "printedLeaf": null,
+          "pdfPage": 51,
+          "imageLabel": null,
+          "locator": null,
+          "shortQuote": "凡課中三刑發用，併行年，為刑傷課。",
+          "verifiedBy": [
+            {
+              "reviewer": "C00 catalog first-pass scan audit",
+              "date": "2026-07-28"
+            },
+            {
+              "reviewer": "c00_kejing_recheck (Codex)",
+              "date": "2026-07-28"
+            }
+          ]
+        },
+        {
+          "sourceId": "dlr.source.daquan-transcription-aa7bc942",
+          "referenceKind": "locator",
+          "volume": null,
+          "scanLeaf": null,
+          "printedLeaf": null,
+          "pdfPage": null,
+          "imageLabel": null,
+          "locator": "docs/六壬大全/009巻九 课经集（三）.md:L1035",
+          "shortQuote": "刑伤课",
+          "verifiedBy": []
+        }
+      ],
+      "variantGroupId": null,
+      "adoptedVariantId": null,
+      "fixtureIds": [],
+      "targetCapabilityId": "daliuren.kejing.042",
+      "targetCodeDomain": "lib/domain/services/daliuren/kejing/",
+      "notes": [
+        "B 级只覆盖目录身份、起始影印页与本条短引；typed 条件、重叠关系、优先级和正反 fixture 仍待后续批准。",
+        "printed leaf 未建立独立映射，继续保持 null。"
+      ]
+    },
+    {
+      "ruleId": "dlr.rule.kejing.043",
+      "family": "kejing",
+      "subfamily": "kejingCatalog",
+      "ordinal": 43,
+      "traditionalName": "二烦课",
+      "adoptedStatus": "adopted",
+      "conditionsSummary": "本条只冻结六十四课经目录身份；typed 命中条件须由影印正文和独立正反例另行批准。",
+      "prioritySummary": "同规则族内的优先关系尚未由影印页冻结；不得按目录顺序推断执行优先级。",
+      "interpretation": "主底本题名、起始影印页与短引已完成独立二审；本条不批准完整充分必要条件或执行优先级。",
+      "evidenceLevel": "B",
+      "locatorOnly": false,
+      "executableApproved": false,
+      "sourceRefs": [
+        {
+          "sourceId": "dlr.source.siku-liuren-daquan",
+          "referenceKind": "scan",
+          "volume": "卷七",
+          "scanLeaf": 56,
+          "printedLeaf": null,
+          "pdfPage": 56,
+          "imageLabel": null,
+          "locator": null,
+          "shortQuote": "凡四仲月將遇四正及四平日占，得日月宿加四仲，斗罡繫五未，為二煩課。",
+          "verifiedBy": [
+            {
+              "reviewer": "C00 catalog first-pass scan audit",
+              "date": "2026-07-28"
+            },
+            {
+              "reviewer": "c00_kejing_recheck (Codex)",
+              "date": "2026-07-28"
+            }
+          ]
+        },
+        {
+          "sourceId": "dlr.source.daquan-transcription-aa7bc942",
+          "referenceKind": "locator",
+          "volume": null,
+          "scanLeaf": null,
+          "printedLeaf": null,
+          "pdfPage": null,
+          "imageLabel": null,
+          "locator": "docs/六壬大全/009巻九 课经集（三）.md:L1091",
+          "shortQuote": "二烦课",
+          "verifiedBy": []
+        }
+      ],
+      "variantGroupId": null,
+      "adoptedVariantId": null,
+      "fixtureIds": [],
+      "targetCapabilityId": "daliuren.kejing.043",
+      "targetCodeDomain": "lib/domain/services/daliuren/kejing/",
+      "notes": [
+        "B 级只覆盖目录身份、起始影印页与本条短引；typed 条件、重叠关系、优先级和正反 fixture 仍待后续批准。",
+        "printed leaf 未建立独立映射，继续保持 null。"
+      ]
+    },
+    {
+      "ruleId": "dlr.rule.kejing.044",
+      "family": "kejing",
+      "subfamily": "kejingCatalog",
+      "ordinal": 44,
+      "traditionalName": "天祸课",
+      "adoptedStatus": "adopted",
+      "conditionsSummary": "本条只冻结六十四课经目录身份；typed 命中条件须由影印正文和独立正反例另行批准。",
+      "prioritySummary": "同规则族内的优先关系尚未由影印页冻结；不得按目录顺序推断执行优先级。",
+      "interpretation": "主底本题名、起始影印页与短引已完成独立二审；本条不批准完整充分必要条件或执行优先级。",
+      "evidenceLevel": "B",
+      "locatorOnly": false,
+      "executableApproved": false,
+      "sourceRefs": [
+        {
+          "sourceId": "dlr.source.siku-liuren-daquan",
+          "referenceKind": "scan",
+          "volume": "卷七",
+          "scanLeaf": 76,
+          "printedLeaf": null,
+          "pdfPage": 76,
+          "imageLabel": null,
+          "locator": null,
+          "shortQuote": "凡四立日占，得今日干支臨昨日干支，或昨日干支臨今日干支，為天禍課。",
+          "verifiedBy": [
+            {
+              "reviewer": "C00 catalog first-pass scan audit",
+              "date": "2026-07-28"
+            },
+            {
+              "reviewer": "c00_kejing_recheck (Codex)",
+              "date": "2026-07-28"
+            }
+          ]
+        },
+        {
+          "sourceId": "dlr.source.daquan-transcription-aa7bc942",
+          "referenceKind": "locator",
+          "volume": null,
+          "scanLeaf": null,
+          "printedLeaf": null,
+          "pdfPage": null,
+          "imageLabel": null,
+          "locator": "docs/六壬大全/009巻九 课经集（三）.md:L1247",
+          "shortQuote": "天祸课",
+          "verifiedBy": []
+        }
+      ],
+      "variantGroupId": null,
+      "adoptedVariantId": null,
+      "fixtureIds": [],
+      "targetCapabilityId": "daliuren.kejing.044",
+      "targetCodeDomain": "lib/domain/services/daliuren/kejing/",
+      "notes": [
+        "B 级只覆盖目录身份、起始影印页与本条短引；typed 条件、重叠关系、优先级和正反 fixture 仍待后续批准。",
+        "printed leaf 未建立独立映射，继续保持 null。"
+      ]
+    },
+    {
+      "ruleId": "dlr.rule.kejing.045",
+      "family": "kejing",
+      "subfamily": "kejingCatalog",
+      "ordinal": 45,
+      "traditionalName": "天狱课",
+      "adoptedStatus": "adopted",
+      "conditionsSummary": "本条只冻结六十四课经目录身份；typed 命中条件须由影印正文和独立正反例另行批准。",
+      "prioritySummary": "同规则族内的优先关系尚未由影印页冻结；不得按目录顺序推断执行优先级。",
+      "interpretation": "主底本题名、起始影印页与短引已完成独立二审；本条不批准完整充分必要条件或执行优先级。",
+      "evidenceLevel": "B",
+      "locatorOnly": false,
+      "executableApproved": false,
+      "sourceRefs": [
+        {
+          "sourceId": "dlr.source.siku-liuren-daquan",
+          "referenceKind": "scan",
+          "volume": "卷七",
+          "scanLeaf": 85,
+          "printedLeaf": null,
+          "pdfPage": 85,
+          "imageLabel": null,
+          "locator": null,
+          "shortQuote": "凡課囚死墓神發用，斗係日本，為天獄卦。",
+          "verifiedBy": [
+            {
+              "reviewer": "C00 catalog first-pass scan audit",
+              "date": "2026-07-28"
+            },
+            {
+              "reviewer": "c00_kejing_recheck (Codex)",
+              "date": "2026-07-28"
+            }
+          ]
+        },
+        {
+          "sourceId": "dlr.source.daquan-transcription-aa7bc942",
+          "referenceKind": "locator",
+          "volume": null,
+          "scanLeaf": null,
+          "printedLeaf": null,
+          "pdfPage": null,
+          "imageLabel": null,
+          "locator": "docs/六壬大全/009巻九 课经集（三）.md:L1341",
+          "shortQuote": "天狱课",
+          "verifiedBy": []
+        }
+      ],
+      "variantGroupId": null,
+      "adoptedVariantId": null,
+      "fixtureIds": [],
+      "targetCapabilityId": "daliuren.kejing.045",
+      "targetCodeDomain": "lib/domain/services/daliuren/kejing/",
+      "notes": [
+        "主底本定义称“天獄卦”；规范目录统一使用“天狱课”。",
+        "B 级只覆盖目录身份、起始影印页与本条短引；typed 条件、重叠关系、优先级和正反 fixture 仍待后续批准。",
+        "printed leaf 未建立独立映射，继续保持 null。"
+      ]
+    },
+    {
+      "ruleId": "dlr.rule.kejing.046",
+      "family": "kejing",
+      "subfamily": "kejingCatalog",
+      "ordinal": 46,
+      "traditionalName": "天寇课",
+      "adoptedStatus": "adopted",
+      "conditionsSummary": "本条只冻结六十四课经目录身份；typed 命中条件须由影印正文和独立正反例另行批准。",
+      "prioritySummary": "同规则族内的优先关系尚未由影印页冻结；不得按目录顺序推断执行优先级。",
+      "interpretation": "主底本题名、起始影印页与短引已完成独立二审；本条不批准完整充分必要条件或执行优先级。",
+      "evidenceLevel": "B",
+      "locatorOnly": false,
+      "executableApproved": false,
+      "sourceRefs": [
+        {
+          "sourceId": "dlr.source.siku-liuren-daquan",
+          "referenceKind": "scan",
+          "volume": "卷七",
+          "scanLeaf": 94,
+          "printedLeaf": null,
+          "pdfPage": 94,
+          "imageLabel": null,
+          "locator": null,
+          "shortQuote": "凡四離日占，得月宿加離辰，為天寇課。",
+          "verifiedBy": [
+            {
+              "reviewer": "C00 catalog first-pass scan audit",
+              "date": "2026-07-28"
+            },
+            {
+              "reviewer": "c00_kejing_recheck (Codex)",
+              "date": "2026-07-28"
+            }
+          ]
+        },
+        {
+          "sourceId": "dlr.source.daquan-transcription-aa7bc942",
+          "referenceKind": "locator",
+          "volume": null,
+          "scanLeaf": null,
+          "printedLeaf": null,
+          "pdfPage": null,
+          "imageLabel": null,
+          "locator": "docs/六壬大全/009巻九 课经集（三）.md:L1443",
+          "shortQuote": "天寇课",
+          "verifiedBy": []
+        }
+      ],
+      "variantGroupId": null,
+      "adoptedVariantId": null,
+      "fixtureIds": [],
+      "targetCapabilityId": "daliuren.kejing.046",
+      "targetCodeDomain": "lib/domain/services/daliuren/kejing/",
+      "notes": [
+        "B 级只覆盖目录身份、起始影印页与本条短引；typed 条件、重叠关系、优先级和正反 fixture 仍待后续批准。",
+        "printed leaf 未建立独立映射，继续保持 null。"
+      ]
+    },
+    {
+      "ruleId": "dlr.rule.kejing.047",
+      "family": "kejing",
+      "subfamily": "kejingCatalog",
+      "ordinal": 47,
+      "traditionalName": "天网课",
+      "adoptedStatus": "adopted",
+      "conditionsSummary": "本条只冻结六十四课经目录身份；typed 命中条件须由影印正文和独立正反例另行批准。",
+      "prioritySummary": "同规则族内的优先关系尚未由影印页冻结；不得按目录顺序推断执行优先级。",
+      "interpretation": "主底本题名、起始影印页与短引已完成独立二审；本条不批准完整充分必要条件或执行优先级。",
+      "evidenceLevel": "B",
+      "locatorOnly": false,
+      "executableApproved": false,
+      "sourceRefs": [
+        {
+          "sourceId": "dlr.source.siku-liuren-daquan",
+          "referenceKind": "scan",
+          "volume": "卷七",
+          "scanLeaf": 101,
+          "printedLeaf": null,
+          "pdfPage": 101,
+          "imageLabel": null,
+          "locator": null,
+          "shortQuote": "凡課占時與用神同克日，為天網課。",
+          "verifiedBy": [
+            {
+              "reviewer": "C00 catalog first-pass scan audit",
+              "date": "2026-07-28"
+            },
+            {
+              "reviewer": "c00_kejing_recheck (Codex)",
+              "date": "2026-07-28"
+            }
+          ]
+        },
+        {
+          "sourceId": "dlr.source.daquan-transcription-aa7bc942",
+          "referenceKind": "locator",
+          "volume": null,
+          "scanLeaf": null,
+          "printedLeaf": null,
+          "pdfPage": null,
+          "imageLabel": null,
+          "locator": "docs/六壬大全/009巻九 课经集（三）.md:L1515",
+          "shortQuote": "天网课",
+          "verifiedBy": []
+        }
+      ],
+      "variantGroupId": null,
+      "adoptedVariantId": null,
+      "fixtureIds": [],
+      "targetCapabilityId": "daliuren.kejing.047",
+      "targetCodeDomain": "lib/domain/services/daliuren/kejing/",
+      "notes": [
+        "B 级只覆盖目录身份、起始影印页与本条短引；typed 条件、重叠关系、优先级和正反 fixture 仍待后续批准。",
+        "printed leaf 未建立独立映射，继续保持 null。"
+      ]
+    },
+    {
+      "ruleId": "dlr.rule.kejing.048",
+      "family": "kejing",
+      "subfamily": "kejingCatalog",
+      "ordinal": 48,
+      "traditionalName": "魄化课",
+      "adoptedStatus": "adopted",
+      "conditionsSummary": "本条只冻结六十四课经目录身份；typed 命中条件须由影印正文和独立正反例另行批准。",
+      "prioritySummary": "同规则族内的优先关系尚未由影印页冻结；不得按目录顺序推断执行优先级。",
+      "interpretation": "主底本题名、起始影印页与短引已完成独立二审；本条不批准完整充分必要条件或执行优先级。",
+      "evidenceLevel": "B",
+      "locatorOnly": false,
+      "executableApproved": false,
+      "sourceRefs": [
+        {
+          "sourceId": "dlr.source.siku-liuren-daquan",
+          "referenceKind": "scan",
+          "volume": "卷七",
+          "scanLeaf": 108,
+          "printedLeaf": null,
+          "pdfPage": 108,
+          "imageLabel": null,
+          "locator": null,
+          "shortQuote": "凡白虎帶死神死氣，臨日辰行年發用，為魄化課。",
+          "verifiedBy": [
+            {
+              "reviewer": "C00 catalog first-pass scan audit",
+              "date": "2026-07-28"
+            },
+            {
+              "reviewer": "c00_kejing_recheck (Codex)",
+              "date": "2026-07-28"
+            }
+          ]
+        },
+        {
+          "sourceId": "dlr.source.daquan-transcription-aa7bc942",
+          "referenceKind": "locator",
+          "volume": null,
+          "scanLeaf": null,
+          "printedLeaf": null,
+          "pdfPage": null,
+          "imageLabel": null,
+          "locator": "docs/六壬大全/009巻九 课经集（三）.md:L1607",
+          "shortQuote": "魄化课",
+          "verifiedBy": []
+        }
+      ],
+      "variantGroupId": null,
+      "adoptedVariantId": null,
+      "fixtureIds": [],
+      "targetCapabilityId": "daliuren.kejing.048",
+      "targetCodeDomain": "lib/domain/services/daliuren/kejing/",
+      "notes": [
+        "B 级只覆盖目录身份、起始影印页与本条短引；typed 条件、重叠关系、优先级和正反 fixture 仍待后续批准。",
+        "printed leaf 未建立独立映射，继续保持 null。"
+      ]
+    },
+    {
+      "ruleId": "dlr.rule.kejing.049",
+      "family": "kejing",
+      "subfamily": "kejingCatalog",
+      "ordinal": 49,
+      "traditionalName": "三阴课",
+      "adoptedStatus": "adopted",
+      "conditionsSummary": "本条只冻结六十四课经目录身份；typed 命中条件须由影印正文和独立正反例另行批准。",
+      "prioritySummary": "同规则族内的优先关系尚未由影印页冻结；不得按目录顺序推断执行优先级。",
+      "interpretation": "主底本题名、起始影印页与短引已完成独立二审；本条不批准完整充分必要条件或执行优先级。",
+      "evidenceLevel": "B",
+      "locatorOnly": false,
+      "executableApproved": false,
+      "sourceRefs": [
+        {
+          "sourceId": "dlr.source.siku-liuren-daquan",
+          "referenceKind": "scan",
+          "volume": "卷七",
+          "scanLeaf": 117,
+          "printedLeaf": null,
+          "pdfPage": 117,
+          "imageLabel": null,
+          "locator": null,
+          "shortQuote": "凡天乙逆行，日辰在後，用其凶死將乘玄虎，時克行年，為三陰卦。",
+          "verifiedBy": [
+            {
+              "reviewer": "C00 catalog first-pass scan audit",
+              "date": "2026-07-28"
+            },
+            {
+              "reviewer": "c00_kejing_recheck (Codex)",
+              "date": "2026-07-28"
+            }
+          ]
+        },
+        {
+          "sourceId": "dlr.source.daquan-transcription-aa7bc942",
+          "referenceKind": "locator",
+          "volume": null,
+          "scanLeaf": null,
+          "printedLeaf": null,
+          "pdfPage": null,
+          "imageLabel": null,
+          "locator": "docs/六壬大全/009巻九 课经集（三）.md:L1707",
+          "shortQuote": "三阴课",
+          "verifiedBy": []
+        }
+      ],
+      "variantGroupId": null,
+      "adoptedVariantId": null,
+      "fixtureIds": [],
+      "targetCapabilityId": "daliuren.kejing.049",
+      "targetCodeDomain": "lib/domain/services/daliuren/kejing/",
+      "notes": [
+        "主底本定义称“三陰卦”；规范目录统一使用“三阴课”。",
+        "B 级只覆盖目录身份、起始影印页与本条短引；typed 条件、重叠关系、优先级和正反 fixture 仍待后续批准。",
+        "printed leaf 未建立独立映射，继续保持 null。"
+      ]
+    },
+    {
+      "ruleId": "dlr.rule.kejing.050",
+      "family": "kejing",
+      "subfamily": "kejingCatalog",
+      "ordinal": 50,
+      "traditionalName": "龙战课",
+      "adoptedStatus": "adopted",
+      "conditionsSummary": "本条只冻结六十四课经目录身份；typed 命中条件须由影印正文和独立正反例另行批准。",
+      "prioritySummary": "同规则族内的优先关系尚未由影印页冻结；不得按目录顺序推断执行优先级。",
+      "interpretation": "主底本题名、起始影印页与短引已完成独立二审；本条不批准完整充分必要条件或执行优先级。",
+      "evidenceLevel": "B",
+      "locatorOnly": false,
+      "executableApproved": false,
+      "sourceRefs": [
+        {
+          "sourceId": "dlr.source.siku-liuren-daquan",
+          "referenceKind": "scan",
+          "volume": "卷七",
+          "scanLeaf": 122,
+          "printedLeaf": null,
+          "pdfPage": 122,
+          "imageLabel": null,
+          "locator": null,
+          "shortQuote": "凡卯酉日占，卯酉為用，人年立卯酉，為龍戰課。",
+          "verifiedBy": [
+            {
+              "reviewer": "C00 catalog first-pass scan audit",
+              "date": "2026-07-28"
+            },
+            {
+              "reviewer": "c00_kejing_recheck (Codex)",
+              "date": "2026-07-28"
+            }
+          ]
+        },
+        {
+          "sourceId": "dlr.source.daquan-transcription-aa7bc942",
+          "referenceKind": "locator",
+          "volume": null,
+          "scanLeaf": null,
+          "printedLeaf": null,
+          "pdfPage": null,
+          "imageLabel": null,
+          "locator": "docs/六壬大全/009巻九 课经集（三）.md:L1765",
+          "shortQuote": "龙战课",
+          "verifiedBy": []
+        }
+      ],
+      "variantGroupId": null,
+      "adoptedVariantId": null,
+      "fixtureIds": [],
+      "targetCapabilityId": "daliuren.kejing.050",
+      "targetCodeDomain": "lib/domain/services/daliuren/kejing/",
+      "notes": [
+        "B 级只覆盖目录身份、起始影印页与本条短引；typed 条件、重叠关系、优先级和正反 fixture 仍待后续批准。",
+        "printed leaf 未建立独立映射，继续保持 null。"
+      ]
+    },
+    {
+      "ruleId": "dlr.rule.kejing.051",
+      "family": "kejing",
+      "subfamily": "kejingCatalog",
+      "ordinal": 51,
+      "traditionalName": "死奇课",
+      "adoptedStatus": "adopted",
+      "conditionsSummary": "本条只冻结六十四课经目录身份；typed 命中条件须由影印正文和独立正反例另行批准。",
+      "prioritySummary": "同规则族内的优先关系尚未由影印页冻结；不得按目录顺序推断执行优先级。",
+      "interpretation": "主底本题名、起始影印页与短引已完成独立二审；本条不批准完整充分必要条件或执行优先级。",
+      "evidenceLevel": "B",
+      "locatorOnly": false,
+      "executableApproved": false,
+      "sourceRefs": [
+        {
+          "sourceId": "dlr.source.siku-liuren-daquan",
+          "referenceKind": "scan",
+          "volume": "卷七",
+          "scanLeaf": 131,
+          "printedLeaf": null,
+          "pdfPage": 131,
+          "imageLabel": null,
+          "locator": null,
+          "shortQuote": "凡干罡係日辰，陰陽發用，為死奇課。",
+          "verifiedBy": [
+            {
+              "reviewer": "C00 catalog first-pass scan audit",
+              "date": "2026-07-28"
+            },
+            {
+              "reviewer": "c00_kejing_recheck (Codex)",
+              "date": "2026-07-28"
+            }
+          ]
+        },
+        {
+          "sourceId": "dlr.source.daquan-transcription-aa7bc942",
+          "referenceKind": "locator",
+          "volume": null,
+          "scanLeaf": null,
+          "printedLeaf": null,
+          "pdfPage": null,
+          "imageLabel": null,
+          "locator": "docs/六壬大全/009巻九 课经集（三）.md:L1873",
+          "shortQuote": "死奇课",
+          "verifiedBy": []
+        }
+      ],
+      "variantGroupId": null,
+      "adoptedVariantId": null,
+      "fixtureIds": [],
+      "targetCapabilityId": "daliuren.kejing.051",
+      "targetCodeDomain": "lib/domain/services/daliuren/kejing/",
+      "notes": [
+        "B 级只覆盖目录身份、起始影印页与本条短引；typed 条件、重叠关系、优先级和正反 fixture 仍待后续批准。",
+        "printed leaf 未建立独立映射，继续保持 null。"
+      ]
+    },
+    {
+      "ruleId": "dlr.rule.kejing.052",
+      "family": "kejing",
+      "subfamily": "kejingCatalog",
+      "ordinal": 52,
+      "traditionalName": "灾厄课",
+      "adoptedStatus": "adopted",
+      "conditionsSummary": "本条只冻结六十四课经目录身份；typed 命中条件须由影印正文和独立正反例另行批准。",
+      "prioritySummary": "同规则族内的优先关系尚未由影印页冻结；不得按目录顺序推断执行优先级。",
+      "interpretation": "主底本题名、起始影印页与短引已完成独立二审；本条不批准完整充分必要条件或执行优先级。",
+      "evidenceLevel": "B",
+      "locatorOnly": false,
+      "executableApproved": false,
+      "sourceRefs": [
+        {
+          "sourceId": "dlr.source.siku-liuren-daquan",
+          "referenceKind": "scan",
+          "volume": "卷七",
+          "scanLeaf": 139,
+          "printedLeaf": null,
+          "pdfPage": 139,
+          "imageLabel": null,
+          "locator": null,
+          "shortQuote": "凡喪車、遊魂、伏殃、病符、喪吊、丘墓、歲虎發用者，為災厄課也。",
+          "verifiedBy": [
+            {
+              "reviewer": "C00 catalog first-pass scan audit",
+              "date": "2026-07-28"
+            },
+            {
+              "reviewer": "c00_kejing_recheck (Codex)",
+              "date": "2026-07-28"
+            }
+          ]
+        },
+        {
+          "sourceId": "dlr.source.daquan-transcription-aa7bc942",
+          "referenceKind": "locator",
+          "volume": null,
+          "scanLeaf": null,
+          "printedLeaf": null,
+          "pdfPage": null,
+          "imageLabel": null,
+          "locator": "docs/六壬大全/009巻九 课经集（三）.md:L1957",
+          "shortQuote": "灾厄课",
+          "verifiedBy": []
+        }
+      ],
+      "variantGroupId": null,
+      "adoptedVariantId": null,
+      "fixtureIds": [],
+      "targetCapabilityId": "daliuren.kejing.052",
+      "targetCodeDomain": "lib/domain/services/daliuren/kejing/",
+      "notes": [
+        "B 级只覆盖目录身份、起始影印页与本条短引；typed 条件、重叠关系、优先级和正反 fixture 仍待后续批准。",
+        "printed leaf 未建立独立映射，继续保持 null。"
+      ]
+    },
+    {
+      "ruleId": "dlr.rule.kejing.053",
+      "family": "kejing",
+      "subfamily": "kejingCatalog",
+      "ordinal": 53,
+      "traditionalName": "殃咎课",
+      "adoptedStatus": "adopted",
+      "conditionsSummary": "本条只冻结六十四课经目录身份；typed 命中条件须由影印正文和独立正反例另行批准。",
+      "prioritySummary": "同规则族内的优先关系尚未由影印页冻结；不得按目录顺序推断执行优先级。",
+      "interpretation": "主底本题名、起始影印页与短引已完成独立二审；本条不批准完整充分必要条件或执行优先级。",
+      "evidenceLevel": "B",
+      "locatorOnly": false,
+      "executableApproved": false,
+      "sourceRefs": [
+        {
+          "sourceId": "dlr.source.siku-liuren-daquan",
+          "referenceKind": "scan",
+          "volume": "卷八",
+          "scanLeaf": 3,
+          "printedLeaf": null,
+          "pdfPage": 3,
+          "imageLabel": null,
+          "locator": null,
+          "shortQuote": "凡三傳遞克日神，將克戰，或干支乘墓，為殃咎課。",
+          "verifiedBy": [
+            {
+              "reviewer": "C00 catalog first-pass scan audit",
+              "date": "2026-07-28"
+            },
+            {
+              "reviewer": "c00_kejing_recheck (Codex)",
+              "date": "2026-07-28"
+            }
+          ]
+        },
+        {
+          "sourceId": "dlr.source.daquan-transcription-aa7bc942",
+          "referenceKind": "locator",
+          "volume": null,
+          "scanLeaf": null,
+          "printedLeaf": null,
+          "pdfPage": null,
+          "imageLabel": null,
+          "locator": "docs/六壬大全/010巻十 课经集（四）.md:L3",
+          "shortQuote": "殃咎课",
+          "verifiedBy": []
+        }
+      ],
+      "variantGroupId": null,
+      "adoptedVariantId": null,
+      "fixtureIds": [],
+      "targetCapabilityId": "daliuren.kejing.053",
+      "targetCodeDomain": "lib/domain/services/daliuren/kejing/",
+      "notes": [
+        "B 级只覆盖目录身份、起始影印页与本条短引；typed 条件、重叠关系、优先级和正反 fixture 仍待后续批准。",
+        "printed leaf 未建立独立映射，继续保持 null。"
+      ]
+    },
+    {
+      "ruleId": "dlr.rule.kejing.054",
+      "family": "kejing",
+      "subfamily": "kejingCatalog",
+      "ordinal": 54,
+      "traditionalName": "九丑课",
+      "adoptedStatus": "adopted",
+      "conditionsSummary": "本条只冻结六十四课经目录身份；typed 命中条件须由影印正文和独立正反例另行批准。",
+      "prioritySummary": "同规则族内的优先关系尚未由影印页冻结；不得按目录顺序推断执行优先级。",
+      "interpretation": "主底本题名、起始影印页与短引已完成独立二审；本条不批准完整充分必要条件或执行优先级。",
+      "evidenceLevel": "B",
+      "locatorOnly": false,
+      "executableApproved": false,
+      "sourceRefs": [
+        {
+          "sourceId": "dlr.source.siku-liuren-daquan",
+          "referenceKind": "scan",
+          "volume": "卷八",
+          "scanLeaf": 9,
+          "printedLeaf": null,
+          "pdfPage": 9,
+          "imageLabel": null,
+          "locator": null,
+          "shortQuote": "凡戊子、戊午、壬子、壬午、乙卯、乙酉、己卯、己酉、辛卯、辛酉十日為九醜日。",
+          "verifiedBy": [
+            {
+              "reviewer": "C00 catalog first-pass scan audit",
+              "date": "2026-07-28"
+            },
+            {
+              "reviewer": "c00_kejing_recheck (Codex)",
+              "date": "2026-07-28"
+            }
+          ]
+        },
+        {
+          "sourceId": "dlr.source.daquan-transcription-aa7bc942",
+          "referenceKind": "locator",
+          "volume": null,
+          "scanLeaf": null,
+          "printedLeaf": null,
+          "pdfPage": null,
+          "imageLabel": null,
+          "locator": "docs/六壬大全/010巻十 课经集（四）.md:L51",
+          "shortQuote": "九丑课",
+          "verifiedBy": []
+        }
+      ],
+      "variantGroupId": null,
+      "adoptedVariantId": null,
+      "fixtureIds": [],
+      "targetCapabilityId": "daliuren.kejing.054",
+      "targetCodeDomain": "lib/domain/services/daliuren/kejing/",
+      "notes": [
+        "B 级只覆盖目录身份、起始影印页与本条短引；typed 条件、重叠关系、优先级和正反 fixture 仍待后续批准。",
+        "printed leaf 未建立独立映射，继续保持 null。"
+      ]
+    },
+    {
+      "ruleId": "dlr.rule.kejing.055",
+      "family": "kejing",
+      "subfamily": "kejingCatalog",
+      "ordinal": 55,
+      "traditionalName": "鬼墓课",
+      "adoptedStatus": "adopted",
+      "conditionsSummary": "本条只冻结六十四课经目录身份；typed 命中条件须由影印正文和独立正反例另行批准。",
+      "prioritySummary": "同规则族内的优先关系尚未由影印页冻结；不得按目录顺序推断执行优先级。",
+      "interpretation": "主底本题名、起始影印页与短引已完成独立二审；本条不批准完整充分必要条件或执行优先级。",
+      "evidenceLevel": "B",
+      "locatorOnly": false,
+      "executableApproved": false,
+      "sourceRefs": [
+        {
+          "sourceId": "dlr.source.siku-liuren-daquan",
+          "referenceKind": "scan",
+          "volume": "卷八",
+          "scanLeaf": 15,
+          "printedLeaf": null,
+          "pdfPage": 15,
+          "imageLabel": null,
+          "locator": null,
+          "shortQuote": "凡日辰墓神及日鬼發用，為鬼墓課。",
+          "verifiedBy": [
+            {
+              "reviewer": "C00 catalog first-pass scan audit",
+              "date": "2026-07-28"
+            },
+            {
+              "reviewer": "c00_kejing_recheck (Codex)",
+              "date": "2026-07-28"
+            }
+          ]
+        },
+        {
+          "sourceId": "dlr.source.daquan-transcription-aa7bc942",
+          "referenceKind": "locator",
+          "volume": null,
+          "scanLeaf": null,
+          "printedLeaf": null,
+          "pdfPage": null,
+          "imageLabel": null,
+          "locator": "docs/六壬大全/010巻十 课经集（四）.md:L113",
+          "shortQuote": "鬼墓课",
+          "verifiedBy": []
+        }
+      ],
+      "variantGroupId": null,
+      "adoptedVariantId": null,
+      "fixtureIds": [],
+      "targetCapabilityId": "daliuren.kejing.055",
+      "targetCodeDomain": "lib/domain/services/daliuren/kejing/",
+      "notes": [
+        "B 级只覆盖目录身份、起始影印页与本条短引；typed 条件、重叠关系、优先级和正反 fixture 仍待后续批准。",
+        "printed leaf 未建立独立映射，继续保持 null。"
+      ]
+    },
+    {
+      "ruleId": "dlr.rule.kejing.056",
+      "family": "kejing",
+      "subfamily": "kejingCatalog",
+      "ordinal": 56,
+      "traditionalName": "励德课",
+      "adoptedStatus": "adopted",
+      "conditionsSummary": "本条只冻结六十四课经目录身份；typed 命中条件须由影印正文和独立正反例另行批准。",
+      "prioritySummary": "同规则族内的优先关系尚未由影印页冻结；不得按目录顺序推断执行优先级。",
+      "interpretation": "主底本题名、起始影印页与短引已完成独立二审；本条不批准完整充分必要条件或执行优先级。",
+      "evidenceLevel": "B",
+      "locatorOnly": false,
+      "executableApproved": false,
+      "sourceRefs": [
+        {
+          "sourceId": "dlr.source.siku-liuren-daquan",
+          "referenceKind": "scan",
+          "volume": "卷八",
+          "scanLeaf": 28,
+          "printedLeaf": null,
+          "pdfPage": 28,
+          "imageLabel": null,
+          "locator": null,
+          "shortQuote": "凡天乙立卯酉，為勵德課。",
+          "verifiedBy": [
+            {
+              "reviewer": "C00 catalog first-pass scan audit",
+              "date": "2026-07-28"
+            },
+            {
+              "reviewer": "c00_kejing_recheck (Codex)",
+              "date": "2026-07-28"
+            }
+          ]
+        },
+        {
+          "sourceId": "dlr.source.daquan-transcription-aa7bc942",
+          "referenceKind": "locator",
+          "volume": null,
+          "scanLeaf": null,
+          "printedLeaf": null,
+          "pdfPage": null,
+          "imageLabel": null,
+          "locator": "docs/六壬大全/010巻十 课经集（四）.md:L197",
+          "shortQuote": "励德课",
+          "verifiedBy": []
+        }
+      ],
+      "variantGroupId": null,
+      "adoptedVariantId": null,
+      "fixtureIds": [],
+      "targetCapabilityId": "daliuren.kejing.056",
+      "targetCodeDomain": "lib/domain/services/daliuren/kejing/",
+      "notes": [
+        "B 级只覆盖目录身份、起始影印页与本条短引；typed 条件、重叠关系、优先级和正反 fixture 仍待后续批准。",
+        "printed leaf 未建立独立映射，继续保持 null。"
+      ]
+    },
+    {
+      "ruleId": "dlr.rule.kejing.057",
+      "family": "kejing",
+      "subfamily": "kejingCatalog",
+      "ordinal": 57,
+      "traditionalName": "盘珠课",
+      "adoptedStatus": "adopted",
+      "conditionsSummary": "本条只冻结六十四课经目录身份；typed 命中条件须由影印正文和独立正反例另行批准。",
+      "prioritySummary": "同规则族内的优先关系尚未由影印页冻结；不得按目录顺序推断执行优先级。",
+      "interpretation": "主底本题名、起始影印页与短引已完成独立二审；本条不批准完整充分必要条件或执行优先级。",
+      "evidenceLevel": "B",
+      "locatorOnly": false,
+      "executableApproved": false,
+      "sourceRefs": [
+        {
+          "sourceId": "dlr.source.siku-liuren-daquan",
+          "referenceKind": "scan",
+          "volume": "卷八",
+          "scanLeaf": 40,
+          "printedLeaf": null,
+          "pdfPage": 40,
+          "imageLabel": null,
+          "locator": null,
+          "shortQuote": "凡太歲月建及日時并三傳皆在四課之中，曰盤珠課也。",
+          "verifiedBy": [
+            {
+              "reviewer": "C00 catalog first-pass scan audit",
+              "date": "2026-07-28"
+            },
+            {
+              "reviewer": "c00_kejing_recheck (Codex)",
+              "date": "2026-07-28"
+            }
+          ]
+        },
+        {
+          "sourceId": "dlr.source.daquan-transcription-aa7bc942",
+          "referenceKind": "locator",
+          "volume": null,
+          "scanLeaf": null,
+          "printedLeaf": null,
+          "pdfPage": null,
+          "imageLabel": null,
+          "locator": "docs/六壬大全/010巻十 课经集（四）.md:L369",
+          "shortQuote": "盘珠课",
+          "verifiedBy": []
+        }
+      ],
+      "variantGroupId": null,
+      "adoptedVariantId": null,
+      "fixtureIds": [],
+      "targetCapabilityId": "daliuren.kejing.057",
+      "targetCodeDomain": "lib/domain/services/daliuren/kejing/",
+      "notes": [
+        "B 级只覆盖目录身份、起始影印页与本条短引；typed 条件、重叠关系、优先级和正反 fixture 仍待后续批准。",
+        "printed leaf 未建立独立映射，继续保持 null。"
+      ]
+    },
+    {
+      "ruleId": "dlr.rule.kejing.058",
+      "family": "kejing",
+      "subfamily": "kejingCatalog",
+      "ordinal": 58,
+      "traditionalName": "全局课",
+      "adoptedStatus": "adopted",
+      "conditionsSummary": "本条只冻结六十四课经目录身份；typed 命中条件须由影印正文和独立正反例另行批准。",
+      "prioritySummary": "同规则族内的优先关系尚未由影印页冻结；不得按目录顺序推断执行优先级。",
+      "interpretation": "主底本题名、起始影印页与短引已完成独立二审；本条不批准完整充分必要条件或执行优先级。",
+      "evidenceLevel": "B",
+      "locatorOnly": false,
+      "executableApproved": false,
+      "sourceRefs": [
+        {
+          "sourceId": "dlr.source.siku-liuren-daquan",
+          "referenceKind": "scan",
+          "volume": "卷八",
+          "scanLeaf": 44,
+          "printedLeaf": null,
+          "pdfPage": 44,
+          "imageLabel": null,
+          "locator": null,
+          "shortQuote": "凡課得三合俱在傳者，為全局課。",
+          "verifiedBy": [
+            {
+              "reviewer": "C00 catalog first-pass scan audit",
+              "date": "2026-07-28"
+            },
+            {
+              "reviewer": "c00_kejing_recheck (Codex)",
+              "date": "2026-07-28"
+            }
+          ]
+        },
+        {
+          "sourceId": "dlr.source.daquan-transcription-aa7bc942",
+          "referenceKind": "locator",
+          "volume": null,
+          "scanLeaf": null,
+          "printedLeaf": null,
+          "pdfPage": null,
+          "imageLabel": null,
+          "locator": "docs/六壬大全/010巻十 课经集（四）.md:L409",
+          "shortQuote": "全局课",
+          "verifiedBy": []
+        }
+      ],
+      "variantGroupId": null,
+      "adoptedVariantId": null,
+      "fixtureIds": [],
+      "targetCapabilityId": "daliuren.kejing.058",
+      "targetCodeDomain": "lib/domain/services/daliuren/kejing/",
+      "notes": [
+        "B 级只覆盖目录身份、起始影印页与本条短引；typed 条件、重叠关系、优先级和正反 fixture 仍待后续批准。",
+        "printed leaf 未建立独立映射，继续保持 null。"
+      ]
+    },
+    {
+      "ruleId": "dlr.rule.kejing.059",
+      "family": "kejing",
+      "subfamily": "kejingCatalog",
+      "ordinal": 59,
+      "traditionalName": "玄胎课",
+      "adoptedStatus": "adopted",
+      "conditionsSummary": "本条只冻结六十四课经目录身份；typed 命中条件须由影印正文和独立正反例另行批准。",
+      "prioritySummary": "同规则族内的优先关系尚未由影印页冻结；不得按目录顺序推断执行优先级。",
+      "interpretation": "主底本题名、起始影印页与短引已完成独立二审；本条不批准完整充分必要条件或执行优先级。",
+      "evidenceLevel": "B",
+      "locatorOnly": false,
+      "executableApproved": false,
+      "sourceRefs": [
+        {
+          "sourceId": "dlr.source.siku-liuren-daquan",
+          "referenceKind": "scan",
+          "volume": "卷八",
+          "scanLeaf": 68,
+          "printedLeaf": null,
+          "pdfPage": 68,
+          "imageLabel": null,
+          "locator": null,
+          "shortQuote": "凡孟神發用，傳皆四孟，為玄胎課。",
+          "verifiedBy": [
+            {
+              "reviewer": "C00 catalog first-pass scan audit",
+              "date": "2026-07-28"
+            },
+            {
+              "reviewer": "c00_kejing_recheck (Codex)",
+              "date": "2026-07-28"
+            }
+          ]
+        },
+        {
+          "sourceId": "dlr.source.daquan-transcription-aa7bc942",
+          "referenceKind": "locator",
+          "volume": null,
+          "scanLeaf": null,
+          "printedLeaf": null,
+          "pdfPage": null,
+          "imageLabel": null,
+          "locator": "docs/六壬大全/010巻十 课经集（四）.md:L549",
+          "shortQuote": "元胎课",
+          "verifiedBy": []
+        }
+      ],
+      "variantGroupId": null,
+      "adoptedVariantId": null,
+      "fixtureIds": [],
+      "targetCapabilityId": "daliuren.kejing.059",
+      "targetCodeDomain": "lib/domain/services/daliuren/kejing/",
+      "notes": [
+        "主底本题名与定义均作“玄胎課”；固定转录“元胎课”仅登记为异文。",
+        "B 级只覆盖目录身份、起始影印页与本条短引；typed 条件、重叠关系、优先级和正反 fixture 仍待后续批准。",
+        "printed leaf 未建立独立映射，继续保持 null。"
+      ]
+    },
+    {
+      "ruleId": "dlr.rule.kejing.060",
+      "family": "kejing",
+      "subfamily": "kejingCatalog",
+      "ordinal": 60,
+      "traditionalName": "连珠课",
+      "adoptedStatus": "adopted",
+      "conditionsSummary": "本条只冻结六十四课经目录身份；typed 命中条件须由影印正文和独立正反例另行批准。",
+      "prioritySummary": "同规则族内的优先关系尚未由影印页冻结；不得按目录顺序推断执行优先级。",
+      "interpretation": "主底本题名、起始影印页与短引已完成独立二审；本条不批准完整充分必要条件或执行优先级。",
+      "evidenceLevel": "B",
+      "locatorOnly": false,
+      "executableApproved": false,
+      "sourceRefs": [
+        {
+          "sourceId": "dlr.source.siku-liuren-daquan",
+          "referenceKind": "scan",
+          "volume": "卷八",
+          "scanLeaf": 78,
+          "printedLeaf": null,
+          "pdfPage": 78,
+          "imageLabel": null,
+          "locator": null,
+          "shortQuote": "凡用神傳在一方相連作中末，為連珠課。",
+          "verifiedBy": [
+            {
+              "reviewer": "C00 catalog first-pass scan audit",
+              "date": "2026-07-28"
+            },
+            {
+              "reviewer": "c00_kejing_recheck (Codex)",
+              "date": "2026-07-28"
+            }
+          ]
+        },
+        {
+          "sourceId": "dlr.source.daquan-transcription-aa7bc942",
+          "referenceKind": "locator",
+          "volume": null,
+          "scanLeaf": null,
+          "printedLeaf": null,
+          "pdfPage": null,
+          "imageLabel": null,
+          "locator": "docs/六壬大全/010巻十 课经集（四）.md:L635",
+          "shortQuote": "连珠课",
+          "verifiedBy": []
+        }
+      ],
+      "variantGroupId": null,
+      "adoptedVariantId": null,
+      "fixtureIds": [],
+      "targetCapabilityId": "daliuren.kejing.060",
+      "targetCodeDomain": "lib/domain/services/daliuren/kejing/",
+      "notes": [
+        "B 级只覆盖目录身份、起始影印页与本条短引；typed 条件、重叠关系、优先级和正反 fixture 仍待后续批准。",
+        "printed leaf 未建立独立映射，继续保持 null。"
+      ]
+    },
+    {
+      "ruleId": "dlr.rule.kejing.061",
+      "family": "kejing",
+      "subfamily": "kejingCatalog",
+      "ordinal": 61,
+      "traditionalName": "间传课",
+      "adoptedStatus": "adopted",
+      "conditionsSummary": "本条只冻结六十四课经目录身份；typed 命中条件须由影印正文和独立正反例另行批准。",
+      "prioritySummary": "同规则族内的优先关系尚未由影印页冻结；不得按目录顺序推断执行优先级。",
+      "interpretation": "主底本题名、起始影印页与短引已完成独立二审；本条不批准完整充分必要条件或执行优先级。",
+      "evidenceLevel": "B",
+      "locatorOnly": false,
+      "executableApproved": false,
+      "sourceRefs": [
+        {
+          "sourceId": "dlr.source.siku-liuren-daquan",
+          "referenceKind": "scan",
+          "volume": "卷八",
+          "scanLeaf": 83,
+          "printedLeaf": null,
+          "pdfPage": 83,
+          "imageLabel": null,
+          "locator": null,
+          "shortQuote": "凡課間位作三傳，為間傳課。",
+          "verifiedBy": [
+            {
+              "reviewer": "C00 catalog first-pass scan audit",
+              "date": "2026-07-28"
+            },
+            {
+              "reviewer": "c00_kejing_recheck (Codex)",
+              "date": "2026-07-28"
+            }
+          ]
+        },
+        {
+          "sourceId": "dlr.source.daquan-transcription-aa7bc942",
+          "referenceKind": "locator",
+          "volume": null,
+          "scanLeaf": null,
+          "printedLeaf": null,
+          "pdfPage": null,
+          "imageLabel": null,
+          "locator": "docs/六壬大全/010巻十 课经集（四）.md:L657",
+          "shortQuote": "间传课",
+          "verifiedBy": []
+        }
+      ],
+      "variantGroupId": null,
+      "adoptedVariantId": null,
+      "fixtureIds": [
+        "dlr.case.zhinan.gengyin-gengchen-ma-lianzhuang"
+      ],
+      "targetCapabilityId": "daliuren.kejing.061",
+      "targetCodeDomain": "lib/domain/services/daliuren/kejing/",
+      "notes": [
+        "B 级只覆盖目录身份、起始影印页与本条短引；typed 条件、重叠关系、优先级和正反 fixture 仍待后续批准。",
+        "printed leaf 未建立独立映射，继续保持 null。"
+      ]
+    },
+    {
+      "ruleId": "dlr.rule.kejing.062",
+      "family": "kejing",
+      "subfamily": "kejingCatalog",
+      "ordinal": 62,
+      "traditionalName": "六纯课",
+      "adoptedStatus": "adopted",
+      "conditionsSummary": "本条只冻结六十四课经目录身份；typed 命中条件须由影印正文和独立正反例另行批准。",
+      "prioritySummary": "同规则族内的优先关系尚未由影印页冻结；不得按目录顺序推断执行优先级。",
+      "interpretation": "主底本题名、起始影印页与短引已完成独立二审；本条不批准完整充分必要条件或执行优先级。",
+      "evidenceLevel": "B",
+      "locatorOnly": false,
+      "executableApproved": false,
+      "sourceRefs": [
+        {
+          "sourceId": "dlr.source.siku-liuren-daquan",
+          "referenceKind": "scan",
+          "volume": "卷八",
+          "scanLeaf": 94,
+          "printedLeaf": null,
+          "pdfPage": 94,
+          "imageLabel": null,
+          "locator": null,
+          "shortQuote": "六純格。",
+          "verifiedBy": [
+            {
+              "reviewer": "C00 catalog first-pass scan audit",
+              "date": "2026-07-28"
+            },
+            {
+              "reviewer": "c00_kejing_recheck (Codex)",
+              "date": "2026-07-28"
+            }
+          ]
+        },
+        {
+          "sourceId": "dlr.source.daquan-transcription-aa7bc942",
+          "referenceKind": "locator",
+          "volume": null,
+          "scanLeaf": null,
+          "printedLeaf": null,
+          "pdfPage": null,
+          "imageLabel": null,
+          "locator": "docs/六壬大全/010巻十 课经集（四）.md:L687",
+          "shortQuote": "六纯课",
+          "verifiedBy": []
+        }
+      ],
+      "variantGroupId": null,
+      "adoptedVariantId": null,
+      "fixtureIds": [],
+      "targetCapabilityId": "daliuren.kejing.062",
+      "targetCodeDomain": "lib/domain/services/daliuren/kejing/",
+      "notes": [
+        "主底本题名后缀作“六純格”；规范目录统一使用“六纯课”。",
+        "B 级只覆盖目录身份、起始影印页与本条短引；typed 条件、重叠关系、优先级和正反 fixture 仍待后续批准。",
+        "printed leaf 未建立独立映射，继续保持 null。"
+      ]
+    },
+    {
+      "ruleId": "dlr.rule.kejing.063",
+      "family": "kejing",
+      "subfamily": "kejingCatalog",
+      "ordinal": 63,
+      "traditionalName": "杂状课",
+      "adoptedStatus": "adopted",
+      "conditionsSummary": "本条只冻结六十四课经目录身份；typed 命中条件须由影印正文和独立正反例另行批准。",
+      "prioritySummary": "同规则族内的优先关系尚未由影印页冻结；不得按目录顺序推断执行优先级。",
+      "interpretation": "主底本题名、起始影印页与短引已完成独立二审；本条不批准完整充分必要条件或执行优先级。",
+      "evidenceLevel": "B",
+      "locatorOnly": false,
+      "executableApproved": false,
+      "sourceRefs": [
+        {
+          "sourceId": "dlr.source.siku-liuren-daquan",
+          "referenceKind": "scan",
+          "volume": "卷八",
+          "scanLeaf": 100,
+          "printedLeaf": null,
+          "pdfPage": 100,
+          "imageLabel": null,
+          "locator": null,
+          "shortQuote": "凡課俱取初傳動爻，以別五行純雜數目物色為用，曰雜狀課。",
+          "verifiedBy": [
+            {
+              "reviewer": "C00 catalog first-pass scan audit",
+              "date": "2026-07-28"
+            },
+            {
+              "reviewer": "c00_kejing_recheck (Codex)",
+              "date": "2026-07-28"
+            }
+          ]
+        },
+        {
+          "sourceId": "dlr.source.daquan-transcription-aa7bc942",
+          "referenceKind": "locator",
+          "volume": null,
+          "scanLeaf": null,
+          "printedLeaf": null,
+          "pdfPage": null,
+          "imageLabel": null,
+          "locator": "docs/六壬大全/010巻十 课经集（四）.md:L763",
+          "shortQuote": "杂状课",
+          "verifiedBy": []
+        }
+      ],
+      "variantGroupId": null,
+      "adoptedVariantId": null,
+      "fixtureIds": [],
+      "targetCapabilityId": "daliuren.kejing.063",
+      "targetCodeDomain": "lib/domain/services/daliuren/kejing/",
+      "notes": [
+        "B 级只覆盖目录身份、起始影印页与本条短引；typed 条件、重叠关系、优先级和正反 fixture 仍待后续批准。",
+        "printed leaf 未建立独立映射，继续保持 null。"
+      ]
+    },
+    {
+      "ruleId": "dlr.rule.kejing.064",
+      "family": "kejing",
+      "subfamily": "kejingCatalog",
+      "ordinal": 64,
+      "traditionalName": "物类课",
+      "adoptedStatus": "adopted",
+      "conditionsSummary": "本条只冻结六十四课经目录身份；typed 命中条件须由影印正文和独立正反例另行批准。",
+      "prioritySummary": "同规则族内的优先关系尚未由影印页冻结；不得按目录顺序推断执行优先级。",
+      "interpretation": "主底本题名、起始影印页与短引已完成独立二审；本条不批准完整充分必要条件或执行优先级。",
+      "evidenceLevel": "B",
+      "locatorOnly": false,
+      "executableApproved": false,
+      "sourceRefs": [
+        {
+          "sourceId": "dlr.source.siku-liuren-daquan",
+          "referenceKind": "scan",
+          "volume": "卷八",
+          "scanLeaf": 102,
+          "printedLeaf": null,
+          "pdfPage": 102,
+          "imageLabel": null,
+          "locator": null,
+          "shortQuote": "物類課。",
+          "verifiedBy": [
+            {
+              "reviewer": "C00 catalog first-pass scan audit",
+              "date": "2026-07-28"
+            },
+            {
+              "reviewer": "c00_kejing_recheck (Codex)",
+              "date": "2026-07-28"
+            }
+          ]
+        },
+        {
+          "sourceId": "dlr.source.daquan-transcription-aa7bc942",
+          "referenceKind": "locator",
+          "volume": null,
+          "scanLeaf": null,
+          "printedLeaf": null,
+          "pdfPage": null,
+          "imageLabel": null,
+          "locator": "docs/六壬大全/010巻十 课经集（四）.md:L769",
+          "shortQuote": "物类课",
+          "verifiedBy": []
+        }
+      ],
+      "variantGroupId": null,
+      "adoptedVariantId": null,
+      "fixtureIds": [],
+      "targetCapabilityId": "daliuren.kejing.064",
+      "targetCodeDomain": "lib/domain/services/daliuren/kejing/",
+      "notes": [
+        "B 级只覆盖目录身份、起始影印页与本条短引；typed 条件、重叠关系、优先级和正反 fixture 仍待后续批准。",
+        "printed leaf 未建立独立映射，继续保持 null。"
+      ]
+    }
+  ]
+}

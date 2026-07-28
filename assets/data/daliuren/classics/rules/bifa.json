@@ -1,0 +1,5811 @@
+{
+  "schemaVersion": "1.0.0",
+  "family": "bifa",
+  "catalogStatus": "partial",
+  "description": "恰好一百个稳定毕法 ID；99 项题名与全部起始影印页已完成 B 级二审，第 76 项保留底本内部异文。",
+  "expectedEntryCount": 100,
+  "entries": [
+    {
+      "ruleId": "dlr.rule.bifa.001",
+      "family": "bifa",
+      "subfamily": "bifaCatalog",
+      "ordinal": 1,
+      "traditionalName": "前后引从升迁吉",
+      "adoptedStatus": "adopted",
+      "conditionsSummary": "本条只冻结毕法赋百法目录身份；typed 命中条件须由影印正文和独立正反例另行批准。",
+      "prioritySummary": "同规则族内的优先关系尚未由影印页冻结；不得按目录顺序推断执行优先级。",
+      "interpretation": "详细题句与起始影印页已独立复核；本条不批准执行条件、优先级或 fixture。",
+      "evidenceLevel": "B",
+      "locatorOnly": false,
+      "executableApproved": false,
+      "sourceRefs": [
+        {
+          "sourceId": "dlr.source.siku-liuren-daquan",
+          "referenceKind": "scan",
+          "volume": "卷九",
+          "scanLeaf": 9,
+          "printedLeaf": null,
+          "pdfPage": 9,
+          "imageLabel": null,
+          "locator": null,
+          "shortQuote": "前後引從陞遷吉",
+          "verifiedBy": [
+            {
+              "reviewer": "C00 catalog first-pass scan audit",
+              "date": "2026-07-28"
+            },
+            {
+              "reviewer": "c00_bifa_recheck (Codex)",
+              "date": "2026-07-28"
+            }
+          ]
+        },
+        {
+          "sourceId": "dlr.source.daquan-transcription-aa7bc942",
+          "referenceKind": "locator",
+          "volume": null,
+          "scanLeaf": null,
+          "printedLeaf": null,
+          "pdfPage": null,
+          "imageLabel": null,
+          "locator": "docs/六壬大全/011巻十一 《毕法赋》上.md:L5",
+          "shortQuote": "前后引从升迁吉",
+          "verifiedBy": []
+        }
+      ],
+      "variantGroupId": null,
+      "adoptedVariantId": null,
+      "fixtureIds": [],
+      "targetCapabilityId": "daliuren.bifa.001",
+      "targetCodeDomain": "lib/domain/services/daliuren/bifa/",
+      "notes": [
+        "printed leaf 尚未核定；不得把 PDF 页复制为版心叶码。",
+        "adopted 仅表示百法目录身份采用；executableApproved 保持 false。"
+      ]
+    },
+    {
+      "ruleId": "dlr.rule.bifa.002",
+      "family": "bifa",
+      "subfamily": "bifaCatalog",
+      "ordinal": 2,
+      "traditionalName": "首尾相见始终宜",
+      "adoptedStatus": "adopted",
+      "conditionsSummary": "本条只冻结毕法赋百法目录身份；typed 命中条件须由影印正文和独立正反例另行批准。",
+      "prioritySummary": "同规则族内的优先关系尚未由影印页冻结；不得按目录顺序推断执行优先级。",
+      "interpretation": "详细题句与起始影印页已独立复核；本条不批准执行条件、优先级或 fixture。",
+      "evidenceLevel": "B",
+      "locatorOnly": false,
+      "executableApproved": false,
+      "sourceRefs": [
+        {
+          "sourceId": "dlr.source.siku-liuren-daquan",
+          "referenceKind": "scan",
+          "volume": "卷九",
+          "scanLeaf": 14,
+          "printedLeaf": null,
+          "pdfPage": 14,
+          "imageLabel": null,
+          "locator": null,
+          "shortQuote": "首尾相見始終宜",
+          "verifiedBy": [
+            {
+              "reviewer": "C00 catalog first-pass scan audit",
+              "date": "2026-07-28"
+            },
+            {
+              "reviewer": "c00_bifa_recheck (Codex)",
+              "date": "2026-07-28"
+            }
+          ]
+        },
+        {
+          "sourceId": "dlr.source.daquan-transcription-aa7bc942",
+          "referenceKind": "locator",
+          "volume": null,
+          "scanLeaf": null,
+          "printedLeaf": null,
+          "pdfPage": null,
+          "imageLabel": null,
+          "locator": "docs/六壬大全/011巻十一 《毕法赋》上.md:L5",
+          "shortQuote": "首尾相见始终宜",
+          "verifiedBy": []
+        }
+      ],
+      "variantGroupId": null,
+      "adoptedVariantId": null,
+      "fixtureIds": [],
+      "targetCapabilityId": "daliuren.bifa.002",
+      "targetCodeDomain": "lib/domain/services/daliuren/bifa/",
+      "notes": [
+        "printed leaf 尚未核定；不得把 PDF 页复制为版心叶码。",
+        "adopted 仅表示百法目录身份采用；executableApproved 保持 false。"
+      ]
+    },
+    {
+      "ruleId": "dlr.rule.bifa.003",
+      "family": "bifa",
+      "subfamily": "bifaCatalog",
+      "ordinal": 3,
+      "traditionalName": "帘幕贵人高甲第",
+      "adoptedStatus": "adopted",
+      "conditionsSummary": "本条只冻结毕法赋百法目录身份；typed 命中条件须由影印正文和独立正反例另行批准。",
+      "prioritySummary": "同规则族内的优先关系尚未由影印页冻结；不得按目录顺序推断执行优先级。",
+      "interpretation": "详细题句与起始影印页已独立复核；本条不批准执行条件、优先级或 fixture。",
+      "evidenceLevel": "B",
+      "locatorOnly": false,
+      "executableApproved": false,
+      "sourceRefs": [
+        {
+          "sourceId": "dlr.source.siku-liuren-daquan",
+          "referenceKind": "scan",
+          "volume": "卷九",
+          "scanLeaf": 17,
+          "printedLeaf": null,
+          "pdfPage": 17,
+          "imageLabel": null,
+          "locator": null,
+          "shortQuote": "簾幕貴人高甲第",
+          "verifiedBy": [
+            {
+              "reviewer": "C00 catalog first-pass scan audit",
+              "date": "2026-07-28"
+            },
+            {
+              "reviewer": "c00_bifa_recheck (Codex)",
+              "date": "2026-07-28"
+            }
+          ]
+        },
+        {
+          "sourceId": "dlr.source.daquan-transcription-aa7bc942",
+          "referenceKind": "locator",
+          "volume": null,
+          "scanLeaf": null,
+          "printedLeaf": null,
+          "pdfPage": null,
+          "imageLabel": null,
+          "locator": "docs/六壬大全/011巻十一 《毕法赋》上.md:L7",
+          "shortQuote": "帘幕贵人高甲第",
+          "verifiedBy": []
+        }
+      ],
+      "variantGroupId": null,
+      "adoptedVariantId": null,
+      "fixtureIds": [],
+      "targetCapabilityId": "daliuren.bifa.003",
+      "targetCodeDomain": "lib/domain/services/daliuren/bifa/",
+      "notes": [
+        "printed leaf 尚未核定；不得把 PDF 页复制为版心叶码。",
+        "adopted 仅表示百法目录身份采用；executableApproved 保持 false。"
+      ]
+    },
+    {
+      "ruleId": "dlr.rule.bifa.004",
+      "family": "bifa",
+      "subfamily": "bifaCatalog",
+      "ordinal": 4,
+      "traditionalName": "催官使者赴官期",
+      "adoptedStatus": "adopted",
+      "conditionsSummary": "本条只冻结毕法赋百法目录身份；typed 命中条件须由影印正文和独立正反例另行批准。",
+      "prioritySummary": "同规则族内的优先关系尚未由影印页冻结；不得按目录顺序推断执行优先级。",
+      "interpretation": "详细题句与起始影印页已独立复核；本条不批准执行条件、优先级或 fixture。",
+      "evidenceLevel": "B",
+      "locatorOnly": false,
+      "executableApproved": false,
+      "sourceRefs": [
+        {
+          "sourceId": "dlr.source.siku-liuren-daquan",
+          "referenceKind": "scan",
+          "volume": "卷九",
+          "scanLeaf": 21,
+          "printedLeaf": null,
+          "pdfPage": 21,
+          "imageLabel": null,
+          "locator": null,
+          "shortQuote": "催官使者赴官期",
+          "verifiedBy": [
+            {
+              "reviewer": "C00 catalog first-pass scan audit",
+              "date": "2026-07-28"
+            },
+            {
+              "reviewer": "c00_bifa_recheck (Codex)",
+              "date": "2026-07-28"
+            }
+          ]
+        },
+        {
+          "sourceId": "dlr.source.daquan-transcription-aa7bc942",
+          "referenceKind": "locator",
+          "volume": null,
+          "scanLeaf": null,
+          "printedLeaf": null,
+          "pdfPage": null,
+          "imageLabel": null,
+          "locator": "docs/六壬大全/011巻十一 《毕法赋》上.md:L7",
+          "shortQuote": "催官使者赴官期",
+          "verifiedBy": []
+        }
+      ],
+      "variantGroupId": null,
+      "adoptedVariantId": null,
+      "fixtureIds": [],
+      "targetCapabilityId": "daliuren.bifa.004",
+      "targetCodeDomain": "lib/domain/services/daliuren/bifa/",
+      "notes": [
+        "printed leaf 尚未核定；不得把 PDF 页复制为版心叶码。",
+        "adopted 仅表示百法目录身份采用；executableApproved 保持 false。"
+      ]
+    },
+    {
+      "ruleId": "dlr.rule.bifa.005",
+      "family": "bifa",
+      "subfamily": "bifaCatalog",
+      "ordinal": 5,
+      "traditionalName": "六阳数足须公用",
+      "adoptedStatus": "adopted",
+      "conditionsSummary": "本条只冻结毕法赋百法目录身份；typed 命中条件须由影印正文和独立正反例另行批准。",
+      "prioritySummary": "同规则族内的优先关系尚未由影印页冻结；不得按目录顺序推断执行优先级。",
+      "interpretation": "详细题句与起始影印页已独立复核；本条不批准执行条件、优先级或 fixture。",
+      "evidenceLevel": "B",
+      "locatorOnly": false,
+      "executableApproved": false,
+      "sourceRefs": [
+        {
+          "sourceId": "dlr.source.siku-liuren-daquan",
+          "referenceKind": "scan",
+          "volume": "卷九",
+          "scanLeaf": 23,
+          "printedLeaf": null,
+          "pdfPage": 23,
+          "imageLabel": null,
+          "locator": null,
+          "shortQuote": "六陽數足須公用",
+          "verifiedBy": [
+            {
+              "reviewer": "C00 catalog first-pass scan audit",
+              "date": "2026-07-28"
+            },
+            {
+              "reviewer": "c00_bifa_recheck (Codex)",
+              "date": "2026-07-28"
+            }
+          ]
+        },
+        {
+          "sourceId": "dlr.source.daquan-transcription-aa7bc942",
+          "referenceKind": "locator",
+          "volume": null,
+          "scanLeaf": null,
+          "printedLeaf": null,
+          "pdfPage": null,
+          "imageLabel": null,
+          "locator": "docs/六壬大全/011巻十一 《毕法赋》上.md:L9",
+          "shortQuote": "六阳数足须公用",
+          "verifiedBy": []
+        }
+      ],
+      "variantGroupId": null,
+      "adoptedVariantId": null,
+      "fixtureIds": [],
+      "targetCapabilityId": "daliuren.bifa.005",
+      "targetCodeDomain": "lib/domain/services/daliuren/bifa/",
+      "notes": [
+        "printed leaf 尚未核定；不得把 PDF 页复制为版心叶码。",
+        "adopted 仅表示百法目录身份采用；executableApproved 保持 false。"
+      ]
+    },
+    {
+      "ruleId": "dlr.rule.bifa.006",
+      "family": "bifa",
+      "subfamily": "bifaCatalog",
+      "ordinal": 6,
+      "traditionalName": "六阴相继尽昏迷",
+      "adoptedStatus": "adopted",
+      "conditionsSummary": "本条只冻结毕法赋百法目录身份；typed 命中条件须由影印正文和独立正反例另行批准。",
+      "prioritySummary": "同规则族内的优先关系尚未由影印页冻结；不得按目录顺序推断执行优先级。",
+      "interpretation": "详细题句与起始影印页已独立复核；本条不批准执行条件、优先级或 fixture。",
+      "evidenceLevel": "B",
+      "locatorOnly": false,
+      "executableApproved": false,
+      "sourceRefs": [
+        {
+          "sourceId": "dlr.source.siku-liuren-daquan",
+          "referenceKind": "scan",
+          "volume": "卷九",
+          "scanLeaf": 25,
+          "printedLeaf": null,
+          "pdfPage": 25,
+          "imageLabel": null,
+          "locator": null,
+          "shortQuote": "六陰相繼盡昏迷",
+          "verifiedBy": [
+            {
+              "reviewer": "C00 catalog first-pass scan audit",
+              "date": "2026-07-28"
+            },
+            {
+              "reviewer": "c00_bifa_recheck (Codex)",
+              "date": "2026-07-28"
+            }
+          ]
+        },
+        {
+          "sourceId": "dlr.source.daquan-transcription-aa7bc942",
+          "referenceKind": "locator",
+          "volume": null,
+          "scanLeaf": null,
+          "printedLeaf": null,
+          "pdfPage": null,
+          "imageLabel": null,
+          "locator": "docs/六壬大全/011巻十一 《毕法赋》上.md:L9",
+          "shortQuote": "六阴相继尽昏迷",
+          "verifiedBy": []
+        }
+      ],
+      "variantGroupId": null,
+      "adoptedVariantId": null,
+      "fixtureIds": [],
+      "targetCapabilityId": "daliuren.bifa.006",
+      "targetCodeDomain": "lib/domain/services/daliuren/bifa/",
+      "notes": [
+        "printed leaf 尚未核定；不得把 PDF 页复制为版心叶码。",
+        "adopted 仅表示百法目录身份采用；executableApproved 保持 false。"
+      ]
+    },
+    {
+      "ruleId": "dlr.rule.bifa.007",
+      "family": "bifa",
+      "subfamily": "bifaCatalog",
+      "ordinal": 7,
+      "traditionalName": "旺禄临身徒妄作",
+      "adoptedStatus": "adopted",
+      "conditionsSummary": "本条只冻结毕法赋百法目录身份；typed 命中条件须由影印正文和独立正反例另行批准。",
+      "prioritySummary": "同规则族内的优先关系尚未由影印页冻结；不得按目录顺序推断执行优先级。",
+      "interpretation": "详细题句与起始影印页已独立复核；本条不批准执行条件、优先级或 fixture。",
+      "evidenceLevel": "B",
+      "locatorOnly": false,
+      "executableApproved": false,
+      "sourceRefs": [
+        {
+          "sourceId": "dlr.source.siku-liuren-daquan",
+          "referenceKind": "scan",
+          "volume": "卷九",
+          "scanLeaf": 27,
+          "printedLeaf": null,
+          "pdfPage": 27,
+          "imageLabel": null,
+          "locator": null,
+          "shortQuote": "旺祿臨身徒妄作",
+          "verifiedBy": [
+            {
+              "reviewer": "C00 catalog first-pass scan audit",
+              "date": "2026-07-28"
+            },
+            {
+              "reviewer": "c00_bifa_recheck (Codex)",
+              "date": "2026-07-28"
+            }
+          ]
+        },
+        {
+          "sourceId": "dlr.source.daquan-transcription-aa7bc942",
+          "referenceKind": "locator",
+          "volume": null,
+          "scanLeaf": null,
+          "printedLeaf": null,
+          "pdfPage": null,
+          "imageLabel": null,
+          "locator": "docs/六壬大全/011巻十一 《毕法赋》上.md:L11",
+          "shortQuote": "旺禄临身徒妄作",
+          "verifiedBy": []
+        }
+      ],
+      "variantGroupId": null,
+      "adoptedVariantId": null,
+      "fixtureIds": [],
+      "targetCapabilityId": "daliuren.bifa.007",
+      "targetCodeDomain": "lib/domain/services/daliuren/bifa/",
+      "notes": [
+        "printed leaf 尚未核定；不得把 PDF 页复制为版心叶码。",
+        "adopted 仅表示百法目录身份采用；executableApproved 保持 false。"
+      ]
+    },
+    {
+      "ruleId": "dlr.rule.bifa.008",
+      "family": "bifa",
+      "subfamily": "bifaCatalog",
+      "ordinal": 8,
+      "traditionalName": "权摄不正禄临支",
+      "adoptedStatus": "adopted",
+      "conditionsSummary": "本条只冻结毕法赋百法目录身份；typed 命中条件须由影印正文和独立正反例另行批准。",
+      "prioritySummary": "同规则族内的优先关系尚未由影印页冻结；不得按目录顺序推断执行优先级。",
+      "interpretation": "详细题句与起始影印页已独立复核；本条不批准执行条件、优先级或 fixture。",
+      "evidenceLevel": "B",
+      "locatorOnly": false,
+      "executableApproved": false,
+      "sourceRefs": [
+        {
+          "sourceId": "dlr.source.siku-liuren-daquan",
+          "referenceKind": "scan",
+          "volume": "卷九",
+          "scanLeaf": 31,
+          "printedLeaf": null,
+          "pdfPage": 31,
+          "imageLabel": null,
+          "locator": null,
+          "shortQuote": "權攝不正祿臨支",
+          "verifiedBy": [
+            {
+              "reviewer": "C00 catalog first-pass scan audit",
+              "date": "2026-07-28"
+            },
+            {
+              "reviewer": "c00_bifa_recheck (Codex)",
+              "date": "2026-07-28"
+            }
+          ]
+        },
+        {
+          "sourceId": "dlr.source.daquan-transcription-aa7bc942",
+          "referenceKind": "locator",
+          "volume": null,
+          "scanLeaf": null,
+          "printedLeaf": null,
+          "pdfPage": null,
+          "imageLabel": null,
+          "locator": "docs/六壬大全/011巻十一 《毕法赋》上.md:L11",
+          "shortQuote": "权摄不正禄临支",
+          "verifiedBy": []
+        }
+      ],
+      "variantGroupId": null,
+      "adoptedVariantId": null,
+      "fixtureIds": [],
+      "targetCapabilityId": "daliuren.bifa.008",
+      "targetCodeDomain": "lib/domain/services/daliuren/bifa/",
+      "notes": [
+        "printed leaf 尚未核定；不得把 PDF 页复制为版心叶码。",
+        "adopted 仅表示百法目录身份采用；executableApproved 保持 false。"
+      ]
+    },
+    {
+      "ruleId": "dlr.rule.bifa.009",
+      "family": "bifa",
+      "subfamily": "bifaCatalog",
+      "ordinal": 9,
+      "traditionalName": "避难逃生须弃旧",
+      "adoptedStatus": "adopted",
+      "conditionsSummary": "本条只冻结毕法赋百法目录身份；typed 命中条件须由影印正文和独立正反例另行批准。",
+      "prioritySummary": "同规则族内的优先关系尚未由影印页冻结；不得按目录顺序推断执行优先级。",
+      "interpretation": "详细题句与起始影印页已独立复核；本条不批准执行条件、优先级或 fixture。",
+      "evidenceLevel": "B",
+      "locatorOnly": false,
+      "executableApproved": false,
+      "sourceRefs": [
+        {
+          "sourceId": "dlr.source.siku-liuren-daquan",
+          "referenceKind": "scan",
+          "volume": "卷九",
+          "scanLeaf": 33,
+          "printedLeaf": null,
+          "pdfPage": 33,
+          "imageLabel": null,
+          "locator": null,
+          "shortQuote": "避難逃生須棄舊",
+          "verifiedBy": [
+            {
+              "reviewer": "C00 catalog first-pass scan audit",
+              "date": "2026-07-28"
+            },
+            {
+              "reviewer": "c00_bifa_recheck (Codex)",
+              "date": "2026-07-28"
+            }
+          ]
+        },
+        {
+          "sourceId": "dlr.source.daquan-transcription-aa7bc942",
+          "referenceKind": "locator",
+          "volume": null,
+          "scanLeaf": null,
+          "printedLeaf": null,
+          "pdfPage": null,
+          "imageLabel": null,
+          "locator": "docs/六壬大全/011巻十一 《毕法赋》上.md:L13",
+          "shortQuote": "避难逃生须弃旧",
+          "verifiedBy": []
+        }
+      ],
+      "variantGroupId": null,
+      "adoptedVariantId": null,
+      "fixtureIds": [],
+      "targetCapabilityId": "daliuren.bifa.009",
+      "targetCodeDomain": "lib/domain/services/daliuren/bifa/",
+      "notes": [
+        "printed leaf 尚未核定；不得把 PDF 页复制为版心叶码。",
+        "adopted 仅表示百法目录身份采用；executableApproved 保持 false。"
+      ]
+    },
+    {
+      "ruleId": "dlr.rule.bifa.010",
+      "family": "bifa",
+      "subfamily": "bifaCatalog",
+      "ordinal": 10,
+      "traditionalName": "朽木难雕别作为",
+      "adoptedStatus": "adopted",
+      "conditionsSummary": "本条只冻结毕法赋百法目录身份；typed 命中条件须由影印正文和独立正反例另行批准。",
+      "prioritySummary": "同规则族内的优先关系尚未由影印页冻结；不得按目录顺序推断执行优先级。",
+      "interpretation": "详细题句与起始影印页已独立复核；本条不批准执行条件、优先级或 fixture。",
+      "evidenceLevel": "B",
+      "locatorOnly": false,
+      "executableApproved": false,
+      "sourceRefs": [
+        {
+          "sourceId": "dlr.source.siku-liuren-daquan",
+          "referenceKind": "scan",
+          "volume": "卷九",
+          "scanLeaf": 38,
+          "printedLeaf": null,
+          "pdfPage": 38,
+          "imageLabel": null,
+          "locator": null,
+          "shortQuote": "朽木難雕別作為",
+          "verifiedBy": [
+            {
+              "reviewer": "C00 catalog first-pass scan audit",
+              "date": "2026-07-28"
+            },
+            {
+              "reviewer": "c00_bifa_recheck (Codex)",
+              "date": "2026-07-28"
+            }
+          ]
+        },
+        {
+          "sourceId": "dlr.source.daquan-transcription-aa7bc942",
+          "referenceKind": "locator",
+          "volume": null,
+          "scanLeaf": null,
+          "printedLeaf": null,
+          "pdfPage": null,
+          "imageLabel": null,
+          "locator": "docs/六壬大全/011巻十一 《毕法赋》上.md:L13",
+          "shortQuote": "朽木难雕别作为",
+          "verifiedBy": []
+        }
+      ],
+      "variantGroupId": null,
+      "adoptedVariantId": null,
+      "fixtureIds": [],
+      "targetCapabilityId": "daliuren.bifa.010",
+      "targetCodeDomain": "lib/domain/services/daliuren/bifa/",
+      "notes": [
+        "printed leaf 尚未核定；不得把 PDF 页复制为版心叶码。",
+        "adopted 仅表示百法目录身份采用；executableApproved 保持 false。"
+      ]
+    },
+    {
+      "ruleId": "dlr.rule.bifa.011",
+      "family": "bifa",
+      "subfamily": "bifaCatalog",
+      "ordinal": 11,
+      "traditionalName": "众鬼虽彰全不畏",
+      "adoptedStatus": "adopted",
+      "conditionsSummary": "本条只冻结毕法赋百法目录身份；typed 命中条件须由影印正文和独立正反例另行批准。",
+      "prioritySummary": "同规则族内的优先关系尚未由影印页冻结；不得按目录顺序推断执行优先级。",
+      "interpretation": "详细题句与起始影印页已独立复核；本条不批准执行条件、优先级或 fixture。",
+      "evidenceLevel": "B",
+      "locatorOnly": false,
+      "executableApproved": false,
+      "sourceRefs": [
+        {
+          "sourceId": "dlr.source.siku-liuren-daquan",
+          "referenceKind": "scan",
+          "volume": "卷九",
+          "scanLeaf": 38,
+          "printedLeaf": null,
+          "pdfPage": 38,
+          "imageLabel": null,
+          "locator": null,
+          "shortQuote": "衆鬼雖彰全不畏",
+          "verifiedBy": [
+            {
+              "reviewer": "C00 catalog first-pass scan audit",
+              "date": "2026-07-28"
+            },
+            {
+              "reviewer": "c00_bifa_recheck (Codex)",
+              "date": "2026-07-28"
+            }
+          ]
+        },
+        {
+          "sourceId": "dlr.source.daquan-transcription-aa7bc942",
+          "referenceKind": "locator",
+          "volume": null,
+          "scanLeaf": null,
+          "printedLeaf": null,
+          "pdfPage": null,
+          "imageLabel": null,
+          "locator": "docs/六壬大全/011巻十一 《毕法赋》上.md:L15",
+          "shortQuote": "众鬼虽彰全不畏",
+          "verifiedBy": []
+        }
+      ],
+      "variantGroupId": null,
+      "adoptedVariantId": null,
+      "fixtureIds": [],
+      "targetCapabilityId": "daliuren.bifa.011",
+      "targetCodeDomain": "lib/domain/services/daliuren/bifa/",
+      "notes": [
+        "printed leaf 尚未核定；不得把 PDF 页复制为版心叶码。",
+        "adopted 仅表示百法目录身份采用；executableApproved 保持 false。"
+      ]
+    },
+    {
+      "ruleId": "dlr.rule.bifa.012",
+      "family": "bifa",
+      "subfamily": "bifaCatalog",
+      "ordinal": 12,
+      "traditionalName": "虽忧狐假虎威仪",
+      "adoptedStatus": "adopted",
+      "conditionsSummary": "本条只冻结毕法赋百法目录身份；typed 命中条件须由影印正文和独立正反例另行批准。",
+      "prioritySummary": "同规则族内的优先关系尚未由影印页冻结；不得按目录顺序推断执行优先级。",
+      "interpretation": "详细题句与起始影印页已独立复核；本条不批准执行条件、优先级或 fixture。",
+      "evidenceLevel": "B",
+      "locatorOnly": false,
+      "executableApproved": false,
+      "sourceRefs": [
+        {
+          "sourceId": "dlr.source.siku-liuren-daquan",
+          "referenceKind": "scan",
+          "volume": "卷九",
+          "scanLeaf": 44,
+          "printedLeaf": null,
+          "pdfPage": 44,
+          "imageLabel": null,
+          "locator": null,
+          "shortQuote": "雖憂狐假虎威儀",
+          "verifiedBy": [
+            {
+              "reviewer": "C00 catalog first-pass scan audit",
+              "date": "2026-07-28"
+            },
+            {
+              "reviewer": "c00_bifa_recheck (Codex)",
+              "date": "2026-07-28"
+            }
+          ]
+        },
+        {
+          "sourceId": "dlr.source.daquan-transcription-aa7bc942",
+          "referenceKind": "locator",
+          "volume": null,
+          "scanLeaf": null,
+          "printedLeaf": null,
+          "pdfPage": null,
+          "imageLabel": null,
+          "locator": "docs/六壬大全/011巻十一 《毕法赋》上.md:L15",
+          "shortQuote": "虽忧狐假虎威仪",
+          "verifiedBy": []
+        }
+      ],
+      "variantGroupId": null,
+      "adoptedVariantId": null,
+      "fixtureIds": [],
+      "targetCapabilityId": "daliuren.bifa.012",
+      "targetCodeDomain": "lib/domain/services/daliuren/bifa/",
+      "notes": [
+        "printed leaf 尚未核定；不得把 PDF 页复制为版心叶码。",
+        "adopted 仅表示百法目录身份采用；executableApproved 保持 false。"
+      ]
+    },
+    {
+      "ruleId": "dlr.rule.bifa.013",
+      "family": "bifa",
+      "subfamily": "bifaCatalog",
+      "ordinal": 13,
+      "traditionalName": "鬼贼当时无畏忌",
+      "adoptedStatus": "adopted",
+      "conditionsSummary": "本条只冻结毕法赋百法目录身份；typed 命中条件须由影印正文和独立正反例另行批准。",
+      "prioritySummary": "同规则族内的优先关系尚未由影印页冻结；不得按目录顺序推断执行优先级。",
+      "interpretation": "详细题句与起始影印页已独立复核；本条不批准执行条件、优先级或 fixture。",
+      "evidenceLevel": "B",
+      "locatorOnly": false,
+      "executableApproved": false,
+      "sourceRefs": [
+        {
+          "sourceId": "dlr.source.siku-liuren-daquan",
+          "referenceKind": "scan",
+          "volume": "卷九",
+          "scanLeaf": 45,
+          "printedLeaf": null,
+          "pdfPage": 45,
+          "imageLabel": null,
+          "locator": null,
+          "shortQuote": "鬼賊當時無畏忌",
+          "verifiedBy": [
+            {
+              "reviewer": "C00 catalog first-pass scan audit",
+              "date": "2026-07-28"
+            },
+            {
+              "reviewer": "c00_bifa_recheck (Codex)",
+              "date": "2026-07-28"
+            }
+          ]
+        },
+        {
+          "sourceId": "dlr.source.daquan-transcription-aa7bc942",
+          "referenceKind": "locator",
+          "volume": null,
+          "scanLeaf": null,
+          "printedLeaf": null,
+          "pdfPage": null,
+          "imageLabel": null,
+          "locator": "docs/六壬大全/011巻十一 《毕法赋》上.md:L17",
+          "shortQuote": "鬼贼当时无畏忌",
+          "verifiedBy": []
+        }
+      ],
+      "variantGroupId": null,
+      "adoptedVariantId": null,
+      "fixtureIds": [],
+      "targetCapabilityId": "daliuren.bifa.013",
+      "targetCodeDomain": "lib/domain/services/daliuren/bifa/",
+      "notes": [
+        "printed leaf 尚未核定；不得把 PDF 页复制为版心叶码。",
+        "adopted 仅表示百法目录身份采用；executableApproved 保持 false。"
+      ]
+    },
+    {
+      "ruleId": "dlr.rule.bifa.014",
+      "family": "bifa",
+      "subfamily": "bifaCatalog",
+      "ordinal": 14,
+      "traditionalName": "传财太旺返财亏",
+      "adoptedStatus": "adopted",
+      "conditionsSummary": "本条只冻结毕法赋百法目录身份；typed 命中条件须由影印正文和独立正反例另行批准。",
+      "prioritySummary": "同规则族内的优先关系尚未由影印页冻结；不得按目录顺序推断执行优先级。",
+      "interpretation": "详细题句与起始影印页已独立复核；本条不批准执行条件、优先级或 fixture。",
+      "evidenceLevel": "B",
+      "locatorOnly": false,
+      "executableApproved": false,
+      "sourceRefs": [
+        {
+          "sourceId": "dlr.source.siku-liuren-daquan",
+          "referenceKind": "scan",
+          "volume": "卷九",
+          "scanLeaf": 46,
+          "printedLeaf": null,
+          "pdfPage": 46,
+          "imageLabel": null,
+          "locator": null,
+          "shortQuote": "傳財太旺返財虧",
+          "verifiedBy": [
+            {
+              "reviewer": "C00 catalog first-pass scan audit",
+              "date": "2026-07-28"
+            },
+            {
+              "reviewer": "c00_bifa_recheck (Codex)",
+              "date": "2026-07-28"
+            }
+          ]
+        },
+        {
+          "sourceId": "dlr.source.daquan-transcription-aa7bc942",
+          "referenceKind": "locator",
+          "volume": null,
+          "scanLeaf": null,
+          "printedLeaf": null,
+          "pdfPage": null,
+          "imageLabel": null,
+          "locator": "docs/六壬大全/011巻十一 《毕法赋》上.md:L17",
+          "shortQuote": "传财太旺返财亏",
+          "verifiedBy": []
+        }
+      ],
+      "variantGroupId": null,
+      "adoptedVariantId": null,
+      "fixtureIds": [],
+      "targetCapabilityId": "daliuren.bifa.014",
+      "targetCodeDomain": "lib/domain/services/daliuren/bifa/",
+      "notes": [
+        "printed leaf 尚未核定；不得把 PDF 页复制为版心叶码。",
+        "adopted 仅表示百法目录身份采用；executableApproved 保持 false。"
+      ]
+    },
+    {
+      "ruleId": "dlr.rule.bifa.015",
+      "family": "bifa",
+      "subfamily": "bifaCatalog",
+      "ordinal": 15,
+      "traditionalName": "脱上逢脱防虚诈",
+      "adoptedStatus": "adopted",
+      "conditionsSummary": "本条只冻结毕法赋百法目录身份；typed 命中条件须由影印正文和独立正反例另行批准。",
+      "prioritySummary": "同规则族内的优先关系尚未由影印页冻结；不得按目录顺序推断执行优先级。",
+      "interpretation": "详细题句与起始影印页已独立复核；本条不批准执行条件、优先级或 fixture。",
+      "evidenceLevel": "B",
+      "locatorOnly": false,
+      "executableApproved": false,
+      "sourceRefs": [
+        {
+          "sourceId": "dlr.source.siku-liuren-daquan",
+          "referenceKind": "scan",
+          "volume": "卷九",
+          "scanLeaf": 47,
+          "printedLeaf": null,
+          "pdfPage": 47,
+          "imageLabel": null,
+          "locator": null,
+          "shortQuote": "脫上逢脫防虛詐",
+          "verifiedBy": [
+            {
+              "reviewer": "C00 catalog first-pass scan audit",
+              "date": "2026-07-28"
+            },
+            {
+              "reviewer": "c00_bifa_recheck (Codex)",
+              "date": "2026-07-28"
+            }
+          ]
+        },
+        {
+          "sourceId": "dlr.source.daquan-transcription-aa7bc942",
+          "referenceKind": "locator",
+          "volume": null,
+          "scanLeaf": null,
+          "printedLeaf": null,
+          "pdfPage": null,
+          "imageLabel": null,
+          "locator": "docs/六壬大全/011巻十一 《毕法赋》上.md:L19",
+          "shortQuote": "脱上逢脱防虚诈",
+          "verifiedBy": []
+        }
+      ],
+      "variantGroupId": null,
+      "adoptedVariantId": null,
+      "fixtureIds": [],
+      "targetCapabilityId": "daliuren.bifa.015",
+      "targetCodeDomain": "lib/domain/services/daliuren/bifa/",
+      "notes": [
+        "printed leaf 尚未核定；不得把 PDF 页复制为版心叶码。",
+        "adopted 仅表示百法目录身份采用；executableApproved 保持 false。"
+      ]
+    },
+    {
+      "ruleId": "dlr.rule.bifa.016",
+      "family": "bifa",
+      "subfamily": "bifaCatalog",
+      "ordinal": 16,
+      "traditionalName": "空上乘空事莫追",
+      "adoptedStatus": "adopted",
+      "conditionsSummary": "本条只冻结毕法赋百法目录身份；typed 命中条件须由影印正文和独立正反例另行批准。",
+      "prioritySummary": "同规则族内的优先关系尚未由影印页冻结；不得按目录顺序推断执行优先级。",
+      "interpretation": "详细题句与起始影印页已独立复核；本条不批准执行条件、优先级或 fixture。",
+      "evidenceLevel": "B",
+      "locatorOnly": false,
+      "executableApproved": false,
+      "sourceRefs": [
+        {
+          "sourceId": "dlr.source.siku-liuren-daquan",
+          "referenceKind": "scan",
+          "volume": "卷九",
+          "scanLeaf": 50,
+          "printedLeaf": null,
+          "pdfPage": 50,
+          "imageLabel": null,
+          "locator": null,
+          "shortQuote": "空上乘空事莫追",
+          "verifiedBy": [
+            {
+              "reviewer": "C00 catalog first-pass scan audit",
+              "date": "2026-07-28"
+            },
+            {
+              "reviewer": "c00_bifa_recheck (Codex)",
+              "date": "2026-07-28"
+            }
+          ]
+        },
+        {
+          "sourceId": "dlr.source.daquan-transcription-aa7bc942",
+          "referenceKind": "locator",
+          "volume": null,
+          "scanLeaf": null,
+          "printedLeaf": null,
+          "pdfPage": null,
+          "imageLabel": null,
+          "locator": "docs/六壬大全/011巻十一 《毕法赋》上.md:L19",
+          "shortQuote": "空上乘空事莫追",
+          "verifiedBy": []
+        }
+      ],
+      "variantGroupId": null,
+      "adoptedVariantId": null,
+      "fixtureIds": [],
+      "targetCapabilityId": "daliuren.bifa.016",
+      "targetCodeDomain": "lib/domain/services/daliuren/bifa/",
+      "notes": [
+        "printed leaf 尚未核定；不得把 PDF 页复制为版心叶码。",
+        "adopted 仅表示百法目录身份采用；executableApproved 保持 false。"
+      ]
+    },
+    {
+      "ruleId": "dlr.rule.bifa.017",
+      "family": "bifa",
+      "subfamily": "bifaCatalog",
+      "ordinal": 17,
+      "traditionalName": "进茹空亡宜退步",
+      "adoptedStatus": "adopted",
+      "conditionsSummary": "本条只冻结毕法赋百法目录身份；typed 命中条件须由影印正文和独立正反例另行批准。",
+      "prioritySummary": "同规则族内的优先关系尚未由影印页冻结；不得按目录顺序推断执行优先级。",
+      "interpretation": "详细题句与起始影印页已独立复核；本条不批准执行条件、优先级或 fixture。",
+      "evidenceLevel": "B",
+      "locatorOnly": false,
+      "executableApproved": false,
+      "sourceRefs": [
+        {
+          "sourceId": "dlr.source.siku-liuren-daquan",
+          "referenceKind": "scan",
+          "volume": "卷九",
+          "scanLeaf": 52,
+          "printedLeaf": null,
+          "pdfPage": 52,
+          "imageLabel": null,
+          "locator": null,
+          "shortQuote": "進茹空亡宜退步",
+          "verifiedBy": [
+            {
+              "reviewer": "C00 catalog first-pass scan audit",
+              "date": "2026-07-28"
+            },
+            {
+              "reviewer": "c00_bifa_recheck (Codex)",
+              "date": "2026-07-28"
+            }
+          ]
+        },
+        {
+          "sourceId": "dlr.source.daquan-transcription-aa7bc942",
+          "referenceKind": "locator",
+          "volume": null,
+          "scanLeaf": null,
+          "printedLeaf": null,
+          "pdfPage": null,
+          "imageLabel": null,
+          "locator": "docs/六壬大全/011巻十一 《毕法赋》上.md:L21",
+          "shortQuote": "进茹空亡宜退步",
+          "verifiedBy": []
+        }
+      ],
+      "variantGroupId": null,
+      "adoptedVariantId": null,
+      "fixtureIds": [],
+      "targetCapabilityId": "daliuren.bifa.017",
+      "targetCodeDomain": "lib/domain/services/daliuren/bifa/",
+      "notes": [
+        "printed leaf 尚未核定；不得把 PDF 页复制为版心叶码。",
+        "adopted 仅表示百法目录身份采用；executableApproved 保持 false。"
+      ]
+    },
+    {
+      "ruleId": "dlr.rule.bifa.018",
+      "family": "bifa",
+      "subfamily": "bifaCatalog",
+      "ordinal": 18,
+      "traditionalName": "踏脚空亡进用宜",
+      "adoptedStatus": "adopted",
+      "conditionsSummary": "本条只冻结毕法赋百法目录身份；typed 命中条件须由影印正文和独立正反例另行批准。",
+      "prioritySummary": "同规则族内的优先关系尚未由影印页冻结；不得按目录顺序推断执行优先级。",
+      "interpretation": "详细题句与起始影印页已独立复核；本条不批准执行条件、优先级或 fixture。",
+      "evidenceLevel": "B",
+      "locatorOnly": false,
+      "executableApproved": false,
+      "sourceRefs": [
+        {
+          "sourceId": "dlr.source.siku-liuren-daquan",
+          "referenceKind": "scan",
+          "volume": "卷九",
+          "scanLeaf": 54,
+          "printedLeaf": null,
+          "pdfPage": 54,
+          "imageLabel": null,
+          "locator": null,
+          "shortQuote": "踏腳空亡進用宜",
+          "verifiedBy": [
+            {
+              "reviewer": "C00 catalog first-pass scan audit",
+              "date": "2026-07-28"
+            },
+            {
+              "reviewer": "c00_bifa_recheck (Codex)",
+              "date": "2026-07-28"
+            }
+          ]
+        },
+        {
+          "sourceId": "dlr.source.daquan-transcription-aa7bc942",
+          "referenceKind": "locator",
+          "volume": null,
+          "scanLeaf": null,
+          "printedLeaf": null,
+          "pdfPage": null,
+          "imageLabel": null,
+          "locator": "docs/六壬大全/011巻十一 《毕法赋》上.md:L21",
+          "shortQuote": "踏脚空亡进用宜",
+          "verifiedBy": []
+        }
+      ],
+      "variantGroupId": null,
+      "adoptedVariantId": null,
+      "fixtureIds": [],
+      "targetCapabilityId": "daliuren.bifa.018",
+      "targetCodeDomain": "lib/domain/services/daliuren/bifa/",
+      "notes": [
+        "printed leaf 尚未核定；不得把 PDF 页复制为版心叶码。",
+        "adopted 仅表示百法目录身份采用；executableApproved 保持 false。"
+      ]
+    },
+    {
+      "ruleId": "dlr.rule.bifa.019",
+      "family": "bifa",
+      "subfamily": "bifaCatalog",
+      "ordinal": 19,
+      "traditionalName": "胎财生气妻怀孕",
+      "adoptedStatus": "adopted",
+      "conditionsSummary": "本条只冻结毕法赋百法目录身份；typed 命中条件须由影印正文和独立正反例另行批准。",
+      "prioritySummary": "同规则族内的优先关系尚未由影印页冻结；不得按目录顺序推断执行优先级。",
+      "interpretation": "详细题句与起始影印页已独立复核；本条不批准执行条件、优先级或 fixture。",
+      "evidenceLevel": "B",
+      "locatorOnly": false,
+      "executableApproved": false,
+      "sourceRefs": [
+        {
+          "sourceId": "dlr.source.siku-liuren-daquan",
+          "referenceKind": "scan",
+          "volume": "卷九",
+          "scanLeaf": 55,
+          "printedLeaf": null,
+          "pdfPage": 55,
+          "imageLabel": null,
+          "locator": null,
+          "shortQuote": "胎財生氣妻懷孕",
+          "verifiedBy": [
+            {
+              "reviewer": "C00 catalog first-pass scan audit",
+              "date": "2026-07-28"
+            },
+            {
+              "reviewer": "c00_bifa_recheck (Codex)",
+              "date": "2026-07-28"
+            }
+          ]
+        },
+        {
+          "sourceId": "dlr.source.daquan-transcription-aa7bc942",
+          "referenceKind": "locator",
+          "volume": null,
+          "scanLeaf": null,
+          "printedLeaf": null,
+          "pdfPage": null,
+          "imageLabel": null,
+          "locator": "docs/六壬大全/011巻十一 《毕法赋》上.md:L23",
+          "shortQuote": "胎财生气妻怀孕",
+          "verifiedBy": []
+        }
+      ],
+      "variantGroupId": null,
+      "adoptedVariantId": null,
+      "fixtureIds": [],
+      "targetCapabilityId": "daliuren.bifa.019",
+      "targetCodeDomain": "lib/domain/services/daliuren/bifa/",
+      "notes": [
+        "printed leaf 尚未核定；不得把 PDF 页复制为版心叶码。",
+        "adopted 仅表示百法目录身份采用；executableApproved 保持 false。"
+      ]
+    },
+    {
+      "ruleId": "dlr.rule.bifa.020",
+      "family": "bifa",
+      "subfamily": "bifaCatalog",
+      "ordinal": 20,
+      "traditionalName": "胎财死气损胎推",
+      "adoptedStatus": "adopted",
+      "conditionsSummary": "本条只冻结毕法赋百法目录身份；typed 命中条件须由影印正文和独立正反例另行批准。",
+      "prioritySummary": "同规则族内的优先关系尚未由影印页冻结；不得按目录顺序推断执行优先级。",
+      "interpretation": "详细题句与起始影印页已独立复核；本条不批准执行条件、优先级或 fixture。",
+      "evidenceLevel": "B",
+      "locatorOnly": false,
+      "executableApproved": false,
+      "sourceRefs": [
+        {
+          "sourceId": "dlr.source.siku-liuren-daquan",
+          "referenceKind": "scan",
+          "volume": "卷九",
+          "scanLeaf": 66,
+          "printedLeaf": null,
+          "pdfPage": 66,
+          "imageLabel": null,
+          "locator": null,
+          "shortQuote": "胎財死氣損胎推",
+          "verifiedBy": [
+            {
+              "reviewer": "C00 catalog first-pass scan audit",
+              "date": "2026-07-28"
+            },
+            {
+              "reviewer": "c00_bifa_recheck (Codex)",
+              "date": "2026-07-28"
+            }
+          ]
+        },
+        {
+          "sourceId": "dlr.source.daquan-transcription-aa7bc942",
+          "referenceKind": "locator",
+          "volume": null,
+          "scanLeaf": null,
+          "printedLeaf": null,
+          "pdfPage": null,
+          "imageLabel": null,
+          "locator": "docs/六壬大全/011巻十一 《毕法赋》上.md:L23",
+          "shortQuote": "胎财死气损胎推",
+          "verifiedBy": []
+        }
+      ],
+      "variantGroupId": null,
+      "adoptedVariantId": null,
+      "fixtureIds": [],
+      "targetCapabilityId": "daliuren.bifa.020",
+      "targetCodeDomain": "lib/domain/services/daliuren/bifa/",
+      "notes": [
+        "printed leaf 尚未核定；不得把 PDF 页复制为版心叶码。",
+        "adopted 仅表示百法目录身份采用；executableApproved 保持 false。"
+      ]
+    },
+    {
+      "ruleId": "dlr.rule.bifa.021",
+      "family": "bifa",
+      "subfamily": "bifaCatalog",
+      "ordinal": 21,
+      "traditionalName": "交车相合交关利",
+      "adoptedStatus": "adopted",
+      "conditionsSummary": "本条只冻结毕法赋百法目录身份；typed 命中条件须由影印正文和独立正反例另行批准。",
+      "prioritySummary": "同规则族内的优先关系尚未由影印页冻结；不得按目录顺序推断执行优先级。",
+      "interpretation": "详细题句与起始影印页已独立复核；本条不批准执行条件、优先级或 fixture。",
+      "evidenceLevel": "B",
+      "locatorOnly": false,
+      "executableApproved": false,
+      "sourceRefs": [
+        {
+          "sourceId": "dlr.source.siku-liuren-daquan",
+          "referenceKind": "scan",
+          "volume": "卷九",
+          "scanLeaf": 66,
+          "printedLeaf": null,
+          "pdfPage": 66,
+          "imageLabel": null,
+          "locator": null,
+          "shortQuote": "交車相合交關利",
+          "verifiedBy": [
+            {
+              "reviewer": "C00 catalog first-pass scan audit",
+              "date": "2026-07-28"
+            },
+            {
+              "reviewer": "c00_bifa_recheck (Codex)",
+              "date": "2026-07-28"
+            }
+          ]
+        },
+        {
+          "sourceId": "dlr.source.daquan-transcription-aa7bc942",
+          "referenceKind": "locator",
+          "volume": null,
+          "scanLeaf": null,
+          "printedLeaf": null,
+          "pdfPage": null,
+          "imageLabel": null,
+          "locator": "docs/六壬大全/011巻十一 《毕法赋》上.md:L25",
+          "shortQuote": "交车相合交关利",
+          "verifiedBy": []
+        }
+      ],
+      "variantGroupId": null,
+      "adoptedVariantId": null,
+      "fixtureIds": [],
+      "targetCapabilityId": "daliuren.bifa.021",
+      "targetCodeDomain": "lib/domain/services/daliuren/bifa/",
+      "notes": [
+        "printed leaf 尚未核定；不得把 PDF 页复制为版心叶码。",
+        "adopted 仅表示百法目录身份采用；executableApproved 保持 false。"
+      ]
+    },
+    {
+      "ruleId": "dlr.rule.bifa.022",
+      "family": "bifa",
+      "subfamily": "bifaCatalog",
+      "ordinal": 22,
+      "traditionalName": "上下皆合两心齐",
+      "adoptedStatus": "adopted",
+      "conditionsSummary": "本条只冻结毕法赋百法目录身份；typed 命中条件须由影印正文和独立正反例另行批准。",
+      "prioritySummary": "同规则族内的优先关系尚未由影印页冻结；不得按目录顺序推断执行优先级。",
+      "interpretation": "详细题句与起始影印页已独立复核；本条不批准执行条件、优先级或 fixture。",
+      "evidenceLevel": "B",
+      "locatorOnly": false,
+      "executableApproved": false,
+      "sourceRefs": [
+        {
+          "sourceId": "dlr.source.siku-liuren-daquan",
+          "referenceKind": "scan",
+          "volume": "卷九",
+          "scanLeaf": 71,
+          "printedLeaf": null,
+          "pdfPage": 71,
+          "imageLabel": null,
+          "locator": null,
+          "shortQuote": "上下皆合兩心齊",
+          "verifiedBy": [
+            {
+              "reviewer": "C00 catalog first-pass scan audit",
+              "date": "2026-07-28"
+            },
+            {
+              "reviewer": "c00_bifa_recheck (Codex)",
+              "date": "2026-07-28"
+            }
+          ]
+        },
+        {
+          "sourceId": "dlr.source.daquan-transcription-aa7bc942",
+          "referenceKind": "locator",
+          "volume": null,
+          "scanLeaf": null,
+          "printedLeaf": null,
+          "pdfPage": null,
+          "imageLabel": null,
+          "locator": "docs/六壬大全/011巻十一 《毕法赋》上.md:L25",
+          "shortQuote": "上下皆合两心齐",
+          "verifiedBy": []
+        }
+      ],
+      "variantGroupId": null,
+      "adoptedVariantId": null,
+      "fixtureIds": [],
+      "targetCapabilityId": "daliuren.bifa.022",
+      "targetCodeDomain": "lib/domain/services/daliuren/bifa/",
+      "notes": [
+        "printed leaf 尚未核定；不得把 PDF 页复制为版心叶码。",
+        "adopted 仅表示百法目录身份采用；executableApproved 保持 false。"
+      ]
+    },
+    {
+      "ruleId": "dlr.rule.bifa.023",
+      "family": "bifa",
+      "subfamily": "bifaCatalog",
+      "ordinal": 23,
+      "traditionalName": "彼求我事支传干",
+      "adoptedStatus": "adopted",
+      "conditionsSummary": "本条只冻结毕法赋百法目录身份；typed 命中条件须由影印正文和独立正反例另行批准。",
+      "prioritySummary": "同规则族内的优先关系尚未由影印页冻结；不得按目录顺序推断执行优先级。",
+      "interpretation": "详细题句与起始影印页已独立复核；本条不批准执行条件、优先级或 fixture。",
+      "evidenceLevel": "B",
+      "locatorOnly": false,
+      "executableApproved": false,
+      "sourceRefs": [
+        {
+          "sourceId": "dlr.source.siku-liuren-daquan",
+          "referenceKind": "scan",
+          "volume": "卷九",
+          "scanLeaf": 76,
+          "printedLeaf": null,
+          "pdfPage": 76,
+          "imageLabel": null,
+          "locator": null,
+          "shortQuote": "彼求我事支傳干",
+          "verifiedBy": [
+            {
+              "reviewer": "C00 catalog first-pass scan audit",
+              "date": "2026-07-28"
+            },
+            {
+              "reviewer": "c00_bifa_recheck (Codex)",
+              "date": "2026-07-28"
+            }
+          ]
+        },
+        {
+          "sourceId": "dlr.source.daquan-transcription-aa7bc942",
+          "referenceKind": "locator",
+          "volume": null,
+          "scanLeaf": null,
+          "printedLeaf": null,
+          "pdfPage": null,
+          "imageLabel": null,
+          "locator": "docs/六壬大全/011巻十一 《毕法赋》上.md:L27",
+          "shortQuote": "彼求我事支传干",
+          "verifiedBy": []
+        }
+      ],
+      "variantGroupId": null,
+      "adoptedVariantId": null,
+      "fixtureIds": [],
+      "targetCapabilityId": "daliuren.bifa.023",
+      "targetCodeDomain": "lib/domain/services/daliuren/bifa/",
+      "notes": [
+        "printed leaf 尚未核定；不得把 PDF 页复制为版心叶码。",
+        "adopted 仅表示百法目录身份采用；executableApproved 保持 false。"
+      ]
+    },
+    {
+      "ruleId": "dlr.rule.bifa.024",
+      "family": "bifa",
+      "subfamily": "bifaCatalog",
+      "ordinal": 24,
+      "traditionalName": "我求彼事干传支",
+      "adoptedStatus": "adopted",
+      "conditionsSummary": "本条只冻结毕法赋百法目录身份；typed 命中条件须由影印正文和独立正反例另行批准。",
+      "prioritySummary": "同规则族内的优先关系尚未由影印页冻结；不得按目录顺序推断执行优先级。",
+      "interpretation": "详细题句与起始影印页已独立复核；本条不批准执行条件、优先级或 fixture。",
+      "evidenceLevel": "B",
+      "locatorOnly": false,
+      "executableApproved": false,
+      "sourceRefs": [
+        {
+          "sourceId": "dlr.source.siku-liuren-daquan",
+          "referenceKind": "scan",
+          "volume": "卷九",
+          "scanLeaf": 76,
+          "printedLeaf": null,
+          "pdfPage": 76,
+          "imageLabel": null,
+          "locator": null,
+          "shortQuote": "我求彼事干傳支",
+          "verifiedBy": [
+            {
+              "reviewer": "C00 catalog first-pass scan audit",
+              "date": "2026-07-28"
+            },
+            {
+              "reviewer": "c00_bifa_recheck (Codex)",
+              "date": "2026-07-28"
+            }
+          ]
+        },
+        {
+          "sourceId": "dlr.source.daquan-transcription-aa7bc942",
+          "referenceKind": "locator",
+          "volume": null,
+          "scanLeaf": null,
+          "printedLeaf": null,
+          "pdfPage": null,
+          "imageLabel": null,
+          "locator": "docs/六壬大全/011巻十一 《毕法赋》上.md:L27",
+          "shortQuote": "我求彼事干传支",
+          "verifiedBy": []
+        }
+      ],
+      "variantGroupId": null,
+      "adoptedVariantId": null,
+      "fixtureIds": [],
+      "targetCapabilityId": "daliuren.bifa.024",
+      "targetCodeDomain": "lib/domain/services/daliuren/bifa/",
+      "notes": [
+        "printed leaf 尚未核定；不得把 PDF 页复制为版心叶码。",
+        "adopted 仅表示百法目录身份采用；executableApproved 保持 false。"
+      ]
+    },
+    {
+      "ruleId": "dlr.rule.bifa.025",
+      "family": "bifa",
+      "subfamily": "bifaCatalog",
+      "ordinal": 25,
+      "traditionalName": "金日逢丁凶祸动",
+      "adoptedStatus": "adopted",
+      "conditionsSummary": "本条只冻结毕法赋百法目录身份；typed 命中条件须由影印正文和独立正反例另行批准。",
+      "prioritySummary": "同规则族内的优先关系尚未由影印页冻结；不得按目录顺序推断执行优先级。",
+      "interpretation": "详细题句与起始影印页已独立复核；本条不批准执行条件、优先级或 fixture。",
+      "evidenceLevel": "B",
+      "locatorOnly": false,
+      "executableApproved": false,
+      "sourceRefs": [
+        {
+          "sourceId": "dlr.source.siku-liuren-daquan",
+          "referenceKind": "scan",
+          "volume": "卷九",
+          "scanLeaf": 77,
+          "printedLeaf": null,
+          "pdfPage": 77,
+          "imageLabel": null,
+          "locator": null,
+          "shortQuote": "金日逢丁凶禍動",
+          "verifiedBy": [
+            {
+              "reviewer": "C00 catalog first-pass scan audit",
+              "date": "2026-07-28"
+            },
+            {
+              "reviewer": "c00_bifa_recheck (Codex)",
+              "date": "2026-07-28"
+            }
+          ]
+        },
+        {
+          "sourceId": "dlr.source.daquan-transcription-aa7bc942",
+          "referenceKind": "locator",
+          "volume": null,
+          "scanLeaf": null,
+          "printedLeaf": null,
+          "pdfPage": null,
+          "imageLabel": null,
+          "locator": "docs/六壬大全/011巻十一 《毕法赋》上.md:L29",
+          "shortQuote": "金日逢丁凶祸动",
+          "verifiedBy": []
+        }
+      ],
+      "variantGroupId": null,
+      "adoptedVariantId": null,
+      "fixtureIds": [],
+      "targetCapabilityId": "daliuren.bifa.025",
+      "targetCodeDomain": "lib/domain/services/daliuren/bifa/",
+      "notes": [
+        "printed leaf 尚未核定；不得把 PDF 页复制为版心叶码。",
+        "adopted 仅表示百法目录身份采用；executableApproved 保持 false。"
+      ]
+    },
+    {
+      "ruleId": "dlr.rule.bifa.026",
+      "family": "bifa",
+      "subfamily": "bifaCatalog",
+      "ordinal": 26,
+      "traditionalName": "水日逢丁财动之",
+      "adoptedStatus": "adopted",
+      "conditionsSummary": "本条只冻结毕法赋百法目录身份；typed 命中条件须由影印正文和独立正反例另行批准。",
+      "prioritySummary": "同规则族内的优先关系尚未由影印页冻结；不得按目录顺序推断执行优先级。",
+      "interpretation": "详细题句与起始影印页已独立复核；本条不批准执行条件、优先级或 fixture。",
+      "evidenceLevel": "B",
+      "locatorOnly": false,
+      "executableApproved": false,
+      "sourceRefs": [
+        {
+          "sourceId": "dlr.source.siku-liuren-daquan",
+          "referenceKind": "scan",
+          "volume": "卷九",
+          "scanLeaf": 85,
+          "printedLeaf": null,
+          "pdfPage": 85,
+          "imageLabel": null,
+          "locator": null,
+          "shortQuote": "水日逢丁財動之",
+          "verifiedBy": [
+            {
+              "reviewer": "C00 catalog first-pass scan audit",
+              "date": "2026-07-28"
+            },
+            {
+              "reviewer": "c00_bifa_recheck (Codex)",
+              "date": "2026-07-28"
+            }
+          ]
+        },
+        {
+          "sourceId": "dlr.source.daquan-transcription-aa7bc942",
+          "referenceKind": "locator",
+          "volume": null,
+          "scanLeaf": null,
+          "printedLeaf": null,
+          "pdfPage": null,
+          "imageLabel": null,
+          "locator": "docs/六壬大全/011巻十一 《毕法赋》上.md:L29",
+          "shortQuote": "水日逢丁财动之",
+          "verifiedBy": []
+        }
+      ],
+      "variantGroupId": null,
+      "adoptedVariantId": null,
+      "fixtureIds": [],
+      "targetCapabilityId": "daliuren.bifa.026",
+      "targetCodeDomain": "lib/domain/services/daliuren/bifa/",
+      "notes": [
+        "printed leaf 尚未核定；不得把 PDF 页复制为版心叶码。",
+        "adopted 仅表示百法目录身份采用；executableApproved 保持 false。"
+      ]
+    },
+    {
+      "ruleId": "dlr.rule.bifa.027",
+      "family": "bifa",
+      "subfamily": "bifaCatalog",
+      "ordinal": 27,
+      "traditionalName": "传财化鬼财休觅",
+      "adoptedStatus": "adopted",
+      "conditionsSummary": "本条只冻结毕法赋百法目录身份；typed 命中条件须由影印正文和独立正反例另行批准。",
+      "prioritySummary": "同规则族内的优先关系尚未由影印页冻结；不得按目录顺序推断执行优先级。",
+      "interpretation": "详细题句与起始影印页已独立复核；本条不批准执行条件、优先级或 fixture。",
+      "evidenceLevel": "B",
+      "locatorOnly": false,
+      "executableApproved": false,
+      "sourceRefs": [
+        {
+          "sourceId": "dlr.source.siku-liuren-daquan",
+          "referenceKind": "scan",
+          "volume": "卷九",
+          "scanLeaf": 89,
+          "printedLeaf": null,
+          "pdfPage": 89,
+          "imageLabel": null,
+          "locator": null,
+          "shortQuote": "傳財化鬼財休覓",
+          "verifiedBy": [
+            {
+              "reviewer": "C00 catalog first-pass scan audit",
+              "date": "2026-07-28"
+            },
+            {
+              "reviewer": "c00_bifa_recheck (Codex)",
+              "date": "2026-07-28"
+            }
+          ]
+        },
+        {
+          "sourceId": "dlr.source.daquan-transcription-aa7bc942",
+          "referenceKind": "locator",
+          "volume": null,
+          "scanLeaf": null,
+          "printedLeaf": null,
+          "pdfPage": null,
+          "imageLabel": null,
+          "locator": "docs/六壬大全/011巻十一 《毕法赋》上.md:L31",
+          "shortQuote": "传财化鬼财休觅",
+          "verifiedBy": []
+        }
+      ],
+      "variantGroupId": null,
+      "adoptedVariantId": null,
+      "fixtureIds": [],
+      "targetCapabilityId": "daliuren.bifa.027",
+      "targetCodeDomain": "lib/domain/services/daliuren/bifa/",
+      "notes": [
+        "printed leaf 尚未核定；不得把 PDF 页复制为版心叶码。",
+        "adopted 仅表示百法目录身份采用；executableApproved 保持 false。"
+      ]
+    },
+    {
+      "ruleId": "dlr.rule.bifa.028",
+      "family": "bifa",
+      "subfamily": "bifaCatalog",
+      "ordinal": 28,
+      "traditionalName": "传鬼化财钱险危",
+      "adoptedStatus": "adopted",
+      "conditionsSummary": "本条只冻结毕法赋百法目录身份；typed 命中条件须由影印正文和独立正反例另行批准。",
+      "prioritySummary": "同规则族内的优先关系尚未由影印页冻结；不得按目录顺序推断执行优先级。",
+      "interpretation": "详细题句与起始影印页已独立复核；本条不批准执行条件、优先级或 fixture。",
+      "evidenceLevel": "B",
+      "locatorOnly": false,
+      "executableApproved": false,
+      "sourceRefs": [
+        {
+          "sourceId": "dlr.source.siku-liuren-daquan",
+          "referenceKind": "scan",
+          "volume": "卷九",
+          "scanLeaf": 94,
+          "printedLeaf": null,
+          "pdfPage": 94,
+          "imageLabel": null,
+          "locator": null,
+          "shortQuote": "傳鬼化財錢險危",
+          "verifiedBy": [
+            {
+              "reviewer": "C00 catalog first-pass scan audit",
+              "date": "2026-07-28"
+            },
+            {
+              "reviewer": "c00_bifa_recheck (Codex)",
+              "date": "2026-07-28"
+            }
+          ]
+        },
+        {
+          "sourceId": "dlr.source.daquan-transcription-aa7bc942",
+          "referenceKind": "locator",
+          "volume": null,
+          "scanLeaf": null,
+          "printedLeaf": null,
+          "pdfPage": null,
+          "imageLabel": null,
+          "locator": "docs/六壬大全/011巻十一 《毕法赋》上.md:L31",
+          "shortQuote": "传鬼化财钱险危",
+          "verifiedBy": []
+        }
+      ],
+      "variantGroupId": null,
+      "adoptedVariantId": null,
+      "fixtureIds": [],
+      "targetCapabilityId": "daliuren.bifa.028",
+      "targetCodeDomain": "lib/domain/services/daliuren/bifa/",
+      "notes": [
+        "printed leaf 尚未核定；不得把 PDF 页复制为版心叶码。",
+        "adopted 仅表示百法目录身份采用；executableApproved 保持 false。"
+      ]
+    },
+    {
+      "ruleId": "dlr.rule.bifa.029",
+      "family": "bifa",
+      "subfamily": "bifaCatalog",
+      "ordinal": 29,
+      "traditionalName": "眷属丰盈居狭宅",
+      "adoptedStatus": "adopted",
+      "conditionsSummary": "本条只冻结毕法赋百法目录身份；typed 命中条件须由影印正文和独立正反例另行批准。",
+      "prioritySummary": "同规则族内的优先关系尚未由影印页冻结；不得按目录顺序推断执行优先级。",
+      "interpretation": "详细题句与起始影印页已独立复核；本条不批准执行条件、优先级或 fixture。",
+      "evidenceLevel": "B",
+      "locatorOnly": false,
+      "executableApproved": false,
+      "sourceRefs": [
+        {
+          "sourceId": "dlr.source.siku-liuren-daquan",
+          "referenceKind": "scan",
+          "volume": "卷九",
+          "scanLeaf": 98,
+          "printedLeaf": null,
+          "pdfPage": 98,
+          "imageLabel": null,
+          "locator": null,
+          "shortQuote": "眷屬豐盈居狹宅",
+          "verifiedBy": [
+            {
+              "reviewer": "C00 catalog first-pass scan audit",
+              "date": "2026-07-28"
+            },
+            {
+              "reviewer": "c00_bifa_recheck (Codex)",
+              "date": "2026-07-28"
+            }
+          ]
+        },
+        {
+          "sourceId": "dlr.source.daquan-transcription-aa7bc942",
+          "referenceKind": "locator",
+          "volume": null,
+          "scanLeaf": null,
+          "printedLeaf": null,
+          "pdfPage": null,
+          "imageLabel": null,
+          "locator": "docs/六壬大全/011巻十一 《毕法赋》上.md:L33",
+          "shortQuote": "眷属丰盈居狭宅",
+          "verifiedBy": []
+        }
+      ],
+      "variantGroupId": null,
+      "adoptedVariantId": null,
+      "fixtureIds": [],
+      "targetCapabilityId": "daliuren.bifa.029",
+      "targetCodeDomain": "lib/domain/services/daliuren/bifa/",
+      "notes": [
+        "printed leaf 尚未核定；不得把 PDF 页复制为版心叶码。",
+        "adopted 仅表示百法目录身份采用；executableApproved 保持 false。"
+      ]
+    },
+    {
+      "ruleId": "dlr.rule.bifa.030",
+      "family": "bifa",
+      "subfamily": "bifaCatalog",
+      "ordinal": 30,
+      "traditionalName": "屋宅宽广致人衰",
+      "adoptedStatus": "adopted",
+      "conditionsSummary": "本条只冻结毕法赋百法目录身份；typed 命中条件须由影印正文和独立正反例另行批准。",
+      "prioritySummary": "同规则族内的优先关系尚未由影印页冻结；不得按目录顺序推断执行优先级。",
+      "interpretation": "详细题句与起始影印页已独立复核；本条不批准执行条件、优先级或 fixture。",
+      "evidenceLevel": "B",
+      "locatorOnly": false,
+      "executableApproved": false,
+      "sourceRefs": [
+        {
+          "sourceId": "dlr.source.siku-liuren-daquan",
+          "referenceKind": "scan",
+          "volume": "卷九",
+          "scanLeaf": 100,
+          "printedLeaf": null,
+          "pdfPage": 100,
+          "imageLabel": null,
+          "locator": null,
+          "shortQuote": "屋宅寬廣致人衰",
+          "verifiedBy": [
+            {
+              "reviewer": "C00 catalog first-pass scan audit",
+              "date": "2026-07-28"
+            },
+            {
+              "reviewer": "c00_bifa_recheck (Codex)",
+              "date": "2026-07-28"
+            }
+          ]
+        },
+        {
+          "sourceId": "dlr.source.daquan-transcription-aa7bc942",
+          "referenceKind": "locator",
+          "volume": null,
+          "scanLeaf": null,
+          "printedLeaf": null,
+          "pdfPage": null,
+          "imageLabel": null,
+          "locator": "docs/六壬大全/011巻十一 《毕法赋》上.md:L33",
+          "shortQuote": "屋宅宽广致人衰",
+          "verifiedBy": []
+        }
+      ],
+      "variantGroupId": null,
+      "adoptedVariantId": null,
+      "fixtureIds": [],
+      "targetCapabilityId": "daliuren.bifa.030",
+      "targetCodeDomain": "lib/domain/services/daliuren/bifa/",
+      "notes": [
+        "printed leaf 尚未核定；不得把 PDF 页复制为版心叶码。",
+        "adopted 仅表示百法目录身份采用；executableApproved 保持 false。"
+      ]
+    },
+    {
+      "ruleId": "dlr.rule.bifa.031",
+      "family": "bifa",
+      "subfamily": "bifaCatalog",
+      "ordinal": 31,
+      "traditionalName": "三传递生人举荐",
+      "adoptedStatus": "adopted",
+      "conditionsSummary": "本条只冻结毕法赋百法目录身份；typed 命中条件须由影印正文和独立正反例另行批准。",
+      "prioritySummary": "同规则族内的优先关系尚未由影印页冻结；不得按目录顺序推断执行优先级。",
+      "interpretation": "详细题句与起始影印页已独立复核；本条不批准执行条件、优先级或 fixture。",
+      "evidenceLevel": "B",
+      "locatorOnly": false,
+      "executableApproved": false,
+      "sourceRefs": [
+        {
+          "sourceId": "dlr.source.siku-liuren-daquan",
+          "referenceKind": "scan",
+          "volume": "卷九",
+          "scanLeaf": 102,
+          "printedLeaf": null,
+          "pdfPage": 102,
+          "imageLabel": null,
+          "locator": null,
+          "shortQuote": "三傳遞生人舉薦",
+          "verifiedBy": [
+            {
+              "reviewer": "C00 catalog first-pass scan audit",
+              "date": "2026-07-28"
+            },
+            {
+              "reviewer": "c00_bifa_recheck (Codex)",
+              "date": "2026-07-28"
+            }
+          ]
+        },
+        {
+          "sourceId": "dlr.source.daquan-transcription-aa7bc942",
+          "referenceKind": "locator",
+          "volume": null,
+          "scanLeaf": null,
+          "printedLeaf": null,
+          "pdfPage": null,
+          "imageLabel": null,
+          "locator": "docs/六壬大全/011巻十一 《毕法赋》上.md:L35",
+          "shortQuote": "三传递生人举荐",
+          "verifiedBy": []
+        }
+      ],
+      "variantGroupId": null,
+      "adoptedVariantId": null,
+      "fixtureIds": [],
+      "targetCapabilityId": "daliuren.bifa.031",
+      "targetCodeDomain": "lib/domain/services/daliuren/bifa/",
+      "notes": [
+        "printed leaf 尚未核定；不得把 PDF 页复制为版心叶码。",
+        "adopted 仅表示百法目录身份采用；executableApproved 保持 false。"
+      ]
+    },
+    {
+      "ruleId": "dlr.rule.bifa.032",
+      "family": "bifa",
+      "subfamily": "bifaCatalog",
+      "ordinal": 32,
+      "traditionalName": "三传互克众人欺",
+      "adoptedStatus": "adopted",
+      "conditionsSummary": "本条只冻结毕法赋百法目录身份；typed 命中条件须由影印正文和独立正反例另行批准。",
+      "prioritySummary": "同规则族内的优先关系尚未由影印页冻结；不得按目录顺序推断执行优先级。",
+      "interpretation": "详细题句与起始影印页已独立复核；本条不批准执行条件、优先级或 fixture。",
+      "evidenceLevel": "B",
+      "locatorOnly": false,
+      "executableApproved": false,
+      "sourceRefs": [
+        {
+          "sourceId": "dlr.source.siku-liuren-daquan",
+          "referenceKind": "scan",
+          "volume": "卷九",
+          "scanLeaf": 105,
+          "printedLeaf": null,
+          "pdfPage": 105,
+          "imageLabel": null,
+          "locator": null,
+          "shortQuote": "三傳互克衆人欺",
+          "verifiedBy": [
+            {
+              "reviewer": "C00 catalog first-pass scan audit",
+              "date": "2026-07-28"
+            },
+            {
+              "reviewer": "c00_bifa_recheck (Codex)",
+              "date": "2026-07-28"
+            }
+          ]
+        },
+        {
+          "sourceId": "dlr.source.daquan-transcription-aa7bc942",
+          "referenceKind": "locator",
+          "volume": null,
+          "scanLeaf": null,
+          "printedLeaf": null,
+          "pdfPage": null,
+          "imageLabel": null,
+          "locator": "docs/六壬大全/011巻十一 《毕法赋》上.md:L35",
+          "shortQuote": "三传互克众人欺",
+          "verifiedBy": []
+        }
+      ],
+      "variantGroupId": null,
+      "adoptedVariantId": null,
+      "fixtureIds": [],
+      "targetCapabilityId": "daliuren.bifa.032",
+      "targetCodeDomain": "lib/domain/services/daliuren/bifa/",
+      "notes": [
+        "printed leaf 尚未核定；不得把 PDF 页复制为版心叶码。",
+        "adopted 仅表示百法目录身份采用；executableApproved 保持 false。"
+      ]
+    },
+    {
+      "ruleId": "dlr.rule.bifa.033",
+      "family": "bifa",
+      "subfamily": "bifaCatalog",
+      "ordinal": 33,
+      "traditionalName": "有始无终难变易",
+      "adoptedStatus": "adopted",
+      "conditionsSummary": "本条只冻结毕法赋百法目录身份；typed 命中条件须由影印正文和独立正反例另行批准。",
+      "prioritySummary": "同规则族内的优先关系尚未由影印页冻结；不得按目录顺序推断执行优先级。",
+      "interpretation": "详细题句与起始影印页已独立复核；本条不批准执行条件、优先级或 fixture。",
+      "evidenceLevel": "B",
+      "locatorOnly": false,
+      "executableApproved": false,
+      "sourceRefs": [
+        {
+          "sourceId": "dlr.source.siku-liuren-daquan",
+          "referenceKind": "scan",
+          "volume": "卷九",
+          "scanLeaf": 108,
+          "printedLeaf": null,
+          "pdfPage": 108,
+          "imageLabel": null,
+          "locator": null,
+          "shortQuote": "有始無終難變易",
+          "verifiedBy": [
+            {
+              "reviewer": "C00 catalog first-pass scan audit",
+              "date": "2026-07-28"
+            },
+            {
+              "reviewer": "c00_bifa_recheck (Codex)",
+              "date": "2026-07-28"
+            }
+          ]
+        },
+        {
+          "sourceId": "dlr.source.daquan-transcription-aa7bc942",
+          "referenceKind": "locator",
+          "volume": null,
+          "scanLeaf": null,
+          "printedLeaf": null,
+          "pdfPage": null,
+          "imageLabel": null,
+          "locator": "docs/六壬大全/011巻十一 《毕法赋》上.md:L37",
+          "shortQuote": "有始无终难变易",
+          "verifiedBy": []
+        }
+      ],
+      "variantGroupId": null,
+      "adoptedVariantId": null,
+      "fixtureIds": [],
+      "targetCapabilityId": "daliuren.bifa.033",
+      "targetCodeDomain": "lib/domain/services/daliuren/bifa/",
+      "notes": [
+        "printed leaf 尚未核定；不得把 PDF 页复制为版心叶码。",
+        "adopted 仅表示百法目录身份采用；executableApproved 保持 false。"
+      ]
+    },
+    {
+      "ruleId": "dlr.rule.bifa.034",
+      "family": "bifa",
+      "subfamily": "bifaCatalog",
+      "ordinal": 34,
+      "traditionalName": "苦去甘来乐里悲",
+      "adoptedStatus": "adopted",
+      "conditionsSummary": "本条只冻结毕法赋百法目录身份；typed 命中条件须由影印正文和独立正反例另行批准。",
+      "prioritySummary": "同规则族内的优先关系尚未由影印页冻结；不得按目录顺序推断执行优先级。",
+      "interpretation": "详细题句与起始影印页已独立复核；本条不批准执行条件、优先级或 fixture。",
+      "evidenceLevel": "B",
+      "locatorOnly": false,
+      "executableApproved": false,
+      "sourceRefs": [
+        {
+          "sourceId": "dlr.source.siku-liuren-daquan",
+          "referenceKind": "scan",
+          "volume": "卷九",
+          "scanLeaf": 110,
+          "printedLeaf": null,
+          "pdfPage": 110,
+          "imageLabel": null,
+          "locator": null,
+          "shortQuote": "苦去甘來樂裏悲",
+          "verifiedBy": [
+            {
+              "reviewer": "C00 catalog first-pass scan audit",
+              "date": "2026-07-28"
+            },
+            {
+              "reviewer": "c00_bifa_recheck (Codex)",
+              "date": "2026-07-28"
+            }
+          ]
+        },
+        {
+          "sourceId": "dlr.source.daquan-transcription-aa7bc942",
+          "referenceKind": "locator",
+          "volume": null,
+          "scanLeaf": null,
+          "printedLeaf": null,
+          "pdfPage": null,
+          "imageLabel": null,
+          "locator": "docs/六壬大全/011巻十一 《毕法赋》上.md:L37",
+          "shortQuote": "苦去甘来乐里悲",
+          "verifiedBy": []
+        }
+      ],
+      "variantGroupId": null,
+      "adoptedVariantId": null,
+      "fixtureIds": [],
+      "targetCapabilityId": "daliuren.bifa.034",
+      "targetCodeDomain": "lib/domain/services/daliuren/bifa/",
+      "notes": [
+        "printed leaf 尚未核定；不得把 PDF 页复制为版心叶码。",
+        "adopted 仅表示百法目录身份采用；executableApproved 保持 false。"
+      ]
+    },
+    {
+      "ruleId": "dlr.rule.bifa.035",
+      "family": "bifa",
+      "subfamily": "bifaCatalog",
+      "ordinal": 35,
+      "traditionalName": "人宅受脱俱招盗",
+      "adoptedStatus": "adopted",
+      "conditionsSummary": "本条只冻结毕法赋百法目录身份；typed 命中条件须由影印正文和独立正反例另行批准。",
+      "prioritySummary": "同规则族内的优先关系尚未由影印页冻结；不得按目录顺序推断执行优先级。",
+      "interpretation": "详细题句与起始影印页已独立复核；本条不批准执行条件、优先级或 fixture。",
+      "evidenceLevel": "B",
+      "locatorOnly": false,
+      "executableApproved": false,
+      "sourceRefs": [
+        {
+          "sourceId": "dlr.source.siku-liuren-daquan",
+          "referenceKind": "scan",
+          "volume": "卷九",
+          "scanLeaf": 116,
+          "printedLeaf": null,
+          "pdfPage": 116,
+          "imageLabel": null,
+          "locator": null,
+          "shortQuote": "人宅受脫俱招盜",
+          "verifiedBy": [
+            {
+              "reviewer": "C00 catalog first-pass scan audit",
+              "date": "2026-07-28"
+            },
+            {
+              "reviewer": "c00_bifa_recheck (Codex)",
+              "date": "2026-07-28"
+            }
+          ]
+        },
+        {
+          "sourceId": "dlr.source.daquan-transcription-aa7bc942",
+          "referenceKind": "locator",
+          "volume": null,
+          "scanLeaf": null,
+          "printedLeaf": null,
+          "pdfPage": null,
+          "imageLabel": null,
+          "locator": "docs/六壬大全/011巻十一 《毕法赋》上.md:L39",
+          "shortQuote": "人宅受脱俱招盗",
+          "verifiedBy": []
+        }
+      ],
+      "variantGroupId": null,
+      "adoptedVariantId": null,
+      "fixtureIds": [],
+      "targetCapabilityId": "daliuren.bifa.035",
+      "targetCodeDomain": "lib/domain/services/daliuren/bifa/",
+      "notes": [
+        "printed leaf 尚未核定；不得把 PDF 页复制为版心叶码。",
+        "adopted 仅表示百法目录身份采用；executableApproved 保持 false。"
+      ]
+    },
+    {
+      "ruleId": "dlr.rule.bifa.036",
+      "family": "bifa",
+      "subfamily": "bifaCatalog",
+      "ordinal": 36,
+      "traditionalName": "干支皆败势倾颓",
+      "adoptedStatus": "adopted",
+      "conditionsSummary": "本条只冻结毕法赋百法目录身份；typed 命中条件须由影印正文和独立正反例另行批准。",
+      "prioritySummary": "同规则族内的优先关系尚未由影印页冻结；不得按目录顺序推断执行优先级。",
+      "interpretation": "详细题句与起始影印页已独立复核；本条不批准执行条件、优先级或 fixture。",
+      "evidenceLevel": "B",
+      "locatorOnly": false,
+      "executableApproved": false,
+      "sourceRefs": [
+        {
+          "sourceId": "dlr.source.siku-liuren-daquan",
+          "referenceKind": "scan",
+          "volume": "卷九",
+          "scanLeaf": 118,
+          "printedLeaf": null,
+          "pdfPage": 118,
+          "imageLabel": null,
+          "locator": null,
+          "shortQuote": "干支皆敗勢傾頹",
+          "verifiedBy": [
+            {
+              "reviewer": "C00 catalog first-pass scan audit",
+              "date": "2026-07-28"
+            },
+            {
+              "reviewer": "c00_bifa_recheck (Codex)",
+              "date": "2026-07-28"
+            }
+          ]
+        },
+        {
+          "sourceId": "dlr.source.daquan-transcription-aa7bc942",
+          "referenceKind": "locator",
+          "volume": null,
+          "scanLeaf": null,
+          "printedLeaf": null,
+          "pdfPage": null,
+          "imageLabel": null,
+          "locator": "docs/六壬大全/011巻十一 《毕法赋》上.md:L39",
+          "shortQuote": "干支皆败势倾颓",
+          "verifiedBy": []
+        }
+      ],
+      "variantGroupId": null,
+      "adoptedVariantId": null,
+      "fixtureIds": [],
+      "targetCapabilityId": "daliuren.bifa.036",
+      "targetCodeDomain": "lib/domain/services/daliuren/bifa/",
+      "notes": [
+        "printed leaf 尚未核定；不得把 PDF 页复制为版心叶码。",
+        "adopted 仅表示百法目录身份采用；executableApproved 保持 false。"
+      ]
+    },
+    {
+      "ruleId": "dlr.rule.bifa.037",
+      "family": "bifa",
+      "subfamily": "bifaCatalog",
+      "ordinal": 37,
+      "traditionalName": "末助初兮三等讼",
+      "adoptedStatus": "adopted",
+      "conditionsSummary": "本条只冻结毕法赋百法目录身份；typed 命中条件须由影印正文和独立正反例另行批准。",
+      "prioritySummary": "同规则族内的优先关系尚未由影印页冻结；不得按目录顺序推断执行优先级。",
+      "interpretation": "详细题句与起始影印页已独立复核；本条不批准执行条件、优先级或 fixture。",
+      "evidenceLevel": "B",
+      "locatorOnly": false,
+      "executableApproved": false,
+      "sourceRefs": [
+        {
+          "sourceId": "dlr.source.siku-liuren-daquan",
+          "referenceKind": "scan",
+          "volume": "卷九",
+          "scanLeaf": 120,
+          "printedLeaf": null,
+          "pdfPage": 120,
+          "imageLabel": null,
+          "locator": null,
+          "shortQuote": "末助初兮三等訟",
+          "verifiedBy": [
+            {
+              "reviewer": "C00 catalog first-pass scan audit",
+              "date": "2026-07-28"
+            },
+            {
+              "reviewer": "c00_bifa_recheck (Codex)",
+              "date": "2026-07-28"
+            }
+          ]
+        },
+        {
+          "sourceId": "dlr.source.daquan-transcription-aa7bc942",
+          "referenceKind": "locator",
+          "volume": null,
+          "scanLeaf": null,
+          "printedLeaf": null,
+          "pdfPage": null,
+          "imageLabel": null,
+          "locator": "docs/六壬大全/011巻十一 《毕法赋》上.md:L41",
+          "shortQuote": "末助初兮三等讼",
+          "verifiedBy": []
+        }
+      ],
+      "variantGroupId": null,
+      "adoptedVariantId": null,
+      "fixtureIds": [],
+      "targetCapabilityId": "daliuren.bifa.037",
+      "targetCodeDomain": "lib/domain/services/daliuren/bifa/",
+      "notes": [
+        "printed leaf 尚未核定；不得把 PDF 页复制为版心叶码。",
+        "adopted 仅表示百法目录身份采用；executableApproved 保持 false。"
+      ]
+    },
+    {
+      "ruleId": "dlr.rule.bifa.038",
+      "family": "bifa",
+      "subfamily": "bifaCatalog",
+      "ordinal": 38,
+      "traditionalName": "闭口卦体两般推",
+      "adoptedStatus": "adopted",
+      "conditionsSummary": "本条只冻结毕法赋百法目录身份；typed 命中条件须由影印正文和独立正反例另行批准。",
+      "prioritySummary": "同规则族内的优先关系尚未由影印页冻结；不得按目录顺序推断执行优先级。",
+      "interpretation": "详细题句与起始影印页已独立复核；本条不批准执行条件、优先级或 fixture。",
+      "evidenceLevel": "B",
+      "locatorOnly": false,
+      "executableApproved": false,
+      "sourceRefs": [
+        {
+          "sourceId": "dlr.source.siku-liuren-daquan",
+          "referenceKind": "scan",
+          "volume": "卷九",
+          "scanLeaf": 124,
+          "printedLeaf": null,
+          "pdfPage": 124,
+          "imageLabel": null,
+          "locator": null,
+          "shortQuote": "閉口卦體兩般推",
+          "verifiedBy": [
+            {
+              "reviewer": "C00 catalog first-pass scan audit",
+              "date": "2026-07-28"
+            },
+            {
+              "reviewer": "c00_bifa_recheck (Codex)",
+              "date": "2026-07-28"
+            }
+          ]
+        },
+        {
+          "sourceId": "dlr.source.daquan-transcription-aa7bc942",
+          "referenceKind": "locator",
+          "volume": null,
+          "scanLeaf": null,
+          "printedLeaf": null,
+          "pdfPage": null,
+          "imageLabel": null,
+          "locator": "docs/六壬大全/011巻十一 《毕法赋》上.md:L41",
+          "shortQuote": "闭口卦体两般推",
+          "verifiedBy": []
+        }
+      ],
+      "variantGroupId": null,
+      "adoptedVariantId": null,
+      "fixtureIds": [],
+      "targetCapabilityId": "daliuren.bifa.038",
+      "targetCodeDomain": "lib/domain/services/daliuren/bifa/",
+      "notes": [
+        "printed leaf 尚未核定；不得把 PDF 页复制为版心叶码。",
+        "adopted 仅表示百法目录身份采用；executableApproved 保持 false。"
+      ]
+    },
+    {
+      "ruleId": "dlr.rule.bifa.039",
+      "family": "bifa",
+      "subfamily": "bifaCatalog",
+      "ordinal": 39,
+      "traditionalName": "太阳照武宜擒贼",
+      "adoptedStatus": "adopted",
+      "conditionsSummary": "本条只冻结毕法赋百法目录身份；typed 命中条件须由影印正文和独立正反例另行批准。",
+      "prioritySummary": "同规则族内的优先关系尚未由影印页冻结；不得按目录顺序推断执行优先级。",
+      "interpretation": "详细题句与起始影印页已独立复核；本条不批准执行条件、优先级或 fixture。",
+      "evidenceLevel": "B",
+      "locatorOnly": false,
+      "executableApproved": false,
+      "sourceRefs": [
+        {
+          "sourceId": "dlr.source.siku-liuren-daquan",
+          "referenceKind": "scan",
+          "volume": "卷九",
+          "scanLeaf": 130,
+          "printedLeaf": null,
+          "pdfPage": 130,
+          "imageLabel": null,
+          "locator": null,
+          "shortQuote": "太陽照武宜擒賊",
+          "verifiedBy": [
+            {
+              "reviewer": "C00 catalog first-pass scan audit",
+              "date": "2026-07-28"
+            },
+            {
+              "reviewer": "c00_bifa_recheck (Codex)",
+              "date": "2026-07-28"
+            }
+          ]
+        },
+        {
+          "sourceId": "dlr.source.daquan-transcription-aa7bc942",
+          "referenceKind": "locator",
+          "volume": null,
+          "scanLeaf": null,
+          "printedLeaf": null,
+          "pdfPage": null,
+          "imageLabel": null,
+          "locator": "docs/六壬大全/011巻十一 《毕法赋》上.md:L43",
+          "shortQuote": "太阳照武宜擒贼",
+          "verifiedBy": []
+        }
+      ],
+      "variantGroupId": null,
+      "adoptedVariantId": null,
+      "fixtureIds": [],
+      "targetCapabilityId": "daliuren.bifa.039",
+      "targetCodeDomain": "lib/domain/services/daliuren/bifa/",
+      "notes": [
+        "printed leaf 尚未核定；不得把 PDF 页复制为版心叶码。",
+        "adopted 仅表示百法目录身份采用；executableApproved 保持 false。"
+      ]
+    },
+    {
+      "ruleId": "dlr.rule.bifa.040",
+      "family": "bifa",
+      "subfamily": "bifaCatalog",
+      "ordinal": 40,
+      "traditionalName": "后合占婚岂用媒",
+      "adoptedStatus": "adopted",
+      "conditionsSummary": "本条只冻结毕法赋百法目录身份；typed 命中条件须由影印正文和独立正反例另行批准。",
+      "prioritySummary": "同规则族内的优先关系尚未由影印页冻结；不得按目录顺序推断执行优先级。",
+      "interpretation": "详细题句与起始影印页已独立复核；本条不批准执行条件、优先级或 fixture。",
+      "evidenceLevel": "B",
+      "locatorOnly": false,
+      "executableApproved": false,
+      "sourceRefs": [
+        {
+          "sourceId": "dlr.source.siku-liuren-daquan",
+          "referenceKind": "scan",
+          "volume": "卷九",
+          "scanLeaf": 135,
+          "printedLeaf": null,
+          "pdfPage": 135,
+          "imageLabel": null,
+          "locator": null,
+          "shortQuote": "后合占婚豈用媒",
+          "verifiedBy": [
+            {
+              "reviewer": "C00 catalog first-pass scan audit",
+              "date": "2026-07-28"
+            },
+            {
+              "reviewer": "c00_bifa_recheck (Codex)",
+              "date": "2026-07-28"
+            }
+          ]
+        },
+        {
+          "sourceId": "dlr.source.daquan-transcription-aa7bc942",
+          "referenceKind": "locator",
+          "volume": null,
+          "scanLeaf": null,
+          "printedLeaf": null,
+          "pdfPage": null,
+          "imageLabel": null,
+          "locator": "docs/六壬大全/011巻十一 《毕法赋》上.md:L43",
+          "shortQuote": "后合占婚岂用媒",
+          "verifiedBy": []
+        }
+      ],
+      "variantGroupId": null,
+      "adoptedVariantId": null,
+      "fixtureIds": [],
+      "targetCapabilityId": "daliuren.bifa.040",
+      "targetCodeDomain": "lib/domain/services/daliuren/bifa/",
+      "notes": [
+        "printed leaf 尚未核定；不得把 PDF 页复制为版心叶码。",
+        "adopted 仅表示百法目录身份采用；executableApproved 保持 false。"
+      ]
+    },
+    {
+      "ruleId": "dlr.rule.bifa.041",
+      "family": "bifa",
+      "subfamily": "bifaCatalog",
+      "ordinal": 41,
+      "traditionalName": "富贵干支逢禄马",
+      "adoptedStatus": "adopted",
+      "conditionsSummary": "本条只冻结毕法赋百法目录身份；typed 命中条件须由影印正文和独立正反例另行批准。",
+      "prioritySummary": "同规则族内的优先关系尚未由影印页冻结；不得按目录顺序推断执行优先级。",
+      "interpretation": "详细题句与起始影印页已独立复核；本条不批准执行条件、优先级或 fixture。",
+      "evidenceLevel": "B",
+      "locatorOnly": false,
+      "executableApproved": false,
+      "sourceRefs": [
+        {
+          "sourceId": "dlr.source.siku-liuren-daquan",
+          "referenceKind": "scan",
+          "volume": "卷九",
+          "scanLeaf": 136,
+          "printedLeaf": null,
+          "pdfPage": 136,
+          "imageLabel": null,
+          "locator": null,
+          "shortQuote": "富貴干支逢祿馬",
+          "verifiedBy": [
+            {
+              "reviewer": "C00 catalog first-pass scan audit",
+              "date": "2026-07-28"
+            },
+            {
+              "reviewer": "c00_bifa_recheck (Codex)",
+              "date": "2026-07-28"
+            }
+          ]
+        },
+        {
+          "sourceId": "dlr.source.daquan-transcription-aa7bc942",
+          "referenceKind": "locator",
+          "volume": null,
+          "scanLeaf": null,
+          "printedLeaf": null,
+          "pdfPage": null,
+          "imageLabel": null,
+          "locator": "docs/六壬大全/011巻十一 《毕法赋》上.md:L45",
+          "shortQuote": "富贵干支逢禄马",
+          "verifiedBy": []
+        }
+      ],
+      "variantGroupId": null,
+      "adoptedVariantId": null,
+      "fixtureIds": [],
+      "targetCapabilityId": "daliuren.bifa.041",
+      "targetCodeDomain": "lib/domain/services/daliuren/bifa/",
+      "notes": [
+        "printed leaf 尚未核定；不得把 PDF 页复制为版心叶码。",
+        "adopted 仅表示百法目录身份采用；executableApproved 保持 false。"
+      ]
+    },
+    {
+      "ruleId": "dlr.rule.bifa.042",
+      "family": "bifa",
+      "subfamily": "bifaCatalog",
+      "ordinal": 42,
+      "traditionalName": "尊崇传内遇三奇",
+      "adoptedStatus": "adopted",
+      "conditionsSummary": "本条只冻结毕法赋百法目录身份；typed 命中条件须由影印正文和独立正反例另行批准。",
+      "prioritySummary": "同规则族内的优先关系尚未由影印页冻结；不得按目录顺序推断执行优先级。",
+      "interpretation": "详细题句与起始影印页已独立复核；本条不批准执行条件、优先级或 fixture。",
+      "evidenceLevel": "B",
+      "locatorOnly": false,
+      "executableApproved": false,
+      "sourceRefs": [
+        {
+          "sourceId": "dlr.source.siku-liuren-daquan",
+          "referenceKind": "scan",
+          "volume": "卷九",
+          "scanLeaf": 137,
+          "printedLeaf": null,
+          "pdfPage": 137,
+          "imageLabel": null,
+          "locator": null,
+          "shortQuote": "尊崇傳內遇三奇",
+          "verifiedBy": [
+            {
+              "reviewer": "C00 catalog first-pass scan audit",
+              "date": "2026-07-28"
+            },
+            {
+              "reviewer": "c00_bifa_recheck (Codex)",
+              "date": "2026-07-28"
+            }
+          ]
+        },
+        {
+          "sourceId": "dlr.source.daquan-transcription-aa7bc942",
+          "referenceKind": "locator",
+          "volume": null,
+          "scanLeaf": null,
+          "printedLeaf": null,
+          "pdfPage": null,
+          "imageLabel": null,
+          "locator": "docs/六壬大全/011巻十一 《毕法赋》上.md:L45",
+          "shortQuote": "尊崇传内遇三奇",
+          "verifiedBy": []
+        }
+      ],
+      "variantGroupId": null,
+      "adoptedVariantId": null,
+      "fixtureIds": [],
+      "targetCapabilityId": "daliuren.bifa.042",
+      "targetCodeDomain": "lib/domain/services/daliuren/bifa/",
+      "notes": [
+        "printed leaf 尚未核定；不得把 PDF 页复制为版心叶码。",
+        "adopted 仅表示百法目录身份采用；executableApproved 保持 false。"
+      ]
+    },
+    {
+      "ruleId": "dlr.rule.bifa.043",
+      "family": "bifa",
+      "subfamily": "bifaCatalog",
+      "ordinal": 43,
+      "traditionalName": "害贵讼直作曲断",
+      "adoptedStatus": "adopted",
+      "conditionsSummary": "本条只冻结毕法赋百法目录身份；typed 命中条件须由影印正文和独立正反例另行批准。",
+      "prioritySummary": "同规则族内的优先关系尚未由影印页冻结；不得按目录顺序推断执行优先级。",
+      "interpretation": "详细题句与起始影印页已独立复核；本条不批准执行条件、优先级或 fixture。",
+      "evidenceLevel": "B",
+      "locatorOnly": false,
+      "executableApproved": false,
+      "sourceRefs": [
+        {
+          "sourceId": "dlr.source.siku-liuren-daquan",
+          "referenceKind": "scan",
+          "volume": "卷九",
+          "scanLeaf": 138,
+          "printedLeaf": null,
+          "pdfPage": 138,
+          "imageLabel": null,
+          "locator": null,
+          "shortQuote": "害貴訟直作曲斷",
+          "verifiedBy": [
+            {
+              "reviewer": "C00 catalog first-pass scan audit",
+              "date": "2026-07-28"
+            },
+            {
+              "reviewer": "c00_bifa_recheck (Codex)",
+              "date": "2026-07-28"
+            }
+          ]
+        },
+        {
+          "sourceId": "dlr.source.daquan-transcription-aa7bc942",
+          "referenceKind": "locator",
+          "volume": null,
+          "scanLeaf": null,
+          "printedLeaf": null,
+          "pdfPage": null,
+          "imageLabel": null,
+          "locator": "docs/六壬大全/011巻十一 《毕法赋》上.md:L47",
+          "shortQuote": "害贵讼直作曲断",
+          "verifiedBy": []
+        }
+      ],
+      "variantGroupId": null,
+      "adoptedVariantId": null,
+      "fixtureIds": [],
+      "targetCapabilityId": "daliuren.bifa.043",
+      "targetCodeDomain": "lib/domain/services/daliuren/bifa/",
+      "notes": [
+        "printed leaf 尚未核定；不得把 PDF 页复制为版心叶码。",
+        "adopted 仅表示百法目录身份采用；executableApproved 保持 false。"
+      ]
+    },
+    {
+      "ruleId": "dlr.rule.bifa.044",
+      "family": "bifa",
+      "subfamily": "bifaCatalog",
+      "ordinal": 44,
+      "traditionalName": "课传俱贵转无依",
+      "adoptedStatus": "adopted",
+      "conditionsSummary": "本条只冻结毕法赋百法目录身份；typed 命中条件须由影印正文和独立正反例另行批准。",
+      "prioritySummary": "同规则族内的优先关系尚未由影印页冻结；不得按目录顺序推断执行优先级。",
+      "interpretation": "详细题句与起始影印页已独立复核；本条不批准执行条件、优先级或 fixture。",
+      "evidenceLevel": "B",
+      "locatorOnly": false,
+      "executableApproved": false,
+      "sourceRefs": [
+        {
+          "sourceId": "dlr.source.siku-liuren-daquan",
+          "referenceKind": "scan",
+          "volume": "卷九",
+          "scanLeaf": 139,
+          "printedLeaf": null,
+          "pdfPage": 139,
+          "imageLabel": null,
+          "locator": null,
+          "shortQuote": "課傳俱貴轉無依",
+          "verifiedBy": [
+            {
+              "reviewer": "C00 catalog first-pass scan audit",
+              "date": "2026-07-28"
+            },
+            {
+              "reviewer": "c00_bifa_recheck (Codex)",
+              "date": "2026-07-28"
+            }
+          ]
+        },
+        {
+          "sourceId": "dlr.source.daquan-transcription-aa7bc942",
+          "referenceKind": "locator",
+          "volume": null,
+          "scanLeaf": null,
+          "printedLeaf": null,
+          "pdfPage": null,
+          "imageLabel": null,
+          "locator": "docs/六壬大全/011巻十一 《毕法赋》上.md:L47",
+          "shortQuote": "课传俱贵转无依",
+          "verifiedBy": []
+        }
+      ],
+      "variantGroupId": null,
+      "adoptedVariantId": null,
+      "fixtureIds": [],
+      "targetCapabilityId": "daliuren.bifa.044",
+      "targetCodeDomain": "lib/domain/services/daliuren/bifa/",
+      "notes": [
+        "printed leaf 尚未核定；不得把 PDF 页复制为版心叶码。",
+        "adopted 仅表示百法目录身份采用；executableApproved 保持 false。"
+      ]
+    },
+    {
+      "ruleId": "dlr.rule.bifa.045",
+      "family": "bifa",
+      "subfamily": "bifaCatalog",
+      "ordinal": 45,
+      "traditionalName": "昼夜贵加求两贵",
+      "adoptedStatus": "adopted",
+      "conditionsSummary": "本条只冻结毕法赋百法目录身份；typed 命中条件须由影印正文和独立正反例另行批准。",
+      "prioritySummary": "同规则族内的优先关系尚未由影印页冻结；不得按目录顺序推断执行优先级。",
+      "interpretation": "详细题句与起始影印页已独立复核；本条不批准执行条件、优先级或 fixture。",
+      "evidenceLevel": "B",
+      "locatorOnly": false,
+      "executableApproved": false,
+      "sourceRefs": [
+        {
+          "sourceId": "dlr.source.siku-liuren-daquan",
+          "referenceKind": "scan",
+          "volume": "卷九",
+          "scanLeaf": 141,
+          "printedLeaf": null,
+          "pdfPage": 141,
+          "imageLabel": null,
+          "locator": null,
+          "shortQuote": "晝夜貴加求兩貴",
+          "verifiedBy": [
+            {
+              "reviewer": "C00 catalog first-pass scan audit",
+              "date": "2026-07-28"
+            },
+            {
+              "reviewer": "c00_bifa_recheck (Codex)",
+              "date": "2026-07-28"
+            }
+          ]
+        },
+        {
+          "sourceId": "dlr.source.daquan-transcription-aa7bc942",
+          "referenceKind": "locator",
+          "volume": null,
+          "scanLeaf": null,
+          "printedLeaf": null,
+          "pdfPage": null,
+          "imageLabel": null,
+          "locator": "docs/六壬大全/011巻十一 《毕法赋》上.md:L49",
+          "shortQuote": "昼夜贵加求两贵",
+          "verifiedBy": []
+        }
+      ],
+      "variantGroupId": null,
+      "adoptedVariantId": null,
+      "fixtureIds": [],
+      "targetCapabilityId": "daliuren.bifa.045",
+      "targetCodeDomain": "lib/domain/services/daliuren/bifa/",
+      "notes": [
+        "printed leaf 尚未核定；不得把 PDF 页复制为版心叶码。",
+        "adopted 仅表示百法目录身份采用；executableApproved 保持 false。"
+      ]
+    },
+    {
+      "ruleId": "dlr.rule.bifa.046",
+      "family": "bifa",
+      "subfamily": "bifaCatalog",
+      "ordinal": 46,
+      "traditionalName": "贵人差迭事参差",
+      "adoptedStatus": "adopted",
+      "conditionsSummary": "本条只冻结毕法赋百法目录身份；typed 命中条件须由影印正文和独立正反例另行批准。",
+      "prioritySummary": "同规则族内的优先关系尚未由影印页冻结；不得按目录顺序推断执行优先级。",
+      "interpretation": "详细题句与起始影印页已独立复核；本条不批准执行条件、优先级或 fixture。",
+      "evidenceLevel": "B",
+      "locatorOnly": false,
+      "executableApproved": false,
+      "sourceRefs": [
+        {
+          "sourceId": "dlr.source.siku-liuren-daquan",
+          "referenceKind": "scan",
+          "volume": "卷九",
+          "scanLeaf": 143,
+          "printedLeaf": null,
+          "pdfPage": 143,
+          "imageLabel": null,
+          "locator": null,
+          "shortQuote": "貴人差迭事參差",
+          "verifiedBy": [
+            {
+              "reviewer": "C00 catalog first-pass scan audit",
+              "date": "2026-07-28"
+            },
+            {
+              "reviewer": "c00_bifa_recheck (Codex)",
+              "date": "2026-07-28"
+            }
+          ]
+        },
+        {
+          "sourceId": "dlr.source.daquan-transcription-aa7bc942",
+          "referenceKind": "locator",
+          "volume": null,
+          "scanLeaf": null,
+          "printedLeaf": null,
+          "pdfPage": null,
+          "imageLabel": null,
+          "locator": "docs/六壬大全/011巻十一 《毕法赋》上.md:L49",
+          "shortQuote": "贵人差迭事参差",
+          "verifiedBy": []
+        }
+      ],
+      "variantGroupId": null,
+      "adoptedVariantId": null,
+      "fixtureIds": [],
+      "targetCapabilityId": "daliuren.bifa.046",
+      "targetCodeDomain": "lib/domain/services/daliuren/bifa/",
+      "notes": [
+        "printed leaf 尚未核定；不得把 PDF 页复制为版心叶码。",
+        "adopted 仅表示百法目录身份采用；executableApproved 保持 false。"
+      ]
+    },
+    {
+      "ruleId": "dlr.rule.bifa.047",
+      "family": "bifa",
+      "subfamily": "bifaCatalog",
+      "ordinal": 47,
+      "traditionalName": "贵虽在狱宜临干",
+      "adoptedStatus": "adopted",
+      "conditionsSummary": "本条只冻结毕法赋百法目录身份；typed 命中条件须由影印正文和独立正反例另行批准。",
+      "prioritySummary": "同规则族内的优先关系尚未由影印页冻结；不得按目录顺序推断执行优先级。",
+      "interpretation": "详细题句与起始影印页已独立复核；本条不批准执行条件、优先级或 fixture。",
+      "evidenceLevel": "B",
+      "locatorOnly": false,
+      "executableApproved": false,
+      "sourceRefs": [
+        {
+          "sourceId": "dlr.source.siku-liuren-daquan",
+          "referenceKind": "scan",
+          "volume": "卷九",
+          "scanLeaf": 145,
+          "printedLeaf": null,
+          "pdfPage": 145,
+          "imageLabel": null,
+          "locator": null,
+          "shortQuote": "貴雖在獄宜臨干",
+          "verifiedBy": [
+            {
+              "reviewer": "C00 catalog first-pass scan audit",
+              "date": "2026-07-28"
+            },
+            {
+              "reviewer": "c00_bifa_recheck (Codex)",
+              "date": "2026-07-28"
+            }
+          ]
+        },
+        {
+          "sourceId": "dlr.source.daquan-transcription-aa7bc942",
+          "referenceKind": "locator",
+          "volume": null,
+          "scanLeaf": null,
+          "printedLeaf": null,
+          "pdfPage": null,
+          "imageLabel": null,
+          "locator": "docs/六壬大全/011巻十一 《毕法赋》上.md:L51",
+          "shortQuote": "贵虽在狱宜临干",
+          "verifiedBy": []
+        }
+      ],
+      "variantGroupId": null,
+      "adoptedVariantId": null,
+      "fixtureIds": [],
+      "targetCapabilityId": "daliuren.bifa.047",
+      "targetCodeDomain": "lib/domain/services/daliuren/bifa/",
+      "notes": [
+        "printed leaf 尚未核定；不得把 PDF 页复制为版心叶码。",
+        "adopted 仅表示百法目录身份采用；executableApproved 保持 false。"
+      ]
+    },
+    {
+      "ruleId": "dlr.rule.bifa.048",
+      "family": "bifa",
+      "subfamily": "bifaCatalog",
+      "ordinal": 48,
+      "traditionalName": "鬼乘天乙乃神祇",
+      "adoptedStatus": "adopted",
+      "conditionsSummary": "本条只冻结毕法赋百法目录身份；typed 命中条件须由影印正文和独立正反例另行批准。",
+      "prioritySummary": "同规则族内的优先关系尚未由影印页冻结；不得按目录顺序推断执行优先级。",
+      "interpretation": "详细题句与起始影印页已独立复核；本条不批准执行条件、优先级或 fixture。",
+      "evidenceLevel": "B",
+      "locatorOnly": false,
+      "executableApproved": false,
+      "sourceRefs": [
+        {
+          "sourceId": "dlr.source.siku-liuren-daquan",
+          "referenceKind": "scan",
+          "volume": "卷九",
+          "scanLeaf": 146,
+          "printedLeaf": null,
+          "pdfPage": 146,
+          "imageLabel": null,
+          "locator": null,
+          "shortQuote": "鬼乘天乙乃神祇",
+          "verifiedBy": [
+            {
+              "reviewer": "C00 catalog first-pass scan audit",
+              "date": "2026-07-28"
+            },
+            {
+              "reviewer": "c00_bifa_recheck (Codex)",
+              "date": "2026-07-28"
+            }
+          ]
+        },
+        {
+          "sourceId": "dlr.source.daquan-transcription-aa7bc942",
+          "referenceKind": "locator",
+          "volume": null,
+          "scanLeaf": null,
+          "printedLeaf": null,
+          "pdfPage": null,
+          "imageLabel": null,
+          "locator": "docs/六壬大全/011巻十一 《毕法赋》上.md:L51",
+          "shortQuote": "鬼乘天乙乃神祇",
+          "verifiedBy": []
+        }
+      ],
+      "variantGroupId": null,
+      "adoptedVariantId": null,
+      "fixtureIds": [],
+      "targetCapabilityId": "daliuren.bifa.048",
+      "targetCodeDomain": "lib/domain/services/daliuren/bifa/",
+      "notes": [
+        "printed leaf 尚未核定；不得把 PDF 页复制为版心叶码。",
+        "adopted 仅表示百法目录身份采用；executableApproved 保持 false。"
+      ]
+    },
+    {
+      "ruleId": "dlr.rule.bifa.049",
+      "family": "bifa",
+      "subfamily": "bifaCatalog",
+      "ordinal": 49,
+      "traditionalName": "两贵受克难干贵",
+      "adoptedStatus": "adopted",
+      "conditionsSummary": "本条只冻结毕法赋百法目录身份；typed 命中条件须由影印正文和独立正反例另行批准。",
+      "prioritySummary": "同规则族内的优先关系尚未由影印页冻结；不得按目录顺序推断执行优先级。",
+      "interpretation": "详细题句与起始影印页已独立复核；本条不批准执行条件、优先级或 fixture。",
+      "evidenceLevel": "B",
+      "locatorOnly": false,
+      "executableApproved": false,
+      "sourceRefs": [
+        {
+          "sourceId": "dlr.source.siku-liuren-daquan",
+          "referenceKind": "scan",
+          "volume": "卷九",
+          "scanLeaf": 147,
+          "printedLeaf": null,
+          "pdfPage": 147,
+          "imageLabel": null,
+          "locator": null,
+          "shortQuote": "兩貴受克難干貴",
+          "verifiedBy": [
+            {
+              "reviewer": "C00 catalog first-pass scan audit",
+              "date": "2026-07-28"
+            },
+            {
+              "reviewer": "c00_bifa_recheck (Codex)",
+              "date": "2026-07-28"
+            }
+          ]
+        },
+        {
+          "sourceId": "dlr.source.daquan-transcription-aa7bc942",
+          "referenceKind": "locator",
+          "volume": null,
+          "scanLeaf": null,
+          "printedLeaf": null,
+          "pdfPage": null,
+          "imageLabel": null,
+          "locator": "docs/六壬大全/011巻十一 《毕法赋》上.md:L53",
+          "shortQuote": "两贵受克难干贵",
+          "verifiedBy": []
+        }
+      ],
+      "variantGroupId": null,
+      "adoptedVariantId": null,
+      "fixtureIds": [],
+      "targetCapabilityId": "daliuren.bifa.049",
+      "targetCodeDomain": "lib/domain/services/daliuren/bifa/",
+      "notes": [
+        "printed leaf 尚未核定；不得把 PDF 页复制为版心叶码。",
+        "adopted 仅表示百法目录身份采用；executableApproved 保持 false。"
+      ]
+    },
+    {
+      "ruleId": "dlr.rule.bifa.050",
+      "family": "bifa",
+      "subfamily": "bifaCatalog",
+      "ordinal": 50,
+      "traditionalName": "二贵皆空虚喜期",
+      "adoptedStatus": "adopted",
+      "conditionsSummary": "本条只冻结毕法赋百法目录身份；typed 命中条件须由影印正文和独立正反例另行批准。",
+      "prioritySummary": "同规则族内的优先关系尚未由影印页冻结；不得按目录顺序推断执行优先级。",
+      "interpretation": "详细题句与起始影印页已独立复核；本条不批准执行条件、优先级或 fixture。",
+      "evidenceLevel": "B",
+      "locatorOnly": false,
+      "executableApproved": false,
+      "sourceRefs": [
+        {
+          "sourceId": "dlr.source.siku-liuren-daquan",
+          "referenceKind": "scan",
+          "volume": "卷九",
+          "scanLeaf": 150,
+          "printedLeaf": null,
+          "pdfPage": 150,
+          "imageLabel": null,
+          "locator": null,
+          "shortQuote": "二貴皆空虛喜期",
+          "verifiedBy": [
+            {
+              "reviewer": "C00 catalog first-pass scan audit",
+              "date": "2026-07-28"
+            },
+            {
+              "reviewer": "c00_bifa_recheck (Codex)",
+              "date": "2026-07-28"
+            }
+          ]
+        },
+        {
+          "sourceId": "dlr.source.daquan-transcription-aa7bc942",
+          "referenceKind": "locator",
+          "volume": null,
+          "scanLeaf": null,
+          "printedLeaf": null,
+          "pdfPage": null,
+          "imageLabel": null,
+          "locator": "docs/六壬大全/011巻十一 《毕法赋》上.md:L53",
+          "shortQuote": "二贵皆空虚喜期",
+          "verifiedBy": []
+        }
+      ],
+      "variantGroupId": null,
+      "adoptedVariantId": null,
+      "fixtureIds": [],
+      "targetCapabilityId": "daliuren.bifa.050",
+      "targetCodeDomain": "lib/domain/services/daliuren/bifa/",
+      "notes": [
+        "printed leaf 尚未核定；不得把 PDF 页复制为版心叶码。",
+        "adopted 仅表示百法目录身份采用；executableApproved 保持 false。"
+      ]
+    },
+    {
+      "ruleId": "dlr.rule.bifa.051",
+      "family": "bifa",
+      "subfamily": "bifaCatalog",
+      "ordinal": 51,
+      "traditionalName": "魁度天门关隔定",
+      "adoptedStatus": "adopted",
+      "conditionsSummary": "本条只冻结毕法赋百法目录身份；typed 命中条件须由影印正文和独立正反例另行批准。",
+      "prioritySummary": "同规则族内的优先关系尚未由影印页冻结；不得按目录顺序推断执行优先级。",
+      "interpretation": "详细题句与起始影印页已独立复核；本条不批准执行条件、优先级或 fixture。",
+      "evidenceLevel": "B",
+      "locatorOnly": false,
+      "executableApproved": false,
+      "sourceRefs": [
+        {
+          "sourceId": "dlr.source.siku-liuren-daquan",
+          "referenceKind": "scan",
+          "volume": "卷十",
+          "scanLeaf": 3,
+          "printedLeaf": null,
+          "pdfPage": 3,
+          "imageLabel": null,
+          "locator": null,
+          "shortQuote": "魁度天門關隔定",
+          "verifiedBy": [
+            {
+              "reviewer": "C00 catalog first-pass scan audit",
+              "date": "2026-07-28"
+            },
+            {
+              "reviewer": "c00_bifa_recheck (Codex)",
+              "date": "2026-07-28"
+            }
+          ]
+        },
+        {
+          "sourceId": "dlr.source.daquan-transcription-aa7bc942",
+          "referenceKind": "locator",
+          "volume": null,
+          "scanLeaf": null,
+          "printedLeaf": null,
+          "pdfPage": null,
+          "imageLabel": null,
+          "locator": "docs/六壬大全/012巻十二 《毕法赋》下.md:L5",
+          "shortQuote": "魁度天门关隔定",
+          "verifiedBy": []
+        }
+      ],
+      "variantGroupId": null,
+      "adoptedVariantId": null,
+      "fixtureIds": [],
+      "targetCapabilityId": "daliuren.bifa.051",
+      "targetCodeDomain": "lib/domain/services/daliuren/bifa/",
+      "notes": [
+        "printed leaf 尚未核定；不得把 PDF 页复制为版心叶码。",
+        "adopted 仅表示百法目录身份采用；executableApproved 保持 false。"
+      ]
+    },
+    {
+      "ruleId": "dlr.rule.bifa.052",
+      "family": "bifa",
+      "subfamily": "bifaCatalog",
+      "ordinal": 52,
+      "traditionalName": "罡塞鬼户任谋为",
+      "adoptedStatus": "adopted",
+      "conditionsSummary": "本条只冻结毕法赋百法目录身份；typed 命中条件须由影印正文和独立正反例另行批准。",
+      "prioritySummary": "同规则族内的优先关系尚未由影印页冻结；不得按目录顺序推断执行优先级。",
+      "interpretation": "详细题句与起始影印页已独立复核；本条不批准执行条件、优先级或 fixture。",
+      "evidenceLevel": "B",
+      "locatorOnly": false,
+      "executableApproved": false,
+      "sourceRefs": [
+        {
+          "sourceId": "dlr.source.siku-liuren-daquan",
+          "referenceKind": "scan",
+          "volume": "卷十",
+          "scanLeaf": 4,
+          "printedLeaf": null,
+          "pdfPage": 4,
+          "imageLabel": null,
+          "locator": null,
+          "shortQuote": "罡塞鬼戶任謀為",
+          "verifiedBy": [
+            {
+              "reviewer": "C00 catalog first-pass scan audit",
+              "date": "2026-07-28"
+            },
+            {
+              "reviewer": "c00_bifa_recheck (Codex)",
+              "date": "2026-07-28"
+            }
+          ]
+        },
+        {
+          "sourceId": "dlr.source.daquan-transcription-aa7bc942",
+          "referenceKind": "locator",
+          "volume": null,
+          "scanLeaf": null,
+          "printedLeaf": null,
+          "pdfPage": null,
+          "imageLabel": null,
+          "locator": "docs/六壬大全/012巻十二 《毕法赋》下.md:L5",
+          "shortQuote": "罡塞鬼户任谋为",
+          "verifiedBy": []
+        }
+      ],
+      "variantGroupId": null,
+      "adoptedVariantId": null,
+      "fixtureIds": [],
+      "targetCapabilityId": "daliuren.bifa.052",
+      "targetCodeDomain": "lib/domain/services/daliuren/bifa/",
+      "notes": [
+        "固定转录重复“第五十三法”，实体卷首目录与详细题句均明确连续为第五十二、第五十三法。",
+        "printed leaf 尚未核定；不得把 PDF 页复制为版心叶码。",
+        "adopted 仅表示百法目录身份采用；executableApproved 保持 false。"
+      ]
+    },
+    {
+      "ruleId": "dlr.rule.bifa.053",
+      "family": "bifa",
+      "subfamily": "bifaCatalog",
+      "ordinal": 53,
+      "traditionalName": "两蛇夹墓凶难免",
+      "adoptedStatus": "adopted",
+      "conditionsSummary": "本条只冻结毕法赋百法目录身份；typed 命中条件须由影印正文和独立正反例另行批准。",
+      "prioritySummary": "同规则族内的优先关系尚未由影印页冻结；不得按目录顺序推断执行优先级。",
+      "interpretation": "详细题句与起始影印页已独立复核；本条不批准执行条件、优先级或 fixture。",
+      "evidenceLevel": "B",
+      "locatorOnly": false,
+      "executableApproved": false,
+      "sourceRefs": [
+        {
+          "sourceId": "dlr.source.siku-liuren-daquan",
+          "referenceKind": "scan",
+          "volume": "卷十",
+          "scanLeaf": 7,
+          "printedLeaf": null,
+          "pdfPage": 7,
+          "imageLabel": null,
+          "locator": null,
+          "shortQuote": "兩蛇夾墓凶難免",
+          "verifiedBy": [
+            {
+              "reviewer": "C00 catalog first-pass scan audit",
+              "date": "2026-07-28"
+            },
+            {
+              "reviewer": "c00_bifa_recheck (Codex)",
+              "date": "2026-07-28"
+            }
+          ]
+        },
+        {
+          "sourceId": "dlr.source.daquan-transcription-aa7bc942",
+          "referenceKind": "locator",
+          "volume": null,
+          "scanLeaf": null,
+          "printedLeaf": null,
+          "pdfPage": null,
+          "imageLabel": null,
+          "locator": "docs/六壬大全/012巻十二 《毕法赋》下.md:L7",
+          "shortQuote": "两蛇夹墓凶难免",
+          "verifiedBy": []
+        }
+      ],
+      "variantGroupId": null,
+      "adoptedVariantId": null,
+      "fixtureIds": [],
+      "targetCapabilityId": "daliuren.bifa.053",
+      "targetCodeDomain": "lib/domain/services/daliuren/bifa/",
+      "notes": [
+        "printed leaf 尚未核定；不得把 PDF 页复制为版心叶码。",
+        "adopted 仅表示百法目录身份采用；executableApproved 保持 false。"
+      ]
+    },
+    {
+      "ruleId": "dlr.rule.bifa.054",
+      "family": "bifa",
+      "subfamily": "bifaCatalog",
+      "ordinal": 54,
+      "traditionalName": "虎视逢虎力难施",
+      "adoptedStatus": "adopted",
+      "conditionsSummary": "本条只冻结毕法赋百法目录身份；typed 命中条件须由影印正文和独立正反例另行批准。",
+      "prioritySummary": "同规则族内的优先关系尚未由影印页冻结；不得按目录顺序推断执行优先级。",
+      "interpretation": "详细题句与起始影印页已独立复核；本条不批准执行条件、优先级或 fixture。",
+      "evidenceLevel": "B",
+      "locatorOnly": false,
+      "executableApproved": false,
+      "sourceRefs": [
+        {
+          "sourceId": "dlr.source.siku-liuren-daquan",
+          "referenceKind": "scan",
+          "volume": "卷十",
+          "scanLeaf": 9,
+          "printedLeaf": null,
+          "pdfPage": 9,
+          "imageLabel": null,
+          "locator": null,
+          "shortQuote": "虎視逢虎力難施",
+          "verifiedBy": [
+            {
+              "reviewer": "C00 catalog first-pass scan audit",
+              "date": "2026-07-28"
+            },
+            {
+              "reviewer": "c00_bifa_recheck (Codex)",
+              "date": "2026-07-28"
+            }
+          ]
+        },
+        {
+          "sourceId": "dlr.source.daquan-transcription-aa7bc942",
+          "referenceKind": "locator",
+          "volume": null,
+          "scanLeaf": null,
+          "printedLeaf": null,
+          "pdfPage": null,
+          "imageLabel": null,
+          "locator": "docs/六壬大全/012巻十二 《毕法赋》下.md:L7",
+          "shortQuote": "虎视逢虎力难施",
+          "verifiedBy": []
+        }
+      ],
+      "variantGroupId": null,
+      "adoptedVariantId": null,
+      "fixtureIds": [],
+      "targetCapabilityId": "daliuren.bifa.054",
+      "targetCodeDomain": "lib/domain/services/daliuren/bifa/",
+      "notes": [
+        "printed leaf 尚未核定；不得把 PDF 页复制为版心叶码。",
+        "adopted 仅表示百法目录身份采用；executableApproved 保持 false。"
+      ]
+    },
+    {
+      "ruleId": "dlr.rule.bifa.055",
+      "family": "bifa",
+      "subfamily": "bifaCatalog",
+      "ordinal": 55,
+      "traditionalName": "所谋多拙逢网罗",
+      "adoptedStatus": "adopted",
+      "conditionsSummary": "本条只冻结毕法赋百法目录身份；typed 命中条件须由影印正文和独立正反例另行批准。",
+      "prioritySummary": "同规则族内的优先关系尚未由影印页冻结；不得按目录顺序推断执行优先级。",
+      "interpretation": "详细题句与起始影印页已独立复核；本条不批准执行条件、优先级或 fixture。",
+      "evidenceLevel": "B",
+      "locatorOnly": false,
+      "executableApproved": false,
+      "sourceRefs": [
+        {
+          "sourceId": "dlr.source.siku-liuren-daquan",
+          "referenceKind": "scan",
+          "volume": "卷十",
+          "scanLeaf": 12,
+          "printedLeaf": null,
+          "pdfPage": 12,
+          "imageLabel": null,
+          "locator": null,
+          "shortQuote": "所謀多拙逢網羅",
+          "verifiedBy": [
+            {
+              "reviewer": "C00 catalog first-pass scan audit",
+              "date": "2026-07-28"
+            },
+            {
+              "reviewer": "c00_bifa_recheck (Codex)",
+              "date": "2026-07-28"
+            }
+          ]
+        },
+        {
+          "sourceId": "dlr.source.daquan-transcription-aa7bc942",
+          "referenceKind": "locator",
+          "volume": null,
+          "scanLeaf": null,
+          "printedLeaf": null,
+          "pdfPage": null,
+          "imageLabel": null,
+          "locator": "docs/六壬大全/012巻十二 《毕法赋》下.md:L9",
+          "shortQuote": "所谋多拙逢网罗",
+          "verifiedBy": []
+        }
+      ],
+      "variantGroupId": null,
+      "adoptedVariantId": null,
+      "fixtureIds": [],
+      "targetCapabilityId": "daliuren.bifa.055",
+      "targetCodeDomain": "lib/domain/services/daliuren/bifa/",
+      "notes": [
+        "printed leaf 尚未核定；不得把 PDF 页复制为版心叶码。",
+        "adopted 仅表示百法目录身份采用；executableApproved 保持 false。"
+      ]
+    },
+    {
+      "ruleId": "dlr.rule.bifa.056",
+      "family": "bifa",
+      "subfamily": "bifaCatalog",
+      "ordinal": 56,
+      "traditionalName": "天网自裹己招非",
+      "adoptedStatus": "adopted",
+      "conditionsSummary": "本条只冻结毕法赋百法目录身份；typed 命中条件须由影印正文和独立正反例另行批准。",
+      "prioritySummary": "同规则族内的优先关系尚未由影印页冻结；不得按目录顺序推断执行优先级。",
+      "interpretation": "详细题句与起始影印页已独立复核；本条不批准执行条件、优先级或 fixture。",
+      "evidenceLevel": "B",
+      "locatorOnly": false,
+      "executableApproved": false,
+      "sourceRefs": [
+        {
+          "sourceId": "dlr.source.siku-liuren-daquan",
+          "referenceKind": "scan",
+          "volume": "卷十",
+          "scanLeaf": 13,
+          "printedLeaf": null,
+          "pdfPage": 13,
+          "imageLabel": null,
+          "locator": null,
+          "shortQuote": "天網自裹己招非",
+          "verifiedBy": [
+            {
+              "reviewer": "C00 catalog first-pass scan audit",
+              "date": "2026-07-28"
+            },
+            {
+              "reviewer": "c00_bifa_recheck (Codex)",
+              "date": "2026-07-28"
+            }
+          ]
+        },
+        {
+          "sourceId": "dlr.source.daquan-transcription-aa7bc942",
+          "referenceKind": "locator",
+          "volume": null,
+          "scanLeaf": null,
+          "printedLeaf": null,
+          "pdfPage": null,
+          "imageLabel": null,
+          "locator": "docs/六壬大全/012巻十二 《毕法赋》下.md:L9",
+          "shortQuote": "天网自裹己招非",
+          "verifiedBy": []
+        }
+      ],
+      "variantGroupId": null,
+      "adoptedVariantId": null,
+      "fixtureIds": [],
+      "targetCapabilityId": "daliuren.bifa.056",
+      "targetCodeDomain": "lib/domain/services/daliuren/bifa/",
+      "notes": [
+        "printed leaf 尚未核定；不得把 PDF 页复制为版心叶码。",
+        "adopted 仅表示百法目录身份采用；executableApproved 保持 false。"
+      ]
+    },
+    {
+      "ruleId": "dlr.rule.bifa.057",
+      "family": "bifa",
+      "subfamily": "bifaCatalog",
+      "ordinal": 57,
+      "traditionalName": "费有余而得不足",
+      "adoptedStatus": "adopted",
+      "conditionsSummary": "本条只冻结毕法赋百法目录身份；typed 命中条件须由影印正文和独立正反例另行批准。",
+      "prioritySummary": "同规则族内的优先关系尚未由影印页冻结；不得按目录顺序推断执行优先级。",
+      "interpretation": "详细题句与起始影印页已独立复核；本条不批准执行条件、优先级或 fixture。",
+      "evidenceLevel": "B",
+      "locatorOnly": false,
+      "executableApproved": false,
+      "sourceRefs": [
+        {
+          "sourceId": "dlr.source.siku-liuren-daquan",
+          "referenceKind": "scan",
+          "volume": "卷十",
+          "scanLeaf": 15,
+          "printedLeaf": null,
+          "pdfPage": 15,
+          "imageLabel": null,
+          "locator": null,
+          "shortQuote": "費有餘而得不足",
+          "verifiedBy": [
+            {
+              "reviewer": "C00 catalog first-pass scan audit",
+              "date": "2026-07-28"
+            },
+            {
+              "reviewer": "c00_bifa_recheck (Codex)",
+              "date": "2026-07-28"
+            }
+          ]
+        },
+        {
+          "sourceId": "dlr.source.daquan-transcription-aa7bc942",
+          "referenceKind": "locator",
+          "volume": null,
+          "scanLeaf": null,
+          "printedLeaf": null,
+          "pdfPage": null,
+          "imageLabel": null,
+          "locator": "docs/六壬大全/012巻十二 《毕法赋》下.md:L11",
+          "shortQuote": "费有余而得不足",
+          "verifiedBy": []
+        }
+      ],
+      "variantGroupId": null,
+      "adoptedVariantId": null,
+      "fixtureIds": [],
+      "targetCapabilityId": "daliuren.bifa.057",
+      "targetCodeDomain": "lib/domain/services/daliuren/bifa/",
+      "notes": [
+        "printed leaf 尚未核定；不得把 PDF 页复制为版心叶码。",
+        "adopted 仅表示百法目录身份采用；executableApproved 保持 false。"
+      ]
+    },
+    {
+      "ruleId": "dlr.rule.bifa.058",
+      "family": "bifa",
+      "subfamily": "bifaCatalog",
+      "ordinal": 58,
+      "traditionalName": "用破身心无所归",
+      "adoptedStatus": "adopted",
+      "conditionsSummary": "本条只冻结毕法赋百法目录身份；typed 命中条件须由影印正文和独立正反例另行批准。",
+      "prioritySummary": "同规则族内的优先关系尚未由影印页冻结；不得按目录顺序推断执行优先级。",
+      "interpretation": "详细题句与起始影印页已独立复核；本条不批准执行条件、优先级或 fixture。",
+      "evidenceLevel": "B",
+      "locatorOnly": false,
+      "executableApproved": false,
+      "sourceRefs": [
+        {
+          "sourceId": "dlr.source.siku-liuren-daquan",
+          "referenceKind": "scan",
+          "volume": "卷十",
+          "scanLeaf": 17,
+          "printedLeaf": null,
+          "pdfPage": 17,
+          "imageLabel": null,
+          "locator": null,
+          "shortQuote": "用破身心無所歸",
+          "verifiedBy": [
+            {
+              "reviewer": "C00 catalog first-pass scan audit",
+              "date": "2026-07-28"
+            },
+            {
+              "reviewer": "c00_bifa_recheck (Codex)",
+              "date": "2026-07-28"
+            }
+          ]
+        },
+        {
+          "sourceId": "dlr.source.daquan-transcription-aa7bc942",
+          "referenceKind": "locator",
+          "volume": null,
+          "scanLeaf": null,
+          "printedLeaf": null,
+          "pdfPage": null,
+          "imageLabel": null,
+          "locator": "docs/六壬大全/012巻十二 《毕法赋》下.md:L11",
+          "shortQuote": "用破身心无所归",
+          "verifiedBy": []
+        }
+      ],
+      "variantGroupId": null,
+      "adoptedVariantId": null,
+      "fixtureIds": [],
+      "targetCapabilityId": "daliuren.bifa.058",
+      "targetCodeDomain": "lib/domain/services/daliuren/bifa/",
+      "notes": [
+        "printed leaf 尚未核定；不得把 PDF 页复制为版心叶码。",
+        "adopted 仅表示百法目录身份采用；executableApproved 保持 false。"
+      ]
+    },
+    {
+      "ruleId": "dlr.rule.bifa.059",
+      "family": "bifa",
+      "subfamily": "bifaCatalog",
+      "ordinal": 59,
+      "traditionalName": "华盖覆日人昏晦",
+      "adoptedStatus": "adopted",
+      "conditionsSummary": "本条只冻结毕法赋百法目录身份；typed 命中条件须由影印正文和独立正反例另行批准。",
+      "prioritySummary": "同规则族内的优先关系尚未由影印页冻结；不得按目录顺序推断执行优先级。",
+      "interpretation": "详细题句与起始影印页已独立复核；本条不批准执行条件、优先级或 fixture。",
+      "evidenceLevel": "B",
+      "locatorOnly": false,
+      "executableApproved": false,
+      "sourceRefs": [
+        {
+          "sourceId": "dlr.source.siku-liuren-daquan",
+          "referenceKind": "scan",
+          "volume": "卷十",
+          "scanLeaf": 19,
+          "printedLeaf": null,
+          "pdfPage": 19,
+          "imageLabel": null,
+          "locator": null,
+          "shortQuote": "華蓋覆日人昏晦",
+          "verifiedBy": [
+            {
+              "reviewer": "C00 catalog first-pass scan audit",
+              "date": "2026-07-28"
+            },
+            {
+              "reviewer": "c00_bifa_recheck (Codex)",
+              "date": "2026-07-28"
+            }
+          ]
+        },
+        {
+          "sourceId": "dlr.source.daquan-transcription-aa7bc942",
+          "referenceKind": "locator",
+          "volume": null,
+          "scanLeaf": null,
+          "printedLeaf": null,
+          "pdfPage": null,
+          "imageLabel": null,
+          "locator": "docs/六壬大全/012巻十二 《毕法赋》下.md:L13",
+          "shortQuote": "华盖覆日人昏晦",
+          "verifiedBy": []
+        }
+      ],
+      "variantGroupId": null,
+      "adoptedVariantId": null,
+      "fixtureIds": [],
+      "targetCapabilityId": "daliuren.bifa.059",
+      "targetCodeDomain": "lib/domain/services/daliuren/bifa/",
+      "notes": [
+        "printed leaf 尚未核定；不得把 PDF 页复制为版心叶码。",
+        "adopted 仅表示百法目录身份采用；executableApproved 保持 false。"
+      ]
+    },
+    {
+      "ruleId": "dlr.rule.bifa.060",
+      "family": "bifa",
+      "subfamily": "bifaCatalog",
+      "ordinal": 60,
+      "traditionalName": "太阳射宅屋光辉",
+      "adoptedStatus": "adopted",
+      "conditionsSummary": "本条只冻结毕法赋百法目录身份；typed 命中条件须由影印正文和独立正反例另行批准。",
+      "prioritySummary": "同规则族内的优先关系尚未由影印页冻结；不得按目录顺序推断执行优先级。",
+      "interpretation": "详细题句与起始影印页已独立复核；本条不批准执行条件、优先级或 fixture。",
+      "evidenceLevel": "B",
+      "locatorOnly": false,
+      "executableApproved": false,
+      "sourceRefs": [
+        {
+          "sourceId": "dlr.source.siku-liuren-daquan",
+          "referenceKind": "scan",
+          "volume": "卷十",
+          "scanLeaf": 20,
+          "printedLeaf": null,
+          "pdfPage": 20,
+          "imageLabel": null,
+          "locator": null,
+          "shortQuote": "太陽射宅屋光輝",
+          "verifiedBy": [
+            {
+              "reviewer": "C00 catalog first-pass scan audit",
+              "date": "2026-07-28"
+            },
+            {
+              "reviewer": "c00_bifa_recheck (Codex)",
+              "date": "2026-07-28"
+            }
+          ]
+        },
+        {
+          "sourceId": "dlr.source.daquan-transcription-aa7bc942",
+          "referenceKind": "locator",
+          "volume": null,
+          "scanLeaf": null,
+          "printedLeaf": null,
+          "pdfPage": null,
+          "imageLabel": null,
+          "locator": "docs/六壬大全/012巻十二 《毕法赋》下.md:L13",
+          "shortQuote": "太阳射宅屋光辉",
+          "verifiedBy": []
+        }
+      ],
+      "variantGroupId": null,
+      "adoptedVariantId": null,
+      "fixtureIds": [],
+      "targetCapabilityId": "daliuren.bifa.060",
+      "targetCodeDomain": "lib/domain/services/daliuren/bifa/",
+      "notes": [
+        "printed leaf 尚未核定；不得把 PDF 页复制为版心叶码。",
+        "adopted 仅表示百法目录身份采用；executableApproved 保持 false。"
+      ]
+    },
+    {
+      "ruleId": "dlr.rule.bifa.061",
+      "family": "bifa",
+      "subfamily": "bifaCatalog",
+      "ordinal": 61,
+      "traditionalName": "干乘墓虎无占病",
+      "adoptedStatus": "adopted",
+      "conditionsSummary": "本条只冻结毕法赋百法目录身份；typed 命中条件须由影印正文和独立正反例另行批准。",
+      "prioritySummary": "同规则族内的优先关系尚未由影印页冻结；不得按目录顺序推断执行优先级。",
+      "interpretation": "详细题句与起始影印页已独立复核；本条不批准执行条件、优先级或 fixture。",
+      "evidenceLevel": "B",
+      "locatorOnly": false,
+      "executableApproved": false,
+      "sourceRefs": [
+        {
+          "sourceId": "dlr.source.siku-liuren-daquan",
+          "referenceKind": "scan",
+          "volume": "卷十",
+          "scanLeaf": 21,
+          "printedLeaf": null,
+          "pdfPage": 21,
+          "imageLabel": null,
+          "locator": null,
+          "shortQuote": "干乘墓虎無占病",
+          "verifiedBy": [
+            {
+              "reviewer": "C00 catalog first-pass scan audit",
+              "date": "2026-07-28"
+            },
+            {
+              "reviewer": "c00_bifa_recheck (Codex)",
+              "date": "2026-07-28"
+            }
+          ]
+        },
+        {
+          "sourceId": "dlr.source.daquan-transcription-aa7bc942",
+          "referenceKind": "locator",
+          "volume": null,
+          "scanLeaf": null,
+          "printedLeaf": null,
+          "pdfPage": null,
+          "imageLabel": null,
+          "locator": "docs/六壬大全/012巻十二 《毕法赋》下.md:L15",
+          "shortQuote": "干乘墓虎无占病",
+          "verifiedBy": []
+        }
+      ],
+      "variantGroupId": null,
+      "adoptedVariantId": null,
+      "fixtureIds": [],
+      "targetCapabilityId": "daliuren.bifa.061",
+      "targetCodeDomain": "lib/domain/services/daliuren/bifa/",
+      "notes": [
+        "printed leaf 尚未核定；不得把 PDF 页复制为版心叶码。",
+        "adopted 仅表示百法目录身份采用；executableApproved 保持 false。"
+      ]
+    },
+    {
+      "ruleId": "dlr.rule.bifa.062",
+      "family": "bifa",
+      "subfamily": "bifaCatalog",
+      "ordinal": 62,
+      "traditionalName": "支乘墓虎有伏尸",
+      "adoptedStatus": "adopted",
+      "conditionsSummary": "本条只冻结毕法赋百法目录身份；typed 命中条件须由影印正文和独立正反例另行批准。",
+      "prioritySummary": "同规则族内的优先关系尚未由影印页冻结；不得按目录顺序推断执行优先级。",
+      "interpretation": "详细题句与起始影印页已独立复核；本条不批准执行条件、优先级或 fixture。",
+      "evidenceLevel": "B",
+      "locatorOnly": false,
+      "executableApproved": false,
+      "sourceRefs": [
+        {
+          "sourceId": "dlr.source.siku-liuren-daquan",
+          "referenceKind": "scan",
+          "volume": "卷十",
+          "scanLeaf": 22,
+          "printedLeaf": null,
+          "pdfPage": 22,
+          "imageLabel": null,
+          "locator": null,
+          "shortQuote": "支乘墓虎有伏尸",
+          "verifiedBy": [
+            {
+              "reviewer": "C00 catalog first-pass scan audit",
+              "date": "2026-07-28"
+            },
+            {
+              "reviewer": "c00_bifa_recheck (Codex)",
+              "date": "2026-07-28"
+            }
+          ]
+        },
+        {
+          "sourceId": "dlr.source.daquan-transcription-aa7bc942",
+          "referenceKind": "locator",
+          "volume": null,
+          "scanLeaf": null,
+          "printedLeaf": null,
+          "pdfPage": null,
+          "imageLabel": null,
+          "locator": "docs/六壬大全/012巻十二 《毕法赋》下.md:L15",
+          "shortQuote": "支乘墓虎有伏尸",
+          "verifiedBy": []
+        }
+      ],
+      "variantGroupId": null,
+      "adoptedVariantId": null,
+      "fixtureIds": [],
+      "targetCapabilityId": "daliuren.bifa.062",
+      "targetCodeDomain": "lib/domain/services/daliuren/bifa/",
+      "notes": [
+        "printed leaf 尚未核定；不得把 PDF 页复制为版心叶码。",
+        "adopted 仅表示百法目录身份采用；executableApproved 保持 false。"
+      ]
+    },
+    {
+      "ruleId": "dlr.rule.bifa.063",
+      "family": "bifa",
+      "subfamily": "bifaCatalog",
+      "ordinal": 63,
+      "traditionalName": "彼此全伤防两损",
+      "adoptedStatus": "adopted",
+      "conditionsSummary": "本条只冻结毕法赋百法目录身份；typed 命中条件须由影印正文和独立正反例另行批准。",
+      "prioritySummary": "同规则族内的优先关系尚未由影印页冻结；不得按目录顺序推断执行优先级。",
+      "interpretation": "详细题句与起始影印页已独立复核；本条不批准执行条件、优先级或 fixture。",
+      "evidenceLevel": "B",
+      "locatorOnly": false,
+      "executableApproved": false,
+      "sourceRefs": [
+        {
+          "sourceId": "dlr.source.siku-liuren-daquan",
+          "referenceKind": "scan",
+          "volume": "卷十",
+          "scanLeaf": 25,
+          "printedLeaf": null,
+          "pdfPage": 25,
+          "imageLabel": null,
+          "locator": null,
+          "shortQuote": "彼此全傷防兩損",
+          "verifiedBy": [
+            {
+              "reviewer": "C00 catalog first-pass scan audit",
+              "date": "2026-07-28"
+            },
+            {
+              "reviewer": "c00_bifa_recheck (Codex)",
+              "date": "2026-07-28"
+            }
+          ]
+        },
+        {
+          "sourceId": "dlr.source.daquan-transcription-aa7bc942",
+          "referenceKind": "locator",
+          "volume": null,
+          "scanLeaf": null,
+          "printedLeaf": null,
+          "pdfPage": null,
+          "imageLabel": null,
+          "locator": "docs/六壬大全/012巻十二 《毕法赋》下.md:L17",
+          "shortQuote": "彼此全伤防两损",
+          "verifiedBy": []
+        }
+      ],
+      "variantGroupId": null,
+      "adoptedVariantId": null,
+      "fixtureIds": [],
+      "targetCapabilityId": "daliuren.bifa.063",
+      "targetCodeDomain": "lib/domain/services/daliuren/bifa/",
+      "notes": [
+        "printed leaf 尚未核定；不得把 PDF 页复制为版心叶码。",
+        "adopted 仅表示百法目录身份采用；executableApproved 保持 false。"
+      ]
+    },
+    {
+      "ruleId": "dlr.rule.bifa.064",
+      "family": "bifa",
+      "subfamily": "bifaCatalog",
+      "ordinal": 64,
+      "traditionalName": "夫妇无淫各有私",
+      "adoptedStatus": "adopted",
+      "conditionsSummary": "本条只冻结毕法赋百法目录身份；typed 命中条件须由影印正文和独立正反例另行批准。",
+      "prioritySummary": "同规则族内的优先关系尚未由影印页冻结；不得按目录顺序推断执行优先级。",
+      "interpretation": "详细题句与起始影印页已独立复核；本条不批准执行条件、优先级或 fixture。",
+      "evidenceLevel": "B",
+      "locatorOnly": false,
+      "executableApproved": false,
+      "sourceRefs": [
+        {
+          "sourceId": "dlr.source.siku-liuren-daquan",
+          "referenceKind": "scan",
+          "volume": "卷十",
+          "scanLeaf": 26,
+          "printedLeaf": null,
+          "pdfPage": 26,
+          "imageLabel": null,
+          "locator": null,
+          "shortQuote": "夫婦無淫各有私",
+          "verifiedBy": [
+            {
+              "reviewer": "C00 catalog first-pass scan audit",
+              "date": "2026-07-28"
+            },
+            {
+              "reviewer": "c00_bifa_recheck (Codex)",
+              "date": "2026-07-28"
+            }
+          ]
+        },
+        {
+          "sourceId": "dlr.source.daquan-transcription-aa7bc942",
+          "referenceKind": "locator",
+          "volume": null,
+          "scanLeaf": null,
+          "printedLeaf": null,
+          "pdfPage": null,
+          "imageLabel": null,
+          "locator": "docs/六壬大全/012巻十二 《毕法赋》下.md:L17",
+          "shortQuote": "夫妇无淫各有私",
+          "verifiedBy": []
+        }
+      ],
+      "variantGroupId": null,
+      "adoptedVariantId": null,
+      "fixtureIds": [],
+      "targetCapabilityId": "daliuren.bifa.064",
+      "targetCodeDomain": "lib/domain/services/daliuren/bifa/",
+      "notes": [
+        "printed leaf 尚未核定；不得把 PDF 页复制为版心叶码。",
+        "adopted 仅表示百法目录身份采用；executableApproved 保持 false。"
+      ]
+    },
+    {
+      "ruleId": "dlr.rule.bifa.065",
+      "family": "bifa",
+      "subfamily": "bifaCatalog",
+      "ordinal": 65,
+      "traditionalName": "干墓并关人宅废",
+      "adoptedStatus": "adopted",
+      "conditionsSummary": "本条只冻结毕法赋百法目录身份；typed 命中条件须由影印正文和独立正反例另行批准。",
+      "prioritySummary": "同规则族内的优先关系尚未由影印页冻结；不得按目录顺序推断执行优先级。",
+      "interpretation": "详细题句与起始影印页已独立复核；本条不批准执行条件、优先级或 fixture。",
+      "evidenceLevel": "B",
+      "locatorOnly": false,
+      "executableApproved": false,
+      "sourceRefs": [
+        {
+          "sourceId": "dlr.source.siku-liuren-daquan",
+          "referenceKind": "scan",
+          "volume": "卷十",
+          "scanLeaf": 28,
+          "printedLeaf": null,
+          "pdfPage": 28,
+          "imageLabel": null,
+          "locator": null,
+          "shortQuote": "干墓併關人宅廢",
+          "verifiedBy": [
+            {
+              "reviewer": "C00 catalog first-pass scan audit",
+              "date": "2026-07-28"
+            },
+            {
+              "reviewer": "c00_bifa_recheck (Codex)",
+              "date": "2026-07-28"
+            }
+          ]
+        },
+        {
+          "sourceId": "dlr.source.daquan-transcription-aa7bc942",
+          "referenceKind": "locator",
+          "volume": null,
+          "scanLeaf": null,
+          "printedLeaf": null,
+          "pdfPage": null,
+          "imageLabel": null,
+          "locator": "docs/六壬大全/012巻十二 《毕法赋》下.md:L19",
+          "shortQuote": "干墓并关人宅废",
+          "verifiedBy": []
+        }
+      ],
+      "variantGroupId": null,
+      "adoptedVariantId": null,
+      "fixtureIds": [],
+      "targetCapabilityId": "daliuren.bifa.065",
+      "targetCodeDomain": "lib/domain/services/daliuren/bifa/",
+      "notes": [
+        "printed leaf 尚未核定；不得把 PDF 页复制为版心叶码。",
+        "adopted 仅表示百法目录身份采用；executableApproved 保持 false。"
+      ]
+    },
+    {
+      "ruleId": "dlr.rule.bifa.066",
+      "family": "bifa",
+      "subfamily": "bifaCatalog",
+      "ordinal": 66,
+      "traditionalName": "支坟财并旅程稽",
+      "adoptedStatus": "adopted",
+      "conditionsSummary": "本条只冻结毕法赋百法目录身份；typed 命中条件须由影印正文和独立正反例另行批准。",
+      "prioritySummary": "同规则族内的优先关系尚未由影印页冻结；不得按目录顺序推断执行优先级。",
+      "interpretation": "详细题句与起始影印页已独立复核；本条不批准执行条件、优先级或 fixture。",
+      "evidenceLevel": "B",
+      "locatorOnly": false,
+      "executableApproved": false,
+      "sourceRefs": [
+        {
+          "sourceId": "dlr.source.siku-liuren-daquan",
+          "referenceKind": "scan",
+          "volume": "卷十",
+          "scanLeaf": 29,
+          "printedLeaf": null,
+          "pdfPage": 29,
+          "imageLabel": null,
+          "locator": null,
+          "shortQuote": "支墳財併旅程稽",
+          "verifiedBy": [
+            {
+              "reviewer": "C00 catalog first-pass scan audit",
+              "date": "2026-07-28"
+            },
+            {
+              "reviewer": "c00_bifa_recheck (Codex)",
+              "date": "2026-07-28"
+            }
+          ]
+        },
+        {
+          "sourceId": "dlr.source.daquan-transcription-aa7bc942",
+          "referenceKind": "locator",
+          "volume": null,
+          "scanLeaf": null,
+          "printedLeaf": null,
+          "pdfPage": null,
+          "imageLabel": null,
+          "locator": "docs/六壬大全/012巻十二 《毕法赋》下.md:L19",
+          "shortQuote": "支坟财并旅程稽",
+          "verifiedBy": []
+        }
+      ],
+      "variantGroupId": null,
+      "adoptedVariantId": null,
+      "fixtureIds": [],
+      "targetCapabilityId": "daliuren.bifa.066",
+      "targetCodeDomain": "lib/domain/services/daliuren/bifa/",
+      "notes": [
+        "printed leaf 尚未核定；不得把 PDF 页复制为版心叶码。",
+        "adopted 仅表示百法目录身份采用；executableApproved 保持 false。"
+      ]
+    },
+    {
+      "ruleId": "dlr.rule.bifa.067",
+      "family": "bifa",
+      "subfamily": "bifaCatalog",
+      "ordinal": 67,
+      "traditionalName": "受虎克神为病症",
+      "adoptedStatus": "adopted",
+      "conditionsSummary": "本条只冻结毕法赋百法目录身份；typed 命中条件须由影印正文和独立正反例另行批准。",
+      "prioritySummary": "同规则族内的优先关系尚未由影印页冻结；不得按目录顺序推断执行优先级。",
+      "interpretation": "详细题句与起始影印页已独立复核；本条不批准执行条件、优先级或 fixture。",
+      "evidenceLevel": "B",
+      "locatorOnly": false,
+      "executableApproved": false,
+      "sourceRefs": [
+        {
+          "sourceId": "dlr.source.siku-liuren-daquan",
+          "referenceKind": "scan",
+          "volume": "卷十",
+          "scanLeaf": 30,
+          "printedLeaf": null,
+          "pdfPage": 30,
+          "imageLabel": null,
+          "locator": null,
+          "shortQuote": "受虎克神為病證",
+          "verifiedBy": [
+            {
+              "reviewer": "C00 catalog first-pass scan audit",
+              "date": "2026-07-28"
+            },
+            {
+              "reviewer": "c00_bifa_recheck (Codex)",
+              "date": "2026-07-28"
+            }
+          ]
+        },
+        {
+          "sourceId": "dlr.source.daquan-transcription-aa7bc942",
+          "referenceKind": "locator",
+          "volume": null,
+          "scanLeaf": null,
+          "printedLeaf": null,
+          "pdfPage": null,
+          "imageLabel": null,
+          "locator": "docs/六壬大全/012巻十二 《毕法赋》下.md:L21",
+          "shortQuote": "受虎克神为病症",
+          "verifiedBy": []
+        }
+      ],
+      "variantGroupId": null,
+      "adoptedVariantId": null,
+      "fixtureIds": [],
+      "targetCapabilityId": "daliuren.bifa.067",
+      "targetCodeDomain": "lib/domain/services/daliuren/bifa/",
+      "notes": [
+        "printed leaf 尚未核定；不得把 PDF 页复制为版心叶码。",
+        "adopted 仅表示百法目录身份采用；executableApproved 保持 false。"
+      ]
+    },
+    {
+      "ruleId": "dlr.rule.bifa.068",
+      "family": "bifa",
+      "subfamily": "bifaCatalog",
+      "ordinal": 68,
+      "traditionalName": "制鬼之位乃良医",
+      "adoptedStatus": "adopted",
+      "conditionsSummary": "本条只冻结毕法赋百法目录身份；typed 命中条件须由影印正文和独立正反例另行批准。",
+      "prioritySummary": "同规则族内的优先关系尚未由影印页冻结；不得按目录顺序推断执行优先级。",
+      "interpretation": "详细题句与起始影印页已独立复核；本条不批准执行条件、优先级或 fixture。",
+      "evidenceLevel": "B",
+      "locatorOnly": false,
+      "executableApproved": false,
+      "sourceRefs": [
+        {
+          "sourceId": "dlr.source.siku-liuren-daquan",
+          "referenceKind": "scan",
+          "volume": "卷十",
+          "scanLeaf": 41,
+          "printedLeaf": null,
+          "pdfPage": 41,
+          "imageLabel": null,
+          "locator": null,
+          "shortQuote": "制鬼之位乃良醫",
+          "verifiedBy": [
+            {
+              "reviewer": "C00 catalog first-pass scan audit",
+              "date": "2026-07-28"
+            },
+            {
+              "reviewer": "c00_bifa_recheck (Codex)",
+              "date": "2026-07-28"
+            }
+          ]
+        },
+        {
+          "sourceId": "dlr.source.daquan-transcription-aa7bc942",
+          "referenceKind": "locator",
+          "volume": null,
+          "scanLeaf": null,
+          "printedLeaf": null,
+          "pdfPage": null,
+          "imageLabel": null,
+          "locator": "docs/六壬大全/012巻十二 《毕法赋》下.md:L21",
+          "shortQuote": "制鬼之位乃良医",
+          "verifiedBy": []
+        }
+      ],
+      "variantGroupId": null,
+      "adoptedVariantId": null,
+      "fixtureIds": [],
+      "targetCapabilityId": "daliuren.bifa.068",
+      "targetCodeDomain": "lib/domain/services/daliuren/bifa/",
+      "notes": [
+        "printed leaf 尚未核定；不得把 PDF 页复制为版心叶码。",
+        "adopted 仅表示百法目录身份采用；executableApproved 保持 false。"
+      ]
+    },
+    {
+      "ruleId": "dlr.rule.bifa.069",
+      "family": "bifa",
+      "subfamily": "bifaCatalog",
+      "ordinal": 69,
+      "traditionalName": "虎乘遁鬼殃非浅",
+      "adoptedStatus": "adopted",
+      "conditionsSummary": "本条只冻结毕法赋百法目录身份；typed 命中条件须由影印正文和独立正反例另行批准。",
+      "prioritySummary": "同规则族内的优先关系尚未由影印页冻结；不得按目录顺序推断执行优先级。",
+      "interpretation": "详细题句与起始影印页已独立复核；本条不批准执行条件、优先级或 fixture。",
+      "evidenceLevel": "B",
+      "locatorOnly": false,
+      "executableApproved": false,
+      "sourceRefs": [
+        {
+          "sourceId": "dlr.source.siku-liuren-daquan",
+          "referenceKind": "scan",
+          "volume": "卷十",
+          "scanLeaf": 44,
+          "printedLeaf": null,
+          "pdfPage": 44,
+          "imageLabel": null,
+          "locator": null,
+          "shortQuote": "虎乘遁鬼殃非淺",
+          "verifiedBy": [
+            {
+              "reviewer": "C00 catalog first-pass scan audit",
+              "date": "2026-07-28"
+            },
+            {
+              "reviewer": "c00_bifa_recheck (Codex)",
+              "date": "2026-07-28"
+            }
+          ]
+        },
+        {
+          "sourceId": "dlr.source.daquan-transcription-aa7bc942",
+          "referenceKind": "locator",
+          "volume": null,
+          "scanLeaf": null,
+          "printedLeaf": null,
+          "pdfPage": null,
+          "imageLabel": null,
+          "locator": "docs/六壬大全/012巻十二 《毕法赋》下.md:L23",
+          "shortQuote": "虎乘遁鬼殃非浅",
+          "verifiedBy": []
+        }
+      ],
+      "variantGroupId": null,
+      "adoptedVariantId": null,
+      "fixtureIds": [],
+      "targetCapabilityId": "daliuren.bifa.069",
+      "targetCodeDomain": "lib/domain/services/daliuren/bifa/",
+      "notes": [
+        "printed leaf 尚未核定；不得把 PDF 页复制为版心叶码。",
+        "adopted 仅表示百法目录身份采用；executableApproved 保持 false。"
+      ]
+    },
+    {
+      "ruleId": "dlr.rule.bifa.070",
+      "family": "bifa",
+      "subfamily": "bifaCatalog",
+      "ordinal": 70,
+      "traditionalName": "鬼临三四讼灾随",
+      "adoptedStatus": "adopted",
+      "conditionsSummary": "本条只冻结毕法赋百法目录身份；typed 命中条件须由影印正文和独立正反例另行批准。",
+      "prioritySummary": "同规则族内的优先关系尚未由影印页冻结；不得按目录顺序推断执行优先级。",
+      "interpretation": "详细题句与起始影印页已独立复核；本条不批准执行条件、优先级或 fixture。",
+      "evidenceLevel": "B",
+      "locatorOnly": false,
+      "executableApproved": false,
+      "sourceRefs": [
+        {
+          "sourceId": "dlr.source.siku-liuren-daquan",
+          "referenceKind": "scan",
+          "volume": "卷十",
+          "scanLeaf": 46,
+          "printedLeaf": null,
+          "pdfPage": 46,
+          "imageLabel": null,
+          "locator": null,
+          "shortQuote": "鬼臨三四訟災隨",
+          "verifiedBy": [
+            {
+              "reviewer": "C00 catalog first-pass scan audit",
+              "date": "2026-07-28"
+            },
+            {
+              "reviewer": "c00_bifa_recheck (Codex)",
+              "date": "2026-07-28"
+            }
+          ]
+        },
+        {
+          "sourceId": "dlr.source.daquan-transcription-aa7bc942",
+          "referenceKind": "locator",
+          "volume": null,
+          "scanLeaf": null,
+          "printedLeaf": null,
+          "pdfPage": null,
+          "imageLabel": null,
+          "locator": "docs/六壬大全/012巻十二 《毕法赋》下.md:L23",
+          "shortQuote": "鬼临三四讼灾随",
+          "verifiedBy": []
+        }
+      ],
+      "variantGroupId": null,
+      "adoptedVariantId": null,
+      "fixtureIds": [],
+      "targetCapabilityId": "daliuren.bifa.070",
+      "targetCodeDomain": "lib/domain/services/daliuren/bifa/",
+      "notes": [
+        "printed leaf 尚未核定；不得把 PDF 页复制为版心叶码。",
+        "adopted 仅表示百法目录身份采用；executableApproved 保持 false。"
+      ]
+    },
+    {
+      "ruleId": "dlr.rule.bifa.071",
+      "family": "bifa",
+      "subfamily": "bifaCatalog",
+      "ordinal": 71,
+      "traditionalName": "病符克宅全家患",
+      "adoptedStatus": "adopted",
+      "conditionsSummary": "本条只冻结毕法赋百法目录身份；typed 命中条件须由影印正文和独立正反例另行批准。",
+      "prioritySummary": "同规则族内的优先关系尚未由影印页冻结；不得按目录顺序推断执行优先级。",
+      "interpretation": "详细题句与起始影印页已独立复核；本条不批准执行条件、优先级或 fixture。",
+      "evidenceLevel": "B",
+      "locatorOnly": false,
+      "executableApproved": false,
+      "sourceRefs": [
+        {
+          "sourceId": "dlr.source.siku-liuren-daquan",
+          "referenceKind": "scan",
+          "volume": "卷十",
+          "scanLeaf": 48,
+          "printedLeaf": null,
+          "pdfPage": 48,
+          "imageLabel": null,
+          "locator": null,
+          "shortQuote": "病符克宅全家患",
+          "verifiedBy": [
+            {
+              "reviewer": "C00 catalog first-pass scan audit",
+              "date": "2026-07-28"
+            },
+            {
+              "reviewer": "c00_bifa_recheck (Codex)",
+              "date": "2026-07-28"
+            }
+          ]
+        },
+        {
+          "sourceId": "dlr.source.daquan-transcription-aa7bc942",
+          "referenceKind": "locator",
+          "volume": null,
+          "scanLeaf": null,
+          "printedLeaf": null,
+          "pdfPage": null,
+          "imageLabel": null,
+          "locator": "docs/六壬大全/012巻十二 《毕法赋》下.md:L25",
+          "shortQuote": "病符克宅全家患",
+          "verifiedBy": []
+        }
+      ],
+      "variantGroupId": null,
+      "adoptedVariantId": null,
+      "fixtureIds": [],
+      "targetCapabilityId": "daliuren.bifa.071",
+      "targetCodeDomain": "lib/domain/services/daliuren/bifa/",
+      "notes": [
+        "printed leaf 尚未核定；不得把 PDF 页复制为版心叶码。",
+        "adopted 仅表示百法目录身份采用；executableApproved 保持 false。"
+      ]
+    },
+    {
+      "ruleId": "dlr.rule.bifa.072",
+      "family": "bifa",
+      "subfamily": "bifaCatalog",
+      "ordinal": 72,
+      "traditionalName": "丧吊全逢挂缟衣",
+      "adoptedStatus": "adopted",
+      "conditionsSummary": "本条只冻结毕法赋百法目录身份；typed 命中条件须由影印正文和独立正反例另行批准。",
+      "prioritySummary": "同规则族内的优先关系尚未由影印页冻结；不得按目录顺序推断执行优先级。",
+      "interpretation": "详细题句与起始影印页已独立复核；本条不批准执行条件、优先级或 fixture。",
+      "evidenceLevel": "B",
+      "locatorOnly": false,
+      "executableApproved": false,
+      "sourceRefs": [
+        {
+          "sourceId": "dlr.source.siku-liuren-daquan",
+          "referenceKind": "scan",
+          "volume": "卷十",
+          "scanLeaf": 49,
+          "printedLeaf": null,
+          "pdfPage": 49,
+          "imageLabel": null,
+          "locator": null,
+          "shortQuote": "喪吊全逢掛縞衣",
+          "verifiedBy": [
+            {
+              "reviewer": "C00 catalog first-pass scan audit",
+              "date": "2026-07-28"
+            },
+            {
+              "reviewer": "c00_bifa_recheck (Codex)",
+              "date": "2026-07-28"
+            }
+          ]
+        },
+        {
+          "sourceId": "dlr.source.daquan-transcription-aa7bc942",
+          "referenceKind": "locator",
+          "volume": null,
+          "scanLeaf": null,
+          "printedLeaf": null,
+          "pdfPage": null,
+          "imageLabel": null,
+          "locator": "docs/六壬大全/012巻十二 《毕法赋》下.md:L25",
+          "shortQuote": "丧吊全逢挂缟衣",
+          "verifiedBy": []
+        }
+      ],
+      "variantGroupId": null,
+      "adoptedVariantId": null,
+      "fixtureIds": [],
+      "targetCapabilityId": "daliuren.bifa.072",
+      "targetCodeDomain": "lib/domain/services/daliuren/bifa/",
+      "notes": [
+        "printed leaf 尚未核定；不得把 PDF 页复制为版心叶码。",
+        "adopted 仅表示百法目录身份采用；executableApproved 保持 false。"
+      ]
+    },
+    {
+      "ruleId": "dlr.rule.bifa.073",
+      "family": "bifa",
+      "subfamily": "bifaCatalog",
+      "ordinal": 73,
+      "traditionalName": "前后逼迫难进退",
+      "adoptedStatus": "adopted",
+      "conditionsSummary": "本条只冻结毕法赋百法目录身份；typed 命中条件须由影印正文和独立正反例另行批准。",
+      "prioritySummary": "同规则族内的优先关系尚未由影印页冻结；不得按目录顺序推断执行优先级。",
+      "interpretation": "详细题句与起始影印页已独立复核；本条不批准执行条件、优先级或 fixture。",
+      "evidenceLevel": "B",
+      "locatorOnly": false,
+      "executableApproved": false,
+      "sourceRefs": [
+        {
+          "sourceId": "dlr.source.siku-liuren-daquan",
+          "referenceKind": "scan",
+          "volume": "卷十",
+          "scanLeaf": 54,
+          "printedLeaf": null,
+          "pdfPage": 54,
+          "imageLabel": null,
+          "locator": null,
+          "shortQuote": "前後逼迫難進退",
+          "verifiedBy": [
+            {
+              "reviewer": "C00 catalog first-pass scan audit",
+              "date": "2026-07-28"
+            },
+            {
+              "reviewer": "c00_bifa_recheck (Codex)",
+              "date": "2026-07-28"
+            }
+          ]
+        },
+        {
+          "sourceId": "dlr.source.daquan-transcription-aa7bc942",
+          "referenceKind": "locator",
+          "volume": null,
+          "scanLeaf": null,
+          "printedLeaf": null,
+          "pdfPage": null,
+          "imageLabel": null,
+          "locator": "docs/六壬大全/012巻十二 《毕法赋》下.md:L27",
+          "shortQuote": "前后逼迫难进退",
+          "verifiedBy": []
+        }
+      ],
+      "variantGroupId": null,
+      "adoptedVariantId": null,
+      "fixtureIds": [],
+      "targetCapabilityId": "daliuren.bifa.073",
+      "targetCodeDomain": "lib/domain/services/daliuren/bifa/",
+      "notes": [
+        "printed leaf 尚未核定；不得把 PDF 页复制为版心叶码。",
+        "adopted 仅表示百法目录身份采用；executableApproved 保持 false。"
+      ]
+    },
+    {
+      "ruleId": "dlr.rule.bifa.074",
+      "family": "bifa",
+      "subfamily": "bifaCatalog",
+      "ordinal": 74,
+      "traditionalName": "空空如也事休追",
+      "adoptedStatus": "adopted",
+      "conditionsSummary": "本条只冻结毕法赋百法目录身份；typed 命中条件须由影印正文和独立正反例另行批准。",
+      "prioritySummary": "同规则族内的优先关系尚未由影印页冻结；不得按目录顺序推断执行优先级。",
+      "interpretation": "详细题句与起始影印页已独立复核；本条不批准执行条件、优先级或 fixture。",
+      "evidenceLevel": "B",
+      "locatorOnly": false,
+      "executableApproved": false,
+      "sourceRefs": [
+        {
+          "sourceId": "dlr.source.siku-liuren-daquan",
+          "referenceKind": "scan",
+          "volume": "卷十",
+          "scanLeaf": 57,
+          "printedLeaf": null,
+          "pdfPage": 57,
+          "imageLabel": null,
+          "locator": null,
+          "shortQuote": "空空如也事休追",
+          "verifiedBy": [
+            {
+              "reviewer": "C00 catalog first-pass scan audit",
+              "date": "2026-07-28"
+            },
+            {
+              "reviewer": "c00_bifa_recheck (Codex)",
+              "date": "2026-07-28"
+            }
+          ]
+        },
+        {
+          "sourceId": "dlr.source.daquan-transcription-aa7bc942",
+          "referenceKind": "locator",
+          "volume": null,
+          "scanLeaf": null,
+          "printedLeaf": null,
+          "pdfPage": null,
+          "imageLabel": null,
+          "locator": "docs/六壬大全/012巻十二 《毕法赋》下.md:L27",
+          "shortQuote": "空空如也事休追",
+          "verifiedBy": []
+        }
+      ],
+      "variantGroupId": null,
+      "adoptedVariantId": null,
+      "fixtureIds": [],
+      "targetCapabilityId": "daliuren.bifa.074",
+      "targetCodeDomain": "lib/domain/services/daliuren/bifa/",
+      "notes": [
+        "printed leaf 尚未核定；不得把 PDF 页复制为版心叶码。",
+        "adopted 仅表示百法目录身份采用；executableApproved 保持 false。"
+      ]
+    },
+    {
+      "ruleId": "dlr.rule.bifa.075",
+      "family": "bifa",
+      "subfamily": "bifaCatalog",
+      "ordinal": 75,
+      "traditionalName": "宾主不投刑在上",
+      "adoptedStatus": "adopted",
+      "conditionsSummary": "本条只冻结毕法赋百法目录身份；typed 命中条件须由影印正文和独立正反例另行批准。",
+      "prioritySummary": "同规则族内的优先关系尚未由影印页冻结；不得按目录顺序推断执行优先级。",
+      "interpretation": "详细题句与起始影印页已独立复核；本条不批准执行条件、优先级或 fixture。",
+      "evidenceLevel": "B",
+      "locatorOnly": false,
+      "executableApproved": false,
+      "sourceRefs": [
+        {
+          "sourceId": "dlr.source.siku-liuren-daquan",
+          "referenceKind": "scan",
+          "volume": "卷十",
+          "scanLeaf": 58,
+          "printedLeaf": null,
+          "pdfPage": 58,
+          "imageLabel": null,
+          "locator": null,
+          "shortQuote": "賓主不投刑在上",
+          "verifiedBy": [
+            {
+              "reviewer": "C00 catalog first-pass scan audit",
+              "date": "2026-07-28"
+            },
+            {
+              "reviewer": "c00_bifa_recheck (Codex)",
+              "date": "2026-07-28"
+            }
+          ]
+        },
+        {
+          "sourceId": "dlr.source.daquan-transcription-aa7bc942",
+          "referenceKind": "locator",
+          "volume": null,
+          "scanLeaf": null,
+          "printedLeaf": null,
+          "pdfPage": null,
+          "imageLabel": null,
+          "locator": "docs/六壬大全/012巻十二 《毕法赋》下.md:L29",
+          "shortQuote": "宾主不投刑在上",
+          "verifiedBy": []
+        }
+      ],
+      "variantGroupId": null,
+      "adoptedVariantId": null,
+      "fixtureIds": [],
+      "targetCapabilityId": "daliuren.bifa.075",
+      "targetCodeDomain": "lib/domain/services/daliuren/bifa/",
+      "notes": [
+        "printed leaf 尚未核定；不得把 PDF 页复制为版心叶码。",
+        "adopted 仅表示百法目录身份采用；executableApproved 保持 false。"
+      ]
+    },
+    {
+      "ruleId": "dlr.rule.bifa.076",
+      "family": "bifa",
+      "subfamily": "bifaCatalog",
+      "ordinal": 76,
+      "traditionalName": "彼此猜忌害相随／彼此猜忌祸相随（未定）",
+      "adoptedStatus": "disputed",
+      "conditionsSummary": "本条只冻结毕法赋百法目录身份；typed 命中条件须由影印正文和独立正反例另行批准。",
+      "prioritySummary": "同规则族内的优先关系尚未由影印页冻结；不得按目录顺序推断执行优先级。",
+      "interpretation": "详细题句与起始影印页已独立复核；本条不批准执行条件、优先级或 fixture。",
+      "evidenceLevel": "B",
+      "locatorOnly": false,
+      "executableApproved": false,
+      "sourceRefs": [
+        {
+          "sourceId": "dlr.source.siku-liuren-daquan",
+          "referenceKind": "scan",
+          "volume": "卷十",
+          "scanLeaf": 65,
+          "printedLeaf": null,
+          "pdfPage": 65,
+          "imageLabel": null,
+          "locator": null,
+          "shortQuote": "彼此猜忌禍相隨",
+          "verifiedBy": [
+            {
+              "reviewer": "C00 catalog first-pass scan audit",
+              "date": "2026-07-28"
+            },
+            {
+              "reviewer": "c00_bifa_recheck (Codex)",
+              "date": "2026-07-28"
+            }
+          ]
+        },
+        {
+          "sourceId": "dlr.source.daquan-transcription-aa7bc942",
+          "referenceKind": "locator",
+          "volume": null,
+          "scanLeaf": null,
+          "printedLeaf": null,
+          "pdfPage": null,
+          "imageLabel": null,
+          "locator": "docs/六壬大全/012巻十二 《毕法赋》下.md:L29",
+          "shortQuote": "彼此猜忌害相随／彼此猜忌祸相随（未定）",
+          "verifiedBy": []
+        }
+      ],
+      "variantGroupId": "dlr.variant.bifa-076-wording",
+      "adoptedVariantId": null,
+      "fixtureIds": [],
+      "targetCapabilityId": "daliuren.bifa.076",
+      "targetCodeDomain": "lib/domain/services/daliuren/bifa/",
+      "notes": [
+        "卷首目录作“害相随”，详细题句作“祸相随”；目录身份采用，规范题名字形保持 disputed。",
+        "printed leaf 尚未核定；不得把 PDF 页复制为版心叶码。",
+        "adopted 仅表示百法目录身份采用；executableApproved 保持 false。"
+      ]
+    },
+    {
+      "ruleId": "dlr.rule.bifa.077",
+      "family": "bifa",
+      "subfamily": "bifaCatalog",
+      "ordinal": 77,
+      "traditionalName": "互生俱生凡事益",
+      "adoptedStatus": "adopted",
+      "conditionsSummary": "本条只冻结毕法赋百法目录身份；typed 命中条件须由影印正文和独立正反例另行批准。",
+      "prioritySummary": "同规则族内的优先关系尚未由影印页冻结；不得按目录顺序推断执行优先级。",
+      "interpretation": "详细题句与起始影印页已独立复核；本条不批准执行条件、优先级或 fixture。",
+      "evidenceLevel": "B",
+      "locatorOnly": false,
+      "executableApproved": false,
+      "sourceRefs": [
+        {
+          "sourceId": "dlr.source.siku-liuren-daquan",
+          "referenceKind": "scan",
+          "volume": "卷十",
+          "scanLeaf": 68,
+          "printedLeaf": null,
+          "pdfPage": 68,
+          "imageLabel": null,
+          "locator": null,
+          "shortQuote": "互生俱生凡事益",
+          "verifiedBy": [
+            {
+              "reviewer": "C00 catalog first-pass scan audit",
+              "date": "2026-07-28"
+            },
+            {
+              "reviewer": "c00_bifa_recheck (Codex)",
+              "date": "2026-07-28"
+            }
+          ]
+        },
+        {
+          "sourceId": "dlr.source.daquan-transcription-aa7bc942",
+          "referenceKind": "locator",
+          "volume": null,
+          "scanLeaf": null,
+          "printedLeaf": null,
+          "pdfPage": null,
+          "imageLabel": null,
+          "locator": "docs/六壬大全/012巻十二 《毕法赋》下.md:L31",
+          "shortQuote": "互生俱生凡事益",
+          "verifiedBy": []
+        }
+      ],
+      "variantGroupId": null,
+      "adoptedVariantId": null,
+      "fixtureIds": [],
+      "targetCapabilityId": "daliuren.bifa.077",
+      "targetCodeDomain": "lib/domain/services/daliuren/bifa/",
+      "notes": [
+        "printed leaf 尚未核定；不得把 PDF 页复制为版心叶码。",
+        "adopted 仅表示百法目录身份采用；executableApproved 保持 false。"
+      ]
+    },
+    {
+      "ruleId": "dlr.rule.bifa.078",
+      "family": "bifa",
+      "subfamily": "bifaCatalog",
+      "ordinal": 78,
+      "traditionalName": "互旺皆旺坐谋宜",
+      "adoptedStatus": "adopted",
+      "conditionsSummary": "本条只冻结毕法赋百法目录身份；typed 命中条件须由影印正文和独立正反例另行批准。",
+      "prioritySummary": "同规则族内的优先关系尚未由影印页冻结；不得按目录顺序推断执行优先级。",
+      "interpretation": "详细题句与起始影印页已独立复核；本条不批准执行条件、优先级或 fixture。",
+      "evidenceLevel": "B",
+      "locatorOnly": false,
+      "executableApproved": false,
+      "sourceRefs": [
+        {
+          "sourceId": "dlr.source.siku-liuren-daquan",
+          "referenceKind": "scan",
+          "volume": "卷十",
+          "scanLeaf": 72,
+          "printedLeaf": null,
+          "pdfPage": 72,
+          "imageLabel": null,
+          "locator": null,
+          "shortQuote": "互旺皆旺坐謀宜",
+          "verifiedBy": [
+            {
+              "reviewer": "C00 catalog first-pass scan audit",
+              "date": "2026-07-28"
+            },
+            {
+              "reviewer": "c00_bifa_recheck (Codex)",
+              "date": "2026-07-28"
+            }
+          ]
+        },
+        {
+          "sourceId": "dlr.source.daquan-transcription-aa7bc942",
+          "referenceKind": "locator",
+          "volume": null,
+          "scanLeaf": null,
+          "printedLeaf": null,
+          "pdfPage": null,
+          "imageLabel": null,
+          "locator": "docs/六壬大全/012巻十二 《毕法赋》下.md:L31",
+          "shortQuote": "互旺皆旺坐谋宜",
+          "verifiedBy": []
+        }
+      ],
+      "variantGroupId": null,
+      "adoptedVariantId": null,
+      "fixtureIds": [],
+      "targetCapabilityId": "daliuren.bifa.078",
+      "targetCodeDomain": "lib/domain/services/daliuren/bifa/",
+      "notes": [
+        "printed leaf 尚未核定；不得把 PDF 页复制为版心叶码。",
+        "adopted 仅表示百法目录身份采用；executableApproved 保持 false。"
+      ]
+    },
+    {
+      "ruleId": "dlr.rule.bifa.079",
+      "family": "bifa",
+      "subfamily": "bifaCatalog",
+      "ordinal": 79,
+      "traditionalName": "干支值绝凡谋决",
+      "adoptedStatus": "adopted",
+      "conditionsSummary": "本条只冻结毕法赋百法目录身份；typed 命中条件须由影印正文和独立正反例另行批准。",
+      "prioritySummary": "同规则族内的优先关系尚未由影印页冻结；不得按目录顺序推断执行优先级。",
+      "interpretation": "详细题句与起始影印页已独立复核；本条不批准执行条件、优先级或 fixture。",
+      "evidenceLevel": "B",
+      "locatorOnly": false,
+      "executableApproved": false,
+      "sourceRefs": [
+        {
+          "sourceId": "dlr.source.siku-liuren-daquan",
+          "referenceKind": "scan",
+          "volume": "卷十",
+          "scanLeaf": 74,
+          "printedLeaf": null,
+          "pdfPage": 74,
+          "imageLabel": null,
+          "locator": null,
+          "shortQuote": "干支值絕凡謀決",
+          "verifiedBy": [
+            {
+              "reviewer": "C00 catalog first-pass scan audit",
+              "date": "2026-07-28"
+            },
+            {
+              "reviewer": "c00_bifa_recheck (Codex)",
+              "date": "2026-07-28"
+            }
+          ]
+        },
+        {
+          "sourceId": "dlr.source.daquan-transcription-aa7bc942",
+          "referenceKind": "locator",
+          "volume": null,
+          "scanLeaf": null,
+          "printedLeaf": null,
+          "pdfPage": null,
+          "imageLabel": null,
+          "locator": "docs/六壬大全/012巻十二 《毕法赋》下.md:L33",
+          "shortQuote": "干支值绝凡谋决",
+          "verifiedBy": []
+        }
+      ],
+      "variantGroupId": null,
+      "adoptedVariantId": null,
+      "fixtureIds": [],
+      "targetCapabilityId": "daliuren.bifa.079",
+      "targetCodeDomain": "lib/domain/services/daliuren/bifa/",
+      "notes": [
+        "printed leaf 尚未核定；不得把 PDF 页复制为版心叶码。",
+        "adopted 仅表示百法目录身份采用；executableApproved 保持 false。"
+      ]
+    },
+    {
+      "ruleId": "dlr.rule.bifa.080",
+      "family": "bifa",
+      "subfamily": "bifaCatalog",
+      "ordinal": 80,
+      "traditionalName": "人宅皆死各衰羸",
+      "adoptedStatus": "adopted",
+      "conditionsSummary": "本条只冻结毕法赋百法目录身份；typed 命中条件须由影印正文和独立正反例另行批准。",
+      "prioritySummary": "同规则族内的优先关系尚未由影印页冻结；不得按目录顺序推断执行优先级。",
+      "interpretation": "详细题句与起始影印页已独立复核；本条不批准执行条件、优先级或 fixture。",
+      "evidenceLevel": "B",
+      "locatorOnly": false,
+      "executableApproved": false,
+      "sourceRefs": [
+        {
+          "sourceId": "dlr.source.siku-liuren-daquan",
+          "referenceKind": "scan",
+          "volume": "卷十",
+          "scanLeaf": 76,
+          "printedLeaf": null,
+          "pdfPage": 76,
+          "imageLabel": null,
+          "locator": null,
+          "shortQuote": "人宅皆死各衰羸",
+          "verifiedBy": [
+            {
+              "reviewer": "C00 catalog first-pass scan audit",
+              "date": "2026-07-28"
+            },
+            {
+              "reviewer": "c00_bifa_recheck (Codex)",
+              "date": "2026-07-28"
+            }
+          ]
+        },
+        {
+          "sourceId": "dlr.source.daquan-transcription-aa7bc942",
+          "referenceKind": "locator",
+          "volume": null,
+          "scanLeaf": null,
+          "printedLeaf": null,
+          "pdfPage": null,
+          "imageLabel": null,
+          "locator": "docs/六壬大全/012巻十二 《毕法赋》下.md:L33",
+          "shortQuote": "人宅皆死各衰羸",
+          "verifiedBy": []
+        }
+      ],
+      "variantGroupId": null,
+      "adoptedVariantId": null,
+      "fixtureIds": [],
+      "targetCapabilityId": "daliuren.bifa.080",
+      "targetCodeDomain": "lib/domain/services/daliuren/bifa/",
+      "notes": [
+        "printed leaf 尚未核定；不得把 PDF 页复制为版心叶码。",
+        "adopted 仅表示百法目录身份采用；executableApproved 保持 false。"
+      ]
+    },
+    {
+      "ruleId": "dlr.rule.bifa.081",
+      "family": "bifa",
+      "subfamily": "bifaCatalog",
+      "ordinal": 81,
+      "traditionalName": "传墓入墓分憎爱",
+      "adoptedStatus": "adopted",
+      "conditionsSummary": "本条只冻结毕法赋百法目录身份；typed 命中条件须由影印正文和独立正反例另行批准。",
+      "prioritySummary": "同规则族内的优先关系尚未由影印页冻结；不得按目录顺序推断执行优先级。",
+      "interpretation": "详细题句与起始影印页已独立复核；本条不批准执行条件、优先级或 fixture。",
+      "evidenceLevel": "B",
+      "locatorOnly": false,
+      "executableApproved": false,
+      "sourceRefs": [
+        {
+          "sourceId": "dlr.source.siku-liuren-daquan",
+          "referenceKind": "scan",
+          "volume": "卷十",
+          "scanLeaf": 77,
+          "printedLeaf": null,
+          "pdfPage": 77,
+          "imageLabel": null,
+          "locator": null,
+          "shortQuote": "傳墓入墓分憎愛",
+          "verifiedBy": [
+            {
+              "reviewer": "C00 catalog first-pass scan audit",
+              "date": "2026-07-28"
+            },
+            {
+              "reviewer": "c00_bifa_recheck (Codex)",
+              "date": "2026-07-28"
+            }
+          ]
+        },
+        {
+          "sourceId": "dlr.source.daquan-transcription-aa7bc942",
+          "referenceKind": "locator",
+          "volume": null,
+          "scanLeaf": null,
+          "printedLeaf": null,
+          "pdfPage": null,
+          "imageLabel": null,
+          "locator": "docs/六壬大全/012巻十二 《毕法赋》下.md:L35",
+          "shortQuote": "传墓入墓分憎爱",
+          "verifiedBy": []
+        }
+      ],
+      "variantGroupId": null,
+      "adoptedVariantId": null,
+      "fixtureIds": [],
+      "targetCapabilityId": "daliuren.bifa.081",
+      "targetCodeDomain": "lib/domain/services/daliuren/bifa/",
+      "notes": [
+        "printed leaf 尚未核定；不得把 PDF 页复制为版心叶码。",
+        "adopted 仅表示百法目录身份采用；executableApproved 保持 false。"
+      ]
+    },
+    {
+      "ruleId": "dlr.rule.bifa.082",
+      "family": "bifa",
+      "subfamily": "bifaCatalog",
+      "ordinal": 82,
+      "traditionalName": "不行传者考初时",
+      "adoptedStatus": "adopted",
+      "conditionsSummary": "本条只冻结毕法赋百法目录身份；typed 命中条件须由影印正文和独立正反例另行批准。",
+      "prioritySummary": "同规则族内的优先关系尚未由影印页冻结；不得按目录顺序推断执行优先级。",
+      "interpretation": "详细题句与起始影印页已独立复核；本条不批准执行条件、优先级或 fixture。",
+      "evidenceLevel": "B",
+      "locatorOnly": false,
+      "executableApproved": false,
+      "sourceRefs": [
+        {
+          "sourceId": "dlr.source.siku-liuren-daquan",
+          "referenceKind": "scan",
+          "volume": "卷十",
+          "scanLeaf": 79,
+          "printedLeaf": null,
+          "pdfPage": 79,
+          "imageLabel": null,
+          "locator": null,
+          "shortQuote": "不行傳者考初時",
+          "verifiedBy": [
+            {
+              "reviewer": "C00 catalog first-pass scan audit",
+              "date": "2026-07-28"
+            },
+            {
+              "reviewer": "c00_bifa_recheck (Codex)",
+              "date": "2026-07-28"
+            }
+          ]
+        },
+        {
+          "sourceId": "dlr.source.daquan-transcription-aa7bc942",
+          "referenceKind": "locator",
+          "volume": null,
+          "scanLeaf": null,
+          "printedLeaf": null,
+          "pdfPage": null,
+          "imageLabel": null,
+          "locator": "docs/六壬大全/012巻十二 《毕法赋》下.md:L35",
+          "shortQuote": "不行传者考初时",
+          "verifiedBy": []
+        }
+      ],
+      "variantGroupId": null,
+      "adoptedVariantId": null,
+      "fixtureIds": [],
+      "targetCapabilityId": "daliuren.bifa.082",
+      "targetCodeDomain": "lib/domain/services/daliuren/bifa/",
+      "notes": [
+        "printed leaf 尚未核定；不得把 PDF 页复制为版心叶码。",
+        "adopted 仅表示百法目录身份采用；executableApproved 保持 false。"
+      ]
+    },
+    {
+      "ruleId": "dlr.rule.bifa.083",
+      "family": "bifa",
+      "subfamily": "bifaCatalog",
+      "ordinal": 83,
+      "traditionalName": "万事喜忻三六合",
+      "adoptedStatus": "adopted",
+      "conditionsSummary": "本条只冻结毕法赋百法目录身份；typed 命中条件须由影印正文和独立正反例另行批准。",
+      "prioritySummary": "同规则族内的优先关系尚未由影印页冻结；不得按目录顺序推断执行优先级。",
+      "interpretation": "详细题句与起始影印页已独立复核；本条不批准执行条件、优先级或 fixture。",
+      "evidenceLevel": "B",
+      "locatorOnly": false,
+      "executableApproved": false,
+      "sourceRefs": [
+        {
+          "sourceId": "dlr.source.siku-liuren-daquan",
+          "referenceKind": "scan",
+          "volume": "卷十",
+          "scanLeaf": 82,
+          "printedLeaf": null,
+          "pdfPage": 82,
+          "imageLabel": null,
+          "locator": null,
+          "shortQuote": "萬事喜忻三六合",
+          "verifiedBy": [
+            {
+              "reviewer": "C00 catalog first-pass scan audit",
+              "date": "2026-07-28"
+            },
+            {
+              "reviewer": "c00_bifa_recheck (Codex)",
+              "date": "2026-07-28"
+            }
+          ]
+        },
+        {
+          "sourceId": "dlr.source.daquan-transcription-aa7bc942",
+          "referenceKind": "locator",
+          "volume": null,
+          "scanLeaf": null,
+          "printedLeaf": null,
+          "pdfPage": null,
+          "imageLabel": null,
+          "locator": "docs/六壬大全/012巻十二 《毕法赋》下.md:L37",
+          "shortQuote": "万事喜忻三六合",
+          "verifiedBy": []
+        }
+      ],
+      "variantGroupId": null,
+      "adoptedVariantId": null,
+      "fixtureIds": [],
+      "targetCapabilityId": "daliuren.bifa.083",
+      "targetCodeDomain": "lib/domain/services/daliuren/bifa/",
+      "notes": [
+        "printed leaf 尚未核定；不得把 PDF 页复制为版心叶码。",
+        "adopted 仅表示百法目录身份采用；executableApproved 保持 false。"
+      ]
+    },
+    {
+      "ruleId": "dlr.rule.bifa.084",
+      "family": "bifa",
+      "subfamily": "bifaCatalog",
+      "ordinal": 84,
+      "traditionalName": "合中犯杀蜜中砒",
+      "adoptedStatus": "adopted",
+      "conditionsSummary": "本条只冻结毕法赋百法目录身份；typed 命中条件须由影印正文和独立正反例另行批准。",
+      "prioritySummary": "同规则族内的优先关系尚未由影印页冻结；不得按目录顺序推断执行优先级。",
+      "interpretation": "详细题句与起始影印页已独立复核；本条不批准执行条件、优先级或 fixture。",
+      "evidenceLevel": "B",
+      "locatorOnly": false,
+      "executableApproved": false,
+      "sourceRefs": [
+        {
+          "sourceId": "dlr.source.siku-liuren-daquan",
+          "referenceKind": "scan",
+          "volume": "卷十",
+          "scanLeaf": 85,
+          "printedLeaf": null,
+          "pdfPage": 85,
+          "imageLabel": null,
+          "locator": null,
+          "shortQuote": "合中犯殺蜜中砒",
+          "verifiedBy": [
+            {
+              "reviewer": "C00 catalog first-pass scan audit",
+              "date": "2026-07-28"
+            },
+            {
+              "reviewer": "c00_bifa_recheck (Codex)",
+              "date": "2026-07-28"
+            }
+          ]
+        },
+        {
+          "sourceId": "dlr.source.daquan-transcription-aa7bc942",
+          "referenceKind": "locator",
+          "volume": null,
+          "scanLeaf": null,
+          "printedLeaf": null,
+          "pdfPage": null,
+          "imageLabel": null,
+          "locator": "docs/六壬大全/012巻十二 《毕法赋》下.md:L37",
+          "shortQuote": "合中犯杀蜜中砒",
+          "verifiedBy": []
+        }
+      ],
+      "variantGroupId": null,
+      "adoptedVariantId": null,
+      "fixtureIds": [],
+      "targetCapabilityId": "daliuren.bifa.084",
+      "targetCodeDomain": "lib/domain/services/daliuren/bifa/",
+      "notes": [
+        "printed leaf 尚未核定；不得把 PDF 页复制为版心叶码。",
+        "adopted 仅表示百法目录身份采用；executableApproved 保持 false。"
+      ]
+    },
+    {
+      "ruleId": "dlr.rule.bifa.085",
+      "family": "bifa",
+      "subfamily": "bifaCatalog",
+      "ordinal": 85,
+      "traditionalName": "初遭夹克不由己",
+      "adoptedStatus": "adopted",
+      "conditionsSummary": "本条只冻结毕法赋百法目录身份；typed 命中条件须由影印正文和独立正反例另行批准。",
+      "prioritySummary": "同规则族内的优先关系尚未由影印页冻结；不得按目录顺序推断执行优先级。",
+      "interpretation": "详细题句与起始影印页已独立复核；本条不批准执行条件、优先级或 fixture。",
+      "evidenceLevel": "B",
+      "locatorOnly": false,
+      "executableApproved": false,
+      "sourceRefs": [
+        {
+          "sourceId": "dlr.source.siku-liuren-daquan",
+          "referenceKind": "scan",
+          "volume": "卷十",
+          "scanLeaf": 86,
+          "printedLeaf": null,
+          "pdfPage": 86,
+          "imageLabel": null,
+          "locator": null,
+          "shortQuote": "初遭夾克不由己",
+          "verifiedBy": [
+            {
+              "reviewer": "C00 catalog first-pass scan audit",
+              "date": "2026-07-28"
+            },
+            {
+              "reviewer": "c00_bifa_recheck (Codex)",
+              "date": "2026-07-28"
+            }
+          ]
+        },
+        {
+          "sourceId": "dlr.source.daquan-transcription-aa7bc942",
+          "referenceKind": "locator",
+          "volume": null,
+          "scanLeaf": null,
+          "printedLeaf": null,
+          "pdfPage": null,
+          "imageLabel": null,
+          "locator": "docs/六壬大全/012巻十二 《毕法赋》下.md:L39",
+          "shortQuote": "初遭夹克不由己",
+          "verifiedBy": []
+        }
+      ],
+      "variantGroupId": null,
+      "adoptedVariantId": null,
+      "fixtureIds": [],
+      "targetCapabilityId": "daliuren.bifa.085",
+      "targetCodeDomain": "lib/domain/services/daliuren/bifa/",
+      "notes": [
+        "printed leaf 尚未核定；不得把 PDF 页复制为版心叶码。",
+        "adopted 仅表示百法目录身份采用；executableApproved 保持 false。"
+      ]
+    },
+    {
+      "ruleId": "dlr.rule.bifa.086",
+      "family": "bifa",
+      "subfamily": "bifaCatalog",
+      "ordinal": 86,
+      "traditionalName": "将逢内战所谋危",
+      "adoptedStatus": "adopted",
+      "conditionsSummary": "本条只冻结毕法赋百法目录身份；typed 命中条件须由影印正文和独立正反例另行批准。",
+      "prioritySummary": "同规则族内的优先关系尚未由影印页冻结；不得按目录顺序推断执行优先级。",
+      "interpretation": "详细题句与起始影印页已独立复核；本条不批准执行条件、优先级或 fixture。",
+      "evidenceLevel": "B",
+      "locatorOnly": false,
+      "executableApproved": false,
+      "sourceRefs": [
+        {
+          "sourceId": "dlr.source.siku-liuren-daquan",
+          "referenceKind": "scan",
+          "volume": "卷十",
+          "scanLeaf": 88,
+          "printedLeaf": null,
+          "pdfPage": 88,
+          "imageLabel": null,
+          "locator": null,
+          "shortQuote": "將逢內戰所謀危",
+          "verifiedBy": [
+            {
+              "reviewer": "C00 catalog first-pass scan audit",
+              "date": "2026-07-28"
+            },
+            {
+              "reviewer": "c00_bifa_recheck (Codex)",
+              "date": "2026-07-28"
+            }
+          ]
+        },
+        {
+          "sourceId": "dlr.source.daquan-transcription-aa7bc942",
+          "referenceKind": "locator",
+          "volume": null,
+          "scanLeaf": null,
+          "printedLeaf": null,
+          "pdfPage": null,
+          "imageLabel": null,
+          "locator": "docs/六壬大全/012巻十二 《毕法赋》下.md:L39",
+          "shortQuote": "将逢内战所谋危",
+          "verifiedBy": []
+        }
+      ],
+      "variantGroupId": null,
+      "adoptedVariantId": null,
+      "fixtureIds": [],
+      "targetCapabilityId": "daliuren.bifa.086",
+      "targetCodeDomain": "lib/domain/services/daliuren/bifa/",
+      "notes": [
+        "printed leaf 尚未核定；不得把 PDF 页复制为版心叶码。",
+        "adopted 仅表示百法目录身份采用；executableApproved 保持 false。"
+      ]
+    },
+    {
+      "ruleId": "dlr.rule.bifa.087",
+      "family": "bifa",
+      "subfamily": "bifaCatalog",
+      "ordinal": 87,
+      "traditionalName": "人宅坐墓甘招晦",
+      "adoptedStatus": "adopted",
+      "conditionsSummary": "本条只冻结毕法赋百法目录身份；typed 命中条件须由影印正文和独立正反例另行批准。",
+      "prioritySummary": "同规则族内的优先关系尚未由影印页冻结；不得按目录顺序推断执行优先级。",
+      "interpretation": "详细题句与起始影印页已独立复核；本条不批准执行条件、优先级或 fixture。",
+      "evidenceLevel": "B",
+      "locatorOnly": false,
+      "executableApproved": false,
+      "sourceRefs": [
+        {
+          "sourceId": "dlr.source.siku-liuren-daquan",
+          "referenceKind": "scan",
+          "volume": "卷十",
+          "scanLeaf": 91,
+          "printedLeaf": null,
+          "pdfPage": 91,
+          "imageLabel": null,
+          "locator": null,
+          "shortQuote": "人宅坐墓甘招晦",
+          "verifiedBy": [
+            {
+              "reviewer": "C00 catalog first-pass scan audit",
+              "date": "2026-07-28"
+            },
+            {
+              "reviewer": "c00_bifa_recheck (Codex)",
+              "date": "2026-07-28"
+            }
+          ]
+        },
+        {
+          "sourceId": "dlr.source.daquan-transcription-aa7bc942",
+          "referenceKind": "locator",
+          "volume": null,
+          "scanLeaf": null,
+          "printedLeaf": null,
+          "pdfPage": null,
+          "imageLabel": null,
+          "locator": "docs/六壬大全/012巻十二 《毕法赋》下.md:L41",
+          "shortQuote": "人宅坐墓甘招晦",
+          "verifiedBy": []
+        }
+      ],
+      "variantGroupId": null,
+      "adoptedVariantId": null,
+      "fixtureIds": [],
+      "targetCapabilityId": "daliuren.bifa.087",
+      "targetCodeDomain": "lib/domain/services/daliuren/bifa/",
+      "notes": [
+        "printed leaf 尚未核定；不得把 PDF 页复制为版心叶码。",
+        "adopted 仅表示百法目录身份采用；executableApproved 保持 false。"
+      ]
+    },
+    {
+      "ruleId": "dlr.rule.bifa.088",
+      "family": "bifa",
+      "subfamily": "bifaCatalog",
+      "ordinal": 88,
+      "traditionalName": "干支乘墓各昏迷",
+      "adoptedStatus": "adopted",
+      "conditionsSummary": "本条只冻结毕法赋百法目录身份；typed 命中条件须由影印正文和独立正反例另行批准。",
+      "prioritySummary": "同规则族内的优先关系尚未由影印页冻结；不得按目录顺序推断执行优先级。",
+      "interpretation": "详细题句与起始影印页已独立复核；本条不批准执行条件、优先级或 fixture。",
+      "evidenceLevel": "B",
+      "locatorOnly": false,
+      "executableApproved": false,
+      "sourceRefs": [
+        {
+          "sourceId": "dlr.source.siku-liuren-daquan",
+          "referenceKind": "scan",
+          "volume": "卷十",
+          "scanLeaf": 93,
+          "printedLeaf": null,
+          "pdfPage": 93,
+          "imageLabel": null,
+          "locator": null,
+          "shortQuote": "干支乘墓各昏迷",
+          "verifiedBy": [
+            {
+              "reviewer": "C00 catalog first-pass scan audit",
+              "date": "2026-07-28"
+            },
+            {
+              "reviewer": "c00_bifa_recheck (Codex)",
+              "date": "2026-07-28"
+            }
+          ]
+        },
+        {
+          "sourceId": "dlr.source.daquan-transcription-aa7bc942",
+          "referenceKind": "locator",
+          "volume": null,
+          "scanLeaf": null,
+          "printedLeaf": null,
+          "pdfPage": null,
+          "imageLabel": null,
+          "locator": "docs/六壬大全/012巻十二 《毕法赋》下.md:L41",
+          "shortQuote": "干支乘墓各昏迷",
+          "verifiedBy": []
+        }
+      ],
+      "variantGroupId": null,
+      "adoptedVariantId": null,
+      "fixtureIds": [],
+      "targetCapabilityId": "daliuren.bifa.088",
+      "targetCodeDomain": "lib/domain/services/daliuren/bifa/",
+      "notes": [
+        "printed leaf 尚未核定；不得把 PDF 页复制为版心叶码。",
+        "adopted 仅表示百法目录身份采用；executableApproved 保持 false。"
+      ]
+    },
+    {
+      "ruleId": "dlr.rule.bifa.089",
+      "family": "bifa",
+      "subfamily": "bifaCatalog",
+      "ordinal": 89,
+      "traditionalName": "任信丁马须言动",
+      "adoptedStatus": "adopted",
+      "conditionsSummary": "本条只冻结毕法赋百法目录身份；typed 命中条件须由影印正文和独立正反例另行批准。",
+      "prioritySummary": "同规则族内的优先关系尚未由影印页冻结；不得按目录顺序推断执行优先级。",
+      "interpretation": "详细题句与起始影印页已独立复核；本条不批准执行条件、优先级或 fixture。",
+      "evidenceLevel": "B",
+      "locatorOnly": false,
+      "executableApproved": false,
+      "sourceRefs": [
+        {
+          "sourceId": "dlr.source.siku-liuren-daquan",
+          "referenceKind": "scan",
+          "volume": "卷十",
+          "scanLeaf": 96,
+          "printedLeaf": null,
+          "pdfPage": 96,
+          "imageLabel": null,
+          "locator": null,
+          "shortQuote": "任信丁馬須言動",
+          "verifiedBy": [
+            {
+              "reviewer": "C00 catalog first-pass scan audit",
+              "date": "2026-07-28"
+            },
+            {
+              "reviewer": "c00_bifa_recheck (Codex)",
+              "date": "2026-07-28"
+            }
+          ]
+        },
+        {
+          "sourceId": "dlr.source.daquan-transcription-aa7bc942",
+          "referenceKind": "locator",
+          "volume": null,
+          "scanLeaf": null,
+          "printedLeaf": null,
+          "pdfPage": null,
+          "imageLabel": null,
+          "locator": "docs/六壬大全/012巻十二 《毕法赋》下.md:L43",
+          "shortQuote": "任信丁马须言动",
+          "verifiedBy": []
+        }
+      ],
+      "variantGroupId": null,
+      "adoptedVariantId": null,
+      "fixtureIds": [],
+      "targetCapabilityId": "daliuren.bifa.089",
+      "targetCodeDomain": "lib/domain/services/daliuren/bifa/",
+      "notes": [
+        "printed leaf 尚未核定；不得把 PDF 页复制为版心叶码。",
+        "adopted 仅表示百法目录身份采用；executableApproved 保持 false。"
+      ]
+    },
+    {
+      "ruleId": "dlr.rule.bifa.090",
+      "family": "bifa",
+      "subfamily": "bifaCatalog",
+      "ordinal": 90,
+      "traditionalName": "来去俱空岂动宜",
+      "adoptedStatus": "adopted",
+      "conditionsSummary": "本条只冻结毕法赋百法目录身份；typed 命中条件须由影印正文和独立正反例另行批准。",
+      "prioritySummary": "同规则族内的优先关系尚未由影印页冻结；不得按目录顺序推断执行优先级。",
+      "interpretation": "详细题句与起始影印页已独立复核；本条不批准执行条件、优先级或 fixture。",
+      "evidenceLevel": "B",
+      "locatorOnly": false,
+      "executableApproved": false,
+      "sourceRefs": [
+        {
+          "sourceId": "dlr.source.siku-liuren-daquan",
+          "referenceKind": "scan",
+          "volume": "卷十",
+          "scanLeaf": 100,
+          "printedLeaf": null,
+          "pdfPage": 100,
+          "imageLabel": null,
+          "locator": null,
+          "shortQuote": "來去俱空豈動宜",
+          "verifiedBy": [
+            {
+              "reviewer": "C00 catalog first-pass scan audit",
+              "date": "2026-07-28"
+            },
+            {
+              "reviewer": "c00_bifa_recheck (Codex)",
+              "date": "2026-07-28"
+            }
+          ]
+        },
+        {
+          "sourceId": "dlr.source.daquan-transcription-aa7bc942",
+          "referenceKind": "locator",
+          "volume": null,
+          "scanLeaf": null,
+          "printedLeaf": null,
+          "pdfPage": null,
+          "imageLabel": null,
+          "locator": "docs/六壬大全/012巻十二 《毕法赋》下.md:L43",
+          "shortQuote": "来去俱空岂动宜",
+          "verifiedBy": []
+        }
+      ],
+      "variantGroupId": null,
+      "adoptedVariantId": null,
+      "fixtureIds": [],
+      "targetCapabilityId": "daliuren.bifa.090",
+      "targetCodeDomain": "lib/domain/services/daliuren/bifa/",
+      "notes": [
+        "printed leaf 尚未核定；不得把 PDF 页复制为版心叶码。",
+        "adopted 仅表示百法目录身份采用；executableApproved 保持 false。"
+      ]
+    },
+    {
+      "ruleId": "dlr.rule.bifa.091",
+      "family": "bifa",
+      "subfamily": "bifaCatalog",
+      "ordinal": 91,
+      "traditionalName": "虎临干鬼凶速速",
+      "adoptedStatus": "adopted",
+      "conditionsSummary": "本条只冻结毕法赋百法目录身份；typed 命中条件须由影印正文和独立正反例另行批准。",
+      "prioritySummary": "同规则族内的优先关系尚未由影印页冻结；不得按目录顺序推断执行优先级。",
+      "interpretation": "详细题句与起始影印页已独立复核；本条不批准执行条件、优先级或 fixture。",
+      "evidenceLevel": "B",
+      "locatorOnly": false,
+      "executableApproved": false,
+      "sourceRefs": [
+        {
+          "sourceId": "dlr.source.siku-liuren-daquan",
+          "referenceKind": "scan",
+          "volume": "卷十",
+          "scanLeaf": 103,
+          "printedLeaf": null,
+          "pdfPage": 103,
+          "imageLabel": null,
+          "locator": null,
+          "shortQuote": "虎臨干鬼凶速速",
+          "verifiedBy": [
+            {
+              "reviewer": "C00 catalog first-pass scan audit",
+              "date": "2026-07-28"
+            },
+            {
+              "reviewer": "c00_bifa_recheck (Codex)",
+              "date": "2026-07-28"
+            }
+          ]
+        },
+        {
+          "sourceId": "dlr.source.daquan-transcription-aa7bc942",
+          "referenceKind": "locator",
+          "volume": null,
+          "scanLeaf": null,
+          "printedLeaf": null,
+          "pdfPage": null,
+          "imageLabel": null,
+          "locator": "docs/六壬大全/012巻十二 《毕法赋》下.md:L45",
+          "shortQuote": "虎临干鬼凶速速",
+          "verifiedBy": []
+        }
+      ],
+      "variantGroupId": null,
+      "adoptedVariantId": null,
+      "fixtureIds": [],
+      "targetCapabilityId": "daliuren.bifa.091",
+      "targetCodeDomain": "lib/domain/services/daliuren/bifa/",
+      "notes": [
+        "printed leaf 尚未核定；不得把 PDF 页复制为版心叶码。",
+        "adopted 仅表示百法目录身份采用；executableApproved 保持 false。"
+      ]
+    },
+    {
+      "ruleId": "dlr.rule.bifa.092",
+      "family": "bifa",
+      "subfamily": "bifaCatalog",
+      "ordinal": 92,
+      "traditionalName": "龙加生气吉迟迟",
+      "adoptedStatus": "adopted",
+      "conditionsSummary": "本条只冻结毕法赋百法目录身份；typed 命中条件须由影印正文和独立正反例另行批准。",
+      "prioritySummary": "同规则族内的优先关系尚未由影印页冻结；不得按目录顺序推断执行优先级。",
+      "interpretation": "详细题句与起始影印页已独立复核；本条不批准执行条件、优先级或 fixture。",
+      "evidenceLevel": "B",
+      "locatorOnly": false,
+      "executableApproved": false,
+      "sourceRefs": [
+        {
+          "sourceId": "dlr.source.siku-liuren-daquan",
+          "referenceKind": "scan",
+          "volume": "卷十",
+          "scanLeaf": 107,
+          "printedLeaf": null,
+          "pdfPage": 107,
+          "imageLabel": null,
+          "locator": null,
+          "shortQuote": "龍加生氣吉遲遲",
+          "verifiedBy": [
+            {
+              "reviewer": "C00 catalog first-pass scan audit",
+              "date": "2026-07-28"
+            },
+            {
+              "reviewer": "c00_bifa_recheck (Codex)",
+              "date": "2026-07-28"
+            }
+          ]
+        },
+        {
+          "sourceId": "dlr.source.daquan-transcription-aa7bc942",
+          "referenceKind": "locator",
+          "volume": null,
+          "scanLeaf": null,
+          "printedLeaf": null,
+          "pdfPage": null,
+          "imageLabel": null,
+          "locator": "docs/六壬大全/012巻十二 《毕法赋》下.md:L45",
+          "shortQuote": "龙加生气吉迟迟",
+          "verifiedBy": []
+        }
+      ],
+      "variantGroupId": null,
+      "adoptedVariantId": null,
+      "fixtureIds": [],
+      "targetCapabilityId": "daliuren.bifa.092",
+      "targetCodeDomain": "lib/domain/services/daliuren/bifa/",
+      "notes": [
+        "printed leaf 尚未核定；不得把 PDF 页复制为版心叶码。",
+        "adopted 仅表示百法目录身份采用；executableApproved 保持 false。"
+      ]
+    },
+    {
+      "ruleId": "dlr.rule.bifa.093",
+      "family": "bifa",
+      "subfamily": "bifaCatalog",
+      "ordinal": 93,
+      "traditionalName": "妄用三传灾福异",
+      "adoptedStatus": "adopted",
+      "conditionsSummary": "本条只冻结毕法赋百法目录身份；typed 命中条件须由影印正文和独立正反例另行批准。",
+      "prioritySummary": "同规则族内的优先关系尚未由影印页冻结；不得按目录顺序推断执行优先级。",
+      "interpretation": "详细题句与起始影印页已独立复核；本条不批准执行条件、优先级或 fixture。",
+      "evidenceLevel": "B",
+      "locatorOnly": false,
+      "executableApproved": false,
+      "sourceRefs": [
+        {
+          "sourceId": "dlr.source.siku-liuren-daquan",
+          "referenceKind": "scan",
+          "volume": "卷十",
+          "scanLeaf": 108,
+          "printedLeaf": null,
+          "pdfPage": 108,
+          "imageLabel": null,
+          "locator": null,
+          "shortQuote": "妄用三傳災福異",
+          "verifiedBy": [
+            {
+              "reviewer": "C00 catalog first-pass scan audit",
+              "date": "2026-07-28"
+            },
+            {
+              "reviewer": "c00_bifa_recheck (Codex)",
+              "date": "2026-07-28"
+            }
+          ]
+        },
+        {
+          "sourceId": "dlr.source.daquan-transcription-aa7bc942",
+          "referenceKind": "locator",
+          "volume": null,
+          "scanLeaf": null,
+          "printedLeaf": null,
+          "pdfPage": null,
+          "imageLabel": null,
+          "locator": "docs/六壬大全/012巻十二 《毕法赋》下.md:L47",
+          "shortQuote": "妄用三传灾福异",
+          "verifiedBy": []
+        }
+      ],
+      "variantGroupId": null,
+      "adoptedVariantId": null,
+      "fixtureIds": [],
+      "targetCapabilityId": "daliuren.bifa.093",
+      "targetCodeDomain": "lib/domain/services/daliuren/bifa/",
+      "notes": [
+        "printed leaf 尚未核定；不得把 PDF 页复制为版心叶码。",
+        "adopted 仅表示百法目录身份采用；executableApproved 保持 false。"
+      ]
+    },
+    {
+      "ruleId": "dlr.rule.bifa.094",
+      "family": "bifa",
+      "subfamily": "bifaCatalog",
+      "ordinal": 94,
+      "traditionalName": "喜惧空亡乃妙机",
+      "adoptedStatus": "adopted",
+      "conditionsSummary": "本条只冻结毕法赋百法目录身份；typed 命中条件须由影印正文和独立正反例另行批准。",
+      "prioritySummary": "同规则族内的优先关系尚未由影印页冻结；不得按目录顺序推断执行优先级。",
+      "interpretation": "详细题句与起始影印页已独立复核；本条不批准执行条件、优先级或 fixture。",
+      "evidenceLevel": "B",
+      "locatorOnly": false,
+      "executableApproved": false,
+      "sourceRefs": [
+        {
+          "sourceId": "dlr.source.siku-liuren-daquan",
+          "referenceKind": "scan",
+          "volume": "卷十",
+          "scanLeaf": 110,
+          "printedLeaf": null,
+          "pdfPage": 110,
+          "imageLabel": null,
+          "locator": null,
+          "shortQuote": "喜懼空亡乃妙機",
+          "verifiedBy": [
+            {
+              "reviewer": "C00 catalog first-pass scan audit",
+              "date": "2026-07-28"
+            },
+            {
+              "reviewer": "c00_bifa_recheck (Codex)",
+              "date": "2026-07-28"
+            }
+          ]
+        },
+        {
+          "sourceId": "dlr.source.daquan-transcription-aa7bc942",
+          "referenceKind": "locator",
+          "volume": null,
+          "scanLeaf": null,
+          "printedLeaf": null,
+          "pdfPage": null,
+          "imageLabel": null,
+          "locator": "docs/六壬大全/012巻十二 《毕法赋》下.md:L47",
+          "shortQuote": "喜惧空亡乃妙机",
+          "verifiedBy": []
+        }
+      ],
+      "variantGroupId": null,
+      "adoptedVariantId": null,
+      "fixtureIds": [],
+      "targetCapabilityId": "daliuren.bifa.094",
+      "targetCodeDomain": "lib/domain/services/daliuren/bifa/",
+      "notes": [
+        "printed leaf 尚未核定；不得把 PDF 页复制为版心叶码。",
+        "adopted 仅表示百法目录身份采用；executableApproved 保持 false。"
+      ]
+    },
+    {
+      "ruleId": "dlr.rule.bifa.095",
+      "family": "bifa",
+      "subfamily": "bifaCatalog",
+      "ordinal": 95,
+      "traditionalName": "六爻现卦防其克",
+      "adoptedStatus": "adopted",
+      "conditionsSummary": "本条只冻结毕法赋百法目录身份；typed 命中条件须由影印正文和独立正反例另行批准。",
+      "prioritySummary": "同规则族内的优先关系尚未由影印页冻结；不得按目录顺序推断执行优先级。",
+      "interpretation": "详细题句与起始影印页已独立复核；本条不批准执行条件、优先级或 fixture。",
+      "evidenceLevel": "B",
+      "locatorOnly": false,
+      "executableApproved": false,
+      "sourceRefs": [
+        {
+          "sourceId": "dlr.source.siku-liuren-daquan",
+          "referenceKind": "scan",
+          "volume": "卷十",
+          "scanLeaf": 115,
+          "printedLeaf": null,
+          "pdfPage": 115,
+          "imageLabel": null,
+          "locator": null,
+          "shortQuote": "六爻現卦防其克",
+          "verifiedBy": [
+            {
+              "reviewer": "C00 catalog first-pass scan audit",
+              "date": "2026-07-28"
+            },
+            {
+              "reviewer": "c00_bifa_recheck (Codex)",
+              "date": "2026-07-28"
+            }
+          ]
+        },
+        {
+          "sourceId": "dlr.source.daquan-transcription-aa7bc942",
+          "referenceKind": "locator",
+          "volume": null,
+          "scanLeaf": null,
+          "printedLeaf": null,
+          "pdfPage": null,
+          "imageLabel": null,
+          "locator": "docs/六壬大全/012巻十二 《毕法赋》下.md:L49",
+          "shortQuote": "六爻现卦防其克",
+          "verifiedBy": []
+        }
+      ],
+      "variantGroupId": null,
+      "adoptedVariantId": null,
+      "fixtureIds": [],
+      "targetCapabilityId": "daliuren.bifa.095",
+      "targetCodeDomain": "lib/domain/services/daliuren/bifa/",
+      "notes": [
+        "printed leaf 尚未核定；不得把 PDF 页复制为版心叶码。",
+        "adopted 仅表示百法目录身份采用；executableApproved 保持 false。"
+      ]
+    },
+    {
+      "ruleId": "dlr.rule.bifa.096",
+      "family": "bifa",
+      "subfamily": "bifaCatalog",
+      "ordinal": 96,
+      "traditionalName": "旬内空亡逐类推",
+      "adoptedStatus": "adopted",
+      "conditionsSummary": "本条只冻结毕法赋百法目录身份；typed 命中条件须由影印正文和独立正反例另行批准。",
+      "prioritySummary": "同规则族内的优先关系尚未由影印页冻结；不得按目录顺序推断执行优先级。",
+      "interpretation": "详细题句与起始影印页已独立复核；本条不批准执行条件、优先级或 fixture。",
+      "evidenceLevel": "B",
+      "locatorOnly": false,
+      "executableApproved": false,
+      "sourceRefs": [
+        {
+          "sourceId": "dlr.source.siku-liuren-daquan",
+          "referenceKind": "scan",
+          "volume": "卷十",
+          "scanLeaf": 124,
+          "printedLeaf": null,
+          "pdfPage": 124,
+          "imageLabel": null,
+          "locator": null,
+          "shortQuote": "旬內空亡逐類推",
+          "verifiedBy": [
+            {
+              "reviewer": "C00 catalog first-pass scan audit",
+              "date": "2026-07-28"
+            },
+            {
+              "reviewer": "c00_bifa_recheck (Codex)",
+              "date": "2026-07-28"
+            }
+          ]
+        },
+        {
+          "sourceId": "dlr.source.daquan-transcription-aa7bc942",
+          "referenceKind": "locator",
+          "volume": null,
+          "scanLeaf": null,
+          "printedLeaf": null,
+          "pdfPage": null,
+          "imageLabel": null,
+          "locator": "docs/六壬大全/012巻十二 《毕法赋》下.md:L49",
+          "shortQuote": "旬内空亡逐类推",
+          "verifiedBy": []
+        }
+      ],
+      "variantGroupId": null,
+      "adoptedVariantId": null,
+      "fixtureIds": [],
+      "targetCapabilityId": "daliuren.bifa.096",
+      "targetCodeDomain": "lib/domain/services/daliuren/bifa/",
+      "notes": [
+        "printed leaf 尚未核定；不得把 PDF 页复制为版心叶码。",
+        "adopted 仅表示百法目录身份采用；executableApproved 保持 false。"
+      ]
+    },
+    {
+      "ruleId": "dlr.rule.bifa.097",
+      "family": "bifa",
+      "subfamily": "bifaCatalog",
+      "ordinal": 97,
+      "traditionalName": "所筮不入仍凭类",
+      "adoptedStatus": "adopted",
+      "conditionsSummary": "本条只冻结毕法赋百法目录身份；typed 命中条件须由影印正文和独立正反例另行批准。",
+      "prioritySummary": "同规则族内的优先关系尚未由影印页冻结；不得按目录顺序推断执行优先级。",
+      "interpretation": "详细题句与起始影印页已独立复核；本条不批准执行条件、优先级或 fixture。",
+      "evidenceLevel": "B",
+      "locatorOnly": false,
+      "executableApproved": false,
+      "sourceRefs": [
+        {
+          "sourceId": "dlr.source.siku-liuren-daquan",
+          "referenceKind": "scan",
+          "volume": "卷十",
+          "scanLeaf": 128,
+          "printedLeaf": null,
+          "pdfPage": 128,
+          "imageLabel": null,
+          "locator": null,
+          "shortQuote": "所筮不入仍憑類",
+          "verifiedBy": [
+            {
+              "reviewer": "C00 catalog first-pass scan audit",
+              "date": "2026-07-28"
+            },
+            {
+              "reviewer": "c00_bifa_recheck (Codex)",
+              "date": "2026-07-28"
+            }
+          ]
+        },
+        {
+          "sourceId": "dlr.source.daquan-transcription-aa7bc942",
+          "referenceKind": "locator",
+          "volume": null,
+          "scanLeaf": null,
+          "printedLeaf": null,
+          "pdfPage": null,
+          "imageLabel": null,
+          "locator": "docs/六壬大全/012巻十二 《毕法赋》下.md:L51",
+          "shortQuote": "所筮不入仍凭类",
+          "verifiedBy": []
+        }
+      ],
+      "variantGroupId": null,
+      "adoptedVariantId": null,
+      "fixtureIds": [],
+      "targetCapabilityId": "daliuren.bifa.097",
+      "targetCodeDomain": "lib/domain/services/daliuren/bifa/",
+      "notes": [
+        "printed leaf 尚未核定；不得把 PDF 页复制为版心叶码。",
+        "adopted 仅表示百法目录身份采用；executableApproved 保持 false。"
+      ]
+    },
+    {
+      "ruleId": "dlr.rule.bifa.098",
+      "family": "bifa",
+      "subfamily": "bifaCatalog",
+      "ordinal": 98,
+      "traditionalName": "分占现类勿言之",
+      "adoptedStatus": "adopted",
+      "conditionsSummary": "本条只冻结毕法赋百法目录身份；typed 命中条件须由影印正文和独立正反例另行批准。",
+      "prioritySummary": "同规则族内的优先关系尚未由影印页冻结；不得按目录顺序推断执行优先级。",
+      "interpretation": "详细题句与起始影印页已独立复核；本条不批准执行条件、优先级或 fixture。",
+      "evidenceLevel": "B",
+      "locatorOnly": false,
+      "executableApproved": false,
+      "sourceRefs": [
+        {
+          "sourceId": "dlr.source.siku-liuren-daquan",
+          "referenceKind": "scan",
+          "volume": "卷十",
+          "scanLeaf": 128,
+          "printedLeaf": null,
+          "pdfPage": 128,
+          "imageLabel": null,
+          "locator": null,
+          "shortQuote": "分占現類勿言之",
+          "verifiedBy": [
+            {
+              "reviewer": "C00 catalog first-pass scan audit",
+              "date": "2026-07-28"
+            },
+            {
+              "reviewer": "c00_bifa_recheck (Codex)",
+              "date": "2026-07-28"
+            }
+          ]
+        },
+        {
+          "sourceId": "dlr.source.daquan-transcription-aa7bc942",
+          "referenceKind": "locator",
+          "volume": null,
+          "scanLeaf": null,
+          "printedLeaf": null,
+          "pdfPage": null,
+          "imageLabel": null,
+          "locator": "docs/六壬大全/012巻十二 《毕法赋》下.md:L51",
+          "shortQuote": "分占现类勿言之",
+          "verifiedBy": []
+        }
+      ],
+      "variantGroupId": null,
+      "adoptedVariantId": null,
+      "fixtureIds": [],
+      "targetCapabilityId": "daliuren.bifa.098",
+      "targetCodeDomain": "lib/domain/services/daliuren/bifa/",
+      "notes": [
+        "printed leaf 尚未核定；不得把 PDF 页复制为版心叶码。",
+        "adopted 仅表示百法目录身份采用；executableApproved 保持 false。"
+      ]
+    },
+    {
+      "ruleId": "dlr.rule.bifa.099",
+      "family": "bifa",
+      "subfamily": "bifaCatalog",
+      "ordinal": 99,
+      "traditionalName": "常流不应逢吉象",
+      "adoptedStatus": "adopted",
+      "conditionsSummary": "本条只冻结毕法赋百法目录身份；typed 命中条件须由影印正文和独立正反例另行批准。",
+      "prioritySummary": "同规则族内的优先关系尚未由影印页冻结；不得按目录顺序推断执行优先级。",
+      "interpretation": "详细题句与起始影印页已独立复核；本条不批准执行条件、优先级或 fixture。",
+      "evidenceLevel": "B",
+      "locatorOnly": false,
+      "executableApproved": false,
+      "sourceRefs": [
+        {
+          "sourceId": "dlr.source.siku-liuren-daquan",
+          "referenceKind": "scan",
+          "volume": "卷十",
+          "scanLeaf": 129,
+          "printedLeaf": null,
+          "pdfPage": 129,
+          "imageLabel": null,
+          "locator": null,
+          "shortQuote": "常流不應逢吉象",
+          "verifiedBy": [
+            {
+              "reviewer": "C00 catalog first-pass scan audit",
+              "date": "2026-07-28"
+            },
+            {
+              "reviewer": "c00_bifa_recheck (Codex)",
+              "date": "2026-07-28"
+            }
+          ]
+        },
+        {
+          "sourceId": "dlr.source.daquan-transcription-aa7bc942",
+          "referenceKind": "locator",
+          "volume": null,
+          "scanLeaf": null,
+          "printedLeaf": null,
+          "pdfPage": null,
+          "imageLabel": null,
+          "locator": "docs/六壬大全/012巻十二 《毕法赋》下.md:L53",
+          "shortQuote": "常流不应逢吉象",
+          "verifiedBy": []
+        }
+      ],
+      "variantGroupId": null,
+      "adoptedVariantId": null,
+      "fixtureIds": [],
+      "targetCapabilityId": "daliuren.bifa.099",
+      "targetCodeDomain": "lib/domain/services/daliuren/bifa/",
+      "notes": [
+        "printed leaf 尚未核定；不得把 PDF 页复制为版心叶码。",
+        "adopted 仅表示百法目录身份采用；executableApproved 保持 false。"
+      ]
+    },
+    {
+      "ruleId": "dlr.rule.bifa.100",
+      "family": "bifa",
+      "subfamily": "bifaCatalog",
+      "ordinal": 100,
+      "traditionalName": "已灾凶逃返无疑",
+      "adoptedStatus": "adopted",
+      "conditionsSummary": "本条只冻结毕法赋百法目录身份；typed 命中条件须由影印正文和独立正反例另行批准。",
+      "prioritySummary": "同规则族内的优先关系尚未由影印页冻结；不得按目录顺序推断执行优先级。",
+      "interpretation": "详细题句与起始影印页已独立复核；本条不批准执行条件、优先级或 fixture。",
+      "evidenceLevel": "B",
+      "locatorOnly": false,
+      "executableApproved": false,
+      "sourceRefs": [
+        {
+          "sourceId": "dlr.source.siku-liuren-daquan",
+          "referenceKind": "scan",
+          "volume": "卷十",
+          "scanLeaf": 130,
+          "printedLeaf": null,
+          "pdfPage": 130,
+          "imageLabel": null,
+          "locator": null,
+          "shortQuote": "已災凶逃返無疑",
+          "verifiedBy": [
+            {
+              "reviewer": "C00 catalog first-pass scan audit",
+              "date": "2026-07-28"
+            },
+            {
+              "reviewer": "c00_bifa_recheck (Codex)",
+              "date": "2026-07-28"
+            }
+          ]
+        },
+        {
+          "sourceId": "dlr.source.daquan-transcription-aa7bc942",
+          "referenceKind": "locator",
+          "volume": null,
+          "scanLeaf": null,
+          "printedLeaf": null,
+          "pdfPage": null,
+          "imageLabel": null,
+          "locator": "docs/六壬大全/012巻十二 《毕法赋》下.md:L53",
+          "shortQuote": "已灾凶逃返无疑",
+          "verifiedBy": []
+        }
+      ],
+      "variantGroupId": null,
+      "adoptedVariantId": null,
+      "fixtureIds": [],
+      "targetCapabilityId": "daliuren.bifa.100",
+      "targetCodeDomain": "lib/domain/services/daliuren/bifa/",
+      "notes": [
+        "printed leaf 尚未核定；不得把 PDF 页复制为版心叶码。",
+        "adopted 仅表示百法目录身份采用；executableApproved 保持 false。"
+      ]
+    }
+  ]
+}

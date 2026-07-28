@@ -1,0 +1,87 @@
+{
+  "schemaVersion": "1.0.0",
+  "sourceWork": "大六壬断案",
+  "catalogStatus": "locatorOnly",
+  "limitations": [
+    "殆知阁链接最终指向 CTP wiki 转录（res=936550），页面明示版本暂缺。",
+    "NDL 只查到 2012 年《大六壬断案疏正》纸本，无在线页图。",
+    "以下课例只登记固定 locator；在找到可核影印本前不得提升为 A/B 或补造页码。"
+  ],
+  "cases": [
+    {
+      "caseId": "dlr.case.duanan.han-taishou-pray-for-snow",
+      "title": "韩太守占祈雪",
+      "verificationStatus": "pendingScan",
+      "evidenceLevel": "C",
+      "locatorOnly": true,
+      "sourceRef": {
+        "sourceId": "dlr.source.duanan-ctp-936550",
+        "referenceKind": "locator",
+        "volume": null,
+        "scanLeaf": null,
+        "printedLeaf": null,
+        "pdfPage": null,
+        "imageLabel": null,
+        "locator": "CTP wiki res=936550:元集/天时/韩太守占祈雪",
+        "shortQuote": "建炎三年己酉岁十一月初四己卯日寅将酉时，韩太守占祈雪。"
+      },
+      "rawInput": {
+        "reignYearText": "建炎三年",
+        "yearPillar": "己酉",
+        "lunarMonthText": "十一月",
+        "lunarDayText": "初四",
+        "dayPillar": "己卯",
+        "hourBranch": "酉",
+        "monthGeneral": "寅",
+        "civilDateTime": null,
+        "timezone": null,
+        "question": "祈雪",
+        "personContext": {
+          "title": "韩太守"
+        }
+      },
+      "expectedFacts": {
+        "transmissions": [
+          {
+            "stage": "初传",
+            "branch": "巳",
+            "general": "玄武"
+          },
+          {
+            "stage": "中传",
+            "branch": "戌",
+            "general": "朱雀"
+          },
+          {
+            "stage": "末传",
+            "branch": "卯",
+            "general": "白虎"
+          }
+        ]
+      },
+      "classicJudgment": "原断次日转寒并雨，继而降雪七寸；结果只作待影印复核的文本定位。",
+      "expectedDerivation": {
+        "method": "sourceTranscription",
+        "usesProductionCode": false,
+        "reviewer": "C00 CTP locator review",
+        "reviewedAt": "2026-07-28"
+      },
+      "unresolvedFields": [
+        "scanLeaf",
+        "printedLeaf",
+        "civilDateTime",
+        "timezone",
+        "hourPillar",
+        "fourLessons",
+        "courseNames"
+      ],
+      "adoptedAssumptions": [
+        "三传与天将只按当前可定位转录登记，不调用生产算法补齐。"
+      ],
+      "coveredRuleIds": [],
+      "targetCapabilityIds": [
+        "daliuren.externalCases.duanan"
+      ]
+    }
+  ]
+}

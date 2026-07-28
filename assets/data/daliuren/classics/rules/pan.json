@@ -1,0 +1,467 @@
+{
+  "schemaVersion": "1.0.0",
+  "family": "pan",
+  "catalogStatus": "partial",
+  "description": "月将、天地盘、寄宫与四课的有限基础目录。",
+  "expectedEntryCount": 8,
+  "entries": [
+    {
+      "ruleId": "dlr.rule.pan.001.month-general-by-zhongqi",
+      "family": "pan",
+      "subfamily": "calendarMonthGeneral",
+      "ordinal": 1,
+      "traditionalName": "月将随中气",
+      "adoptedStatus": "adopted",
+      "conditionsSummary": "按所占时刻已发生的中气选择月将，再把月将加到占时地盘支。",
+      "prioritySummary": "同规则族内的优先关系尚未由影印页冻结；不得按目录顺序推断执行优先级。",
+      "interpretation": "转录明确列十二中气与月将，并说明月将加占时；精确交节时刻仍属现代历法软件契约。",
+      "evidenceLevel": "B",
+      "locatorOnly": false,
+      "executableApproved": false,
+      "sourceRefs": [
+        {
+          "sourceId": "dlr.source.daliuren-zhinan-scan",
+          "referenceKind": "scan",
+          "volume": "全册",
+          "scanLeaf": 5,
+          "printedLeaf": "1",
+          "pdfPage": 6,
+          "imageLabel": null,
+          "locator": null,
+          "shortQuote": "雨水亥、春分戌、谷雨酉……冬至丑、大寒子。",
+          "verifiedBy": [
+            {
+              "reviewer": "C00 first-pass scan audit",
+              "date": "2026-07-28"
+            },
+            {
+              "reviewer": "c00_independent_recheck (Codex)",
+              "date": "2026-07-28"
+            }
+          ]
+        },
+        {
+          "sourceId": "dlr.source.cunyan-transcription-d2a44794",
+          "referenceKind": "locator",
+          "volume": null,
+          "scanLeaf": null,
+          "printedLeaf": null,
+          "pdfPage": null,
+          "imageLabel": null,
+          "locator": "六壬存验-清-吴师青.txt:L329-L344",
+          "shortQuote": "先立定地盘十二支。次取月令……月将加时。",
+          "verifiedBy": []
+        }
+      ],
+      "variantGroupId": null,
+      "adoptedVariantId": null,
+      "fixtureIds": [],
+      "targetCapabilityId": "daliuren.pan.monthGeneral",
+      "targetCodeDomain": "lib/domain/services/daliuren/yue_jiang_service.dart",
+      "notes": [
+        "中气日的秒级边界不能从该转录直接推导，必须由历法事件时间另行验证。"
+      ]
+    },
+    {
+      "ruleId": "dlr.rule.pan.002.month-general-table",
+      "family": "pan",
+      "subfamily": "calendarMonthGeneral",
+      "ordinal": 2,
+      "traditionalName": "十二月将表",
+      "adoptedStatus": "adopted",
+      "conditionsSummary": "大寒/立春起子将，依十二组节气顺列至雨水/惊蛰亥将。",
+      "prioritySummary": "同规则族内的优先关系尚未由影印页冻结；不得按目录顺序推断执行优先级。",
+      "interpretation": "冻结转录中的十二组节气/月将目录，尚未逐项回到影印页。",
+      "evidenceLevel": "B",
+      "locatorOnly": false,
+      "executableApproved": false,
+      "sourceRefs": [
+        {
+          "sourceId": "dlr.source.daliuren-zhinan-scan",
+          "referenceKind": "scan",
+          "volume": "全册",
+          "scanLeaf": 5,
+          "printedLeaf": "1",
+          "pdfPage": 6,
+          "imageLabel": null,
+          "locator": null,
+          "shortQuote": "雨水亥、春分戌、谷雨酉……冬至丑、大寒子。",
+          "verifiedBy": [
+            {
+              "reviewer": "C00 first-pass scan audit",
+              "date": "2026-07-28"
+            },
+            {
+              "reviewer": "c00_independent_recheck (Codex)",
+              "date": "2026-07-28"
+            }
+          ]
+        },
+        {
+          "sourceId": "dlr.source.cunyan-transcription-d2a44794",
+          "referenceKind": "locator",
+          "volume": null,
+          "scanLeaf": null,
+          "printedLeaf": null,
+          "pdfPage": null,
+          "imageLabel": null,
+          "locator": "六壬存验-清-吴师青.txt:L332-L344",
+          "shortQuote": "十二将：大寒立春子神后……雨水惊蛰亥登明。",
+          "verifiedBy": []
+        }
+      ],
+      "variantGroupId": null,
+      "adoptedVariantId": null,
+      "fixtureIds": [],
+      "targetCapabilityId": "daliuren.pan.monthGeneralTable",
+      "targetCodeDomain": "lib/domain/services/daliuren/yue_jiang_service.dart",
+      "notes": []
+    },
+    {
+      "ruleId": "dlr.rule.pan.003.heaven-plate-rotation",
+      "family": "pan",
+      "subfamily": "heavenPlate",
+      "ordinal": 3,
+      "traditionalName": "月将加时顺布天盘",
+      "adoptedStatus": "adopted",
+      "conditionsSummary": "月将加到占时地盘宫，天盘十二支固定顺行一周，不因昼夜改方向。",
+      "prioritySummary": "同规则族内的优先关系尚未由影印页冻结；不得按目录顺序推断执行优先级。",
+      "interpretation": "该条冻结天地盘坐标关系；昼夜只进入贵人选择，不改变天盘支顺序。",
+      "evidenceLevel": "B",
+      "locatorOnly": false,
+      "executableApproved": true,
+      "sourceRefs": [
+        {
+          "sourceId": "dlr.source.daliuren-zhinan-scan",
+          "referenceKind": "scan",
+          "volume": "全册",
+          "scanLeaf": 5,
+          "printedLeaf": "1",
+          "pdfPage": 6,
+          "imageLabel": null,
+          "locator": null,
+          "shortQuote": "月将加占时之上……顺布十二宫辰即天盘也。",
+          "verifiedBy": [
+            {
+              "reviewer": "C00 first-pass scan audit",
+              "date": "2026-07-28"
+            },
+            {
+              "reviewer": "c00_independent_recheck (Codex)",
+              "date": "2026-07-28"
+            }
+          ]
+        },
+        {
+          "sourceId": "dlr.source.cunyan-transcription-d2a44794",
+          "referenceKind": "locator",
+          "volume": null,
+          "scanLeaf": null,
+          "printedLeaf": null,
+          "pdfPage": null,
+          "imageLabel": null,
+          "locator": "六壬存验-清-吴师青.txt:L329",
+          "shortQuote": "顺行十二支，俱无阳阴顺逆之分。",
+          "verifiedBy": []
+        }
+      ],
+      "variantGroupId": null,
+      "adoptedVariantId": null,
+      "fixtureIds": [
+        "dlr.case.zhinan.renyin-guimao-liu-tuizhai",
+        "dlr.case.zhinan.yiwei-jimao-feng-yunsheng",
+        "dlr.case.zhinan.gengyin-gengchen-ma-lianzhuang"
+      ],
+      "targetCapabilityId": "daliuren.pan.heavenPlate",
+      "targetCodeDomain": "lib/domain/services/daliuren/tianpan_service.dart",
+      "notes": []
+    },
+    {
+      "ruleId": "dlr.rule.pan.004.stem-residences",
+      "family": "pan",
+      "subfamily": "stemResidence",
+      "ordinal": 4,
+      "traditionalName": "十干寄宫",
+      "adoptedStatus": "pending",
+      "conditionsSummary": "甲寅、乙辰、丙戊巳、丁己未、庚申、辛戌、壬亥、癸丑。",
+      "prioritySummary": "同规则族内的优先关系尚未由影印页冻结；不得按目录顺序推断执行优先级。",
+      "interpretation": "寄宫用于干课与别责等规则，不得与日禄位置混用。",
+      "evidenceLevel": "C",
+      "locatorOnly": false,
+      "executableApproved": false,
+      "sourceRefs": [
+        {
+          "sourceId": "dlr.source.siku-liuren-daquan",
+          "referenceKind": "scan",
+          "volume": "卷一",
+          "scanLeaf": 11,
+          "printedLeaf": "1a",
+          "pdfPage": 11,
+          "imageLabel": null,
+          "locator": null,
+          "shortQuote": "甲课寅兮乙课辰……癸课原来丑宫坐。",
+          "verifiedBy": [
+            {
+              "reviewer": "C00 first-pass scan audit",
+              "date": "2026-07-28"
+            }
+          ]
+        },
+        {
+          "sourceId": "dlr.source.daquan-transcription-aa7bc942",
+          "referenceKind": "locator",
+          "volume": null,
+          "scanLeaf": null,
+          "printedLeaf": null,
+          "pdfPage": null,
+          "imageLabel": null,
+          "locator": "docs/六壬大全/001巻一 起例.md:L5-L7",
+          "shortQuote": "甲课寅兮乙课辰……癸课原来丑宫坐。",
+          "verifiedBy": []
+        }
+      ],
+      "variantGroupId": null,
+      "adoptedVariantId": null,
+      "fixtureIds": [],
+      "targetCapabilityId": "daliuren.pan.stemResidence",
+      "targetCodeDomain": "lib/domain/services/daliuren/daliuren_constants.dart",
+      "notes": []
+    },
+    {
+      "ruleId": "dlr.rule.pan.005.first-lesson",
+      "family": "pan",
+      "subfamily": "fourLessons",
+      "ordinal": 5,
+      "traditionalName": "第一课",
+      "adoptedStatus": "adopted",
+      "conditionsSummary": "以日干寄宫所乘天盘支为上神，日干为下神。",
+      "prioritySummary": "同规则族内的优先关系尚未由影印页冻结；不得按目录顺序推断执行优先级。",
+      "interpretation": "四课必须由完整天地盘和干寄宫构造，缺键不能静默退回本支。",
+      "evidenceLevel": "B",
+      "locatorOnly": false,
+      "executableApproved": true,
+      "sourceRefs": [
+        {
+          "sourceId": "dlr.source.daliuren-zhinan-scan",
+          "referenceKind": "scan",
+          "volume": "全册",
+          "scanLeaf": 5,
+          "printedLeaf": "1",
+          "pdfPage": 6,
+          "imageLabel": null,
+          "locator": null,
+          "shortQuote": "视阴阳为四课之分。",
+          "verifiedBy": [
+            {
+              "reviewer": "C00 first-pass scan audit",
+              "date": "2026-07-28"
+            },
+            {
+              "reviewer": "c00_independent_recheck (Codex)",
+              "date": "2026-07-28"
+            }
+          ]
+        },
+        {
+          "sourceId": "dlr.source.cunyan-transcription-d2a44794",
+          "referenceKind": "locator",
+          "volume": null,
+          "scanLeaf": null,
+          "printedLeaf": null,
+          "pdfPage": null,
+          "imageLabel": null,
+          "locator": "六壬存验-清-吴师青.txt:L330",
+          "shortQuote": "次起四课……先以占事之日干立起初柱。",
+          "verifiedBy": []
+        }
+      ],
+      "variantGroupId": null,
+      "adoptedVariantId": null,
+      "fixtureIds": [
+        "dlr.case.zhinan.renyin-guimao-liu-tuizhai",
+        "dlr.case.zhinan.yiwei-jimao-feng-yunsheng",
+        "dlr.case.zhinan.gengyin-gengchen-ma-lianzhuang"
+      ],
+      "targetCapabilityId": "daliuren.pan.fourLessons.5",
+      "targetCodeDomain": "lib/domain/services/daliuren/si_ke_service.dart",
+      "notes": []
+    },
+    {
+      "ruleId": "dlr.rule.pan.006.second-lesson",
+      "family": "pan",
+      "subfamily": "fourLessons",
+      "ordinal": 6,
+      "traditionalName": "第二课",
+      "adoptedStatus": "adopted",
+      "conditionsSummary": "以第一课上神所在宫再取天盘支为上神，第一课上神为下神。",
+      "prioritySummary": "同规则族内的优先关系尚未由影印页冻结；不得按目录顺序推断执行优先级。",
+      "interpretation": "四课必须由完整天地盘和干寄宫构造，缺键不能静默退回本支。",
+      "evidenceLevel": "B",
+      "locatorOnly": false,
+      "executableApproved": true,
+      "sourceRefs": [
+        {
+          "sourceId": "dlr.source.daliuren-zhinan-scan",
+          "referenceKind": "scan",
+          "volume": "全册",
+          "scanLeaf": 5,
+          "printedLeaf": "1",
+          "pdfPage": 6,
+          "imageLabel": null,
+          "locator": null,
+          "shortQuote": "视阴阳为四课之分。",
+          "verifiedBy": [
+            {
+              "reviewer": "C00 first-pass scan audit",
+              "date": "2026-07-28"
+            },
+            {
+              "reviewer": "c00_independent_recheck (Codex)",
+              "date": "2026-07-28"
+            }
+          ]
+        },
+        {
+          "sourceId": "dlr.source.cunyan-transcription-d2a44794",
+          "referenceKind": "locator",
+          "volume": null,
+          "scanLeaf": null,
+          "printedLeaf": null,
+          "pdfPage": null,
+          "imageLabel": null,
+          "locator": "六壬存验-清-吴师青.txt:L330",
+          "shortQuote": "次起四课……先以占事之日干立起初柱。",
+          "verifiedBy": []
+        }
+      ],
+      "variantGroupId": null,
+      "adoptedVariantId": null,
+      "fixtureIds": [
+        "dlr.case.zhinan.renyin-guimao-liu-tuizhai",
+        "dlr.case.zhinan.yiwei-jimao-feng-yunsheng",
+        "dlr.case.zhinan.gengyin-gengchen-ma-lianzhuang"
+      ],
+      "targetCapabilityId": "daliuren.pan.fourLessons.6",
+      "targetCodeDomain": "lib/domain/services/daliuren/si_ke_service.dart",
+      "notes": []
+    },
+    {
+      "ruleId": "dlr.rule.pan.007.third-lesson",
+      "family": "pan",
+      "subfamily": "fourLessons",
+      "ordinal": 7,
+      "traditionalName": "第三课",
+      "adoptedStatus": "adopted",
+      "conditionsSummary": "以日支所乘天盘支为上神，日支为下神。",
+      "prioritySummary": "同规则族内的优先关系尚未由影印页冻结；不得按目录顺序推断执行优先级。",
+      "interpretation": "四课必须由完整天地盘和干寄宫构造，缺键不能静默退回本支。",
+      "evidenceLevel": "B",
+      "locatorOnly": false,
+      "executableApproved": true,
+      "sourceRefs": [
+        {
+          "sourceId": "dlr.source.daliuren-zhinan-scan",
+          "referenceKind": "scan",
+          "volume": "全册",
+          "scanLeaf": 5,
+          "printedLeaf": "1",
+          "pdfPage": 6,
+          "imageLabel": null,
+          "locator": null,
+          "shortQuote": "视阴阳为四课之分。",
+          "verifiedBy": [
+            {
+              "reviewer": "C00 first-pass scan audit",
+              "date": "2026-07-28"
+            },
+            {
+              "reviewer": "c00_independent_recheck (Codex)",
+              "date": "2026-07-28"
+            }
+          ]
+        },
+        {
+          "sourceId": "dlr.source.cunyan-transcription-d2a44794",
+          "referenceKind": "locator",
+          "volume": null,
+          "scanLeaf": null,
+          "printedLeaf": null,
+          "pdfPage": null,
+          "imageLabel": null,
+          "locator": "六壬存验-清-吴师青.txt:L330",
+          "shortQuote": "次起四课……先以占事之日干立起初柱。",
+          "verifiedBy": []
+        }
+      ],
+      "variantGroupId": null,
+      "adoptedVariantId": null,
+      "fixtureIds": [
+        "dlr.case.zhinan.renyin-guimao-liu-tuizhai",
+        "dlr.case.zhinan.yiwei-jimao-feng-yunsheng",
+        "dlr.case.zhinan.gengyin-gengchen-ma-lianzhuang"
+      ],
+      "targetCapabilityId": "daliuren.pan.fourLessons.7",
+      "targetCodeDomain": "lib/domain/services/daliuren/si_ke_service.dart",
+      "notes": []
+    },
+    {
+      "ruleId": "dlr.rule.pan.008.fourth-lesson",
+      "family": "pan",
+      "subfamily": "fourLessons",
+      "ordinal": 8,
+      "traditionalName": "第四课",
+      "adoptedStatus": "adopted",
+      "conditionsSummary": "以第三课上神所在宫再取天盘支为上神，第三课上神为下神。",
+      "prioritySummary": "同规则族内的优先关系尚未由影印页冻结；不得按目录顺序推断执行优先级。",
+      "interpretation": "四课必须由完整天地盘和干寄宫构造，缺键不能静默退回本支。",
+      "evidenceLevel": "B",
+      "locatorOnly": false,
+      "executableApproved": true,
+      "sourceRefs": [
+        {
+          "sourceId": "dlr.source.daliuren-zhinan-scan",
+          "referenceKind": "scan",
+          "volume": "全册",
+          "scanLeaf": 5,
+          "printedLeaf": "1",
+          "pdfPage": 6,
+          "imageLabel": null,
+          "locator": null,
+          "shortQuote": "视阴阳为四课之分。",
+          "verifiedBy": [
+            {
+              "reviewer": "C00 first-pass scan audit",
+              "date": "2026-07-28"
+            },
+            {
+              "reviewer": "c00_independent_recheck (Codex)",
+              "date": "2026-07-28"
+            }
+          ]
+        },
+        {
+          "sourceId": "dlr.source.cunyan-transcription-d2a44794",
+          "referenceKind": "locator",
+          "volume": null,
+          "scanLeaf": null,
+          "printedLeaf": null,
+          "pdfPage": null,
+          "imageLabel": null,
+          "locator": "六壬存验-清-吴师青.txt:L330",
+          "shortQuote": "次起四课……先以占事之日干立起初柱。",
+          "verifiedBy": []
+        }
+      ],
+      "variantGroupId": null,
+      "adoptedVariantId": null,
+      "fixtureIds": [
+        "dlr.case.zhinan.renyin-guimao-liu-tuizhai",
+        "dlr.case.zhinan.yiwei-jimao-feng-yunsheng",
+        "dlr.case.zhinan.gengyin-gengchen-ma-lianzhuang"
+      ],
+      "targetCapabilityId": "daliuren.pan.fourLessons.8",
+      "targetCodeDomain": "lib/domain/services/daliuren/si_ke_service.dart",
+      "notes": []
+    }
+  ]
+}

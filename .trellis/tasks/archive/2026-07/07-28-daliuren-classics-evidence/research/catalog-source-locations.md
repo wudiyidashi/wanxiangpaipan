@@ -8,11 +8,11 @@
 
 ### Evidence policy used here
 
-This is a first-pass location audit, not the independent second review required by the task design. Every row therefore remains evidence `C`, `locatorOnly=true`, `executableApproved=false`, even when the heading was legible in the scan.
+This document records the first-pass location audit. Its `V/C` and `T/C` table cells preserve the status of that pass. The companion `kejing-independent-review.md` and `bifa-independent-review.md` subsequently re-opened all 64 KeJing and 100 BiFa loci, supplied short quotations, and recorded corrections and variants. The registry may therefore treat both catalog identity/locus layers as B; typed conditions, priority, fixtures, and execution remain unapproved.
 
 - `V/C`: the heading or opening text was visually located in a rendered scan during this pass; independent re-check and quotation are still pending.
 - `T/C`: an exact candidate leaf was obtained from fixed-transcript alignment plus adjacent scan content, but the heading itself was not independently confirmed.
-- No row in this report is A/B or implementation-approved.
+- No KeJing or BiFa row is implementation-approved; BiFa 76 remains disputed because the same bottom text has an internal `害/祸` wording variant.
 
 ### Stable scan sources and pagination
 
@@ -46,7 +46,7 @@ The local fixed-transcript file number is not a safe physical-volume locator at 
 
 ### 64 KeJing loci
 
-`Page/leaf` is the physical PDF page and equal scan leaf. All rows are first-pass visual locators (`V/C`) and await independent verification.
+`Page/leaf` is the physical PDF page and equal scan leaf. The status column records this report's first pass; current page/name corrections and independent B-level catalog review are recorded in `kejing-independent-review.md`.
 
 | # | Canonical name | Physical vol. | IA identifier | Local PDF | Page/leaf | Status |
 |---:|---|---:|---|---|---:|---|
@@ -80,14 +80,14 @@ The local fixed-transcript file number is not a safe physical-volume locator at 
 | 28 | 和美 | 6 | `06054172.cn` | `liuren-06.pdf` | 68 | V/C |
 | 29 | 斩关 | 6 | `06054172.cn` | `liuren-06.pdf` | 73 | V/C |
 | 30 | 闭口 | 6 | `06054172.cn` | `liuren-06.pdf` | 85 | V/C |
-| 31 | 游子 | 6 | `06054172.cn` | `liuren-06.pdf` | 101 | V/C |
-| 32 | 三交 | 6 | `06054172.cn` | `liuren-06.pdf` | 112 | V/C |
+| 31 | 游子 | 6 | `06054172.cn` | `liuren-06.pdf` | 105 | V/C |
+| 32 | 三交 | 6 | `06054172.cn` | `liuren-06.pdf` | 113 | V/C |
 | 33 | 赘婿 | 6 | `06054172.cn` | `liuren-06.pdf` | 132 | V/C |
 | 34 | 冲破 | 6 | `06054172.cn` | `liuren-06.pdf` | 140 | V/C |
 | 35 | 淫泆 | 6 | `06054172.cn` | `liuren-06.pdf` | 146 | V/C |
-| 36 | 芜淫 | 7 | `06054173.cn` | `liuren-07.pdf` | 3 | V/C |
+| 36 | 无淫 | 7 | `06054173.cn` | `liuren-07.pdf` | 3 | V/C |
 | 37 | 解离 | 7 | `06054173.cn` | `liuren-07.pdf` | 12 | V/C |
-| 38 | 度厄 | 7 | `06054173.cn` | `liuren-07.pdf` | 27 | V/C |
+| 38 | 度厄 | 7 | `06054173.cn` | `liuren-07.pdf` | 28 | V/C |
 | 39 | 无禄绝嗣 | 7 | `06054173.cn` | `liuren-07.pdf` | 31 | V/C |
 | 40 | 迍福 | 7 | `06054173.cn` | `liuren-07.pdf` | 41 | V/C |
 | 41 | 侵害 | 7 | `06054173.cn` | `liuren-07.pdf` | 48 | V/C |
@@ -96,19 +96,19 @@ The local fixed-transcript file number is not a safe physical-volume locator at 
 | 44 | 天祸 | 7 | `06054173.cn` | `liuren-07.pdf` | 76 | V/C |
 | 45 | 天狱 | 7 | `06054173.cn` | `liuren-07.pdf` | 85 | V/C |
 | 46 | 天寇 | 7 | `06054173.cn` | `liuren-07.pdf` | 94 | V/C |
-| 47 | 天网 | 7 | `06054173.cn` | `liuren-07.pdf` | 102 | V/C |
-| 48 | 魄化 | 7 | `06054173.cn` | `liuren-07.pdf` | 109 | V/C |
+| 47 | 天网 | 7 | `06054173.cn` | `liuren-07.pdf` | 101 | V/C |
+| 48 | 魄化 | 7 | `06054173.cn` | `liuren-07.pdf` | 108 | V/C |
 | 49 | 三阴 | 7 | `06054173.cn` | `liuren-07.pdf` | 117 | V/C |
 | 50 | 龙战 | 7 | `06054173.cn` | `liuren-07.pdf` | 122 | V/C |
 | 51 | 死奇 | 7 | `06054173.cn` | `liuren-07.pdf` | 131 | V/C |
-| 52 | 灾厄 | 7 | `06054173.cn` | `liuren-07.pdf` | 138 | V/C |
+| 52 | 灾厄 | 7 | `06054173.cn` | `liuren-07.pdf` | 139 | V/C |
 | 53 | 殃咎 | 8 | `06054174.cn` | `liuren-08.pdf` | 3 | V/C |
-| 54 | 九丑 | 8 | `06054174.cn` | `liuren-08.pdf` | 8 | V/C |
+| 54 | 九丑 | 8 | `06054174.cn` | `liuren-08.pdf` | 9 | V/C |
 | 55 | 鬼墓 | 8 | `06054174.cn` | `liuren-08.pdf` | 15 | V/C |
 | 56 | 励德 | 8 | `06054174.cn` | `liuren-08.pdf` | 28 | V/C |
 | 57 | 盘珠 | 8 | `06054174.cn` | `liuren-08.pdf` | 40 | V/C |
 | 58 | 全局 | 8 | `06054174.cn` | `liuren-08.pdf` | 44 | V/C |
-| 59 | 元胎 | 8 | `06054174.cn` | `liuren-08.pdf` | 68 | V/C |
+| 59 | 玄胎 | 8 | `06054174.cn` | `liuren-08.pdf` | 68 | V/C |
 | 60 | 连珠 | 8 | `06054174.cn` | `liuren-08.pdf` | 78 | V/C |
 | 61 | 间传 | 8 | `06054174.cn` | `liuren-08.pdf` | 83 | V/C |
 | 62 | 六纯 | 8 | `06054174.cn` | `liuren-08.pdf` | 94 | V/C |
@@ -235,19 +235,40 @@ The local fixed-transcript file number is not a safe physical-volume locator at 
 - `.trellis/workflow.md` - Trellis workflow and research-role constraints.
 - `.trellis/tasks/07-28-daliuren-classics-evidence/prd.md` - evidence-level and locator-only acceptance rules.
 - `.trellis/tasks/07-28-daliuren-classics-evidence/design.md` - source locus schema and independent-review workflow.
+- `.trellis/spec/domain/index.md` - project routing index for the Daliuren domain specifications.
+- `.trellis/spec/domain/daliuren-analysis-engine.md` - downstream distinction between classical-source claims and project-defined analysis conventions.
 - `tmp/pdfs/daliuren/liuren-04-05.pdf` through `liuren-10.pdf` - local aliases of the IA scans used above.
 - `tmp/pdfs/daliuren/ocr/06054171.cn` through `06054176.cn` - IA DjVu XML/text and scandata used for count/alignment checks only.
 - `tmp/pdfs/daliuren/transcripts/liuren-07-transcript.md` through `liuren-10-transcript.md` - fixed KeJing transcriptions used only to find candidate headings.
-- `tmp/pdfs/daliuren/transcripts/liuren-11-transcript.md` - BiFa index and rules 1-50; lines 5-103 carry the 100-rule index and lines 55-57 contain the duplicate rule-53 label defect.
-- `tmp/pdfs/daliuren/transcripts/liuren-12-transcript.md` - BiFa rules 51-100; opening lines preserve canonical rule 52 as `罡塞鬼户任谋为`.
+- `tmp/pdfs/daliuren/transcripts/liuren-11-transcript.md` - BiFa index and rules 1-50; `tmp/pdfs/daliuren/transcripts/liuren-11-transcript.md:55` and `tmp/pdfs/daliuren/transcripts/liuren-11-transcript.md:57` expose the duplicate `第五十三法` index label.
+- `tmp/pdfs/daliuren/transcripts/liuren-12-transcript.md` - BiFa rules 51-100; `tmp/pdfs/daliuren/transcripts/liuren-12-transcript.md:3`, `tmp/pdfs/daliuren/transcripts/liuren-12-transcript.md:7`, and `tmp/pdfs/daliuren/transcripts/liuren-12-transcript.md:15` preserve the sequential rules 51-53 and canonical rule 52 `罡塞鬼户任谋为`.
 - `tmp/pdfs/daliuren/transcripts/duanan-book.md`, `duanan-yuan.md`, `duanan-heng.md`, `duanan-li.md`, `duanan-zhen.md` - fixed Duanan transcription witnesses, locator-only.
 
 ### Code/data patterns and related specs
 
-- Source loci must keep `pdfPage`, `scanLeaf`, and `printedLeaf` separate; see `.trellis/tasks/07-28-daliuren-classics-evidence/design.md` section 2.
-- OCR and fixed transcriptions are secondary locators and cannot share verification status with the scan source; see `design.md` sections 2 and 7.
-- The required exact family cardinalities are KeJing 64 and BiFa 100; see `prd.md` Requirements and Acceptance Criteria.
-- Relevant project guidance read: `.trellis/spec/index.md` and the package/layer specs routed from it for the classics data work.
+- Source loci keep `pdfPage`, `scanLeaf`, and `printedLeaf` separate, while OCR/fixed transcripts remain secondary locators: `.trellis/tasks/07-28-daliuren-classics-evidence/design.md:46`.
+- `locatorOnly` and `executableApproved` are independent states: `.trellis/tasks/07-28-daliuren-classics-evidence/design.md:57`.
+- OCR/transcript evidence cannot become A/B or deterministic implementation input without returning to a scan: `.trellis/tasks/07-28-daliuren-classics-evidence/prd.md:18`.
+- Exact family cardinalities are KeJing 64 and BiFa 100: `.trellis/tasks/07-28-daliuren-classics-evidence/prd.md:19`, `.trellis/tasks/07-28-daliuren-classics-evidence/prd.md:20`, `.trellis/tasks/07-28-daliuren-classics-evidence/design.md:87`, and `.trellis/tasks/07-28-daliuren-classics-evidence/prd.md:30`.
+- A locator becomes independently reviewable only after a second view checks the locus, transcription, and interpretation: `.trellis/tasks/07-28-daliuren-classics-evidence/design.md:99`.
+- The downstream analysis spec explicitly separates classical-source claims from project-defined interpretation: `.trellis/spec/domain/daliuren-analysis-engine.md:7`.
+- The BiFa opening index mislabels rule 52 as another rule 53 at `tmp/pdfs/daliuren/transcripts/liuren-11-transcript.md:55`; the next rule is also labeled 53 at `tmp/pdfs/daliuren/transcripts/liuren-11-transcript.md:57`. The detailed volume-10 transcript restores the sequence at `tmp/pdfs/daliuren/transcripts/liuren-12-transcript.md:3`, `tmp/pdfs/daliuren/transcripts/liuren-12-transcript.md:7`, and `tmp/pdfs/daliuren/transcripts/liuren-12-transcript.md:15`.
+
+### External references
+
+- Internet Archive metadata API: `https://archive.org/metadata/<identifier>` for `06054171.cn` through `06054176.cn`; records identify the contributing library as `浙江大学图书馆` and the PDF filenames listed above. Accessed 2026-07-28.
+- Chinese Text Project title pages for 《六壬断案》 and 《六壬存验》 report `版本暂缺`; treated only as fixed-transcript discovery surfaces. Accessed 2026-07-28.
+- National Diet Library bibliographic search surfaced the 2012 print 《大六壬断案疏正》, ISBN `9787801789174`, but no reviewable online page images. Accessed 2026-07-28.
+- Independent KeJing page/name/quotation review: `.trellis/tasks/07-28-daliuren-classics-evidence/research/kejing-independent-review.md`.
+- Independent BiFa page/name/quotation review: `.trellis/tasks/07-28-daliuren-classics-evidence/research/bifa-independent-review.md`.
+
+### Validation snapshot
+
+- Markdown table parsing found 64/64 KeJing rows and 100/100 BiFa rows, sequential ordinals, 64 and 100 unique canonical names, no missing page-level locator, and no unexpected status.
+- Boundary assertions passed: KeJing 31-35 are volume 6, 36-52 volume 7, 53-64 volume 8; BiFa 1-50 are volume 9 and 51-100 volume 10.
+- First-pass locator coverage was 164/164 (100%): 162 visual `V/C` rows and 2 transcript-boundary `T/C` rows. After the companion reviews, current catalog-identity coverage is KeJing B 64/64 and BiFa B 100/100 (99 adopted, 1 disputed); A evidence and executable approvals remain 0.
+- `pdfinfo` returned 184, 154, 144, 148, 152, and 132 pages for the six PDFs in identifier order `06054171.cn` through `06054176.cn`.
+- XML parsing returned the same counts for both DjVu `<OBJECT>` and scandata `<page>` nodes for all six identifiers: 184, 154, 144, 148, 152, and 132.
 
 ### Reproduction method
 
@@ -259,9 +280,9 @@ The local fixed-transcript file number is not a safe physical-volume locator at 
 
 ## Caveats / Not Found
 
-- Every catalog row remains C/pending until a second independent reviewer reopens the exact scan leaf, verifies the heading and a short quote, and records reviewer/date. This report must not be used to set `scanVerified`, evidence A/B, or `executableApproved=true`.
-- BiFa rules 1 and 11 are `T/C` boundary candidates. Rule 1 follows the opening index around volume-9 leaf 9; rule 11 appears to share leaf 38 with rule 10. Both need a full-height 300-DPI boundary check before registry ingestion.
+- KeJing and BiFa catalog identity/locus layers completed independent review in their companion reports; this does not approve typed conditions, priority, fixtures, or execution.
+- The first-pass `T/C` boundary candidates for BiFa 1 and 11 were resolved by the independent review. The table keeps its historical first-pass status; the registry and companion report are authoritative.
 - Several BiFa rules share one physical leaf; duplicate page numbers are intentional, not catalog duplication.
-- Simplified canonical names in the tables normalize traditional scan glyphs. Exact quotations and variant glyphs were not transcribed here.
+- Simplified canonical names normalize traditional scan glyphs. Exact quotations, title corrections and the BiFa 76 internal variant are recorded in the companion reviews.
 - `printedLeaf` is unresolved for all rows; do not copy PDF page numbers into that field.
 - No page-image basis was found for Duanan or Cunyan, so neither can supply an A/B external fixture in the current task state.

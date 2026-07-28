@@ -1,0 +1,381 @@
+{
+  "schemaVersion": "1.0.0",
+  "sourceWork": "大六壬指南",
+  "catalogStatus": "approved",
+  "limitations": [
+    "三例只批准影印页可直接读取和独立手排复核的盘面事实，不把原断结果作为现实预测验收。",
+    "原书未给可唯一换算的公历时刻与时区，历法交节边界不由这些课例批准。"
+  ],
+  "cases": [
+    {
+      "caseId": "dlr.case.zhinan.renyin-guimao-liu-tuizhai",
+      "title": "丁丑八月壬寅日刘退斋太史索占",
+      "verificationStatus": "approved",
+      "evidenceLevel": "B",
+      "locatorOnly": false,
+      "sourceRef": {
+        "sourceId": "dlr.source.daliuren-zhinan-scan",
+        "referenceKind": "scan",
+        "volume": "全册",
+        "scanLeaf": 53,
+        "printedLeaf": "49",
+        "pdfPage": 54,
+        "imageLabel": null,
+        "locator": null,
+        "shortQuote": "丁丑八月壬寅日癸卯时，□中刘退斋太史索占。"
+      },
+      "rawInput": {
+        "yearPillar": "丁丑",
+        "lunarMonthText": "八月",
+        "monthGeneral": "巳",
+        "dayPillar": "壬寅",
+        "hourPillar": "癸卯",
+        "civilDateTime": null,
+        "timezone": null,
+        "question": "索占（原书未另题占类）",
+        "personContext": {
+          "name": "刘退斋",
+          "title": "太史",
+          "placeText": null
+        }
+      },
+      "expectedFacts": {
+        "monthGeneral": "巳",
+        "fourLessons": [
+          {
+            "ordinal": 1,
+            "lower": "壬",
+            "upper": "丑",
+            "general": "太常"
+          },
+          {
+            "ordinal": 2,
+            "lower": "丑",
+            "upper": "卯",
+            "general": "太阴"
+          },
+          {
+            "ordinal": 3,
+            "lower": "寅",
+            "upper": "辰",
+            "general": "天后"
+          },
+          {
+            "ordinal": 4,
+            "lower": "辰",
+            "upper": "午",
+            "general": "螣蛇"
+          }
+        ],
+        "transmissions": [
+          {
+            "stage": "初传",
+            "branch": "辰",
+            "general": "天后",
+            "sixRelation": "官鬼"
+          },
+          {
+            "stage": "中传",
+            "branch": "午",
+            "general": "螣蛇",
+            "sixRelation": "妻财"
+          },
+          {
+            "stage": "末传",
+            "branch": "申",
+            "general": "六合",
+            "sixRelation": "父母"
+          }
+        ],
+        "courseNames": [
+          "重审",
+          "斩关"
+        ]
+      },
+      "classicJudgment": "此近君阴贵人也。",
+      "expectedDerivation": {
+        "method": "independentManual",
+        "usesProductionCode": false,
+        "reviewer": "c00_independent_recheck (Codex)",
+        "reviewedAt": "2026-07-28"
+      },
+      "unresolvedFields": [
+        "civilDateTime",
+        "timezone",
+        "solarTermInstant",
+        "placeTextFirstCharacter"
+      ],
+      "adoptedAssumptions": [
+        "原题地名首字无法可靠辨认，登记为 unknown，不据上下文补字。",
+        "四课和三传按影印盘式独立手排复核，未调用项目生产代码。"
+      ],
+      "coveredRuleIds": [
+        "dlr.rule.pan.001.month-general-by-zhongqi",
+        "dlr.rule.pan.002.month-general-table",
+        "dlr.rule.pan.003.heaven-plate-rotation",
+        "dlr.rule.pan.005.first-lesson",
+        "dlr.rule.pan.006.second-lesson",
+        "dlr.rule.pan.007.third-lesson",
+        "dlr.rule.pan.008.fourth-lesson",
+        "dlr.rule.jiuzongmen.001.zeike",
+        "dlr.rule.kejing.002",
+        "dlr.rule.kejing.029"
+      ],
+      "targetCapabilityIds": [
+        "daliuren.pan.monthGeneral",
+        "daliuren.pan.heavenPlate",
+        "daliuren.pan.fourLessons",
+        "daliuren.jiuzongmen.zeike",
+        "daliuren.kejing.002",
+        "daliuren.kejing.029"
+      ]
+    },
+    {
+      "caseId": "dlr.case.zhinan.yiwei-jimao-feng-yunsheng",
+      "title": "丙子三月乙未日冯允升被逮求占",
+      "verificationStatus": "approved",
+      "evidenceLevel": "B",
+      "locatorOnly": false,
+      "sourceRef": {
+        "sourceId": "dlr.source.daliuren-zhinan-scan",
+        "referenceKind": "scan",
+        "volume": "全册",
+        "scanLeaf": 55,
+        "printedLeaf": "51",
+        "pdfPage": 56,
+        "imageLabel": null,
+        "locator": null,
+        "shortQuote": "丙子三月乙未日己卯时，御马监太监冯允升被逮刑部，已定重辟，求占。"
+      },
+      "rawInput": {
+        "yearPillar": "丙子",
+        "lunarMonthText": "三月",
+        "monthGeneral": "戌",
+        "dayPillar": "乙未",
+        "hourPillar": "己卯",
+        "civilDateTime": null,
+        "timezone": null,
+        "question": "被逮刑部、已定重辟，求占",
+        "personContext": {
+          "name": "冯允升",
+          "title": "御马监太监"
+        }
+      },
+      "expectedFacts": {
+        "monthGeneral": "戌",
+        "fourLessons": [
+          {
+            "ordinal": 1,
+            "lower": "乙",
+            "upper": "亥",
+            "general": "螣蛇"
+          },
+          {
+            "ordinal": 2,
+            "lower": "亥",
+            "upper": "午",
+            "general": "天空"
+          },
+          {
+            "ordinal": 3,
+            "lower": "未",
+            "upper": "寅",
+            "general": "太阴"
+          },
+          {
+            "ordinal": 4,
+            "lower": "寅",
+            "upper": "酉",
+            "general": "六合"
+          }
+        ],
+        "transmissions": [
+          {
+            "stage": "初传",
+            "branch": "午",
+            "general": "天空",
+            "sixRelation": "子孙"
+          },
+          {
+            "stage": "中传",
+            "branch": "丑",
+            "general": "天后",
+            "sixRelation": "妻财"
+          },
+          {
+            "stage": "末传",
+            "branch": "申",
+            "general": "勾陈",
+            "sixRelation": "官鬼"
+          }
+        ],
+        "courseNames": [
+          "重审"
+        ]
+      },
+      "classicJudgment": "此课必遇恩宥，仍救重刑之兆。",
+      "expectedDerivation": {
+        "method": "independentManual",
+        "usesProductionCode": false,
+        "reviewer": "c00_independent_recheck (Codex)",
+        "reviewedAt": "2026-07-28"
+      },
+      "unresolvedFields": [
+        "civilDateTime",
+        "timezone",
+        "solarTermInstant"
+      ],
+      "adoptedAssumptions": [
+        "四课和三传按影印盘式独立手排复核，未调用项目生产代码。"
+      ],
+      "coveredRuleIds": [
+        "dlr.rule.pan.001.month-general-by-zhongqi",
+        "dlr.rule.pan.002.month-general-table",
+        "dlr.rule.pan.003.heaven-plate-rotation",
+        "dlr.rule.pan.005.first-lesson",
+        "dlr.rule.pan.006.second-lesson",
+        "dlr.rule.pan.007.third-lesson",
+        "dlr.rule.pan.008.fourth-lesson",
+        "dlr.rule.jiuzongmen.001.zeike",
+        "dlr.rule.kejing.002"
+      ],
+      "targetCapabilityIds": [
+        "daliuren.pan.monthGeneral",
+        "daliuren.pan.heavenPlate",
+        "daliuren.pan.fourLessons",
+        "daliuren.jiuzongmen.zeike",
+        "daliuren.kejing.002"
+      ]
+    },
+    {
+      "caseId": "dlr.case.zhinan.gengyin-gengchen-ma-lianzhuang",
+      "title": "戊辰十一月庚寅日马廉庄能拜相否",
+      "verificationStatus": "approved",
+      "evidenceLevel": "B",
+      "locatorOnly": false,
+      "sourceRef": {
+        "sourceId": "dlr.source.daliuren-zhinan-scan",
+        "referenceKind": "scan",
+        "volume": "全册",
+        "scanLeaf": 43,
+        "printedLeaf": "39",
+        "pdfPage": 44,
+        "imageLabel": null,
+        "locator": null,
+        "shortQuote": "戊辰年十一月庚寅日庚辰时，徽州汪仙民、邵无奇在京占少宗伯马廉庄能拜相否。"
+      },
+      "rawInput": {
+        "yearPillar": "戊辰",
+        "lunarMonthText": "十一月",
+        "monthGeneral": "寅",
+        "dayPillar": "庚寅",
+        "hourPillar": "庚辰",
+        "civilDateTime": null,
+        "timezone": null,
+        "question": "少宗伯马廉庄能拜相否",
+        "personContext": {
+          "questioners": [
+            "汪仙民",
+            "邵无奇"
+          ],
+          "subjectName": "马廉庄",
+          "subjectTitle": "少宗伯",
+          "placeText": "徽州／在京"
+        }
+      },
+      "expectedFacts": {
+        "monthGeneral": "寅",
+        "fourLessons": [
+          {
+            "ordinal": 1,
+            "lower": "庚",
+            "upper": "午",
+            "general": "青龙"
+          },
+          {
+            "ordinal": 2,
+            "lower": "午",
+            "upper": "辰",
+            "general": "六合"
+          },
+          {
+            "ordinal": 3,
+            "lower": "寅",
+            "upper": "子",
+            "general": "天后"
+          },
+          {
+            "ordinal": 4,
+            "lower": "子",
+            "upper": "戌",
+            "general": "玄武"
+          }
+        ],
+        "transmissions": [
+          {
+            "stage": "初传",
+            "branch": "午",
+            "general": "青龙",
+            "sixRelation": "官鬼"
+          },
+          {
+            "stage": "中传",
+            "branch": "辰",
+            "general": "六合",
+            "sixRelation": "父母"
+          },
+          {
+            "stage": "末传",
+            "branch": "寅",
+            "general": "螣蛇",
+            "sixRelation": "妻财"
+          }
+        ],
+        "courseNames": [
+          "涉害",
+          "顾祖"
+        ]
+      },
+      "classicJudgment": "马宗伯不但不能入拜，且不日还乡矣。",
+      "expectedDerivation": {
+        "method": "independentManual",
+        "usesProductionCode": false,
+        "reviewer": "c00_guide_shehai_review (Codex)",
+        "reviewedAt": "2026-07-28"
+      },
+      "unresolvedFields": [
+        "civilDateTime",
+        "timezone",
+        "solarTermInstant",
+        "uniqueCivilYear",
+        "exactHourTime",
+        "editionPublicationYear",
+        "questionerSegmentation"
+      ],
+      "adoptedAssumptions": [
+        "寅将由同页盘式反推，并非原题直书；只批准本例盘面，不批准完整历法换将规则。",
+        "原题无标点，汪仙民、邵无奇作为两名问占者仅为采用断句，不扩写精确地点。",
+        "四课、三传和四害同深后孟申胜仲子的涉害结果均由影印盘式独立手排，未调用项目生产代码。"
+      ],
+      "coveredRuleIds": [
+        "dlr.rule.pan.003.heaven-plate-rotation",
+        "dlr.rule.pan.005.first-lesson",
+        "dlr.rule.pan.006.second-lesson",
+        "dlr.rule.pan.007.third-lesson",
+        "dlr.rule.pan.008.fourth-lesson",
+        "dlr.rule.jiuzongmen.003.shehai",
+        "dlr.rule.derived-facts.005.six-relations",
+        "dlr.rule.kejing.004",
+        "dlr.rule.kejing.061"
+      ],
+      "targetCapabilityIds": [
+        "daliuren.pan.heavenPlate",
+        "daliuren.pan.fourLessons",
+        "daliuren.jiuzongmen.shehai",
+        "daliuren.derivedFacts.sixRelations",
+        "daliuren.kejing.004",
+        "daliuren.kejing.061"
+      ]
+    }
+  ]
+}

@@ -1,0 +1,781 @@
+{
+  "schemaVersion": "1.0.0",
+  "sources": [
+    {
+      "sourceId": "dlr.source.siku-liuren-daquan",
+      "sourceType": "scan",
+      "title": "钦定四库全书·六壬大全",
+      "authorsEditors": [
+        "题撰者未由馆藏元数据确认"
+      ],
+      "edition": "钦定四库全书·子部七·术数类影印本",
+      "repository": "Internet Archive / Universal Library",
+      "identifier": "06054168.cn--06054177.cn",
+      "accessUrl": "https://archive.org/details/06054168.cn",
+      "accessedAt": "2026-07-28",
+      "verificationStatus": "scanVerified",
+      "locatorOnly": false,
+      "usage": [
+        "primaryBaseline"
+      ],
+      "ruleLayers": [
+        "pan",
+        "shenjiang",
+        "jiuzongmen",
+        "derivedFacts",
+        "shensha",
+        "kejing",
+        "bifa"
+      ],
+      "volumes": [
+        {
+          "volumeLabel": "卷一",
+          "identifier": "06054168.cn",
+          "accessUrl": "https://archive.org/details/06054168.cn",
+          "remoteFiles": [
+            {
+              "name": "06054168.cn.pdf",
+              "format": "Text PDF",
+              "sizeBytes": 3458657
+            },
+            {
+              "name": "06054168.cn_scandata.xml",
+              "format": "Scandata",
+              "sizeBytes": 36109
+            }
+          ],
+          "pagination": {
+            "scanLeafBase": 1,
+            "leafCount": 112,
+            "pdfPageBase": 1,
+            "mappingRule": "pdfPageEqualsScanLeaf",
+            "mappingStatus": "verifiedFromScandata",
+            "printedLeafScheme": "版心叶码须在单条 rule sourceRef 中人工抄录",
+            "notes": "scandata 中所有 leaf 均进入 access PDF；scan leaf 与 PDF 页一一相等。"
+          }
+        },
+        {
+          "volumeLabel": "卷二",
+          "identifier": "06054169.cn",
+          "accessUrl": "https://archive.org/details/06054169.cn",
+          "remoteFiles": [
+            {
+              "name": "06054169.cn.pdf",
+              "format": "Text PDF",
+              "sizeBytes": 4459686
+            },
+            {
+              "name": "06054169.cn_scandata.xml",
+              "format": "Scandata",
+              "sizeBytes": 43171
+            }
+          ],
+          "pagination": {
+            "scanLeafBase": 1,
+            "leafCount": 134,
+            "pdfPageBase": 1,
+            "mappingRule": "pdfPageEqualsScanLeaf",
+            "mappingStatus": "verifiedFromScandata",
+            "printedLeafScheme": "版心叶码须在单条 rule sourceRef 中人工抄录",
+            "notes": "scandata 中所有 leaf 均进入 access PDF；scan leaf 与 PDF 页一一相等。"
+          }
+        },
+        {
+          "volumeLabel": "卷三",
+          "identifier": "06054170.cn",
+          "accessUrl": "https://archive.org/details/06054170.cn",
+          "remoteFiles": [
+            {
+              "name": "06054170.cn.pdf",
+              "format": "Text PDF",
+              "sizeBytes": 4201731
+            },
+            {
+              "name": "06054170.cn_scandata.xml",
+              "format": "Scandata",
+              "sizeBytes": 43171
+            }
+          ],
+          "pagination": {
+            "scanLeafBase": 1,
+            "leafCount": 134,
+            "pdfPageBase": 1,
+            "mappingRule": "pdfPageEqualsScanLeaf",
+            "mappingStatus": "verifiedFromScandata",
+            "printedLeafScheme": "版心叶码须在单条 rule sourceRef 中人工抄录",
+            "notes": "scandata 中所有 leaf 均进入 access PDF；scan leaf 与 PDF 页一一相等。"
+          }
+        },
+        {
+          "volumeLabel": "卷四至五",
+          "identifier": "06054171.cn",
+          "accessUrl": "https://archive.org/details/06054171.cn",
+          "remoteFiles": [
+            {
+              "name": "06054171.cn.pdf",
+              "format": "Text PDF",
+              "sizeBytes": 6522261
+            },
+            {
+              "name": "06054171.cn_scandata.xml",
+              "format": "Scandata",
+              "sizeBytes": 59221
+            }
+          ],
+          "pagination": {
+            "scanLeafBase": 1,
+            "leafCount": 184,
+            "pdfPageBase": 1,
+            "mappingRule": "pdfPageEqualsScanLeaf",
+            "mappingStatus": "verifiedFromScandata",
+            "printedLeafScheme": "版心叶码须在单条 rule sourceRef 中人工抄录",
+            "notes": "scandata 中所有 leaf 均进入 access PDF；scan leaf 与 PDF 页一一相等。"
+          }
+        },
+        {
+          "volumeLabel": "卷六",
+          "identifier": "06054172.cn",
+          "accessUrl": "https://archive.org/details/06054172.cn",
+          "remoteFiles": [
+            {
+              "name": "06054172.cn.pdf",
+              "format": "Text PDF",
+              "sizeBytes": 5283430
+            },
+            {
+              "name": "06054172.cn_scandata.xml",
+              "format": "Scandata",
+              "sizeBytes": 49591
+            }
+          ],
+          "pagination": {
+            "scanLeafBase": 1,
+            "leafCount": 154,
+            "pdfPageBase": 1,
+            "mappingRule": "pdfPageEqualsScanLeaf",
+            "mappingStatus": "verifiedFromScandata",
+            "printedLeafScheme": "版心叶码须在单条 rule sourceRef 中人工抄录",
+            "notes": "scandata 中所有 leaf 均进入 access PDF；scan leaf 与 PDF 页一一相等。"
+          }
+        },
+        {
+          "volumeLabel": "卷七",
+          "identifier": "06054173.cn",
+          "accessUrl": "https://archive.org/details/06054173.cn",
+          "remoteFiles": [
+            {
+              "name": "06054173.cn.pdf",
+              "format": "Text PDF",
+              "sizeBytes": 5092219
+            },
+            {
+              "name": "06054173.cn_scandata.xml",
+              "format": "Scandata",
+              "sizeBytes": 46381
+            }
+          ],
+          "pagination": {
+            "scanLeafBase": 1,
+            "leafCount": 144,
+            "pdfPageBase": 1,
+            "mappingRule": "pdfPageEqualsScanLeaf",
+            "mappingStatus": "verifiedFromScandata",
+            "printedLeafScheme": "版心叶码须在单条 rule sourceRef 中人工抄录",
+            "notes": "scandata 中所有 leaf 均进入 access PDF；scan leaf 与 PDF 页一一相等。"
+          }
+        },
+        {
+          "volumeLabel": "卷八",
+          "identifier": "06054174.cn",
+          "accessUrl": "https://archive.org/details/06054174.cn",
+          "remoteFiles": [
+            {
+              "name": "06054174.cn.pdf",
+              "format": "Text PDF",
+              "sizeBytes": 4935577
+            },
+            {
+              "name": "06054174.cn_scandata.xml",
+              "format": "Scandata",
+              "sizeBytes": 47665
+            }
+          ],
+          "pagination": {
+            "scanLeafBase": 1,
+            "leafCount": 148,
+            "pdfPageBase": 1,
+            "mappingRule": "pdfPageEqualsScanLeaf",
+            "mappingStatus": "verifiedFromScandata",
+            "printedLeafScheme": "版心叶码须在单条 rule sourceRef 中人工抄录",
+            "notes": "scandata 中所有 leaf 均进入 access PDF；scan leaf 与 PDF 页一一相等。"
+          }
+        },
+        {
+          "volumeLabel": "卷九",
+          "identifier": "06054175.cn",
+          "accessUrl": "https://archive.org/details/06054175.cn",
+          "remoteFiles": [
+            {
+              "name": "06054175.cn.pdf",
+              "format": "Text PDF",
+              "sizeBytes": 5325007
+            },
+            {
+              "name": "06054175.cn_scandata.xml",
+              "format": "Scandata",
+              "sizeBytes": 48949
+            }
+          ],
+          "pagination": {
+            "scanLeafBase": 1,
+            "leafCount": 152,
+            "pdfPageBase": 1,
+            "mappingRule": "pdfPageEqualsScanLeaf",
+            "mappingStatus": "verifiedFromScandata",
+            "printedLeafScheme": "版心叶码须在单条 rule sourceRef 中人工抄录",
+            "notes": "scandata 中所有 leaf 均进入 access PDF；scan leaf 与 PDF 页一一相等。"
+          }
+        },
+        {
+          "volumeLabel": "卷十",
+          "identifier": "06054176.cn",
+          "accessUrl": "https://archive.org/details/06054176.cn",
+          "remoteFiles": [
+            {
+              "name": "06054176.cn.pdf",
+              "format": "Text PDF",
+              "sizeBytes": 4497262
+            },
+            {
+              "name": "06054176.cn_scandata.xml",
+              "format": "Scandata",
+              "sizeBytes": 42529
+            }
+          ],
+          "pagination": {
+            "scanLeafBase": 1,
+            "leafCount": 132,
+            "pdfPageBase": 1,
+            "mappingRule": "pdfPageEqualsScanLeaf",
+            "mappingStatus": "verifiedFromScandata",
+            "printedLeafScheme": "版心叶码须在单条 rule sourceRef 中人工抄录",
+            "notes": "scandata 中所有 leaf 均进入 access PDF；scan leaf 与 PDF 页一一相等。"
+          }
+        },
+        {
+          "volumeLabel": "卷十一至十二",
+          "identifier": "06054177.cn",
+          "accessUrl": "https://archive.org/details/06054177.cn",
+          "remoteFiles": [
+            {
+              "name": "06054177.cn.pdf",
+              "format": "Text PDF",
+              "sizeBytes": 4703602
+            },
+            {
+              "name": "06054177.cn_scandata.xml",
+              "format": "Scandata",
+              "sizeBytes": 67567
+            }
+          ],
+          "pagination": {
+            "scanLeafBase": 1,
+            "leafCount": 210,
+            "pdfPageBase": 1,
+            "mappingRule": "pdfPageEqualsScanLeaf",
+            "mappingStatus": "verifiedFromScandata",
+            "printedLeafScheme": "版心叶码须在单条 rule sourceRef 中人工抄录",
+            "notes": "scandata 中所有 leaf 均进入 access PDF；scan leaf 与 PDF 页一一相等。"
+          }
+        }
+      ],
+      "rightsNote": "仅登记公开馆藏标识与短引；扫描件本体不入库。",
+      "limitations": [
+        "馆藏 metadata 的卷名不能替代影印页内卷题核验。",
+        "固定转录文件与影印本卷界并非一一对应，规则引用不得按文件名或固定偏移推导。",
+        "scan leaf 与 PDF 页数映射已由 scandata 核对；版心叶码仍须逐条人工记录。"
+      ]
+    },
+    {
+      "sourceId": "dlr.source.daliuren-zhinan-scan",
+      "sourceType": "scan",
+      "title": "大六壬指南",
+      "authorsEditors": [
+        "明·陈公献手著",
+        "清·程翔云鉴定",
+        "于鸿编辑校订"
+      ],
+      "edition": "中国数术学研究社影印编校本；刊刻年代未核",
+      "repository": "Internet Archive",
+      "identifier": "20210924_20210924_0416",
+      "accessUrl": "https://archive.org/details/20210924_20210924_0416",
+      "accessedAt": "2026-07-28",
+      "verificationStatus": "scanVerified",
+      "locatorOnly": false,
+      "usage": [
+        "judgmentBaseline",
+        "externalCase"
+      ],
+      "ruleLayers": [
+        "pan",
+        "nianming",
+        "classSpirit",
+        "judgment",
+        "timing",
+        "externalCases"
+      ],
+      "volumes": [
+        {
+          "volumeLabel": "全册",
+          "identifier": "20210924_20210924_0416",
+          "accessUrl": "https://archive.org/details/20210924_20210924_0416",
+          "remoteFiles": [
+            {
+              "name": "大六壬指南.pdf",
+              "format": "Image Container PDF",
+              "sizeBytes": 8251802
+            },
+            {
+              "name": "大六壬指南_scandata.xml",
+              "format": "Scandata",
+              "sizeBytes": 26699
+            }
+          ],
+          "pagination": {
+            "scanLeafBase": 0,
+            "leafCount": 83,
+            "pdfPageBase": 1,
+            "mappingRule": "pdfPageEqualsScanLeafPlusOne",
+            "mappingStatus": "verifiedFromScandata",
+            "printedLeafScheme": "版心叶码须在单条 rule sourceRef 中人工抄录",
+            "notes": "scandata 的 leaf 从 0 起，全部进入 PDF；PDF 页 = scan leaf + 1。"
+          }
+        }
+      ],
+      "rightsNote": "仅登记公开馆藏标识与短引；扫描件本体不入库。",
+      "limitations": [
+        "作者与编校信息来自影印 PDF 第 2 页题名页，馆藏元数据仍缺年代与出版者。",
+        "自动 OCR 严重失真，只能检索定位。",
+        "影印本似止于印刷页 78，而目录列至 84；缺叶或版本差异尚未解决。",
+        "PDF 6 基础规则及 PDF 44、54、56 课例已独立复核；其余断课、类神与应期页面仍须逐条二审，因此 source 维持 scanVerified。"
+      ]
+    },
+    {
+      "sourceId": "dlr.source.daquan-transcription-aa7bc942",
+      "sourceType": "transcription",
+      "title": "六壬大全固定提交转录",
+      "authorsEditors": [
+        "youngzs/xuanxue contributors"
+      ],
+      "edition": "Git commit aa7bc942602d2d88ef94778a726c0d19a4d286ff",
+      "repository": "GitHub youngzs/xuanxue",
+      "identifier": "aa7bc942602d2d88ef94778a726c0d19a4d286ff",
+      "accessUrl": "https://github.com/youngzs/xuanxue/tree/aa7bc942602d2d88ef94778a726c0d19a4d286ff/docs/%E5%85%AD%E5%A3%AC%E5%A4%A7%E5%85%A8",
+      "accessedAt": "2026-07-28",
+      "verificationStatus": "metadataVerified",
+      "locatorOnly": true,
+      "usage": [
+        "searchLocator",
+        "variantLocator"
+      ],
+      "ruleLayers": [
+        "pan",
+        "jiuzongmen",
+        "derivedFacts",
+        "shensha",
+        "kejing",
+        "bifa",
+        "timing"
+      ],
+      "volumes": [
+        {
+          "volumeLabel": "固定提交文本集合",
+          "identifier": "aa7bc942602d2d88ef94778a726c0d19a4d286ff",
+          "accessUrl": "https://github.com/youngzs/xuanxue/tree/aa7bc942602d2d88ef94778a726c0d19a4d286ff/docs/%E5%85%AD%E5%A3%AC%E5%A4%A7%E5%85%A8",
+          "remoteFiles": [
+            {
+              "name": "000提要.md",
+              "format": "UTF-8 transcription",
+              "sizeBytes": null
+            },
+            {
+              "name": "001巻一 起例.md",
+              "format": "UTF-8 transcription",
+              "sizeBytes": null
+            },
+            {
+              "name": "002卷二 神将释.md",
+              "format": "UTF-8 transcription",
+              "sizeBytes": null
+            },
+            {
+              "name": "003巻三 歌赋（一）.md",
+              "format": "UTF-8 transcription",
+              "sizeBytes": null
+            },
+            {
+              "name": "004巻四 歌赋（二）.md",
+              "format": "UTF-8 transcription",
+              "sizeBytes": null
+            },
+            {
+              "name": "005巻五 兵占.md",
+              "format": "UTF-8 transcription",
+              "sizeBytes": null
+            },
+            {
+              "name": "006巻六 宿度分野.md",
+              "format": "UTF-8 transcription",
+              "sizeBytes": null
+            },
+            {
+              "name": "007巻七 课经集（一）.md",
+              "format": "UTF-8 transcription",
+              "sizeBytes": null
+            },
+            {
+              "name": "008巻八 课经集（二）.md",
+              "format": "UTF-8 transcription",
+              "sizeBytes": null
+            },
+            {
+              "name": "009巻九 课经集（三）.md",
+              "format": "UTF-8 transcription",
+              "sizeBytes": null
+            },
+            {
+              "name": "010巻十 课经集（四）.md",
+              "format": "UTF-8 transcription",
+              "sizeBytes": null
+            },
+            {
+              "name": "011巻十一 《毕法赋》上.md",
+              "format": "UTF-8 transcription",
+              "sizeBytes": null
+            },
+            {
+              "name": "012巻十二 《毕法赋》下.md",
+              "format": "UTF-8 transcription",
+              "sizeBytes": null
+            }
+          ],
+          "pagination": {
+            "scanLeafBase": null,
+            "leafCount": null,
+            "pdfPageBase": null,
+            "mappingRule": "notApplicable",
+            "mappingStatus": "notApplicable",
+            "printedLeafScheme": "不适用；只能使用固定提交路径和行号",
+            "notes": "文本行号是检索 locator，不是影印页。"
+          }
+        }
+      ],
+      "rightsNote": "仅作检索定位；短引须回到影印页复核。",
+      "limitations": [
+        "固定转录只具 C 级 locator 资格。",
+        "转录文件会跨越四库影印本卷界，不能按文件名或卷号差推导 scan locus。",
+        "OCR 或录入异文未经过本项目逐字复核。"
+      ]
+    },
+    {
+      "sourceId": "dlr.source.cunyan-transcription-d2a44794",
+      "sourceType": "transcription",
+      "title": "六壬存验固定提交转录",
+      "authorsEditors": [
+        "清·吴师青",
+        "mahavivo/scripta-sinica contributors"
+      ],
+      "edition": "Git commit d2a447941d43fd5ac35b35194dcb0a68d4275aa7",
+      "repository": "GitHub mahavivo/scripta-sinica",
+      "identifier": "d2a447941d43fd5ac35b35194dcb0a68d4275aa7",
+      "accessUrl": "https://github.com/mahavivo/scripta-sinica/blob/d2a447941d43fd5ac35b35194dcb0a68d4275aa7/01%E6%98%93%E8%97%8F-0195%E9%83%A8/02%E6%9C%AF%E6%95%B0-146%E9%83%A8/%E5%85%AD%E5%A3%AC%E5%AD%98%E9%AA%8C-%E6%B8%85-%E5%90%B4%E5%B8%88%E9%9D%92.txt",
+      "accessedAt": "2026-07-28",
+      "verificationStatus": "metadataVerified",
+      "locatorOnly": true,
+      "usage": [
+        "externalCase",
+        "searchLocator",
+        "variantLocator"
+      ],
+      "ruleLayers": [
+        "pan",
+        "shenjiang",
+        "nianming",
+        "classSpirit",
+        "judgment",
+        "timing",
+        "externalCases"
+      ],
+      "volumes": [
+        {
+          "volumeLabel": "固定提交全文",
+          "identifier": "d2a447941d43fd5ac35b35194dcb0a68d4275aa7",
+          "accessUrl": "https://github.com/mahavivo/scripta-sinica/blob/d2a447941d43fd5ac35b35194dcb0a68d4275aa7/01%E6%98%93%E8%97%8F-0195%E9%83%A8/02%E6%9C%AF%E6%95%B0-146%E9%83%A8/%E5%85%AD%E5%A3%AC%E5%AD%98%E9%AA%8C-%E6%B8%85-%E5%90%B4%E5%B8%88%E9%9D%92.txt",
+          "remoteFiles": [
+            {
+              "name": "六壬存验-清-吴师青.txt",
+              "format": "UTF-8 transcription",
+              "sizeBytes": null
+            }
+          ],
+          "pagination": {
+            "scanLeafBase": null,
+            "leafCount": null,
+            "pdfPageBase": null,
+            "mappingRule": "notApplicable",
+            "mappingStatus": "notApplicable",
+            "printedLeafScheme": "不适用；只能使用固定提交路径和行号",
+            "notes": "文本行号是检索 locator，不是影印页。"
+          }
+        }
+      ],
+      "rightsNote": "仅作检索定位；课例必须回到影印页才可升为 A/B。",
+      "limitations": [
+        "未找到可与该固定转录逐页对应的影印底本。",
+        "转录课例全部保持 C 级 pendingScan。"
+      ]
+    },
+    {
+      "sourceId": "dlr.source.duanan-ctp-936550",
+      "sourceType": "transcription",
+      "title": "大六壬断案",
+      "authorsEditors": [
+        "Chinese Text Project wiki contributors"
+      ],
+      "edition": "CTP wiki 明示版本暂缺",
+      "repository": "Chinese Text Project",
+      "identifier": "ctext-wiki-res-936550",
+      "accessUrl": "https://ctext.org/wiki.pl?if=gb&res=936550",
+      "accessedAt": "2026-07-28",
+      "verificationStatus": "metadataVerified",
+      "locatorOnly": true,
+      "usage": [
+        "externalCase",
+        "searchLocator"
+      ],
+      "ruleLayers": [
+        "externalCases"
+      ],
+      "volumes": [
+        {
+          "volumeLabel": "CTP wiki 转录",
+          "identifier": "ctext-wiki-res-936550",
+          "accessUrl": "https://ctext.org/wiki.pl?if=gb&res=936550",
+          "remoteFiles": [
+            {
+              "name": "wiki.pl?res=936550",
+              "format": "UTF-8 transcription",
+              "sizeBytes": null
+            }
+          ],
+          "pagination": {
+            "scanLeafBase": null,
+            "leafCount": null,
+            "pdfPageBase": null,
+            "mappingRule": "notApplicable",
+            "mappingStatus": "notApplicable",
+            "printedLeafScheme": "不适用；只能使用固定提交路径和行号",
+            "notes": "文本行号是检索 locator，不是影印页。"
+          }
+        }
+      ],
+      "rightsNote": "仅记录 locator；不把 wiki 转录当作影印证据。",
+      "limitations": [
+        "页面明示版本暂缺。",
+        "无影印页，最高只能作为 C 级 locator。"
+      ]
+    },
+    {
+      "sourceId": "dlr.source.cunyan-ctp-872390",
+      "sourceType": "transcription",
+      "title": "六壬存验",
+      "authorsEditors": [
+        "Chinese Text Project wiki contributors"
+      ],
+      "edition": "CTP wiki 明示版本暂缺",
+      "repository": "Chinese Text Project",
+      "identifier": "ctext-wiki-res-872390",
+      "accessUrl": "https://ctext.org/wiki.pl?if=gb&res=872390",
+      "accessedAt": "2026-07-28",
+      "verificationStatus": "metadataVerified",
+      "locatorOnly": true,
+      "usage": [
+        "externalCase",
+        "searchLocator"
+      ],
+      "ruleLayers": [
+        "externalCases"
+      ],
+      "volumes": [
+        {
+          "volumeLabel": "CTP wiki 转录",
+          "identifier": "ctext-wiki-res-872390",
+          "accessUrl": "https://ctext.org/wiki.pl?if=gb&res=872390",
+          "remoteFiles": [
+            {
+              "name": "wiki.pl?res=872390",
+              "format": "UTF-8 transcription",
+              "sizeBytes": null
+            }
+          ],
+          "pagination": {
+            "scanLeafBase": null,
+            "leafCount": null,
+            "pdfPageBase": null,
+            "mappingRule": "notApplicable",
+            "mappingStatus": "notApplicable",
+            "printedLeafScheme": "不适用；只能使用固定提交路径和行号",
+            "notes": "文本行号是检索 locator，不是影印页。"
+          }
+        }
+      ],
+      "rightsNote": "仅记录 locator；不把 wiki 转录当作影印证据。",
+      "limitations": [
+        "页面明示版本暂缺。",
+        "无影印页，最高只能作为 C 级 locator。"
+      ]
+    },
+    {
+      "sourceId": "dlr.source.zhinan-xiangjie-scan",
+      "sourceType": "scan",
+      "title": "校正大六壬指南详解",
+      "authorsEditors": [
+        "馆藏元数据未载"
+      ],
+      "edition": "版本待卷首核定",
+      "repository": "Internet Archive",
+      "identifier": "20210924_20210924_0419",
+      "accessUrl": "https://archive.org/details/20210924_20210924_0419",
+      "accessedAt": "2026-07-28",
+      "verificationStatus": "metadataVerified",
+      "locatorOnly": false,
+      "usage": [
+        "supplement"
+      ],
+      "ruleLayers": [
+        "judgment",
+        "timing"
+      ],
+      "volumes": [
+        {
+          "volumeLabel": "全册",
+          "identifier": "20210924_20210924_0419",
+          "accessUrl": "https://archive.org/details/20210924_20210924_0419",
+          "remoteFiles": [
+            {
+              "name": "校正大六壬指南详解.pdf",
+              "format": "Image Container PDF",
+              "sizeBytes": null
+            },
+            {
+              "name": "校正大六壬指南详解_scandata.xml",
+              "format": "Scandata",
+              "sizeBytes": null
+            }
+          ],
+          "pagination": {
+            "scanLeafBase": 0,
+            "leafCount": 34,
+            "pdfPageBase": 1,
+            "mappingRule": "pdfPageEqualsScanLeafPlusOne",
+            "mappingStatus": "verifiedFromScandata",
+            "printedLeafScheme": "版心叶码须在单条 rule sourceRef 中人工抄录",
+            "notes": "scandata 的 leaf 从 0 起，全部进入 PDF；PDF 页 = scan leaf + 1。"
+          }
+        }
+      ],
+      "rightsNote": "只作释义交叉参考，不替代主底本。",
+      "limitations": [
+        "馆藏元数据不完整，OCR 严重失真。"
+      ]
+    },
+    {
+      "sourceId": "dlr.source.yuding-liuren-zhizhi-candidate",
+      "sourceType": "scan",
+      "title": "御定六壬直指",
+      "authorsEditors": [
+        "馆藏元数据未载"
+      ],
+      "edition": "馆藏标为清康熙时期精钞本，版本真伪待核",
+      "repository": "Internet Archive",
+      "identifier": "20260504_20260504_1528",
+      "accessUrl": "https://archive.org/details/20260504_20260504_1528",
+      "accessedAt": "2026-07-28",
+      "verificationStatus": "candidate",
+      "locatorOnly": false,
+      "usage": [
+        "supplement",
+        "variantLocator"
+      ],
+      "ruleLayers": [
+        "pan",
+        "shenjiang",
+        "jiuzongmen"
+      ],
+      "volumes": [
+        {
+          "volumeLabel": "上下卷附析义",
+          "identifier": "20260504_20260504_1528",
+          "accessUrl": "https://archive.org/details/20260504_20260504_1528",
+          "remoteFiles": [
+            {
+              "name": "御定六壬直指.上下卷.附析義.清康熙時期精鈔本.pdf",
+              "format": "Image Container PDF",
+              "sizeBytes": null
+            },
+            {
+              "name": "御定六壬直指.上下卷.附析義.清康熙時期精鈔本_scandata.xml",
+              "format": "Scandata",
+              "sizeBytes": null
+            }
+          ],
+          "pagination": {
+            "scanLeafBase": 0,
+            "leafCount": 854,
+            "pdfPageBase": 1,
+            "mappingRule": "pdfPageEqualsScanLeafPlusOne",
+            "mappingStatus": "verifiedFromScandata",
+            "printedLeafScheme": "版心叶码须在单条 rule sourceRef 中人工抄录",
+            "notes": "scandata 的 leaf 从 0 起，全部进入 PDF；PDF 页 = scan leaf + 1。"
+          }
+        }
+      ],
+      "rightsNote": "候选补缺源；未核前不引用为 A/B。",
+      "limitations": [
+        "文件质量、卷页和版本真伪尚未完成复核。"
+      ]
+    }
+  ],
+  "unregisteredCandidates": [
+    {
+      "candidateId": "dlr.candidate.duanan-scan",
+      "title": "大六壬断案影印本",
+      "status": "notLocated",
+      "reason": "CTP 与殆知阁链接均落到版本暂缺的 wiki 转录；NDL 仅查到 2012 年纸本疏正，无在线页图。"
+    },
+    {
+      "candidateId": "dlr.candidate.cunyan-scan",
+      "title": "六壬存验影印本",
+      "status": "notLocated",
+      "reason": "目前只有固定提交与 CTP 版本暂缺转录，尚无可逐页对应的影印底本。"
+    },
+    {
+      "candidateId": "dlr.candidate.rengui",
+      "title": "壬归",
+      "status": "notLocated",
+      "reason": "仅作为补缺候选，尚未固定可核影印版本。"
+    },
+    {
+      "candidateId": "dlr.candidate.liuren-cuiyan",
+      "title": "六壬粹言",
+      "status": "notLocated",
+      "reason": "仅作为补缺候选，尚未固定可核影印版本。"
+    },
+    {
+      "candidateId": "dlr.candidate.daliuren-tanyuan",
+      "title": "大六壬探原",
+      "status": "notLocated",
+      "reason": "仅作为补缺候选，尚未固定可核影印版本。"
+    }
+  ]
+}

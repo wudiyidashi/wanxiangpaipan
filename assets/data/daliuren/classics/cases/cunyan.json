@@ -1,0 +1,299 @@
+{
+  "schemaVersion": "1.0.0",
+  "sourceWork": "六壬存验",
+  "catalogStatus": "locatorOnly",
+  "limitations": [
+    "固定提交可稳定定位文本行，但尚无逐页对应影印本。",
+    "以下 expectedFacts 只转录盘面可直接读取字段，不调用生产算法补齐。",
+    "civil date、时区、性别及无法从原文确定的盘面字段保持 unknown。"
+  ],
+  "cases": [
+    {
+      "caseId": "dlr.case.cunyan.dingchou-yiyou-pregnancy",
+      "title": "丁丑年四月乙酉日占六甲",
+      "verificationStatus": "pendingScan",
+      "evidenceLevel": "C",
+      "locatorOnly": true,
+      "sourceRef": {
+        "sourceId": "dlr.source.cunyan-transcription-d2a44794",
+        "referenceKind": "locator",
+        "volume": null,
+        "scanLeaf": null,
+        "printedLeaf": null,
+        "pdfPage": null,
+        "imageLabel": null,
+        "locator": "六壬存验-清-吴师青.txt:L357-L364",
+        "shortQuote": "丁丑年四月立夏酉将，乙酉日乙酉时，甲申旬，占六甲。"
+      },
+      "rawInput": {
+        "yearPillar": "丁丑",
+        "lunarMonthText": "四月",
+        "solarTermText": "立夏",
+        "monthGeneral": "酉",
+        "dayPillar": "乙酉",
+        "hourPillar": "乙酉",
+        "xun": "甲申旬",
+        "civilDateTime": null,
+        "timezone": null,
+        "question": "占六甲（孕产）",
+        "personContext": {}
+      },
+      "expectedFacts": {
+        "courseNames": [
+          "重审",
+          "斩关",
+          "伏吟"
+        ],
+        "transmissions": [
+          {
+            "stage": "初传",
+            "dunGan": "壬",
+            "branch": "辰",
+            "general": "勾陈",
+            "sixRelation": "妻财"
+          },
+          {
+            "stage": "中传",
+            "dunGan": "乙",
+            "branch": "酉",
+            "general": "天后",
+            "sixRelation": "官鬼"
+          },
+          {
+            "stage": "末传",
+            "dunGan": "辛",
+            "branch": "卯",
+            "general": "青龙",
+            "sixRelation": "兄弟"
+          }
+        ],
+        "rawPlateLines": [
+          "后后 勾勾 / 酉酉 辰辰 / 酉酉 辰乙",
+          "财 壬辰 勾；鬼 乙酉 后；兄 辛卯 青"
+        ]
+      },
+      "classicJudgment": "原书断为双胎一男一女，并以胎神、生气、死气解释；该断语只作文本对照。",
+      "expectedDerivation": {
+        "method": "sourceTranscription",
+        "usesProductionCode": false,
+        "reviewer": "C00 fixed-transcription review",
+        "reviewedAt": "2026-07-28"
+      },
+      "unresolvedFields": [
+        "civilDateTime",
+        "timezone",
+        "sex",
+        "birthContext",
+        "scanLeaf",
+        "printedLeaf",
+        "fullHeavenPlateNormalization"
+      ],
+      "adoptedAssumptions": [
+        "三传按原文盘式右栏从上到下读为初、中、末。",
+        "“勾、后、青”按十二天将全名展开。"
+      ],
+      "coveredRuleIds": [
+        "dlr.rule.jiuzongmen.001.zeike",
+        "dlr.rule.kejing.002"
+      ],
+      "targetCapabilityIds": [
+        "daliuren.pan.monthGeneral",
+        "daliuren.jiuzongmen.zeike",
+        "daliuren.kejing.002",
+        "daliuren.derivedFacts.transmissionDunGan"
+      ]
+    },
+    {
+      "caseId": "dlr.case.cunyan.renwu-bingxu-exam",
+      "title": "壬午年五月丙戌日占考试",
+      "verificationStatus": "pendingScan",
+      "evidenceLevel": "C",
+      "locatorOnly": true,
+      "sourceRef": {
+        "sourceId": "dlr.source.cunyan-transcription-d2a44794",
+        "referenceKind": "locator",
+        "volume": null,
+        "scanLeaf": null,
+        "printedLeaf": null,
+        "pdfPage": null,
+        "imageLabel": null,
+        "locator": "六壬存验-清-吴师青.txt:L594-L603",
+        "shortQuote": "壬午五月芒种申将，丙戌日己丑时，甲申旬，占考试。"
+      },
+      "rawInput": {
+        "yearPillar": "壬午",
+        "lunarMonthText": "五月",
+        "solarTermText": "芒种",
+        "monthGeneral": "申",
+        "dayPillar": "丙戌",
+        "hourPillar": "己丑",
+        "xun": "甲申旬",
+        "civilDateTime": null,
+        "timezone": null,
+        "question": "占考试",
+        "personContext": {}
+      },
+      "expectedFacts": {
+        "courseNames": [
+          "不备",
+          "知一",
+          "度厄"
+        ],
+        "transmissions": [
+          {
+            "stage": "初传",
+            "dunGan": "戊",
+            "branch": "子",
+            "general": "螣蛇",
+            "sixRelation": "官鬼"
+          },
+          {
+            "stage": "中传",
+            "dunGan": "乙",
+            "branch": "未",
+            "general": "太常",
+            "sixRelation": "兄弟"
+          },
+          {
+            "stage": "末传",
+            "dunGan": "庚",
+            "branch": "寅",
+            "general": "六合",
+            "sixRelation": "父母"
+          }
+        ],
+        "rawPlateLines": [
+          "蛇空 常蛇 / 子巳 未子 / 巳戌 子丙",
+          "鬼 戊子 蛇；兄 乙未 常；父 庚寅 六"
+        ]
+      },
+      "classicJudgment": "原书断院试必取、科举省试未遂，并另答迁任、女病和城防；只保留首问作课例对照。",
+      "expectedDerivation": {
+        "method": "sourceTranscription",
+        "usesProductionCode": false,
+        "reviewer": "C00 fixed-transcription review",
+        "reviewedAt": "2026-07-28"
+      },
+      "unresolvedFields": [
+        "civilDateTime",
+        "timezone",
+        "sex",
+        "birthContext",
+        "scanLeaf",
+        "printedLeaf",
+        "fullHeavenPlateNormalization"
+      ],
+      "adoptedAssumptions": [
+        "三传按原文盘式右栏从上到下读为初、中、末。",
+        "“蛇、常、六”按十二天将全名展开。"
+      ],
+      "coveredRuleIds": [
+        "dlr.rule.jiuzongmen.002.biyong",
+        "dlr.rule.kejing.003"
+      ],
+      "targetCapabilityIds": [
+        "daliuren.pan.monthGeneral",
+        "daliuren.jiuzongmen.biyong",
+        "daliuren.kejing.003",
+        "daliuren.derivedFacts.transmissionDunGan"
+      ]
+    },
+    {
+      "caseId": "dlr.case.cunyan.wuzi-bingzi-promotion",
+      "title": "戊子年三月丙子日占升迁",
+      "verificationStatus": "pendingScan",
+      "evidenceLevel": "C",
+      "locatorOnly": true,
+      "sourceRef": {
+        "sourceId": "dlr.source.cunyan-transcription-d2a44794",
+        "referenceKind": "locator",
+        "volume": null,
+        "scanLeaf": null,
+        "printedLeaf": null,
+        "pdfPage": null,
+        "imageLabel": null,
+        "locator": "六壬存验-清-吴师青.txt:L605-L612",
+        "shortQuote": "戊子年三月清明戌将，丙子日壬辰时，甲戌旬，占升迁，知一、反吟。"
+      },
+      "rawInput": {
+        "yearPillar": "戊子",
+        "lunarMonthText": "三月",
+        "solarTermText": "清明",
+        "monthGeneral": "戌",
+        "dayPillar": "丙子",
+        "hourPillar": "壬辰",
+        "xun": "甲戌旬",
+        "civilDateTime": null,
+        "timezone": null,
+        "question": "占升迁",
+        "personContext": {}
+      },
+      "expectedFacts": {
+        "courseNames": [
+          "知一",
+          "反吟"
+        ],
+        "transmissions": [
+          {
+            "stage": "初传",
+            "dunGan": "壬",
+            "branch": "午",
+            "general": "青龙",
+            "sixRelation": "比肩"
+          },
+          {
+            "stage": "中传",
+            "dunGan": "丙",
+            "branch": "子",
+            "general": "天后",
+            "sixRelation": "官鬼"
+          },
+          {
+            "stage": "末传",
+            "dunGan": "壬",
+            "branch": "午",
+            "general": "青龙",
+            "sixRelation": "比肩"
+          }
+        ],
+        "rawPlateLines": [
+          "后龙 空贵 / 子午 巳亥 / 午子 亥丙",
+          "比 壬午 龙；鬼 丙子 后；比 壬午 龙"
+        ]
+      },
+      "classicJudgment": "原书断升迁后有意外之忧，并记六月升迁、后发疽卒；结果只作原书对照。",
+      "expectedDerivation": {
+        "method": "sourceTranscription",
+        "usesProductionCode": false,
+        "reviewer": "C00 fixed-transcription review",
+        "reviewedAt": "2026-07-28"
+      },
+      "unresolvedFields": [
+        "civilDateTime",
+        "timezone",
+        "sex",
+        "birthContext",
+        "scanLeaf",
+        "printedLeaf",
+        "fullHeavenPlateNormalization"
+      ],
+      "adoptedAssumptions": [
+        "三传按原文盘式右栏从上到下读为初、中、末。",
+        "原书“返吟”与标题“反吟”视为同一课体的字形差异。"
+      ],
+      "coveredRuleIds": [
+        "dlr.rule.jiuzongmen.002.biyong",
+        "dlr.rule.jiuzongmen.009.fanyin",
+        "dlr.rule.kejing.003",
+        "dlr.rule.kejing.010"
+      ],
+      "targetCapabilityIds": [
+        "daliuren.pan.monthGeneral",
+        "daliuren.jiuzongmen.biyong",
+        "daliuren.jiuzongmen.fanyin",
+        "daliuren.kejing.003",
+        "daliuren.kejing.010"
+      ]
+    }
+  ]
+}

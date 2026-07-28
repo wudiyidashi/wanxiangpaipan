@@ -1,0 +1,170 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://wanxiang-paipan.local/schema/daliuren/classics/rule.schema.json",
+  "title": "Da Liu Ren classic rule-family document",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schemaVersion",
+    "family",
+    "catalogStatus",
+    "description",
+    "expectedEntryCount",
+    "entries"
+  ],
+  "properties": {
+    "schemaVersion": {"const": "1.0.0"},
+    "family": {
+      "enum": [
+        "pan",
+        "shenjiang",
+        "jiuzongmen",
+        "derivedFacts",
+        "shensha",
+        "kejing",
+        "bifa",
+        "nianming",
+        "classSpirit",
+        "judgment",
+        "timing"
+      ]
+    },
+    "catalogStatus": {
+      "enum": ["approved", "partial", "locatorOnly", "unresolved"]
+    },
+    "description": {"type": "string", "minLength": 1},
+    "expectedEntryCount": {"type": "integer", "minimum": 0},
+    "entries": {
+      "type": "array",
+      "items": {"$ref": "#/$defs/rule"}
+    }
+  },
+  "$defs": {
+    "reviewer": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["reviewer", "date"],
+      "properties": {
+        "reviewer": {"type": "string", "minLength": 1},
+        "date": {"type": "string", "format": "date"}
+      }
+    },
+    "sourceRef": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "sourceId",
+        "referenceKind",
+        "volume",
+        "scanLeaf",
+        "printedLeaf",
+        "pdfPage",
+        "imageLabel",
+        "locator",
+        "shortQuote",
+        "verifiedBy"
+      ],
+      "properties": {
+        "sourceId": {
+          "type": "string",
+          "pattern": "^dlr\\.source\\.[a-z0-9][a-z0-9.-]*$"
+        },
+        "referenceKind": {"enum": ["scan", "locator"]},
+        "volume": {"type": ["string", "null"]},
+        "scanLeaf": {"type": ["integer", "null"], "minimum": 0},
+        "printedLeaf": {"type": ["string", "null"]},
+        "pdfPage": {"type": ["integer", "null"], "minimum": 1},
+        "imageLabel": {"type": ["string", "null"]},
+        "locator": {"type": ["string", "null"]},
+        "shortQuote": {"type": "string", "minLength": 1},
+        "verifiedBy": {
+          "type": "array",
+          "items": {"$ref": "#/$defs/reviewer"}
+        }
+      }
+    },
+    "rule": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "ruleId",
+        "family",
+        "subfamily",
+        "ordinal",
+        "traditionalName",
+        "adoptedStatus",
+        "conditionsSummary",
+        "prioritySummary",
+        "interpretation",
+        "evidenceLevel",
+        "locatorOnly",
+        "executableApproved",
+        "sourceRefs",
+        "variantGroupId",
+        "adoptedVariantId",
+        "fixtureIds",
+        "targetCapabilityId",
+        "targetCodeDomain",
+        "notes"
+      ],
+      "properties": {
+        "ruleId": {
+          "type": "string",
+          "pattern": "^dlr\\.rule\\.[a-zA-Z0-9][a-zA-Z0-9.-]*$"
+        },
+        "family": {
+          "enum": [
+            "pan",
+            "shenjiang",
+            "jiuzongmen",
+            "derivedFacts",
+            "shensha",
+            "kejing",
+            "bifa",
+            "nianming",
+            "classSpirit",
+            "judgment",
+            "timing"
+          ]
+        },
+        "subfamily": {"type": "string", "minLength": 1},
+        "ordinal": {"type": "integer", "minimum": 1},
+        "traditionalName": {"type": "string", "minLength": 1},
+        "adoptedStatus": {
+          "enum": ["adopted", "pending", "excluded", "disputed", "deprecated"]
+        },
+        "conditionsSummary": {"type": "string", "minLength": 1},
+        "prioritySummary": {"type": "string", "minLength": 1},
+        "interpretation": {"type": "string", "minLength": 1},
+        "evidenceLevel": {"enum": ["A", "B", "C", "D"]},
+        "locatorOnly": {"type": "boolean"},
+        "executableApproved": {"type": "boolean"},
+        "sourceRefs": {
+          "type": "array",
+          "items": {"$ref": "#/$defs/sourceRef"}
+        },
+        "variantGroupId": {
+          "type": ["string", "null"],
+          "pattern": "^dlr\\.variant\\.[a-z0-9][a-z0-9.-]*$"
+        },
+        "adoptedVariantId": {
+          "type": ["string", "null"],
+          "pattern": "^[a-z0-9][a-z0-9.-]*$"
+        },
+        "fixtureIds": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "pattern": "^dlr\\.case\\.[a-z0-9][a-z0-9.-]*$"
+          }
+        },
+        "targetCapabilityId": {"type": "string", "minLength": 1},
+        "targetCodeDomain": {"type": "string", "minLength": 1},
+        "notes": {
+          "type": "array",
+          "items": {"type": "string", "minLength": 1}
+        }
+      }
+    }
+  }
+}

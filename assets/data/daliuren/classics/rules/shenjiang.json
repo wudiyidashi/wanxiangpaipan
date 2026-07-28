@@ -1,0 +1,351 @@
+{
+  "schemaVersion": "1.0.0",
+  "family": "shenjiang",
+  "catalogStatus": "partial",
+  "description": "贵人选择、落宫、顺逆和十二天将坐标的有限目录。",
+  "expectedEntryCount": 6,
+  "entries": [
+    {
+      "ruleId": "dlr.rule.shenjiang.001.day-night-selection",
+      "family": "shenjiang",
+      "subfamily": "guiRenSelection",
+      "ordinal": 1,
+      "traditionalName": "昼夜取贵",
+      "adoptedStatus": "pending",
+      "conditionsSummary": "卯至申用阳贵，酉至寅用阴贵；昼夜只负责选贵人支。",
+      "prioritySummary": "同规则族内的优先关系尚未由影印页冻结；不得按目录顺序推断执行优先级。",
+      "interpretation": "候选《直指》给出昼夜边界；《六壬大全》另把十干分昼夜取贵与地盘定顺逆分开，二者不是同一步。",
+      "evidenceLevel": "C",
+      "locatorOnly": true,
+      "executableApproved": false,
+      "sourceRefs": [
+        {
+          "sourceId": "dlr.source.siku-liuren-daquan",
+          "referenceKind": "scan",
+          "volume": "卷二",
+          "scanLeaf": 62,
+          "printedLeaf": null,
+          "pdfPage": 62,
+          "imageLabel": null,
+          "locator": null,
+          "shortQuote": "贵人从十干分昼夜治。",
+          "verifiedBy": [
+            {
+              "reviewer": "C00 independent scan recheck",
+              "date": "2026-07-28"
+            }
+          ]
+        },
+        {
+          "sourceId": "dlr.source.yuding-liuren-zhizhi-candidate",
+          "referenceKind": "locator",
+          "volume": null,
+          "scanLeaf": null,
+          "printedLeaf": null,
+          "pdfPage": null,
+          "imageLabel": null,
+          "locator": "卷上 PDF 18 / scan leaf 17 / printed leaf 七",
+          "shortQuote": "正时自卯至申用昼贵，即阳贵；自酉至寅用夜贵，即阴贵。",
+          "verifiedBy": []
+        },
+        {
+          "sourceId": "dlr.source.cunyan-transcription-d2a44794",
+          "referenceKind": "locator",
+          "volume": null,
+          "scanLeaf": null,
+          "printedLeaf": null,
+          "pdfPage": null,
+          "imageLabel": null,
+          "locator": "六壬存验-清-吴师青.txt:L329",
+          "shortQuote": "自卯至申为日间时……自酉至寅为夜间时。",
+          "verifiedBy": []
+        }
+      ],
+      "variantGroupId": null,
+      "adoptedVariantId": null,
+      "fixtureIds": [],
+      "targetCapabilityId": "daliuren.shenjiang.dayNightSelection",
+      "targetCodeDomain": "lib/domain/services/daliuren/shen_jiang_service.dart",
+      "notes": []
+    },
+    {
+      "ruleId": "dlr.rule.shenjiang.002.yang-gui-table",
+      "family": "shenjiang",
+      "subfamily": "guiRenSelection",
+      "ordinal": 2,
+      "traditionalName": "十干阳贵表",
+      "adoptedStatus": "pending",
+      "conditionsSummary": "甲丑、己子、乙子、庚丑、丙亥、辛午、丁亥、壬巳、戊丑、癸巳。",
+      "prioritySummary": "同规则族内的优先关系尚未由影印页冻结；不得按目录顺序推断执行优先级。",
+      "interpretation": "固定转录表与候选《直指》完整表在甲乙丙辛壬五干冲突；待主底本影印页核定后才能采用。",
+      "evidenceLevel": "C",
+      "locatorOnly": true,
+      "executableApproved": false,
+      "sourceRefs": [
+        {
+          "sourceId": "dlr.source.yuding-liuren-zhizhi-candidate",
+          "referenceKind": "locator",
+          "volume": null,
+          "scanLeaf": null,
+          "printedLeaf": null,
+          "pdfPage": null,
+          "imageLabel": null,
+          "locator": "卷上 PDF 18 / scan leaf 17 / printed leaf 七",
+          "shortQuote": "庚戊见牛甲在羊，乙猴己鼠丙鸡方，丁猪癸蛇壬兔位，六辛逢虎贵为阳。",
+          "verifiedBy": []
+        },
+        {
+          "sourceId": "dlr.source.cunyan-transcription-d2a44794",
+          "referenceKind": "locator",
+          "volume": null,
+          "scanLeaf": null,
+          "printedLeaf": null,
+          "pdfPage": null,
+          "imageLabel": null,
+          "locator": "六壬存验-清-吴师青.txt:L347-L349",
+          "shortQuote": "阳贵：甲丑，己子，乙子，庚丑……",
+          "verifiedBy": []
+        }
+      ],
+      "variantGroupId": "dlr.variant.gui-ren-table",
+      "adoptedVariantId": null,
+      "fixtureIds": [],
+      "targetCapabilityId": "daliuren.shenjiang.yangGuiTable",
+      "targetCodeDomain": "lib/domain/services/daliuren/daliuren_constants.dart",
+      "notes": []
+    },
+    {
+      "ruleId": "dlr.rule.shenjiang.003.yin-gui-table",
+      "family": "shenjiang",
+      "subfamily": "guiRenSelection",
+      "ordinal": 3,
+      "traditionalName": "十干阴贵表",
+      "adoptedStatus": "pending",
+      "conditionsSummary": "甲未、己申、乙申、庚未、丙酉、辛寅、丁酉、壬卯、戊未、癸卯。",
+      "prioritySummary": "同规则族内的优先关系尚未由影印页冻结；不得按目录顺序推断执行优先级。",
+      "interpretation": "固定转录表与候选《直指》完整表在甲乙丙辛壬五干冲突；阴阳两表必须成组裁决。",
+      "evidenceLevel": "C",
+      "locatorOnly": true,
+      "executableApproved": false,
+      "sourceRefs": [
+        {
+          "sourceId": "dlr.source.yuding-liuren-zhizhi-candidate",
+          "referenceKind": "locator",
+          "volume": null,
+          "scanLeaf": null,
+          "printedLeaf": null,
+          "pdfPage": null,
+          "imageLabel": null,
+          "locator": "卷上 PDF 18 / scan leaf 17 / printed leaf 七",
+          "shortQuote": "甲贵阴牛庚戊羊，乙贵在鼠己猴乡，丙猪丁鸡辛遇马，壬蛇癸兔属阴方。",
+          "verifiedBy": []
+        },
+        {
+          "sourceId": "dlr.source.cunyan-transcription-d2a44794",
+          "referenceKind": "locator",
+          "volume": null,
+          "scanLeaf": null,
+          "printedLeaf": null,
+          "pdfPage": null,
+          "imageLabel": null,
+          "locator": "六壬存验-清-吴师青.txt:L347-L349",
+          "shortQuote": "阴贵：甲未，己申，乙申，庚未……",
+          "verifiedBy": []
+        }
+      ],
+      "variantGroupId": "dlr.variant.gui-ren-table",
+      "adoptedVariantId": null,
+      "fixtureIds": [],
+      "targetCapabilityId": "daliuren.shenjiang.yinGuiTable",
+      "targetCodeDomain": "lib/domain/services/daliuren/daliuren_constants.dart",
+      "notes": []
+    },
+    {
+      "ruleId": "dlr.rule.shenjiang.004.direction-by-earth-palace",
+      "family": "shenjiang",
+      "subfamily": "layoutDirection",
+      "ordinal": 4,
+      "traditionalName": "贵人落地宫定顺逆",
+      "adoptedStatus": "pending",
+      "conditionsSummary": "天盘贵人临地盘亥子丑寅卯辰则顺，临巳午未申酉戌则逆。",
+      "prioritySummary": "同规则族内的优先关系尚未由影印页冻结；不得按目录顺序推断执行优先级。",
+      "interpretation": "主底本直接规定地盘定顺逆；十二支六区是由天门地户方位换算，仍待独立正反例批准。",
+      "evidenceLevel": "C",
+      "locatorOnly": false,
+      "executableApproved": false,
+      "sourceRefs": [
+        {
+          "sourceId": "dlr.source.siku-liuren-daquan",
+          "referenceKind": "scan",
+          "volume": "卷二",
+          "scanLeaf": 59,
+          "printedLeaf": null,
+          "pdfPage": 59,
+          "imageLabel": null,
+          "locator": null,
+          "shortQuote": "地盘一定顺逆之序，顺布者则背天门，逆布者则向地户。",
+          "verifiedBy": [
+            {
+              "reviewer": "C00 independent scan recheck",
+              "date": "2026-07-28"
+            }
+          ]
+        },
+        {
+          "sourceId": "dlr.source.siku-liuren-daquan",
+          "referenceKind": "scan",
+          "volume": "卷二",
+          "scanLeaf": 62,
+          "printedLeaf": null,
+          "pdfPage": 62,
+          "imageLabel": null,
+          "locator": null,
+          "shortQuote": "顺治谓在天门之前、地户之后；逆治谓在地户之前、天门之后。",
+          "verifiedBy": [
+            {
+              "reviewer": "C00 independent scan recheck",
+              "date": "2026-07-28"
+            }
+          ]
+        },
+        {
+          "sourceId": "dlr.source.cunyan-transcription-d2a44794",
+          "referenceKind": "locator",
+          "volume": null,
+          "scanLeaf": null,
+          "printedLeaf": null,
+          "pdfPage": null,
+          "imageLabel": null,
+          "locator": "六壬存验-清-吴师青.txt:L329",
+          "shortQuote": "贵临地盘亥子丑寅卯辰六位顺行……巳午未申酉戌六位逆行。",
+          "verifiedBy": []
+        }
+      ],
+      "variantGroupId": "dlr.variant.gui-ren-direction",
+      "adoptedVariantId": null,
+      "fixtureIds": [],
+      "targetCapabilityId": "daliuren.shenjiang.actualDirection",
+      "targetCodeDomain": "lib/domain/services/daliuren/shen_jiang_service.dart",
+      "notes": []
+    },
+    {
+      "ruleId": "dlr.rule.shenjiang.005.twelve-generals-order",
+      "family": "shenjiang",
+      "subfamily": "generalOrder",
+      "ordinal": 5,
+      "traditionalName": "十二天将次序",
+      "adoptedStatus": "pending",
+      "conditionsSummary": "贵人、螣蛇、朱雀、六合、勾陈、青龙、天空、白虎、太常、玄武、太阴、天后。",
+      "prioritySummary": "同规则族内的优先关系尚未由影印页冻结；不得按目录顺序推断执行优先级。",
+      "interpretation": "卷二直接列贵人前后诸将，可还原固定身份次序；方向只改变布列方向。",
+      "evidenceLevel": "C",
+      "locatorOnly": false,
+      "executableApproved": false,
+      "sourceRefs": [
+        {
+          "sourceId": "dlr.source.siku-liuren-daquan",
+          "referenceKind": "scan",
+          "volume": "卷二",
+          "scanLeaf": 58,
+          "printedLeaf": null,
+          "pdfPage": 58,
+          "imageLabel": null,
+          "locator": null,
+          "shortQuote": "前有五位一蛇二雀三合四勾五龙……后有五位一后二阴三玄四常五虎。",
+          "verifiedBy": [
+            {
+              "reviewer": "C00 independent scan recheck",
+              "date": "2026-07-28"
+            }
+          ]
+        },
+        {
+          "sourceId": "dlr.source.cunyan-transcription-d2a44794",
+          "referenceKind": "locator",
+          "volume": null,
+          "scanLeaf": null,
+          "printedLeaf": null,
+          "pdfPage": null,
+          "imageLabel": null,
+          "locator": "六壬存验-清-吴师青.txt:L345-L346",
+          "shortQuote": "十二神：贵人、螣蛇、朱雀、六合……天后。",
+          "verifiedBy": []
+        }
+      ],
+      "variantGroupId": null,
+      "adoptedVariantId": null,
+      "fixtureIds": [],
+      "targetCapabilityId": "daliuren.shenjiang.generalOrder",
+      "targetCodeDomain": "lib/domain/services/daliuren/daliuren_constants.dart",
+      "notes": []
+    },
+    {
+      "ruleId": "dlr.rule.shenjiang.006.dual-coordinate-layout",
+      "family": "shenjiang",
+      "subfamily": "coordinateContract",
+      "ordinal": 6,
+      "traditionalName": "天盘乘将与地盘落将双坐标",
+      "adoptedStatus": "pending",
+      "conditionsSummary": "同一位置事实同时保留天盘支所乘天将与天将所临地盘宫。",
+      "prioritySummary": "同规则族内的优先关系尚未由影印页冻结；不得按目录顺序推断执行优先级。",
+      "interpretation": "主底本分别以课之天盘起贵神、以地盘定顺逆；软件需显式保存两类坐标，但数据结构本身是项目契约。",
+      "evidenceLevel": "C",
+      "locatorOnly": false,
+      "executableApproved": false,
+      "sourceRefs": [
+        {
+          "sourceId": "dlr.source.siku-liuren-daquan",
+          "referenceKind": "scan",
+          "volume": "卷二",
+          "scanLeaf": 58,
+          "printedLeaf": null,
+          "pdfPage": 58,
+          "imageLabel": null,
+          "locator": null,
+          "shortQuote": "以课之天盘起贵神之例。",
+          "verifiedBy": [
+            {
+              "reviewer": "C00 independent scan recheck",
+              "date": "2026-07-28"
+            }
+          ]
+        },
+        {
+          "sourceId": "dlr.source.siku-liuren-daquan",
+          "referenceKind": "scan",
+          "volume": "卷二",
+          "scanLeaf": 59,
+          "printedLeaf": null,
+          "pdfPage": 59,
+          "imageLabel": null,
+          "locator": null,
+          "shortQuote": "地盘一定顺逆之序。",
+          "verifiedBy": [
+            {
+              "reviewer": "C00 independent scan recheck",
+              "date": "2026-07-28"
+            }
+          ]
+        },
+        {
+          "sourceId": "dlr.source.cunyan-transcription-d2a44794",
+          "referenceKind": "locator",
+          "volume": null,
+          "scanLeaf": null,
+          "printedLeaf": null,
+          "pdfPage": null,
+          "imageLabel": null,
+          "locator": "六壬存验-清-吴师青.txt:L329",
+          "shortQuote": "是以天盘之贵而临地盘之六位，非贵在地盘也。",
+          "verifiedBy": []
+        }
+      ],
+      "variantGroupId": null,
+      "adoptedVariantId": null,
+      "fixtureIds": [],
+      "targetCapabilityId": "daliuren.shenjiang.dualCoordinates",
+      "targetCodeDomain": "lib/divination_systems/daliuren/models/shen_jiang_config.dart",
+      "notes": []
+    }
+  ]
+}

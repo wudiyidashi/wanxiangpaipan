@@ -1,0 +1,130 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://wanxiang-paipan.local/schema/daliuren/classics/case.schema.json",
+  "title": "Da Liu Ren external classic case document",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schemaVersion",
+    "sourceWork",
+    "catalogStatus",
+    "limitations",
+    "cases"
+  ],
+  "properties": {
+    "schemaVersion": {"const": "1.0.0"},
+    "sourceWork": {"type": "string", "minLength": 1},
+    "catalogStatus": {
+      "enum": ["approved", "partial", "locatorOnly", "sourceNotLocated"]
+    },
+    "limitations": {
+      "type": "array",
+      "items": {"type": "string", "minLength": 1}
+    },
+    "cases": {
+      "type": "array",
+      "items": {"$ref": "#/$defs/case"}
+    }
+  },
+  "$defs": {
+    "sourceRef": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "sourceId",
+        "referenceKind",
+        "volume",
+        "scanLeaf",
+        "printedLeaf",
+        "pdfPage",
+        "imageLabel",
+        "locator",
+        "shortQuote"
+      ],
+      "properties": {
+        "sourceId": {
+          "type": "string",
+          "pattern": "^dlr\\.source\\.[a-z0-9][a-z0-9.-]*$"
+        },
+        "referenceKind": {"enum": ["scan", "locator"]},
+        "volume": {"type": ["string", "null"]},
+        "scanLeaf": {"type": ["integer", "null"], "minimum": 0},
+        "printedLeaf": {"type": ["string", "null"]},
+        "pdfPage": {"type": ["integer", "null"], "minimum": 1},
+        "imageLabel": {"type": ["string", "null"]},
+        "locator": {"type": ["string", "null"]},
+        "shortQuote": {"type": "string", "minLength": 1}
+      }
+    },
+    "derivation": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["method", "usesProductionCode", "reviewer", "reviewedAt"],
+      "properties": {
+        "method": {
+          "enum": ["independentManual", "sourceTranscription", "sourceScan"]
+        },
+        "usesProductionCode": {"const": false},
+        "reviewer": {"type": "string", "minLength": 1},
+        "reviewedAt": {"type": ["string", "null"], "format": "date"}
+      }
+    },
+    "case": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "caseId",
+        "title",
+        "verificationStatus",
+        "evidenceLevel",
+        "locatorOnly",
+        "sourceRef",
+        "rawInput",
+        "expectedFacts",
+        "classicJudgment",
+        "expectedDerivation",
+        "unresolvedFields",
+        "adoptedAssumptions",
+        "coveredRuleIds",
+        "targetCapabilityIds"
+      ],
+      "properties": {
+        "caseId": {
+          "type": "string",
+          "pattern": "^dlr\\.case\\.[a-z0-9][a-z0-9.-]*$"
+        },
+        "title": {"type": "string", "minLength": 1},
+        "verificationStatus": {
+          "enum": ["candidate", "pendingScan", "scanVerified", "approved", "excluded"]
+        },
+        "evidenceLevel": {"enum": ["A", "B", "C", "D"]},
+        "locatorOnly": {"type": "boolean"},
+        "sourceRef": {"$ref": "#/$defs/sourceRef"},
+        "rawInput": {"type": "object", "minProperties": 1},
+        "expectedFacts": {"type": "object", "minProperties": 1},
+        "classicJudgment": {"type": "string", "minLength": 1},
+        "expectedDerivation": {"$ref": "#/$defs/derivation"},
+        "unresolvedFields": {
+          "type": "array",
+          "items": {"type": "string", "minLength": 1}
+        },
+        "adoptedAssumptions": {
+          "type": "array",
+          "items": {"type": "string", "minLength": 1}
+        },
+        "coveredRuleIds": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "pattern": "^dlr\\.rule\\.[a-zA-Z0-9][a-zA-Z0-9.-]*$"
+          }
+        },
+        "targetCapabilityIds": {
+          "type": "array",
+          "minItems": 1,
+          "items": {"type": "string", "minLength": 1}
+        }
+      }
+    }
+  }
+}
