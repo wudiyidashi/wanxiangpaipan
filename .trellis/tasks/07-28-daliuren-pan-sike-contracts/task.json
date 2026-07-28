@@ -3,7 +3,7 @@
   "name": "daliuren-pan-sike-contracts",
   "title": "大六壬天盘与四课服务契约",
   "description": "建立天盘十二支双射、四课不变量和非法输入显式失败。",
-  "status": "planning",
+  "status": "in_progress",
   "dev_type": null,
   "scope": null,
   "package": null,

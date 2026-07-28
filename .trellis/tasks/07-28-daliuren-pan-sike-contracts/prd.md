@@ -2,18 +2,75 @@
 
 ## Goal
 
-建立天盘十二支双射、四课不变量和非法输入显式失败。
+让天盘、四课及其直接下游只消费完整、可证明的十二支盘面事实：非法月将/时支、空盘、缺键、非法键值或重复值必须在产出课体前显式失败；四课不得用同支或“贵人”伪造缺失事实，并以三张《大六壬指南》独立手排盘锁定正确公式。
+
+## Background And Confirmed Facts
+
+- `assets/data/daliuren/classics/rules/pan.json` 中 `pan.003`“月将加时顺布天盘”和 `pan.005` 至 `pan.008`“一至四课”均为 B 级、`executableApproved=true`；三条已批准《大六壬指南》fixture 均声明 `independentManual` 且未使用生产代码。
+- `pan.004`“十干寄宫”仍为 C 级 pending。C03 只沿用 `.trellis/spec/domain/daliuren-pan-engine.md` 已锁定的项目寄宫口径，不提升其古籍证据等级，也不改寄宫表。
+- `TianPanService.arrangeTianPan()` 当前会把非法地支索引 `-1` 继续带入取模并产出看似完整的盘；查询缺键时又返回输入支。`TianPan` 模型访问器存在同类静默回退。
+- `SiKeService.arrangeSiKe()` 对缺失天盘键回退原支；`isFuYin({})`、`isFanYin({})` 及部分 map 会因只遍历现有条目而误判。`SanChuanService` 复制了同类判定和取值回退，因此只修四课服务不能消除实际推导链中的伪伏吟。
+- 四课计算公式和上下克方向本身符合当前规范，但 `Ke`、`SiKe` 注释与真实一至四课语义不一致。
+- 生产 `DaLiuRenSystem` 会传入神将配置；公开四课服务及五个测试 helper 可省略配置，当前会把缺失或查不到的乘神静默写成 `贵人`。
+- `Ke`、`SiKe`、`TianPan` 的 JSON 字段结构已经冻结。已发布规则合同要求行为变化发布新 pan 版本，同时旧版本必须可读且不得被原地改义。
 
 ## Requirements
 
-- TBD
+### R1. Strict Heaven-Plate Inputs
+
+- `arrangeTianPan()` 和 `createTianPan()` 只接受十二合法地支中的月将与时支；非法值必须在旋转计算前抛出明确错误。
+- 新建天盘必须恰有十二个合法地支键，值也必须恰为十二个合法地支且互不重复；相邻地盘宫的天盘支必须按十二支相邻顺序固定顺布，不能把任意乱序双射当成天盘。
+- `TianPan` 的月将、时支和 map 必须满足 `map[时支] == 月将`；新建模型保存防御性只读副本，调用方后续修改原始 map 不得改变盘面。
+
+### R2. One Bijection Contract For All Consumers
+
+- 建立唯一可复用的天盘 map 校验合同：键集等于十二支全集、值集等于十二支全集、长度为十二，且所有宫位具有同一循环位移。
+- 天盘公开查询、模型访问、四课构造和三传入口都必须先满足该合同；空 map、部分 map、非法键值和重复值不得产生业务结果。
+- `getTianPanZhi()`、模型同名访问器及完整显示不得再以输入支补缺；反向查询在合法双射上保持现有返回类型，但结果必须唯一。
+
+### R3. Strict Four-Lesson Construction
+
+- `arrangeSiKe()` 必须校验日干、日支和完整天盘，再按以下公式构造：一课 `干上/日干`，二课 `干阴/干上`，三课 `支上/日支`，四课 `支阴/支上`。
+- 日干支组合必须属于合法六十甲子；已构造 `SiKe` 进入三传时，课序、上下神链、五行关系和克向标志必须与同一日干支及天盘一致。
+- 四课必须通过一个必填的“天盘支 -> 乘神”解析接口取得乘神；未提供接口或解析不到任一课上神时显式失败，禁止默认 `贵人`。
+- C03 只冻结该接口及失败语义，不决定贵人、顺逆、天盘支映射和地盘宫映射的具体坐标算法。
+
+### R4. Complete Fu-Yin/Fan-Yin Semantics
+
+- 只有完整十二宫全部同位才是伏吟，完整十二宫全部相冲才是反吟；其他合法天盘返回 `false`。
+- 非法或不完整 map 必须失败而不是返回真假。三传仅接入同一校验合同，不在 C03 改写九宗门分支或取传规则。
+
+### R5. Model And Compatibility Accuracy
+
+- 修正 `Ke`、`SiKe` 和相关天盘注释，使课序、上神/下神及 map 方向与实际公式一致。
+- 保持 `TianPan`、`Ke`、`SiKe`、`SanChuan`、`Chuan` JSON 字段结构不变，不做数据库迁移。
+- 发布 `daliuren-pan/3.0.0`，具名保留 v1/v2；snapshot schema 仍为 `2.0.0`，证据目录仍为 `daliuren-classics/1.0.0`。v1/v2/legacy/future 结果继续可读，只有 v3 新盘判为 current。
+
+### R6. Independent Regression Evidence
+
+- 用三张已批准《大六壬指南》fixture 直接验证天盘与一至四课，不从生产算法生成预期。
+- 服务级测试覆盖 12x12 合法月将/时支组合的不变量、非法输入、空/缺键/非法键值/重复值、正反吟完整性、乘神解析失败和五行克向语义。
+- 既有 13 个内部三传位移盘继续作为结构回归，但不得改称古籍外例；所有直接四课调用方必须显式选择测试乘神解析策略。
 
 ## Acceptance Criteria
 
-- [ ] TBD
+- [ ] 非法月将或时支在产盘前抛错，不再经 `-1` 取模生成合法外观的十二宫。
+- [ ] 任一天盘服务输入只有在键值完整且保持同一循环位移时才被接受；空、部分、非法键、非法值、重复值和乱序双射分别有失败测试。
+- [ ] `TianPan` 的月将必须加临时支，且调用方在构造后修改原始 map 不会改变已保存盘面。
+- [ ] 天盘正向/反向查询及模型访问不存在“查不到就返回输入支”的路径。
+- [ ] 三张 B 级《大六壬指南》fixture 的月将加时和四课上下神全部通过，fixture 预期明确标记为独立手排。
+- [ ] 四课一至四课公式、合法六十甲子输入及 `下克上`/`上克下` 标志有直接服务测试；生、克、比和文案不互相矛盾。
+- [ ] 三传拒绝与天盘不一致的课序、上下神链或克向字段，不把任意手工 `SiKe` 当成已验证事实。
+- [ ] 省略乘神解析或解析不到任一上神均不能构造 `SiKe`，且 C03 没有实现或宣称 C04 的贵人/顺逆坐标规则。
+- [ ] 仅完整同位盘判伏吟、仅完整对冲盘判反吟；空盘和部分盘在四课与三传公开入口均显式失败。
+- [ ] `Ke`、`SiKe`、`TianPan` 注释与真实公式、字段语义一致，模型 JSON 字段结构无变化。
+- [ ] 新盘写入 `daliuren-pan/3.0.0`；v2 被识别为 version mismatch 但仍可读取，snapshot schema 和 evidence catalog 不升级。
+- [ ] build_runner 无漂移；大六壬定向、古籍 validator、共享六爻回归、`flutter analyze` 与全量 `flutter test` 全部通过。
 
-## Notes
+## Out Of Scope
 
-- Keep `prd.md` focused on requirements, constraints, and acceptance criteria.
-- Lightweight tasks can remain PRD-only.
-- For complex tasks, add `design.md` for technical design and `implement.md` for execution planning before `task.py start`.
+- 不实现 C04 的昼夜取贵、贵人落宫、实际顺逆、`天盘支 -> 神将` 或 `地盘宫 -> 神将` 双坐标重构；三传缺省乘神的完整改造留给 C04。
+- 不提升或改写 `pan.004` 十干寄宫的 C 级 pending 状态，不修改既有寄宫表。
+- 不修改九宗门裁选、涉害、遥克、昴星、别责、八专、伏吟刑传或反吟井栏射算法；这些属于 C05。
+- 不新增模型 JSON 字段、数据库迁移、起课 snapshot 字段、历史重排 UI 或证据目录版本。
+- 不修改并行奇门任务及 `tmp/`。

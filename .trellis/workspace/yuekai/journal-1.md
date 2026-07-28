@@ -281,3 +281,37 @@
 ### Next Steps
 
 - None - task complete
+
+
+## Session 9: 完成奇门遁甲产品闭环与发布纠偏
+
+**Date**: 2026-07-28
+**Task**: 完成奇门遁甲产品闭环与发布纠偏
+**Branch**: `main`
+
+### Summary
+
+完成首次启用 v1 基线纠偏，补齐起局边界、异步状态机、首页入口与规则诊断回归；隔离验证 202 项奇门目标和 1,207 项全量测试后归档纠偏子任务与奇门父任务。
+
+### Main Changes
+
+- Detailed change bullets were not supplied; see the summary above.
+
+### Git Commits
+
+| Hash | Message |
+|------|---------|
+| `be1e432` | (see git log) |
+| `41e99fe` | (see git log) |
+
+### Testing
+
+- Validation was not recorded for this session.
+
+### Status
+
+[OK] **Completed**
+
+### Next Steps
+
+- None - task complete

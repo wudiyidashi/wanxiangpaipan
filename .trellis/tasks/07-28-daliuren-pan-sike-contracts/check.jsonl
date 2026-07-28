@@ -1,1 +1,12 @@
-{"_example": "Fill with {\"file\": \"<path>\", \"reason\": \"<why>\"}. Put spec/research files only — no code paths. Run `python .trellis/scripts/get_context.py --mode packages` to list available specs. Delete this line once real entries are added."}
+{"file":".trellis/tasks/07-28-daliuren-classics-audit/prd.md","reason":"复核 C03 满足父任务古籍、完整性、历史和跨层验收"}
+{"file":".trellis/tasks/07-28-daliuren-classics-audit/research/task-decomposition.md","reason":"防止越界实现 C04 神将坐标或 C05 九宗门"}
+{"file":".trellis/tasks/07-28-daliuren-classics-audit/research/core-pan-audit.md","reason":"逐项复核已确认的伪盘、伪伏吟、伪贵人和注释缺陷"}
+{"file":".trellis/tasks/archive/2026-07/07-28-daliuren-classics-evidence/research/guide-foundation-cases-independent-review.md","reason":"核对天盘四课古籍声明和独立 fixture 来源"}
+{"file":".trellis/tasks/archive/2026-07/07-28-daliuren-classics-evidence/research/guide-shehai-case-independent-review.md","reason":"核对第三张独立指南课例未被生产算法污染"}
+{"file":".trellis/spec/domain/index.md","reason":"检查服务分层和共享逻辑所有权"}
+{"file":".trellis/spec/domain/daliuren-pan-engine.md","reason":"检查双射、四课、寄宫 pending、三传不变和 JSON 兼容"}
+{"file":".trellis/spec/domain/daliuren-rule-contract.md","reason":"检查 v3 发布、v2 mismatch、snapshot/evidence 不升版"}
+{"file":".trellis/spec/guides/cross-layer-thinking-guide.md","reason":"检查服务、模型、系统、测试和历史结果的数据流完整性"}
+{"file":".trellis/spec/guides/code-reuse-thinking-guide.md","reason":"检查没有复制验证逻辑或制造 C04 坐标耦合"}
+{"file":".trellis/tasks/07-28-daliuren-pan-sike-contracts/prd.md","reason":"逐项验证可观察验收标准与任务外边界"}
+{"file":".trellis/tasks/07-28-daliuren-pan-sike-contracts/design.md","reason":"检查实现遵守严格 API、resolver、版本和 rollback 设计"}

@@ -1,1 +1,12 @@
-{"_example": "Fill with {\"file\": \"<path>\", \"reason\": \"<why>\"}. Put spec/research files only — no code paths. Run `python .trellis/scripts/get_context.py --mode packages` to list available specs. Delete this line once real entries are added."}
+{"file":".trellis/tasks/07-28-daliuren-classics-audit/prd.md","reason":"父任务一次性交付、证据等级、历史兼容与 C03/C04/C05 边界"}
+{"file":".trellis/tasks/07-28-daliuren-classics-audit/research/task-decomposition.md","reason":"C03 责任范围、依赖和独立验收"}
+{"file":".trellis/tasks/07-28-daliuren-classics-audit/research/core-pan-audit.md","reason":"天盘非法输入、伪伏反吟、四课乘神和模型注释的代码证据"}
+{"file":".trellis/tasks/archive/2026-07/07-28-daliuren-classics-evidence/research/guide-foundation-cases-independent-review.md","reason":"指南 PDF 6 天盘四课规则与两张独立完整盘"}
+{"file":".trellis/tasks/archive/2026-07/07-28-daliuren-classics-evidence/research/guide-shehai-case-independent-review.md","reason":"第三张庚寅日指南独立手排盘及 fixture 边界"}
+{"file":".trellis/spec/domain/index.md","reason":"领域纯服务和大六壬模块所有权"}
+{"file":".trellis/spec/domain/daliuren-pan-engine.md","reason":"寄宫、四课、九宗门和 JSON 兼容的当前锁定口径"}
+{"file":".trellis/spec/domain/daliuren-rule-contract.md","reason":"pan 行为升版、旧盘兼容和 snapshot 不改义合同"}
+{"file":".trellis/spec/guides/cross-layer-thinking-guide.md","reason":"严格 map/resolver 从服务到模型、系统、UI 和历史读取的数据流"}
+{"file":".trellis/spec/guides/code-reuse-thinking-guide.md","reason":"复用唯一双射校验并避免各服务复制 fallback"}
+{"file":".trellis/tasks/07-28-daliuren-pan-sike-contracts/research/pan-sike-contract-audit.md","reason":"C03 缺陷、调用方、证据、版本评估和范围护栏"}
+{"file":".trellis/tasks/07-28-daliuren-pan-sike-contracts/design.md","reason":"冻结严格双射、乘神 resolver、兼容和测试设计"}
