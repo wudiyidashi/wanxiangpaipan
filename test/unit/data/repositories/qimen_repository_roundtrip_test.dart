@@ -6,6 +6,9 @@ import 'package:wanxiang_paipan/divination_systems/qimen/models/qimen_result.dar
 import 'package:wanxiang_paipan/divination_systems/qimen/qimen_system.dart';
 import 'package:wanxiang_paipan/domain/divination_registry.dart';
 import 'package:wanxiang_paipan/domain/divination_system.dart';
+import 'package:wanxiang_paipan/domain/services/qimen/analysis/models/qimen_analysis_models.dart';
+import 'package:wanxiang_paipan/domain/services/qimen/analysis/qimen_analyzer.dart';
+import 'package:wanxiang_paipan/domain/services/qimen/analysis/rules/qimen_rule_catalog.dart';
 
 import '../../services/qimen/fixtures/qimen_golden_fixtures.dart';
 import 'divination_repository_test.dart' show MockSecureStorage;
@@ -44,6 +47,14 @@ void main() {
       final loaded = await repository.getRecordById(result.id) as QimenResult?;
       expect(loaded, isNotNull);
       expect(loaded!.toJson(), result.toJson());
+
+      final analysis = QimenAnalyzer.analyze(
+        loaded,
+        ruleSetVersion: QimenRuleCatalog.v1,
+      );
+      expect(analysis.status, QimenAnalysisStatus.complete);
+      expect(analysis.inputResultId, loaded.id);
+      expect(loaded.toJson(), isNot(contains('analysis')));
 
       final bySystem =
           await repository.getRecordsBySystemType(DivinationType.qiMen);

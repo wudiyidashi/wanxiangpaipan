@@ -3,7 +3,7 @@
   "name": "qimen-analysis-engine",
   "title": "奇门遁甲规则分析引擎",
   "description": "实现奇门事实标签、保守裁决、应期候选及规则来源追踪",
-  "status": "planning",
+  "status": "in_progress",
   "dev_type": null,
   "scope": null,
   "package": null,

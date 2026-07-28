@@ -8,6 +8,7 @@
 | [daliuren-pan-engine.md](daliuren-pan-engine.md) | 大六壬排盘引擎：寄宫口径（非禄位）、四课方向语义、九宗门三传取法锁定口径、黄金课例约定 |
 | [daliuren-analysis-engine.md](daliuren-analysis-engine.md) | 大六壬断课分析引擎：共享裁决模型边界、15 格名定性表、十行决策表首行命中、应期候选衔接约定 |
 | [qimen-pan-engine.md](qimen-pan-engine.md) | 奇门遁甲排盘引擎：时间基准、三种定局策略、九宫阶段、寄宫/暗干与黄金盘约定 |
+| [qimen-analysis-engine.md](qimen-analysis-engine.md) | 奇门遁甲分析引擎：只读事实、来源目录、冲突/四值裁决、应期、证据与历史兼容合同 |
 
 ## 通用约定（来自 CLAUDE.md，此处仅索引）
 

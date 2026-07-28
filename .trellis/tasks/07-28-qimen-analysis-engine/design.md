@@ -153,9 +153,9 @@ Every row is a versioned focus rule. Where a direct source does not uniquely pre
 Conflict resolution is lexicographic and declarative:
 
 1. Input/schema integrity precedes all interpretation.
-2. A fact attached to `self` or `matter` precedes an otherwise equal secondary/global fact; primary versus hosted status remains explicit.
-3. Conflict tier order is `decisive -> conditional -> corroborating -> contextual`.
-4. An explicit paired resolver (rescue, suppression, or incompatibility) in the catalog applies before general precedence.
+2. An explicit paired resolver (rescue, suppression, or incompatibility) in the catalog applies before general precedence.
+3. A fact attached to `self` or `matter` precedes an otherwise equal secondary/global fact; primary versus hosted status remains explicit.
+4. Conflict tier order is `decisive -> conditional -> corroborating -> contextual`.
 5. Opposed facts at the same target and tier with no resolver remain unresolved; neither is deleted and the verdict table receives an explicit conflict flag.
 
 This policy never sums, averages, counts, or converts source quality into outcome weight.
