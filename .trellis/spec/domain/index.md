@@ -7,6 +7,7 @@
 | [liuyao-analysis-engine.md](liuyao-analysis-engine.md) | 六爻断卦分析引擎：规则基准（增删卜易）、派生数据不落库、可空参数扩展、应期日历匹配约定 |
 | [daliuren-pan-engine.md](daliuren-pan-engine.md) | 大六壬排盘引擎：寄宫口径（非禄位）、四课方向语义、九宗门三传取法锁定口径、黄金课例约定 |
 | [daliuren-analysis-engine.md](daliuren-analysis-engine.md) | 大六壬断课分析引擎：共享裁决模型边界、15 格名定性表、十行决策表首行命中、应期候选衔接约定 |
+| [daliuren-rule-contract.md](daliuren-rule-contract.md) | 大六壬稳定规则 ID、证据等级、盘面/分析版本、历史兼容与起课重放快照契约 |
 | [qimen-pan-engine.md](qimen-pan-engine.md) | 奇门遁甲排盘引擎：时间基准、三种定局策略、九宫阶段、寄宫/暗干与黄金盘约定 |
 | [qimen-analysis-engine.md](qimen-analysis-engine.md) | 奇门遁甲分析引擎：只读事实、来源目录、冲突/四值裁决、应期、证据与历史兼容合同 |
 

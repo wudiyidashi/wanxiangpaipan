@@ -7,6 +7,7 @@ import 'tianpan.dart';
 import 'shen_jiang_config.dart';
 import 'shen_sha.dart';
 import 'pan_params.dart';
+import 'dlr_rule_contract.dart';
 
 part 'daliuren_result.freezed.dart';
 part 'daliuren_result.g.dart';
@@ -55,6 +56,18 @@ class DaLiuRenResult with _$DaLiuRenResult implements DivinationResult {
 
     /// 排盘参数
     required DaLiuRenPanParams panParams,
+
+    /// 生成本盘的排盘规则集版本；旧 JSON 明确保持未知。
+    @Default(DlrRuleSetVersions.legacyUnknown) String panRuleSetVersion,
+
+    /// 本盘引用的古籍证据目录版本；旧 JSON 明确保持未知。
+    @Default(DlrRuleSetVersions.legacyUnknown) String evidenceCatalogVersion,
+
+    /// 原始起课输入的规范化快照；旧盘或不可恢复记录为 null。
+    DlrCastInputSnapshot? castInputSnapshot,
+
+    /// 显式重排来源盘 ID；C15 再实现关联保存流程。
+    String? recastFromId,
 
     /// 占问ID（加密存储引用）
     @Default('') String questionId,

@@ -5,6 +5,7 @@ library;
 
 export 'chuan.dart';
 export 'daliuren_result.dart';
+export 'dlr_rule_contract.dart';
 export 'ke.dart';
 export 'pan_params.dart';
 export 'san_chuan.dart';

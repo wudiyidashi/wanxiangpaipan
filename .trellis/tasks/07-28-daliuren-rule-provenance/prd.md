@@ -24,14 +24,14 @@
 
 ## Acceptance Criteria
 
-- [ ] typed 规则引用拒绝非法 `ruleId`、空版本和不合法的古籍证据组合。
-- [ ] 每个现有大六壬分析标签与课格生产分支都有稳定 rule ID；同一规则仅改中文词后 ID 不变。
-- [ ] 新 `DaLiuRenResult` JSON round-trip 保留版本、snapshot 与 `recastFromId`；旧 JSON fixture 无需迁移即可读取并明确为 `legacyUnknown`。
-- [ ] 时间、报数、电脑随机、手动四柱四种起课均保存规范化 snapshot；实际随机/报数时支可回读，缺失条件列入 `missingFields`。
-- [ ] 新盘写当前版本；旧盘、当前盘和未知未来版本分别得到确定的 analysis compatibility 状态。
-- [ ] 分析报告声明自身版本和来源盘版本，且不把 legacy 盘静默标成 current。
-- [ ] C00 中的 C/D 规则不能由 runtime ref 冒充 A/B；project heuristic 与 classic rule 可机器区分。
-- [ ] Freezed/JSON 生成物同步，定向测试、共享分析模型回归、`flutter analyze` 与全量 `flutter test` 通过。
+- [x] typed 规则引用拒绝非法 `ruleId`、空版本和不合法的古籍证据组合。
+- [x] 每个现有大六壬分析标签与课格生产分支都有稳定 rule ID；同一规则仅改中文词后 ID 不变。
+- [x] 新 `DaLiuRenResult` JSON round-trip 保留版本、snapshot 与 `recastFromId`；旧 JSON fixture 无需迁移即可读取并明确为 `legacyUnknown`。
+- [x] 时间、报数、电脑随机、手动四柱四种起课均保存规范化 snapshot；实际随机/报数时支可回读，缺失条件列入 `missingFields`。
+- [x] 新盘写当前版本；旧盘、当前盘和未知未来版本分别得到确定的 analysis compatibility 状态。
+- [x] 分析报告声明自身版本和来源盘版本，且不把 legacy 盘静默标成 current。
+- [x] C00 中的 C/D 规则不能由 runtime ref 冒充 A/B；project heuristic 与 classic rule 可机器区分。
+- [x] Freezed/JSON 生成物同步，定向测试、共享分析模型回归、`flutter analyze` 与全量 `flutter test` 通过。
 
 ## Out Of Scope
 

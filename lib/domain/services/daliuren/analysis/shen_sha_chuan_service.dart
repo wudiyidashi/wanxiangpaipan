@@ -1,5 +1,6 @@
 import '../../../../divination_systems/daliuren/daliuren_constants.dart';
 import '../../../../divination_systems/daliuren/models/chuan.dart';
+import '../../../../divination_systems/daliuren/models/dlr_rule_contract.dart';
 import '../../../../divination_systems/daliuren/models/san_chuan.dart';
 import '../../../../divination_systems/daliuren/models/shen_sha.dart';
 import '../../shared/analysis/models/polarity.dart';
@@ -18,8 +19,7 @@ class ShenShaChuanService {
     required ShenShaList shenShaList,
   }) {
     final tags = <ChuanPosition, List<DlrAnalysisTag>>{
-      for (final position in ChuanPosition.values)
-        position: <DlrAnalysisTag>[],
+      for (final position in ChuanPosition.values) position: <DlrAnalysisTag>[],
     };
 
     for (final shenSha in shenShaList.allShenSha) {
@@ -35,6 +35,11 @@ class ShenShaChuanService {
         final isYiMaFaYong =
             shenSha.name == '驿马' && chuan.position == ChuanPosition.chu;
         tags[chuan.position]!.add(DlrAnalysisTag(
+          ruleRef: DlrRuleRef.project(
+            isYiMaFaYong
+                ? DlrProjectRuleIds.travellingHorseInitial
+                : DlrProjectRuleIds.shenShaOnTransmission,
+          ),
           term: isYiMaFaYong
               ? '驿马发用'
               : '${shenSha.name}临${chuan.position.displayName}',

@@ -5,6 +5,7 @@ import 'package:wanxiang_paipan/ai/service/ai_analysis_service.dart';
 import 'package:wanxiang_paipan/divination_systems/daliuren/daliuren_constants.dart';
 import 'package:wanxiang_paipan/divination_systems/daliuren/models/chuan.dart';
 import 'package:wanxiang_paipan/divination_systems/daliuren/models/daliuren_result.dart';
+import 'package:wanxiang_paipan/divination_systems/daliuren/models/dlr_rule_contract.dart';
 import 'package:wanxiang_paipan/divination_systems/daliuren/models/pan_params.dart';
 import 'package:wanxiang_paipan/divination_systems/daliuren/models/tianpan.dart';
 import 'package:wanxiang_paipan/divination_systems/daliuren/ui/daliuren_result_screen.dart';
@@ -117,8 +118,12 @@ void main() {
     });
 
     testWidgets('未决条件 chips 与推理链展开', (tester) async {
-      const report = DaLiuRenAnalysisReport(
+      final report = DaLiuRenAnalysisReport(
+        analysisRuleSetVersion: DlrRuleSetVersions.analysisCurrent,
+        sourcePanRuleSetVersion: DlrRuleSetVersions.panCurrent,
+        compatibilityStatus: DlrAnalysisCompatibility.current,
         keGe: KeGeInfo(
+          ruleRef: DlrRuleRef.project(DlrProjectRuleIds.keGeChongShen),
           keTypeName: '贼克',
           geName: '重审',
           polarity: Polarity.neutral,
@@ -151,7 +156,7 @@ void main() {
         ),
         verdictSummary: '课体贼克（重审），断曰：难成。',
       );
-      await tester.pumpWidget(_wrap(const DaLiuRenKeGeCard(report: report)));
+      await tester.pumpWidget(_wrap(DaLiuRenKeGeCard(report: report)));
 
       expect(find.text('未决条件'), findsOneWidget);
       expect(find.text('待发用填实（午）'), findsOneWidget);
@@ -166,15 +171,19 @@ void main() {
     });
 
     testWidgets('judgment 为 null 时只展示格名与基调', (tester) async {
-      const report = DaLiuRenAnalysisReport(
+      final report = DaLiuRenAnalysisReport(
+        analysisRuleSetVersion: DlrRuleSetVersions.analysisCurrent,
+        sourcePanRuleSetVersion: DlrRuleSetVersions.panCurrent,
+        compatibilityStatus: DlrAnalysisCompatibility.current,
         keGe: KeGeInfo(
+          ruleRef: DlrRuleRef.project(DlrProjectRuleIds.keGeZhiYi),
           keTypeName: '比用',
           geName: '知一',
           polarity: Polarity.neutral,
           reason: '事在同类，择亲近者而就',
         ),
       );
-      await tester.pumpWidget(_wrap(const DaLiuRenKeGeCard(report: report)));
+      await tester.pumpWidget(_wrap(DaLiuRenKeGeCard(report: report)));
 
       expect(find.text('知一'), findsOneWidget);
       expect(find.text('推理链'), findsNothing);
@@ -184,8 +193,7 @@ void main() {
 
   group('DaLiuRenSanChuanSection 徽标与详析弹层', () {
     testWidgets('无 report 时行为不变（无徽标提示）', (tester) async {
-      await tester
-          .pumpWidget(_wrap(DaLiuRenSanChuanSection(result: resultK)));
+      await tester.pumpWidget(_wrap(DaLiuRenSanChuanSection(result: resultK)));
       expect(find.text('点击传柱查看该传详析'), findsNothing);
     });
 
@@ -223,7 +231,8 @@ void main() {
       // 弹层标题：初传 {支}（{六亲}·乘{天将}）
       final chu = resultK.sanChuan.chuChuan;
       expect(
-        find.textContaining('初传 ${chu.diZhi}（${chu.liuQin}·乘${chu.chengShenName}）'),
+        find.textContaining(
+            '初传 ${chu.diZhi}（${chu.liuQin}·乘${chu.chengShenName}）'),
         findsOneWidget,
       );
       // 每传至少有天将标签 → 分类标题出现

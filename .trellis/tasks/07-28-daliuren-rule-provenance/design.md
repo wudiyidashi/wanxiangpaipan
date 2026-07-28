@@ -14,15 +14,22 @@ enum DlrEvidenceLevel { a, b, c, d }
 enum DlrReplayStatus { complete, incomplete, legacyUnknown }
 enum DlrAnalysisCompatibility { current, legacyUnknown, versionMismatch }
 
-@freezed
-class DlrRuleRef with _$DlrRuleRef {
-  const factory DlrRuleRef({
+class DlrRuleRef {
+  factory DlrRuleRef({
     required String ruleId,
     required String ruleSetVersion,
     required DlrRuleKind kind,
     required DlrEvidenceLevel evidenceLevel,
-    @Default(<String>[]) List<String> sourceIds,
-  }) = _DlrRuleRef;
+    List<String> sourceIds = const <String>[],
+    bool executableApproved = false,
+  });
+
+  factory DlrRuleRef.project(
+    String ruleId, {
+    String ruleSetVersion = DlrRuleSetVersions.analysisCurrent,
+  });
+
+  bool get isExecutable;
 }
 
 @freezed
@@ -64,10 +71,12 @@ String? recastFromId,
 ### 3.1 Rule identity
 
 - classic rule ID 必须来自 C00，例如 `dlr.rule.kejing.002`。
-- project rule ID 使用独立命名域 `dlr.project.analysis.*`，不得占用 `dlr.rule.*` 冒充古籍条目。
+- project analysis rule ID 使用 `dlr.project.analysis.*`；project pan rule ID 使用 `dlr.project.pan.*`。两者都不得占用 `dlr.rule.*` 冒充古籍条目。
 - display-only ID 使用 `dlr.display.*`，不能进入裁决条件。
 - `term`、`reason`、顺序和本地化文案均不是身份字段。
-- classic A/B ref 必须有 C00 source ID；classic C/D 可以保存 locator/source，但不能被标成 executable。运行时模型不自行提升证据等级。
+- classic A/B ref 必须有 C00 source ID；classic C/D 可以保存 locator/source，但不能被标成 executable。`adopted` 或 A/B 证据本身都不等于执行批准。
+- `executableApproved` 只镜像 C00 classic 条目的批准位。只有 C00 当前明确批准的 A/B rule ID 可以设为 `true`；project/display 必须保持 `false`，不得由运行时自行提升。
+- `isExecutable` 对 classic 读取批准位、对 project 为真、对 display 为假。具体消费者仍必须同时校验 kind 与自己支持的精确规则集版本。
 
 ### 3.2 Result JSON
 
@@ -97,7 +106,7 @@ String? recastFromId,
 
 ### 3.4 Analysis compatibility
 
-- `sourcePanRuleSetVersion == panCurrent` -> `current`。
+- `sourcePanRuleSetVersion == panCurrent`（逐字精确相等）-> `current`；不得 trim 或大小写归一化版本字符串。
 - `legacyUnknown` 或 snapshot 为空的旧结果 -> `legacyUnknown`。
 - 非空但不等于当前已支持版本 -> `versionMismatch`。
 - 报告仍可为旧盘提供兼容 v1 信息，但必须带状态；C15/C16 决定是否展示或限制传统 v2 裁决。
@@ -107,13 +116,14 @@ String? recastFromId,
 | 条件 | 行为 |
 |---|---|
 | `ruleId` 不符合稳定命名域 | 构造/validator 抛 `ArgumentError` |
-| 空 `ruleSetVersion` | 拒绝构造 |
+| 空或带首尾空白的 `ruleSetVersion` | 拒绝构造 |
 | classic A/B 无 source ID | 拒绝构造 |
 | project rule 声称 A/B classic evidence | 拒绝构造或测试失败 |
+| classic C/D、未在 C00 批准集合中的 ID 或非 classic 设置 `executableApproved=true` | 拒绝构造 |
 | snapshot 包含非 JSON-safe 值 | capture 失败，不静默 stringify |
 | snapshot 输入 Map 后续被调用方修改 | 已保存快照不变 |
 | 旧 JSON 缺版本 | 正常读取为 `legacyUnknown` |
-| 未来未知版本 | 保留原串并标 `versionMismatch` |
+| 未来、大小写不同或带空白的非精确版本 | 保留原串并标 `versionMismatch` |
 | manual + auto month general 缺对应 civil time | snapshot=`incomplete`，列出 `manualCivilDateTime` |
 | computer 缺随机种子 | 保存实际 resolved 时支，并列出 `randomSeed`；不补造种子 |
 
@@ -149,7 +159,8 @@ final isReturnToSelf = tag.term == '传归生身';
 ```dart
 @Default(DlrRuleSetVersions.legacyUnknown) String panRuleSetVersion;
 final isReturnToSelf =
-    tag.ruleRef.ruleId == DlrProjectRuleIds.transmissionReturnsToSelf;
+    tag.ruleRef.ruleId ==
+        DlrProjectRuleIds.transmissionReturnsToGenerateSelf;
 ```
 
 ## Rollback

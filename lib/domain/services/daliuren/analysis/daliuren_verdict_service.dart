@@ -1,4 +1,5 @@
 import '../../../../divination_systems/daliuren/models/chuan.dart';
+import '../../../../divination_systems/daliuren/models/dlr_rule_contract.dart';
 import '../../shared/analysis/models/polarity.dart';
 import '../../shared/analysis/models/verdict_models.dart';
 import 'models/daliuren_analysis_models.dart';
@@ -33,7 +34,11 @@ class DaLiuRenVerdictService {
       ...chuanTags.values.expand((tags) => tags),
       ...juTags,
     ];
-    final terms = allTags.map((t) => t.term).toSet();
+    final executableTags = allTags
+        .where((tag) => _isCurrentProjectRule(tag.ruleRef))
+        .toList(growable: false);
+    final ruleIds = executableTags.map((tag) => tag.ruleRef.ruleId).toSet();
+    final executableKeGe = _isCurrentProjectRule(keGe.ruleRef);
 
     // ── 悬置条件收集（先于决策表）──
     var conditions = <VerdictCondition>[];
@@ -54,58 +59,85 @@ class DaLiuRenVerdictService {
     // 中传空不单独成悬置（只留标签）
     final hasSuspend = conditions.isNotEmpty;
 
-    final chuanGuiKeShen = terms.contains('传归克身');
-    final chuanGuiShengShen = terms.contains('传归生身');
-    final ganShangKeShen = terms.contains('干上克身');
-    final faYongKeShen = terms.contains('发用克身');
-    final diKeChuanTui = terms.contains('递克传退');
-    final diShengChuanJin = terms.contains('递生传进');
+    final chuanGuiKeShen = ruleIds.contains(
+      DlrProjectRuleIds.transmissionReturnsToControlSelf,
+    );
+    final chuanGuiShengShen = ruleIds.contains(
+      DlrProjectRuleIds.transmissionReturnsToGenerateSelf,
+    );
+    final ganShangKeShen =
+        ruleIds.contains(DlrProjectRuleIds.ganAboveControlsSelf);
+    final faYongKeShen = ruleIds.contains(
+      DlrProjectRuleIds.initialTransmissionControlsSelf,
+    );
+    final diKeChuanTui = ruleIds.contains(DlrProjectRuleIds.progressiveControl);
+    final diShengChuanJin =
+        ruleIds.contains(DlrProjectRuleIds.progressiveGeneration);
     final hasKeShenTag = chuanGuiKeShen || ganShangKeShen || faYongKeShen;
-    final hasXiongTag = keGe.polarity == Polarity.xiong ||
-        allTags.any((t) => t.polarity == Polarity.xiong);
+    final hasXiongTag = (executableKeGe && keGe.polarity == Polarity.xiong) ||
+        executableTags.any((tag) => tag.polarity == Polarity.xiong);
 
     // ── 决策表（自上而下首行命中）──
     final VerdictTrend trend;
     String? nuance;
     final String rule;
-    final participatingTerms = <String>{};
+    final participatingRuleIds = <String>{};
 
     if (chuKongWang && moKongWang) {
       // 1. 初传空 且 末传空 → 难成（首尾俱空，hasRescue=false）
       (trend, nuance, rule) = (VerdictTrend.nanCheng, '首尾俱空，事难成实', '首尾俱空');
-      conditions = conditions
-          .map((c) => c.copyWith(hasRescue: false))
-          .toList();
+      conditions = conditions.map((c) => c.copyWith(hasRescue: false)).toList();
     } else if (chuanGuiKeShen && ganShangKeShen) {
       // 2. 传归克身 且 干上克身 → 难成（内外交攻）
       (trend, nuance, rule) = (VerdictTrend.nanCheng, '内外交攻', '内外交攻');
-      participatingTerms.addAll(['传归克身', '干上克身']);
-    } else if (diKeChuanTui && keGe.polarity == Polarity.xiong) {
+      participatingRuleIds.addAll(<String>{
+        DlrProjectRuleIds.transmissionReturnsToControlSelf,
+        DlrProjectRuleIds.ganAboveControlsSelf,
+      });
+    } else if (diKeChuanTui &&
+        executableKeGe &&
+        keGe.polarity == Polarity.xiong) {
       // 3. 递克传退 且 课格凶 → 难成
       (trend, nuance, rule) = (VerdictTrend.nanCheng, null, '递克传退而课格凶');
-      participatingTerms.add('递克传退');
+      participatingRuleIds.add(DlrProjectRuleIds.progressiveControl);
     } else if (chuanGuiShengShen && !hasSuspend) {
       // 4. 传归生身 且 无悬置 → 可成
-      nuance = (keGe.geName == '涉害' || keGe.geName == '重审') ? '先难后成' : null;
+      nuance = (executableKeGe &&
+              (keGe.ruleRef.ruleId == DlrProjectRuleIds.keGeSheHai ||
+                  keGe.ruleRef.ruleId == DlrProjectRuleIds.keGeChongShen))
+          ? '先难后成'
+          : null;
       (trend, rule) = (VerdictTrend.keCheng, '传归生身而无悬置');
-      participatingTerms.add('传归生身');
+      participatingRuleIds.add(
+        DlrProjectRuleIds.transmissionReturnsToGenerateSelf,
+      );
     } else if (chuanGuiShengShen && hasSuspend) {
       // 5. 传归生身 且 有悬置 → 待条件
       (trend, nuance, rule) = (VerdictTrend.daiTiaoJian, null, '传归生身而有悬置');
-      participatingTerms.add('传归生身');
+      participatingRuleIds.add(
+        DlrProjectRuleIds.transmissionReturnsToGenerateSelf,
+      );
     } else if (diShengChuanJin && !hasSuspend && !hasKeShenTag) {
       // 6. 递生传进 且 无悬置 且 无克身标签 → 可成
       (trend, nuance, rule) = (VerdictTrend.keCheng, null, '递生传进而无阻');
-      participatingTerms.add('递生传进');
+      participatingRuleIds.add(DlrProjectRuleIds.progressiveGeneration);
     } else if (hasSuspend) {
       // 7. 有悬置 → 待条件
       (trend, nuance, rule) = (VerdictTrend.daiTiaoJian, null, '空亡悬置未决');
     } else if (chuanGuiKeShen || faYongKeShen) {
       // 8. 传归克身 或 发用克身 → 难成
       (trend, nuance, rule) = (VerdictTrend.nanCheng, null, '克身无解');
-      if (chuanGuiKeShen) participatingTerms.add('传归克身');
-      if (faYongKeShen) participatingTerms.add('发用克身');
-    } else if (keGe.polarity == Polarity.ji && !hasXiongTag) {
+      if (chuanGuiKeShen) {
+        participatingRuleIds.add(
+          DlrProjectRuleIds.transmissionReturnsToControlSelf,
+        );
+      }
+      if (faYongKeShen) {
+        participatingRuleIds.add(
+          DlrProjectRuleIds.initialTransmissionControlsSelf,
+        );
+      }
+    } else if (executableKeGe && keGe.polarity == Polarity.ji && !hasXiongTag) {
       // 9. 课格 ji 且 无任何 xiong 标签 → 可成
       (trend, nuance, rule) = (VerdictTrend.keCheng, null, '课格吉而无凶象');
     } else {
@@ -125,7 +157,9 @@ class DaLiuRenVerdictService {
         reason: keGe.reason,
         source: _keGeSource,
       ),
-      for (final tag in allTags.where((t) => participatingTerms.contains(t.term)))
+      for (final tag in executableTags.where(
+        (tag) => participatingRuleIds.contains(tag.ruleRef.ruleId),
+      ))
         VerdictFactor(
           rule: tag.term,
           effect: switch (tag.polarity) {
@@ -179,4 +213,9 @@ class DaLiuRenVerdictService {
         '${nuance == null ? '' : '$nuance。'}'
         '${condText.isEmpty ? '' : '未决条件：$condText。'}';
   }
+
+  static bool _isCurrentProjectRule(DlrRuleRef ruleRef) =>
+      ruleRef.isExecutable &&
+      ruleRef.kind == DlrRuleKind.project &&
+      ruleRef.ruleSetVersion == DlrRuleSetVersions.analysisCurrent;
 }

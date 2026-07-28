@@ -3,6 +3,7 @@ import 'package:wanxiang_paipan/divination_systems/daliuren/daliuren_constants.d
 import 'package:wanxiang_paipan/divination_systems/daliuren/daliuren_system.dart';
 import 'package:wanxiang_paipan/divination_systems/daliuren/models/chuan.dart';
 import 'package:wanxiang_paipan/divination_systems/daliuren/models/daliuren_result.dart';
+import 'package:wanxiang_paipan/divination_systems/daliuren/models/dlr_rule_contract.dart';
 import 'package:wanxiang_paipan/divination_systems/daliuren/models/ke.dart';
 import 'package:wanxiang_paipan/divination_systems/daliuren/models/pan_params.dart';
 import 'package:wanxiang_paipan/divination_systems/daliuren/models/san_chuan.dart';
@@ -281,6 +282,138 @@ void main() {
         expect(
             dlr.shenJiangConfig.getShenJiangByDiZhi('酉'), ShenJiang.tianKong);
         expect(dlr.shenJiangConfig.getShenJiangByDiZhi('戌'), ShenJiang.baiHu);
+      });
+
+      test('时间起课只保存白名单参数并深复制 caller input', () async {
+        final castTime = DateTime(2026, 4, 18, 22, 20);
+        final params = <String, dynamic>{'dayNightMode': 'day'};
+        final input = <String, dynamic>{
+          'question': '不得进入结果快照',
+          'extra': <String, dynamic>{'private': true},
+          'params': params,
+        };
+
+        final result = await system.cast(
+          method: CastMethod.time,
+          input: input,
+          castTime: castTime,
+        ) as DaLiuRenResult;
+        params['dayNightMode'] = 'night';
+        input['lateMutation'] = true;
+
+        final snapshot = result.castInputSnapshot!;
+        final savedParams =
+            snapshot.normalizedInput['params'] as Map<String, dynamic>;
+        expect(result.panRuleSetVersion, DlrRuleSetVersions.panCurrent);
+        expect(
+          result.evidenceCatalogVersion,
+          DlrRuleSetVersions.evidenceCatalog,
+        );
+        expect(snapshot.castMethod, CastMethod.time);
+        expect(snapshot.castTime, castTime);
+        expect(snapshot.utcOffsetMinutes, castTime.timeZoneOffset.inMinutes);
+        expect(snapshot.replayStatus, DlrReplayStatus.complete);
+        expect(snapshot.missingFields, isEmpty);
+        expect(savedParams['dayNightMode'], 'day');
+        expect(
+          snapshot.normalizedInput.keys,
+          unorderedEquals(<String>['params']),
+        );
+      });
+
+      test('报数起课保存原数与实际解析时支、时柱', () async {
+        final result = await system.cast(
+          method: CastMethod.reportNumber,
+          input: const <String, dynamic>{
+            'number': 13,
+            'question': '不得进入结果快照',
+          },
+          castTime: DateTime(2026, 4, 18, 22, 20),
+        ) as DaLiuRenResult;
+
+        final snapshot = result.castInputSnapshot!;
+        expect(snapshot.castMethod, CastMethod.reportNumber);
+        expect(snapshot.replayStatus, DlrReplayStatus.complete);
+        expect(snapshot.normalizedInput['number'], 13);
+        expect(snapshot.normalizedInput['resolvedShiZhi'], '子');
+        expect(
+          snapshot.normalizedInput['resolvedHourGanZhi'],
+          result.lunarInfo.hourGanZhi,
+        );
+        expect(snapshot.normalizedInput, isNot(contains('question')));
+      });
+
+      test('电脑起课保存实际解析值但未消费 seed 时保持 incomplete', () async {
+        final result = await system.cast(
+          method: CastMethod.computer,
+          input: const <String, dynamic>{
+            'randomSeed': 42,
+            'question': '不得进入结果快照',
+          },
+          castTime: DateTime(2026, 4, 18, 22, 20),
+        ) as DaLiuRenResult;
+
+        final snapshot = result.castInputSnapshot!;
+        expect(snapshot.castMethod, CastMethod.computer);
+        expect(snapshot.replayStatus, DlrReplayStatus.incomplete);
+        expect(snapshot.missingFields, <String>['randomSeed']);
+        expect(
+          snapshot.normalizedInput['resolvedShiZhi'],
+          result.tianPan.shiZhi,
+        );
+        expect(
+          snapshot.normalizedInput['resolvedHourGanZhi'],
+          result.lunarInfo.hourGanZhi,
+        );
+        expect(snapshot.normalizedInput, isNot(contains('randomSeed')));
+        expect(snapshot.normalizedInput, isNot(contains('question')));
+      });
+
+      test('手动四柱显式月将可完整重放', () async {
+        final result = await system.cast(
+          method: CastMethod.manual,
+          input: const <String, dynamic>{
+            'yearGanZhi': '丙午',
+            'monthGanZhi': '壬辰',
+            'dayGanZhi': '壬戌',
+            'hourGanZhi': '辛亥',
+            'question': '不得进入结果快照',
+            'params': <String, dynamic>{
+              'monthGeneralMode': 'manual',
+              'manualMonthGeneral': '戌',
+            },
+          },
+          castTime: DateTime(2026, 4, 18, 22, 20),
+        ) as DaLiuRenResult;
+
+        final snapshot = result.castInputSnapshot!;
+        expect(snapshot.castMethod, CastMethod.manual);
+        expect(snapshot.replayStatus, DlrReplayStatus.complete);
+        expect(snapshot.missingFields, isEmpty);
+        expect(snapshot.normalizedInput['yearGanZhi'], '丙午');
+        expect(snapshot.normalizedInput['monthGanZhi'], '壬辰');
+        expect(snapshot.normalizedInput['dayGanZhi'], '壬戌');
+        expect(snapshot.normalizedInput['hourGanZhi'], '辛亥');
+        expect(snapshot.normalizedInput, isNot(contains('question')));
+      });
+
+      test('手动四柱自动月将缺对应 civil time 时明确 incomplete', () async {
+        final result = await system.cast(
+          method: CastMethod.manual,
+          input: const <String, dynamic>{
+            'yearGanZhi': '丙午',
+            'monthGanZhi': '壬辰',
+            'dayGanZhi': '壬戌',
+            'hourGanZhi': '辛亥',
+          },
+          castTime: DateTime(2026, 4, 18, 22, 20),
+        ) as DaLiuRenResult;
+
+        final snapshot = result.castInputSnapshot!;
+        expect(snapshot.replayStatus, DlrReplayStatus.incomplete);
+        expect(snapshot.missingFields, <String>['manualCivilDateTime']);
+        expect(
+            snapshot.normalizedInput, isNot(contains('manualCivilDateTime')));
       });
     });
 

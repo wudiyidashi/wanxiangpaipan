@@ -1,6 +1,7 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:wanxiang_paipan/divination_systems/daliuren/daliuren_constants.dart';
 import 'package:wanxiang_paipan/divination_systems/daliuren/models/daliuren_result.dart';
+import 'package:wanxiang_paipan/divination_systems/daliuren/models/dlr_rule_contract.dart';
 import 'package:wanxiang_paipan/divination_systems/daliuren/models/pan_params.dart';
 import 'package:wanxiang_paipan/divination_systems/daliuren/models/tianpan.dart';
 import 'package:wanxiang_paipan/domain/divination_system.dart';
@@ -145,6 +146,100 @@ void main() {
           expect(top[0].priority, lessThanOrEqualTo(top[1].priority));
         }
       }
+    });
+
+    test('报告声明 analysis/source pan 版本并区分三种 compatibility', () {
+      final legacy = buildResult(
+        riGan: '戊',
+        riZhi: '子',
+        s: 4,
+        kongWang: const ['午', '未'],
+      );
+      final currentSnapshot = DlrCastInputSnapshot.capture(
+        castMethod: CastMethod.time,
+        castTime: legacy.castTime,
+        utcOffsetMinutes: legacy.castTime.timeZoneOffset.inMinutes,
+        normalizedInput: const <String, dynamic>{
+          'params': <String, dynamic>{},
+        },
+        replayStatus: DlrReplayStatus.complete,
+      );
+      final current = legacy.copyWith(
+        panRuleSetVersion: DlrRuleSetVersions.panCurrent,
+        castInputSnapshot: currentSnapshot,
+      );
+      final currentWithoutSnapshot = legacy.copyWith(
+        panRuleSetVersion: DlrRuleSetVersions.panCurrent,
+      );
+      final future = legacy.copyWith(
+        panRuleSetVersion: 'daliuren-pan/99.0.0',
+      );
+
+      final legacyReport = DaLiuRenAnalyzer.analyze(legacy);
+      final currentReport = DaLiuRenAnalyzer.analyze(current);
+      final currentWithoutSnapshotReport =
+          DaLiuRenAnalyzer.analyze(currentWithoutSnapshot);
+      final futureReport = DaLiuRenAnalyzer.analyze(future);
+
+      expect(
+        currentReport.analysisRuleSetVersion,
+        DlrRuleSetVersions.analysisCurrent,
+      );
+      expect(
+        currentReport.sourcePanRuleSetVersion,
+        DlrRuleSetVersions.panCurrent,
+      );
+      expect(
+        currentReport.compatibilityStatus,
+        DlrAnalysisCompatibility.current,
+      );
+      expect(
+        legacyReport.compatibilityStatus,
+        DlrAnalysisCompatibility.legacyUnknown,
+      );
+      expect(
+        currentWithoutSnapshotReport.compatibilityStatus,
+        DlrAnalysisCompatibility.legacyUnknown,
+      );
+      expect(
+        futureReport.compatibilityStatus,
+        DlrAnalysisCompatibility.versionMismatch,
+      );
+    });
+
+    test('所有当前分析生产者都显式产出 project-v1 ruleRef', () {
+      final result = buildResult(
+        riGan: '戊',
+        riZhi: '子',
+        s: 4,
+        kongWang: const ['午', '未'],
+      );
+      final report = DaLiuRenAnalyzer.analyze(result);
+      final refs = <DlrRuleRef>[
+        report.keGe.ruleRef,
+        ...report.ganZhiTags.map((tag) => tag.ruleRef),
+        ...report.chuanTags.values
+            .expand((tags) => tags)
+            .map((tag) => tag.ruleRef),
+        ...report.juTags.map((tag) => tag.ruleRef),
+      ];
+
+      expect(refs, isNotEmpty);
+      expect(refs.every((ref) => ref.kind == DlrRuleKind.project), isTrue);
+      expect(
+        refs.every((ref) => ref.evidenceLevel == DlrEvidenceLevel.d),
+        isTrue,
+      );
+      expect(
+        refs.every(
+          (ref) => ref.ruleSetVersion == DlrRuleSetVersions.analysisCurrent,
+        ),
+        isTrue,
+      );
+      expect(
+        refs.every((ref) => ref.ruleId.startsWith('dlr.project.analysis.')),
+        isTrue,
+      );
     });
   });
 }

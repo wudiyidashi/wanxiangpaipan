@@ -11,6 +11,7 @@ import '../../domain/services/daliuren/shen_jiang_service.dart';
 import '../../domain/services/daliuren/shen_sha_service.dart';
 import '../../domain/services/daliuren/yue_jiang_service.dart';
 import 'models/daliuren_result.dart';
+import 'models/dlr_rule_contract.dart';
 import 'models/pan_params.dart';
 
 /// 大六壬排盘系统
@@ -181,10 +182,19 @@ class DaLiuRenSystem implements DivinationSystem {
     );
 
     // 8. 创建结果
+    final effectiveCastMethod = castMethodOverride ?? CastMethod.time;
+    final castInputSnapshot = _captureTimeDerivedInput(
+      castMethod: effectiveCastMethod,
+      castTime: castTime,
+      input: input,
+      panParams: panParams,
+      resolvedShiZhi: shiZhi,
+      resolvedHourGanZhi: hourGanZhi,
+    );
     return DaLiuRenResult(
       id: _generateId(),
       castTime: castTime,
-      castMethod: castMethodOverride ?? CastMethod.time,
+      castMethod: effectiveCastMethod,
       lunarInfo: lunarInfo,
       tianPan: tianPan,
       siKe: siKe,
@@ -192,6 +202,9 @@ class DaLiuRenSystem implements DivinationSystem {
       shenJiangConfig: shenJiangConfig,
       shenShaList: shenShaList,
       panParams: panParams,
+      panRuleSetVersion: DlrRuleSetVersions.panCurrent,
+      evidenceCatalogVersion: DlrRuleSetVersions.evidenceCatalog,
+      castInputSnapshot: castInputSnapshot,
     );
   }
 
@@ -308,6 +321,26 @@ class DaLiuRenSystem implements DivinationSystem {
     );
 
     // 创建结果
+    final manualAutoMonthGeneral =
+        panParams.monthGeneralMode == DaLiuRenMonthGeneralMode.auto;
+    final castInputSnapshot = DlrCastInputSnapshot.capture(
+      castMethod: CastMethod.manual,
+      castTime: castTime,
+      utcOffsetMinutes: castTime.timeZoneOffset.inMinutes,
+      normalizedInput: <String, dynamic>{
+        'yearGanZhi': pillars.yearGanZhi,
+        'monthGanZhi': pillars.monthGanZhi,
+        'dayGanZhi': pillars.dayGanZhi,
+        'hourGanZhi': pillars.hourGanZhi,
+        'params': panParams.toJson(),
+      },
+      replayStatus: manualAutoMonthGeneral
+          ? DlrReplayStatus.incomplete
+          : DlrReplayStatus.complete,
+      missingFields: manualAutoMonthGeneral
+          ? const <String>['manualCivilDateTime']
+          : const <String>[],
+    );
     return DaLiuRenResult(
       id: _generateId(),
       castTime: castTime,
@@ -319,6 +352,9 @@ class DaLiuRenSystem implements DivinationSystem {
       shenJiangConfig: shenJiangConfig,
       shenShaList: shenShaList,
       panParams: panParams,
+      panRuleSetVersion: DlrRuleSetVersions.panCurrent,
+      evidenceCatalogVersion: DlrRuleSetVersions.evidenceCatalog,
+      castInputSnapshot: castInputSnapshot,
     );
   }
 
@@ -498,6 +534,47 @@ class DaLiuRenSystem implements DivinationSystem {
     final hourGanIndex = ((dayGanIndex % 5) * 2 + shiZhiIndex) % 10;
     final hourGan = TianGanDiZhiService.getTianGanByIndex(hourGanIndex);
     return '$hourGan$shiZhi';
+  }
+
+  DlrCastInputSnapshot _captureTimeDerivedInput({
+    required CastMethod castMethod,
+    required DateTime castTime,
+    required Map<String, dynamic> input,
+    required DaLiuRenPanParams panParams,
+    required String resolvedShiZhi,
+    required String resolvedHourGanZhi,
+  }) {
+    final normalizedInput = <String, dynamic>{
+      'params': panParams.toJson(),
+    };
+    var replayStatus = DlrReplayStatus.complete;
+    var missingFields = const <String>[];
+
+    if (castMethod == CastMethod.reportNumber) {
+      normalizedInput.addAll(<String, dynamic>{
+        'number': input['number'] as int,
+        'resolvedShiZhi': resolvedShiZhi,
+        'resolvedHourGanZhi': resolvedHourGanZhi,
+      });
+    } else if (castMethod == CastMethod.computer) {
+      normalizedInput.addAll(<String, dynamic>{
+        'resolvedShiZhi': resolvedShiZhi,
+        'resolvedHourGanZhi': resolvedHourGanZhi,
+      });
+      replayStatus = DlrReplayStatus.incomplete;
+      missingFields = const <String>['randomSeed'];
+    } else if (castMethod != CastMethod.time) {
+      throw StateError('不支持为 ${castMethod.id} 构造时间派生快照');
+    }
+
+    return DlrCastInputSnapshot.capture(
+      castMethod: castMethod,
+      castTime: castTime,
+      utcOffsetMinutes: castTime.timeZoneOffset.inMinutes,
+      normalizedInput: normalizedInput,
+      replayStatus: replayStatus,
+      missingFields: missingFields,
+    );
   }
 }
 

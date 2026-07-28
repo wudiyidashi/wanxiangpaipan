@@ -21,6 +21,15 @@ _$DaLiuRenResultImpl _$$DaLiuRenResultImplFromJson(Map<String, dynamic> json) =>
           ShenShaList.fromJson(json['shenShaList'] as Map<String, dynamic>),
       panParams:
           DaLiuRenPanParams.fromJson(json['panParams'] as Map<String, dynamic>),
+      panRuleSetVersion: json['panRuleSetVersion'] as String? ??
+          DlrRuleSetVersions.legacyUnknown,
+      evidenceCatalogVersion: json['evidenceCatalogVersion'] as String? ??
+          DlrRuleSetVersions.legacyUnknown,
+      castInputSnapshot: json['castInputSnapshot'] == null
+          ? null
+          : DlrCastInputSnapshot.fromJson(
+              json['castInputSnapshot'] as Map<String, dynamic>),
+      recastFromId: json['recastFromId'] as String?,
       questionId: json['questionId'] as String? ?? '',
       detailId: json['detailId'] as String? ?? '',
       interpretationId: json['interpretationId'] as String? ?? '',
@@ -39,6 +48,10 @@ Map<String, dynamic> _$$DaLiuRenResultImplToJson(
       'shenJiangConfig': instance.shenJiangConfig.toJson(),
       'shenShaList': instance.shenShaList.toJson(),
       'panParams': instance.panParams.toJson(),
+      'panRuleSetVersion': instance.panRuleSetVersion,
+      'evidenceCatalogVersion': instance.evidenceCatalogVersion,
+      'castInputSnapshot': instance.castInputSnapshot?.toJson(),
+      'recastFromId': instance.recastFromId,
       'questionId': instance.questionId,
       'detailId': instance.detailId,
       'interpretationId': instance.interpretationId,

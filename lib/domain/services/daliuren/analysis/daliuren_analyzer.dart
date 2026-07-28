@@ -1,4 +1,5 @@
 import '../../../../divination_systems/daliuren/models/daliuren_result.dart';
+import '../../../../divination_systems/daliuren/models/dlr_rule_contract.dart';
 import 'chuan_analysis_service.dart';
 import 'daliuren_verdict_service.dart';
 import 'daliuren_ying_qi_service.dart';
@@ -68,6 +69,12 @@ class DaLiuRenAnalyzer {
     );
 
     return DaLiuRenAnalysisReport(
+      analysisRuleSetVersion: DlrRuleSetVersions.analysisCurrent,
+      sourcePanRuleSetVersion: result.panRuleSetVersion,
+      compatibilityStatus: DlrRuleSetVersions.resolveAnalysisCompatibility(
+        sourcePanRuleSetVersion: result.panRuleSetVersion,
+        castInputSnapshot: result.castInputSnapshot,
+      ),
       keGe: keGe,
       ganZhiTags: ganZhiTags,
       chuanTags: chuanTags,

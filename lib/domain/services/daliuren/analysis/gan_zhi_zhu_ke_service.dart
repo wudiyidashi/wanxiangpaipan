@@ -1,4 +1,5 @@
 import '../../../../divination_systems/daliuren/models/si_ke.dart';
+import '../../../../divination_systems/daliuren/models/dlr_rule_contract.dart';
 import '../../shared/analysis/models/polarity.dart';
 import '../../shared/wuxing_service.dart';
 import 'models/daliuren_analysis_models.dart';
@@ -27,6 +28,8 @@ class GanZhiZhuKeService {
       final relation = WuXingService.getRelation(riGanWuXing, ganShangWuXing);
       tags.add(switch (relation) {
         WuXingRelation.shengWo => DlrAnalysisTag(
+            ruleRef:
+                DlrRuleRef.project(DlrProjectRuleIds.ganAboveGeneratesSelf),
             term: '干上生身',
             category: DlrTagCategory.ganZhi,
             polarity: Polarity.ji,
@@ -35,6 +38,7 @@ class GanZhiZhuKeService {
             relatedPositions: const ['干上'],
           ),
         WuXingRelation.keWo => DlrAnalysisTag(
+            ruleRef: DlrRuleRef.project(DlrProjectRuleIds.ganAboveControlsSelf),
             term: '干上克身',
             category: DlrTagCategory.ganZhi,
             polarity: Polarity.xiong,
@@ -43,6 +47,7 @@ class GanZhiZhuKeService {
             relatedPositions: const ['干上'],
           ),
         WuXingRelation.woKe => DlrAnalysisTag(
+            ruleRef: DlrRuleRef.project(DlrProjectRuleIds.selfControlsGanAbove),
             term: '身制干上',
             category: DlrTagCategory.ganZhi,
             polarity: Polarity.neutral,
@@ -51,6 +56,8 @@ class GanZhiZhuKeService {
             relatedPositions: const ['干上'],
           ),
         WuXingRelation.woSheng => DlrAnalysisTag(
+            ruleRef:
+                DlrRuleRef.project(DlrProjectRuleIds.selfGeneratesGanAbove),
             term: '身泄于上',
             category: DlrTagCategory.ganZhi,
             polarity: Polarity.neutral,
@@ -59,6 +66,7 @@ class GanZhiZhuKeService {
             relatedPositions: const ['干上'],
           ),
         WuXingRelation.biHe => DlrAnalysisTag(
+            ruleRef: DlrRuleRef.project(DlrProjectRuleIds.ganAbovePeerSupport),
             term: '干上比助',
             category: DlrTagCategory.ganZhi,
             polarity: Polarity.neutral,
@@ -76,6 +84,8 @@ class GanZhiZhuKeService {
       final relation = WuXingService.getRelation(riZhiWuXing, zhiShangWuXing);
       tags.add(switch (relation) {
         WuXingRelation.shengWo => DlrAnalysisTag(
+            ruleRef:
+                DlrRuleRef.project(DlrProjectRuleIds.affairReceivesSupport),
             term: '事得生扶',
             category: DlrTagCategory.ganZhi,
             polarity: Polarity.ji,
@@ -84,6 +94,7 @@ class GanZhiZhuKeService {
             relatedPositions: const ['支上'],
           ),
         WuXingRelation.keWo => DlrAnalysisTag(
+            ruleRef: DlrRuleRef.project(DlrProjectRuleIds.affairIsControlled),
             term: '事体受制',
             category: DlrTagCategory.ganZhi,
             polarity: Polarity.xiong,
@@ -92,6 +103,7 @@ class GanZhiZhuKeService {
             relatedPositions: const ['支上'],
           ),
         WuXingRelation.woKe => DlrAnalysisTag(
+            ruleRef: DlrRuleRef.project(DlrProjectRuleIds.affairControlsAbove),
             term: '事制其上',
             category: DlrTagCategory.ganZhi,
             polarity: Polarity.neutral,
@@ -100,6 +112,7 @@ class GanZhiZhuKeService {
             relatedPositions: const ['支上'],
           ),
         WuXingRelation.woSheng => DlrAnalysisTag(
+            ruleRef: DlrRuleRef.project(DlrProjectRuleIds.affairGeneratesAbove),
             term: '事泄于上',
             category: DlrTagCategory.ganZhi,
             polarity: Polarity.neutral,
@@ -108,6 +121,8 @@ class GanZhiZhuKeService {
             relatedPositions: const ['支上'],
           ),
         WuXingRelation.biHe => DlrAnalysisTag(
+            ruleRef:
+                DlrRuleRef.project(DlrProjectRuleIds.branchAbovePeerSupport),
             term: '支上比助',
             category: DlrTagCategory.ganZhi,
             polarity: Polarity.neutral,
@@ -121,6 +136,7 @@ class GanZhiZhuKeService {
     // 干上/支上落旬空
     if (kongWang.contains(ganShang)) {
       tags.add(DlrAnalysisTag(
+        ruleRef: DlrRuleRef.project(DlrProjectRuleIds.ganAboveVoid),
         term: '干上空亡',
         category: DlrTagCategory.kongWang,
         polarity: Polarity.xiong,
@@ -131,6 +147,7 @@ class GanZhiZhuKeService {
     }
     if (kongWang.contains(zhiShang)) {
       tags.add(DlrAnalysisTag(
+        ruleRef: DlrRuleRef.project(DlrProjectRuleIds.branchAboveVoid),
         term: '支上空亡',
         category: DlrTagCategory.kongWang,
         polarity: Polarity.xiong,

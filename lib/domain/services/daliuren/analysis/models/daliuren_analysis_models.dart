@@ -1,6 +1,7 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
 
 import '../../../../../divination_systems/daliuren/models/chuan.dart';
+import '../../../../../divination_systems/daliuren/models/dlr_rule_contract.dart';
 import '../../../shared/analysis/models/polarity.dart';
 import '../../../shared/analysis/models/verdict_models.dart';
 
@@ -27,6 +28,7 @@ enum DlrTagCategory {
 @freezed
 class DlrAnalysisTag with _$DlrAnalysisTag {
   const factory DlrAnalysisTag({
+    required DlrRuleRef ruleRef,
     required String term,
     required DlrTagCategory category,
     required Polarity polarity,
@@ -40,6 +42,8 @@ class DlrAnalysisTag with _$DlrAnalysisTag {
 @freezed
 class KeGeInfo with _$KeGeInfo {
   const factory KeGeInfo({
+    required DlrRuleRef ruleRef,
+
     /// 九宗门名（贼克/比用/…）
     required String keTypeName,
 
@@ -60,6 +64,15 @@ class DaLiuRenAnalysisReport with _$DaLiuRenAnalysisReport {
   const DaLiuRenAnalysisReport._();
 
   const factory DaLiuRenAnalysisReport({
+    /// 当前分析器使用的规则集版本。
+    required String analysisRuleSetVersion,
+
+    /// 被分析盘面声明的排盘规则集版本。
+    required String sourcePanRuleSetVersion,
+
+    /// 当前分析器与来源盘面的版本兼容状态。
+    required DlrAnalysisCompatibility compatibilityStatus,
+
     /// 课格定性
     required KeGeInfo keGe,
 

@@ -1,5 +1,6 @@
 import '../../../../divination_systems/daliuren/daliuren_constants.dart';
 import '../../../../divination_systems/daliuren/models/chuan.dart';
+import '../../../../divination_systems/daliuren/models/dlr_rule_contract.dart';
 import '../../../../divination_systems/daliuren/models/san_chuan.dart';
 import '../../shared/analysis/models/polarity.dart';
 import '../../shared/wuxing_service.dart';
@@ -28,8 +29,7 @@ class ChuanAnalysisService {
     required String riGan,
   }) {
     final tags = <ChuanPosition, List<DlrAnalysisTag>>{
-      for (final position in ChuanPosition.values)
-        position: <DlrAnalysisTag>[],
+      for (final position in ChuanPosition.values) position: <DlrAnalysisTag>[],
     };
 
     for (final chuan in sanChuan.allChuan) {
@@ -37,6 +37,9 @@ class ChuanAnalysisService {
       if (chuan.isKongWang) {
         tags[chuan.position]!.add(switch (chuan.position) {
           ChuanPosition.chu => DlrAnalysisTag(
+              ruleRef: DlrRuleRef.project(
+                DlrProjectRuleIds.initialTransmissionVoid,
+              ),
               term: '发用落空',
               category: DlrTagCategory.kongWang,
               polarity: Polarity.xiong,
@@ -45,6 +48,9 @@ class ChuanAnalysisService {
               relatedPositions: const ['初传'],
             ),
           ChuanPosition.zhong => DlrAnalysisTag(
+              ruleRef: DlrRuleRef.project(
+                DlrProjectRuleIds.middleTransmissionVoid,
+              ),
               term: '中传落空',
               category: DlrTagCategory.kongWang,
               polarity: Polarity.xiong,
@@ -53,6 +59,9 @@ class ChuanAnalysisService {
               relatedPositions: const ['中传'],
             ),
           ChuanPosition.mo => DlrAnalysisTag(
+              ruleRef: DlrRuleRef.project(
+                DlrProjectRuleIds.finalTransmissionVoid,
+              ),
               term: '末传落空',
               category: DlrTagCategory.kongWang,
               polarity: Polarity.xiong,
@@ -66,6 +75,8 @@ class ChuanAnalysisService {
       // 天将吉凶
       final jiangJi = _jiJiang.contains(chuan.chengShen);
       tags[chuan.position]!.add(DlrAnalysisTag(
+        ruleRef:
+            DlrRuleRef.project(DlrProjectRuleIds.transmissionGeneralPolarity),
         term: '${chuan.position.displayName}乘${chuan.chengShen.name}',
         category: DlrTagCategory.tianJiang,
         polarity: jiangJi ? Polarity.ji : Polarity.xiong,
@@ -82,6 +93,9 @@ class ChuanAnalysisService {
     if (riGanWuXing != null && chuWuXing != null) {
       if (WuXingService.isKe(chuWuXing, riGanWuXing)) {
         tags[ChuanPosition.chu]!.add(DlrAnalysisTag(
+          ruleRef: DlrRuleRef.project(
+            DlrProjectRuleIds.initialTransmissionControlsSelf,
+          ),
           term: '发用克身',
           category: DlrTagCategory.chuan,
           polarity: Polarity.xiong,
@@ -91,6 +105,9 @@ class ChuanAnalysisService {
         ));
       } else if (WuXingService.isSheng(chuWuXing, riGanWuXing)) {
         tags[ChuanPosition.chu]!.add(DlrAnalysisTag(
+          ruleRef: DlrRuleRef.project(
+            DlrProjectRuleIds.initialTransmissionGeneratesSelf,
+          ),
           term: '发用生身',
           category: DlrTagCategory.chuan,
           polarity: Polarity.ji,
@@ -124,6 +141,7 @@ class ChuanAnalysisService {
       if (WuXingService.isSheng(chuWx, zhongWx) &&
           WuXingService.isSheng(zhongWx, moWx)) {
         tags.add(DlrAnalysisTag(
+          ruleRef: DlrRuleRef.project(DlrProjectRuleIds.progressiveGeneration),
           term: '递生传进',
           category: DlrTagCategory.chuan,
           polarity: Polarity.ji,
@@ -134,6 +152,7 @@ class ChuanAnalysisService {
       } else if (WuXingService.isKe(chuWx, zhongWx) &&
           WuXingService.isKe(zhongWx, moWx)) {
         tags.add(DlrAnalysisTag(
+          ruleRef: DlrRuleRef.project(DlrProjectRuleIds.progressiveControl),
           term: '递克传退',
           category: DlrTagCategory.chuan,
           polarity: Polarity.xiong,
@@ -150,6 +169,9 @@ class ChuanAnalysisService {
       final moLiuHeJiGong = DaLiuRenConstants.diZhiLiuHe[mo] == jiGong;
       if (WuXingService.isSheng(moWx, riGanWx) || moLiuHeJiGong) {
         tags.add(DlrAnalysisTag(
+          ruleRef: DlrRuleRef.project(
+            DlrProjectRuleIds.transmissionReturnsToGenerateSelf,
+          ),
           term: '传归生身',
           category: DlrTagCategory.chuan,
           polarity: Polarity.ji,
@@ -161,6 +183,9 @@ class ChuanAnalysisService {
         ));
       } else if (WuXingService.isKe(moWx, riGanWx)) {
         tags.add(DlrAnalysisTag(
+          ruleRef: DlrRuleRef.project(
+            DlrProjectRuleIds.transmissionReturnsToControlSelf,
+          ),
           term: '传归克身',
           category: DlrTagCategory.chuan,
           polarity: Polarity.xiong,
@@ -175,6 +200,7 @@ class ChuanAnalysisService {
     final sanHeJu = _matchSanHeJu(chu, zhong, mo);
     if (sanHeJu != null) {
       tags.add(DlrAnalysisTag(
+        ruleRef: DlrRuleRef.project(DlrProjectRuleIds.threeHarmonyFormation),
         term: '三传合局',
         category: DlrTagCategory.chuan,
         polarity: Polarity.neutral,

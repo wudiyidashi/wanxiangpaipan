@@ -1,6 +1,7 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:wanxiang_paipan/divination_systems/daliuren/daliuren_constants.dart';
 import 'package:wanxiang_paipan/divination_systems/daliuren/models/chuan.dart';
+import 'package:wanxiang_paipan/divination_systems/daliuren/models/dlr_rule_contract.dart';
 import 'package:wanxiang_paipan/divination_systems/daliuren/models/san_chuan.dart';
 import 'package:wanxiang_paipan/domain/services/daliuren/analysis/chuan_analysis_service.dart';
 import 'package:wanxiang_paipan/domain/services/daliuren/analysis/models/daliuren_analysis_models.dart';
@@ -52,25 +53,26 @@ void main() {
         riGan: '甲',
       );
       expect(
-        tags[ChuanPosition.chu]!.map((t) => t.term),
-        contains('发用落空'),
+        tags[ChuanPosition.chu]!.map((t) => t.ruleRef.ruleId),
+        contains(DlrProjectRuleIds.initialTransmissionVoid),
       );
       expect(
-        tags[ChuanPosition.zhong]!.map((t) => t.term),
-        contains('中传落空'),
+        tags[ChuanPosition.zhong]!.map((t) => t.ruleRef.ruleId),
+        contains(DlrProjectRuleIds.middleTransmissionVoid),
       );
       expect(
-        tags[ChuanPosition.mo]!.map((t) => t.term),
-        contains('末传落空'),
+        tags[ChuanPosition.mo]!.map((t) => t.ruleRef.ruleId),
+        contains(DlrProjectRuleIds.finalTransmissionVoid),
       );
-      final faYongKong = tags[ChuanPosition.chu]!
-          .firstWhere((t) => t.term == '发用落空');
+      final faYongKong = tags[ChuanPosition.chu]!.firstWhere(
+          (t) => t.ruleRef.ruleId == DlrProjectRuleIds.initialTransmissionVoid);
+      expect(faYongKong.term, '发用落空');
       expect(faYongKong.polarity, Polarity.xiong);
     });
 
     test('天将吉凶：吉将吉、凶将凶，term 为"X传乘Y"', () {
-      final sanChuan = makeSanChuan('寅', '午', '戌',
-          chuJiang: ShenJiang.qingLong);
+      final sanChuan =
+          makeSanChuan('寅', '午', '戌', chuJiang: ShenJiang.qingLong);
       final tags = ChuanAnalysisService.analyzeChuanTags(
         sanChuan: sanChuan,
         riGan: '甲',
@@ -78,6 +80,10 @@ void main() {
       final chuJiangTag = tags[ChuanPosition.chu]!
           .firstWhere((t) => t.category == DlrTagCategory.tianJiang);
       expect(chuJiangTag.term, '初传乘青龙');
+      expect(
+        chuJiangTag.ruleRef.ruleId,
+        DlrProjectRuleIds.transmissionGeneralPolarity,
+      );
       expect(chuJiangTag.polarity, Polarity.ji);
       expect(chuJiangTag.reason, ShenJiang.qingLong.description);
     });
@@ -89,8 +95,8 @@ void main() {
         riGan: '甲',
       );
       expect(
-        keTags[ChuanPosition.chu]!.map((t) => t.term),
-        contains('发用克身'),
+        keTags[ChuanPosition.chu]!.map((t) => t.ruleRef.ruleId),
+        contains(DlrProjectRuleIds.initialTransmissionControlsSelf),
       );
 
       // 甲木日干，初传子水生木
@@ -99,8 +105,8 @@ void main() {
         riGan: '甲',
       );
       expect(
-        shengTags[ChuanPosition.chu]!.map((t) => t.term),
-        contains('发用生身'),
+        shengTags[ChuanPosition.chu]!.map((t) => t.ruleRef.ruleId),
+        contains(DlrProjectRuleIds.initialTransmissionGeneratesSelf),
       );
     });
   });
@@ -112,7 +118,9 @@ void main() {
         sanChuan: makeSanChuan('亥', '寅', '巳'),
         riGan: '庚',
       );
-      final tag = juTags.firstWhere((t) => t.term == '递生传进');
+      final tag = juTags.firstWhere(
+          (t) => t.ruleRef.ruleId == DlrProjectRuleIds.progressiveGeneration);
+      expect(tag.term, '递生传进');
       expect(tag.polarity, Polarity.ji);
     });
 
@@ -122,7 +130,9 @@ void main() {
         sanChuan: makeSanChuan('寅', '辰', '子'),
         riGan: '庚',
       );
-      final tag = juTags.firstWhere((t) => t.term == '递克传退');
+      final tag = juTags.firstWhere(
+          (t) => t.ruleRef.ruleId == DlrProjectRuleIds.progressiveControl);
+      expect(tag.term, '递克传退');
       expect(tag.polarity, Polarity.xiong);
     });
 
@@ -132,14 +142,20 @@ void main() {
         sanChuan: makeSanChuan('午', '卯', '子'),
         riGan: '甲',
       );
-      expect(shengTags.map((t) => t.term), contains('传归生身'));
+      expect(
+        shengTags.map((t) => t.ruleRef.ruleId),
+        contains(DlrProjectRuleIds.transmissionReturnsToGenerateSelf),
+      );
 
       // 甲木日干，末传申金克木
       final keTags = ChuanAnalysisService.analyzeJuTags(
         sanChuan: makeSanChuan('子', '辰', '申'),
         riGan: '甲',
       );
-      expect(keTags.map((t) => t.term), contains('传归克身'));
+      expect(
+        keTags.map((t) => t.ruleRef.ruleId),
+        contains(DlrProjectRuleIds.transmissionReturnsToControlSelf),
+      );
     });
 
     test('末传与日干寄宫支六合 → 传归生身（六合口径）', () {
@@ -148,7 +164,10 @@ void main() {
         sanChuan: makeSanChuan('子', '辰', '申'),
         riGan: '丙',
       );
-      final tag = juTags.firstWhere((t) => t.term == '传归生身');
+      final tag = juTags.firstWhere((t) =>
+          t.ruleRef.ruleId ==
+          DlrProjectRuleIds.transmissionReturnsToGenerateSelf);
+      expect(tag.term, '传归生身');
       expect(tag.reason, contains('六合'));
     });
 
@@ -157,7 +176,9 @@ void main() {
         sanChuan: makeSanChuan('申', '子', '辰'),
         riGan: '丙',
       );
-      final tag = juTags.firstWhere((t) => t.term == '三传合局');
+      final tag = juTags.firstWhere(
+          (t) => t.ruleRef.ruleId == DlrProjectRuleIds.threeHarmonyFormation);
+      expect(tag.term, '三传合局');
       expect(tag.polarity, Polarity.neutral);
       expect(tag.reason, contains('申子辰水局'));
     });

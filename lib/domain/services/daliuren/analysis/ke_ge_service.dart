@@ -1,4 +1,5 @@
 import '../../../../divination_systems/daliuren/daliuren_constants.dart';
+import '../../../../divination_systems/daliuren/models/dlr_rule_contract.dart';
 import '../../../../divination_systems/daliuren/models/san_chuan.dart';
 import '../../../../divination_systems/daliuren/models/si_ke.dart';
 import '../../shared/analysis/models/polarity.dart';
@@ -26,6 +27,7 @@ class KeGeService {
       case KeType.zeiKe:
         if (siKe.hasZeiKe) {
           return KeGeInfo(
+            ruleRef: DlrRuleRef.project(DlrProjectRuleIds.keGeChongShen),
             keTypeName: keTypeName,
             geName: '重审',
             polarity: Polarity.neutral,
@@ -33,6 +35,7 @@ class KeGeService {
           );
         }
         return KeGeInfo(
+          ruleRef: DlrRuleRef.project(DlrProjectRuleIds.keGeYuanShou),
           keTypeName: keTypeName,
           geName: '元首',
           polarity: Polarity.ji,
@@ -40,6 +43,7 @@ class KeGeService {
         );
       case KeType.biYong:
         return KeGeInfo(
+          ruleRef: DlrRuleRef.project(DlrProjectRuleIds.keGeZhiYi),
           keTypeName: keTypeName,
           geName: '知一',
           polarity: Polarity.neutral,
@@ -47,6 +51,7 @@ class KeGeService {
         );
       case KeType.sheHai:
         return KeGeInfo(
+          ruleRef: DlrRuleRef.project(DlrProjectRuleIds.keGeSheHai),
           keTypeName: keTypeName,
           geName: '涉害',
           polarity: Polarity.xiong,
@@ -55,6 +60,7 @@ class KeGeService {
       case KeType.yaoKe:
         if (_hasShangShenKeRiGan(siKe)) {
           return KeGeInfo(
+            ruleRef: DlrRuleRef.project(DlrProjectRuleIds.keGeHaoShi),
             keTypeName: keTypeName,
             geName: '蒿矢',
             polarity: Polarity.neutral,
@@ -62,6 +68,7 @@ class KeGeService {
           );
         }
         return KeGeInfo(
+          ruleRef: DlrRuleRef.project(DlrProjectRuleIds.keGeTanShe),
           keTypeName: keTypeName,
           geName: '弹射',
           polarity: Polarity.neutral,
@@ -70,6 +77,7 @@ class KeGeService {
       case KeType.maoXing:
         if (isYang) {
           return KeGeInfo(
+            ruleRef: DlrRuleRef.project(DlrProjectRuleIds.keGeHuShi),
             keTypeName: keTypeName,
             geName: '虎视',
             polarity: Polarity.xiong,
@@ -77,6 +85,7 @@ class KeGeService {
           );
         }
         return KeGeInfo(
+          ruleRef: DlrRuleRef.project(DlrProjectRuleIds.keGeDongSheYanMu),
           keTypeName: keTypeName,
           geName: '冬蛇掩目',
           polarity: Polarity.xiong,
@@ -84,6 +93,7 @@ class KeGeService {
         );
       case KeType.bieZe:
         return KeGeInfo(
+          ruleRef: DlrRuleRef.project(DlrProjectRuleIds.keGeBieZe),
           keTypeName: keTypeName,
           geName: '别责',
           polarity: Polarity.neutral,
@@ -91,6 +101,7 @@ class KeGeService {
         );
       case KeType.baZhuan:
         return KeGeInfo(
+          ruleRef: DlrRuleRef.project(DlrProjectRuleIds.keGeBaZhuan),
           keTypeName: keTypeName,
           geName: '八专',
           polarity: Polarity.neutral,
@@ -99,6 +110,7 @@ class KeGeService {
       case KeType.fuYin:
         if (hasAnyKe) {
           return KeGeInfo(
+            ruleRef: DlrRuleRef.project(DlrProjectRuleIds.keGeBuYu),
             keTypeName: keTypeName,
             geName: '不虞',
             polarity: Polarity.xiong,
@@ -107,6 +119,7 @@ class KeGeService {
         }
         if (isYang) {
           return KeGeInfo(
+            ruleRef: DlrRuleRef.project(DlrProjectRuleIds.keGeZiRen),
             keTypeName: keTypeName,
             geName: '自任',
             polarity: Polarity.neutral,
@@ -114,6 +127,7 @@ class KeGeService {
           );
         }
         return KeGeInfo(
+          ruleRef: DlrRuleRef.project(DlrProjectRuleIds.keGeZiXin),
           keTypeName: keTypeName,
           geName: '自信',
           polarity: Polarity.neutral,
@@ -122,6 +136,7 @@ class KeGeService {
       case KeType.fanYin:
         if (!hasAnyKe) {
           return KeGeInfo(
+            ruleRef: DlrRuleRef.project(DlrProjectRuleIds.keGeJingLanShe),
             keTypeName: keTypeName,
             geName: '井栏射',
             polarity: Polarity.neutral,
@@ -129,6 +144,7 @@ class KeGeService {
           );
         }
         return KeGeInfo(
+          ruleRef: DlrRuleRef.project(DlrProjectRuleIds.keGeFanYin),
           keTypeName: keTypeName,
           geName: '反吟',
           polarity: Polarity.xiong,
