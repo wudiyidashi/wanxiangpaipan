@@ -1,0 +1,4 @@
+{"file": ".trellis/spec/domain/daliuren-analysis-engine.md", "reason": "检查派生分析、不落库、首行命中和无评分约束"}
+{"file": ".trellis/tasks/07-28-qimen-module/research/qimen-rule-baseline.md", "reason": "检查事实只来自程序盘面且不静默重排"}
+{"file": ".trellis/tasks/07-28-qimen-pan-engine/design.md", "reason": "检查分析对排盘模型的只读依赖"}
+{"file": ".trellis/tasks/07-28-qimen-analysis-engine/design.md", "reason": "逐规则核验事实、裁决、应期和来源合同"}

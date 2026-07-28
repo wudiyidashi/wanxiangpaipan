@@ -1,0 +1,5 @@
+{"file": ".trellis/spec/domain/index.md", "reason": "检查领域层目录与纯函数约束"}
+{"file": ".trellis/spec/guides/cross-layer-thinking-guide.md", "reason": "检查父任务跨层合同与完整往返"}
+{"file": "docs/architecture/divination-system-interface.md", "reason": "检查统一术数接口、稳定存储 ID 与启用门槛"}
+{"file": ".trellis/tasks/07-28-qimen-module/research/qimen-rule-baseline.md", "reason": "检查所有锁定奇门口径与黄金测试覆盖"}
+{"file": ".trellis/tasks/07-28-qimen-module/research/integration-map.md", "reason": "检查集成点、穷举分支与产品闭环是否遗漏"}

@@ -1,0 +1,7 @@
+{"file": ".trellis/spec/domain/index.md", "reason": "领域分析服务的纯函数和目录边界"}
+{"file": ".trellis/spec/domain/daliuren-pan-engine.md", "reason": "分析层只读排盘事实的既有约束"}
+{"file": ".trellis/spec/domain/daliuren-analysis-engine.md", "reason": "事实、裁决、应期三层以及共享模型先例"}
+{"file": ".trellis/spec/guides/code-reuse-thinking-guide.md", "reason": "复用共享裁决和应期模型，避免复制六壬或六爻实现"}
+{"file": ".trellis/tasks/07-28-qimen-module/research/qimen-rule-baseline.md", "reason": "奇门盘面规则与分析可用事实边界"}
+{"file": ".trellis/tasks/07-28-qimen-pan-engine/design.md", "reason": "分析引擎只读消费的 QimenResult 与九宫字段合同"}
+{"file": ".trellis/tasks/07-28-qimen-analysis-engine/design.md", "reason": "本子任务事实表、裁决表、应期与来源合同"}

@@ -1,0 +1,4 @@
+{"file": ".trellis/spec/guides/cross-layer-thinking-guide.md", "reason": "检查完整用户链路、数据往返与边界错误"}
+{"file": "docs/architecture/divination-system-interface.md", "reason": "检查新系统启用、注册、序列化、摘要和历史约束"}
+{"file": ".trellis/tasks/07-28-qimen-module/research/integration-map.md", "reason": "检查所有集成点、窄屏、数据管理与 AI 降级"}
+{"file": ".trellis/tasks/07-28-qimen-product-integration/design.md", "reason": "检查产品集成实现与冻结交互合同一致"}

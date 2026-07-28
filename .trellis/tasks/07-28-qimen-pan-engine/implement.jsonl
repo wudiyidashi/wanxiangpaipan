@@ -1,0 +1,7 @@
+{"file": ".trellis/spec/domain/index.md", "reason": "领域服务纯函数与 qimen 专属目录约束"}
+{"file": ".trellis/spec/domain/daliuren-pan-engine.md", "reason": "复杂三式排盘的强类型模型、阶段服务与黄金盘先例"}
+{"file": ".trellis/spec/guides/cross-layer-thinking-guide.md", "reason": "锁定输入、结果 JSON、仓储与后续消费者边界"}
+{"file": ".trellis/spec/guides/code-reuse-thinking-guide.md", "reason": "复用共享历法、干支、五行与仓储设施"}
+{"file": "docs/architecture/divination-system-interface.md", "reason": "QimenSystem 输入、结果、摘要和反序列化合同"}
+{"file": ".trellis/tasks/07-28-qimen-module/research/qimen-rule-baseline.md", "reason": "排盘公式、分歧参数、时间策略和黄金测试唯一规划基线"}
+{"file": ".trellis/tasks/07-28-qimen-pan-engine/design.md", "reason": "本子任务模型字段、算法阶段与测试设计"}

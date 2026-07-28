@@ -1,0 +1,6 @@
+{"file": ".trellis/spec/domain/index.md", "reason": "领域服务纯函数、共享与系统专属目录边界"}
+{"file": ".trellis/spec/guides/cross-layer-thinking-guide.md", "reason": "父任务最终复核起局、存储、历史、分析与展示的完整数据流"}
+{"file": ".trellis/spec/guides/code-reuse-thinking-guide.md", "reason": "复用共享历法、干支、分析模型和统一术数骨架"}
+{"file": "docs/architecture/divination-system-interface.md", "reason": "新术数的稳定 ID、输入输出、序列化与历史摘要合同"}
+{"file": ".trellis/tasks/07-28-qimen-module/research/qimen-rule-baseline.md", "reason": "三种定局法、转盘口径、时间校正与黄金测试政策"}
+{"file": ".trellis/tasks/07-28-qimen-module/research/integration-map.md", "reason": "奇门完整产品闭环的跨层接入点与验证面"}

@@ -1,0 +1,5 @@
+{"file": ".trellis/spec/domain/index.md", "reason": "检查领域服务纯函数和目录所有权"}
+{"file": ".trellis/spec/domain/daliuren-pan-engine.md", "reason": "检查复杂排盘的模型、黄金案例与兼容约定"}
+{"file": "docs/architecture/divination-system-interface.md", "reason": "检查系统输入输出、稳定 ID 与可逆序列化"}
+{"file": ".trellis/tasks/07-28-qimen-module/research/qimen-rule-baseline.md", "reason": "逐项核验锁定奇门规则和来源化黄金政策"}
+{"file": ".trellis/tasks/07-28-qimen-pan-engine/design.md", "reason": "检查实现是否符合冻结的排盘合同与阶段顺序"}
