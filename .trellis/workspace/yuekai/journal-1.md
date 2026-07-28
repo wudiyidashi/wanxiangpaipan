@@ -248,3 +248,36 @@
 ### Next Steps
 
 - None - task complete
+
+
+## Session 8: 大六壬月将与起课时间合同
+
+**Date**: 2026-07-28
+**Task**: 大六壬月将与起课时间合同
+**Branch**: `main`
+
+### Summary
+
+完成精确中气月将、固定 offset 民用四柱、raw/calendar-backed 手工输入、v2 重放兼容及跨层展示持久化；独立复核后 analyze 与 1194 项全量测试通过。
+
+### Main Changes
+
+- Detailed change bullets were not supplied; see the summary above.
+
+### Git Commits
+
+| Hash | Message |
+|------|---------|
+| `0b3ab8b` | (see git log) |
+
+### Testing
+
+- Validation was not recorded for this session.
+
+### Status
+
+[OK] **Completed**
+
+### Next Steps
+
+- None - task complete

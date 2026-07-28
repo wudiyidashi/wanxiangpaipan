@@ -3,7 +3,7 @@
   "name": "qimen-module",
   "title": "奇门遁甲板块",
   "description": "",
-  "status": "planning",
+  "status": "in_progress",
   "dev_type": null,
   "scope": null,
   "package": null,
@@ -21,7 +21,8 @@
   "children": [
     "07-28-qimen-pan-engine",
     "07-28-qimen-analysis-engine",
-    "07-28-qimen-product-integration"
+    "07-28-qimen-product-integration",
+    "07-28-qimen-release-audit"
   ],
   "parent": null,
   "relatedFiles": [],
