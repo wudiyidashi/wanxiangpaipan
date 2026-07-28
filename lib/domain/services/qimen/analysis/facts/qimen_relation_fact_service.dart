@@ -1,4 +1,3 @@
-import '../../../../../divination_systems/qimen/models/qimen_enums.dart';
 import '../../../../../divination_systems/qimen/models/qimen_palace.dart';
 import '../../../../../divination_systems/qimen/models/qimen_result.dart';
 import '../models/qimen_analysis_models.dart';
@@ -9,15 +8,13 @@ import 'qimen_fact_support.dart';
 class QimenRelationFactService {
   QimenRelationFactService._();
 
-  static const Set<String> _favorableDoors = <String>{'开门', '休门', '生门'};
-  static const Set<String> _adverseDoors = <String>{'死门', '伤门', '惊门'};
-
   static QimenFactBatch evaluate(
     QimenResult result,
     List<QimenFocus> focuses, {
     required String ruleSetVersion,
   }) {
-    final pairRoles = _pairRoles(result.panParams.questionCategory);
+    final pairRoles = QimenRuleCatalog
+        .convergenceFocusRoles[result.panParams.questionCategory]!;
     final left = _focus(focuses, pairRoles.$1);
     final right = _focus(focuses, pairRoles.$2);
     if (left == null || right == null) {
@@ -42,6 +39,10 @@ class QimenRelationFactService {
     final leftPalace = _palace(result, left.palaceNumber)!;
     final rightPalace = _palace(result, right.palaceNumber)!;
     final refs = <QimenInputRef>[
+      QimenInputRef(
+        path: r'$.panParams.questionCategory',
+        value: result.panParams.questionCategory.id,
+      ),
       QimenInputRef(
         path: QimenFactSupport.palacePath(leftPalace.number, 'element'),
         value: leftPalace.element,
@@ -68,17 +69,34 @@ class QimenRelationFactService {
         QimenFactSupport.controls[rightPalace.element] == leftPalace.element;
     final leftGeneratesRight =
         QimenFactSupport.generates[leftPalace.element] == rightPalace.element;
-    final leftDoorFavorable = _favorableDoors.contains(leftPalace.door);
-    final rightDoorFavorable = _favorableDoors.contains(rightPalace.door);
-    final leftDoorAdverse = _adverseDoors.contains(leftPalace.door);
-    final rightDoorAdverse = _adverseDoors.contains(rightPalace.door);
-
+    final leftDoorFavorable =
+        QimenRuleCatalog.favorableConvergenceDoors.contains(leftPalace.door);
+    final rightDoorFavorable =
+        QimenRuleCatalog.favorableConvergenceDoors.contains(rightPalace.door);
+    final leftDoorAdverse =
+        QimenRuleCatalog.adverseConvergenceDoors.contains(leftPalace.door);
+    final rightDoorAdverse =
+        QimenRuleCatalog.adverseConvergenceDoors.contains(rightPalace.door);
+    final matchedPatterns = <QimenConvergencePattern>{
+      if (samePalace && (leftDoorFavorable || rightDoorFavorable))
+        QimenConvergencePattern.samePalaceWithEitherFavorableDoor,
+      if (rightGeneratesLeft && leftDoorFavorable && rightDoorFavorable)
+        QimenConvergencePattern.matterGeneratesSelfWithBothFavorableDoors,
+      if (leftControlsRight && leftDoorFavorable)
+        QimenConvergencePattern.selfControlsMatterWithSelfFavorableDoor,
+      if (rightControlsLeft && leftDoorAdverse)
+        QimenConvergencePattern.matterControlsSelfWithSelfAdverseDoor,
+      if (leftGeneratesRight && rightDoorAdverse)
+        QimenConvergencePattern.selfGeneratesMatterWithMatterAdverseDoor,
+    };
     final favorable =
-        (samePalace && (leftDoorFavorable || rightDoorFavorable)) ||
-            (rightGeneratesLeft && leftDoorFavorable && rightDoorFavorable) ||
-            (leftControlsRight && leftDoorFavorable);
-    final adverse = (rightControlsLeft && leftDoorAdverse) ||
-        (leftGeneratesRight && rightDoorAdverse);
+        QimenRuleCatalog.convergenceSpec(QimenRuleCatalog.favorableConvergence)
+            .patterns
+            .any(matchedPatterns.contains);
+    final adverse =
+        QimenRuleCatalog.convergenceSpec(QimenRuleCatalog.adverseConvergence)
+            .patterns
+            .any(matchedPatterns.contains);
     final facts = <QimenFact>[];
     final trace = <QimenTraceStep>[];
     final target = '${result.panParams.questionCategory.id}:'
@@ -133,16 +151,6 @@ class QimenRelationFactService {
     }
     return QimenFactSupport.batch(facts, trace);
   }
-
-  static (String, String) _pairRoles(QimenQuestionCategory category) =>
-      switch (category) {
-        QimenQuestionCategory.relationship => (
-            'relationshipYi',
-            'relationshipGeng'
-          ),
-        QimenQuestionCategory.health => ('healthDisease', 'healthTreatment'),
-        _ => ('self', 'matter'),
-      };
 
   static QimenFocus? _focus(List<QimenFocus> focuses, String roleId) {
     for (final focus in focuses) {

@@ -87,7 +87,7 @@ class _DivinationSystemCardState extends State<DivinationSystemCard>
       case DivinationType.daLiuRen:
         return 'assets/images/screen_card/daliuren_background.png';
       case DivinationType.qiMen:
-        return null;
+        return 'assets/images/screen_card/qimen_background.png';
     }
   }
 
@@ -102,7 +102,7 @@ class _DivinationSystemCardState extends State<DivinationSystemCard>
       case DivinationType.daLiuRen:
         return '人事、运筹';
       case DivinationType.qiMen:
-        return '尚未开放';
+        return '时空、运筹';
     }
   }
 
@@ -133,7 +133,7 @@ class _DivinationSystemCardState extends State<DivinationSystemCard>
       case DivinationType.daLiuRen:
         return const [AppColors.danjin, AppColors.qianhe]; // 大六壬颜色深一点
       case DivinationType.qiMen:
-        return const [AppColors.xiangse, AppColors.danjin];
+        return const [AppColors.xiangse, Color(0xFFB8C9BE)];
     }
   }
 

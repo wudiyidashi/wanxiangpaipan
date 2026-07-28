@@ -38,6 +38,16 @@ void main() {
       expect(content, contains('显式说明分歧理由'));
       expect(content, contains('不得默默替换'));
     });
+
+    test('奇门 system 模板锁定程序唯一计算方与不可覆盖策略', () {
+      final content = BuiltInTemplates.qimenSystemPrompt.content;
+
+      expect(content, contains('calculationOwner=program'));
+      expect(content, contains('不得重排九宫'));
+      expect(content, contains('重算盘面或重算规则分析'));
+      expect(content, contains('mayOverrideVerdict=false'));
+      expect(content, contains('不承诺事件一定发生'));
+    });
   });
 
   group('BuiltInTemplates analysis 模板结构调整', () {
@@ -64,10 +74,21 @@ void main() {
     });
 
     test('brief 模板本次不动', () {
-      expect(BuiltInTemplates.liuYaoBriefPrompt.content,
-          isNot(contains('应期提示')));
+      expect(
+          BuiltInTemplates.liuYaoBriefPrompt.content, isNot(contains('应期提示')));
       expect(BuiltInTemplates.daLiuRenBriefPrompt.content,
           isNot(contains('应期提示')));
+    });
+
+    test('奇门 analysis 与 brief 模板只解释程序投影', () {
+      final analysis = BuiltInTemplates.qimenAnalysisPrompt.content;
+      final brief = BuiltInTemplates.qimenBriefPrompt.content;
+
+      expect(analysis, contains('{{structuredOutput}}'));
+      expect(analysis, contains('不得改成百分比、星级或加权评分'));
+      expect(analysis, contains('不得作为独立裁决依据重复计算'));
+      expect(brief, contains('不得重排、重算或覆盖裁决'));
+      expect(BuiltInTemplates.getBySystem('qimen'), hasLength(3));
     });
   });
 
@@ -79,6 +100,9 @@ void main() {
       BuiltInTemplates.liuYaoAnalysisPrompt,
       BuiltInTemplates.daLiuRenSystemPrompt,
       BuiltInTemplates.daLiuRenAnalysisPrompt,
+      BuiltInTemplates.qimenSystemPrompt,
+      BuiltInTemplates.qimenAnalysisPrompt,
+      BuiltInTemplates.qimenBriefPrompt,
     ]) {
       test('${template.id} 校验通过且可渲染', () {
         final result = engine.validate(template.content);

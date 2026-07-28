@@ -226,9 +226,8 @@ class QimenRuleCoverageManifest {
       QimenRuleCatalog.horseActivation,
       positive: const <String>[_constraintMatrix],
       negative: const <String>[_constraintMatrix],
-      decisionOrConflict: const <String>[
-        QimenRuleCatalog.conflictExplicitPair,
-      ],
+      decisionExemption:
+          'Horse activation is corroborating only and never suppresses a fact.',
       goldenExemption: 'Primary and secondary horse paths have focused tests.',
     );
 

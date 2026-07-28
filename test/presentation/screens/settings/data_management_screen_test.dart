@@ -74,6 +74,7 @@ class _FakeDataManagementActionsService
       daliurenCount: 0,
       meihuaCount: 0,
       xiaoliurenCount: 0,
+      qimenCount: 0,
     );
     return count;
   }
@@ -125,7 +126,13 @@ class _FakeDataManagementActionsService
         );
         return removed;
       case DivinationType.qiMen:
-        return 0;
+        final removed = _summary.qimenCount;
+        _summary = _replaceSummary(
+          _summary,
+          totalRecords: _summary.totalRecords - removed,
+          qimenCount: 0,
+        );
+        return removed;
     }
   }
 
@@ -159,6 +166,7 @@ class _FakeDataManagementActionsService
       templateCount: _importResult.templateCount,
       preferenceCount: _importResult.preferenceCount,
       mode: mode,
+      skippedRecords: _importResult.skippedRecords,
     );
   }
 
@@ -183,6 +191,7 @@ void main() {
           daliurenCount: 3,
           meihuaCount: 4,
           xiaoliurenCount: 1,
+          qimenCount: 0,
           aiProfileCount: 2,
           customTemplateCount: 5,
         ),
@@ -217,7 +226,7 @@ void main() {
         300,
         scrollable: find.byType(Scrollable).first,
       );
-      expect(find.text('当前 0 条'), findsOneWidget);
+      expect(find.text('当前 0 条'), findsWidgets);
     });
 
     testWidgets('导出与导入备份走注入回调和服务', (tester) async {
@@ -228,8 +237,22 @@ void main() {
           daliurenCount: 2,
           meihuaCount: 2,
           xiaoliurenCount: 2,
+          qimenCount: 0,
           aiProfileCount: 1,
           customTemplateCount: 2,
+        ),
+        importResult: const BackupImportResult(
+          recordCount: 6,
+          aiProfileCount: 2,
+          templateCount: 3,
+          preferenceCount: 4,
+          mode: BackupImportMode.merge,
+          skippedRecords: [
+            BackupSkippedRecord(
+              identifier: 'damaged-record',
+              reason: 'result 格式错误',
+            ),
+          ],
         ),
       );
       var sharedFileName = '';
@@ -254,6 +277,13 @@ void main() {
       expect(sharedFileName, 'mock-backup.zip');
       expect(find.textContaining('备份已生成'), findsOneWidget);
 
+      await tester.pump(const Duration(seconds: 5));
+      await tester.pumpAndSettle();
+      await tester.scrollUntilVisible(
+        find.text('导入备份'),
+        200,
+        scrollable: find.byType(Scrollable).first,
+      );
       await tester.tap(find.text('导入备份'));
       await tester.pumpAndSettle();
       expect(find.textContaining('备份时间：2026-04-19 09:30'), findsOneWidget);
@@ -264,6 +294,8 @@ void main() {
 
       expect(service.inspectCount, 1);
       expect(service.importCount, 1);
+      expect(find.textContaining('跳过 1 条损坏记录'), findsOneWidget);
+      expect(find.textContaining('damaged-record：result 格式错误'), findsOneWidget);
       await tester.drag(find.byType(ListView), const Offset(0, 1200));
       await tester.pumpAndSettle();
       expect(find.text('历史记录 6 条'), findsOneWidget);
@@ -278,6 +310,7 @@ DataManagementSummary _createSummary({
   required int daliurenCount,
   required int meihuaCount,
   required int xiaoliurenCount,
+  required int qimenCount,
   required int aiProfileCount,
   required int customTemplateCount,
 }) {
@@ -287,6 +320,7 @@ DataManagementSummary _createSummary({
     daliurenCount: daliurenCount,
     meihuaCount: meihuaCount,
     xiaoliurenCount: xiaoliurenCount,
+    qimenCount: qimenCount,
     aiProfileCount: aiProfileCount,
     customTemplateCount: customTemplateCount,
     latestRecordTime: DateTime(2026, 4, 19, 9, 22),
@@ -301,6 +335,7 @@ DataManagementSummary _replaceSummary(
   int? daliurenCount,
   int? meihuaCount,
   int? xiaoliurenCount,
+  int? qimenCount,
   int? aiProfileCount,
   int? customTemplateCount,
 }) {
@@ -310,6 +345,7 @@ DataManagementSummary _replaceSummary(
     daliurenCount: daliurenCount ?? summary.daliurenCount,
     meihuaCount: meihuaCount ?? summary.meihuaCount,
     xiaoliurenCount: xiaoliurenCount ?? summary.xiaoliurenCount,
+    qimenCount: qimenCount ?? summary.qimenCount,
     aiProfileCount: aiProfileCount ?? summary.aiProfileCount,
     customTemplateCount: customTemplateCount ?? summary.customTemplateCount,
     latestRecordTime: summary.latestRecordTime,

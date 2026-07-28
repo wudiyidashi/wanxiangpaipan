@@ -24,10 +24,12 @@ class HistoryRecordCard extends StatelessWidget {
     super.key,
     required this.result,
     this.onTap,
+    this.methodLabel,
   });
 
   final DivinationResult result;
   final VoidCallback? onTap;
+  final String? methodLabel;
 
   @override
   Widget build(BuildContext context) {
@@ -189,7 +191,7 @@ class HistoryRecordCard extends StatelessWidget {
         border: Border.all(color: AppColors.danjin, width: 1),
       ),
       child: Text(
-        result.castMethod.displayName,
+        methodLabel ?? result.castMethod.displayName,
         style: const TextStyle(
           fontSize: 10,
           fontWeight: FontWeight.normal,
@@ -206,7 +208,9 @@ class HistoryRecordCard extends StatelessWidget {
       parts.add('占问：$question');
     }
     parts.add(
-        '${result.systemType.displayName}, ${result.castMethod.displayName}');
+      '${result.systemType.displayName}, '
+      '${methodLabel ?? result.castMethod.displayName}',
+    );
     parts.add(_summary(result));
     parts.add(_formatDateTime(result.castTime));
     return parts.join('。');
@@ -247,7 +251,7 @@ Color _systemColor(DivinationType t) {
     case DivinationType.meiHua:
       return AppColors.meihuaColor;
     case DivinationType.qiMen:
-      return AppColors.dailan;
+      return AppColors.qimenColor;
   }
 }
 
@@ -262,7 +266,7 @@ String? _systemBackground(DivinationType t) {
     case DivinationType.meiHua:
       return 'assets/images/screen_card/meihua_background.png';
     case DivinationType.qiMen:
-      return null;
+      return 'assets/images/screen_card/qimen_background.png';
   }
 }
 

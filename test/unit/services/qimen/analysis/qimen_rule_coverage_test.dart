@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:flutter_test/flutter_test.dart';
+import 'package:wanxiang_paipan/divination_systems/qimen/models/qimen_enums.dart';
 import 'package:wanxiang_paipan/divination_systems/qimen/models/qimen_result.dart';
 import 'package:wanxiang_paipan/domain/services/qimen/analysis/facts/qimen_constraint_fact_service.dart';
 import 'package:wanxiang_paipan/domain/services/qimen/analysis/facts/qimen_formation_service.dart';
@@ -290,6 +291,39 @@ void main() {
           incomplete.trace.map((step) => step.status).toSet(),
           <QimenEvaluationStatus>{QimenEvaluationStatus.notApplicable},
         );
+
+        for (final category in QimenQuestionCategory.values) {
+          final categoryResult = mutatedQimenAnalysisResult((json) {
+            final params = Map<String, dynamic>.from(json['panParams'] as Map)
+              ..['questionCategory'] = category.id;
+            json['panParams'] = params;
+          });
+          final roles = QimenRuleCatalog.convergenceFocusRoles[category]!;
+          final categoryBatch = QimenRelationFactService.evaluate(
+            categoryResult,
+            <QimenFocus>[
+              _primaryFocus(roles.$1, 2),
+              _primaryFocus(roles.$2, 2),
+            ],
+            ruleSetVersion: QimenRuleCatalog.v1,
+          );
+          final categoryFact = categoryBatch.facts.singleWhere(
+            (fact) => fact.ruleId == QimenRuleCatalog.favorableConvergence,
+          );
+          expect(
+            categoryFact.inputRefs,
+            contains(
+              isA<QimenInputRef>()
+                  .having(
+                    (ref) => ref.path,
+                    'path',
+                    r'$.panParams.questionCategory',
+                  )
+                  .having((ref) => ref.value, 'value', category.id),
+            ),
+            reason: category.id,
+          );
+        }
       },
     );
   });

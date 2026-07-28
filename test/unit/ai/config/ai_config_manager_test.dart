@@ -129,6 +129,116 @@ void main() {
       expect(await manager.getCustomTemplateCount(), 0);
     });
 
+    test('initializeBuiltInTemplates 重启和重复初始化应保留内置模板选择', () async {
+      final selected = BuiltInTemplates.liuYaoBriefPrompt;
+      await manager.setActiveTemplate(
+        selected.id,
+        selected.systemType,
+        selected.templateType,
+      );
+
+      final restartedManager = AIConfigManager(
+        database: database,
+        secureStorage: secureStorage,
+      );
+      await restartedManager.initializeBuiltInTemplates();
+      final firstInitialization = await restartedManager.getActiveTemplate(
+        selected.systemType,
+        selected.templateType,
+      );
+      await restartedManager.initializeBuiltInTemplates();
+
+      final active = await restartedManager.getActiveTemplate(
+        selected.systemType,
+        selected.templateType,
+      );
+      final templates = await restartedManager.getTemplatesByType(
+        selected.systemType,
+        selected.templateType,
+      );
+
+      expect(active?.id, selected.id);
+      expect(active?.updatedAt, firstInitialization?.updatedAt);
+      expect(templates.where((template) => template.isActive), hasLength(1));
+      expect(
+        templates.where((template) => template.id == selected.id),
+        hasLength(1),
+      );
+    });
+
+    test('initializeBuiltInTemplates 重启和重复初始化应保留自定义模板选择', () async {
+      final customTemplate = model.PromptTemplate(
+        id: 'custom_active_analysis',
+        name: '自定义综合分析',
+        systemType: 'liuyao',
+        templateType: 'analysis',
+        content: 'custom content',
+        isBuiltIn: false,
+        isActive: false,
+        createdAt: DateTime(2026, 7, 28, 10),
+        updatedAt: DateTime(2026, 7, 28, 10),
+      );
+      await manager.saveTemplate(customTemplate);
+      await manager.setActiveTemplate(
+        customTemplate.id,
+        customTemplate.systemType,
+        customTemplate.templateType,
+      );
+
+      final restartedManager = AIConfigManager(
+        database: database,
+        secureStorage: secureStorage,
+      );
+      await restartedManager.initializeBuiltInTemplates();
+      await restartedManager.initializeBuiltInTemplates();
+
+      final active = await restartedManager.getActiveTemplate(
+        customTemplate.systemType,
+        customTemplate.templateType,
+      );
+      final templates = await restartedManager.getTemplatesByType(
+        customTemplate.systemType,
+        customTemplate.templateType,
+      );
+
+      expect(active?.id, customTemplate.id);
+      expect(active?.isBuiltIn, isFalse);
+      expect(templates.where((template) => template.isActive), hasLength(1));
+      expect(
+        templates.where((template) => template.id == customTemplate.id),
+        hasLength(1),
+      );
+    });
+
+    test('initializeBuiltInTemplates 仅在没有有效选择时启用默认模板', () async {
+      final defaultTemplate = BuiltInTemplates.qimenAnalysisPrompt;
+      final templates = await manager.getTemplatesByType(
+        defaultTemplate.systemType,
+        defaultTemplate.templateType,
+      );
+      for (final template in templates) {
+        await manager.saveTemplate(template.copyWith(isActive: false));
+      }
+      expect(
+        await manager.getActiveTemplate(
+          defaultTemplate.systemType,
+          defaultTemplate.templateType,
+        ),
+        isNull,
+      );
+
+      await manager.initializeBuiltInTemplates();
+
+      final initializedTemplates = await manager.getTemplatesByType(
+        defaultTemplate.systemType,
+        defaultTemplate.templateType,
+      );
+      expect(
+        initializedTemplates.singleWhere((template) => template.isActive).id,
+        defaultTemplate.id,
+      );
+    });
+
     test('clearAllProviderProfiles 应顺带清理遗留旧配置残留', () async {
       await secureStorage.write(
         'llm_provider_openai_compatible_apikey',

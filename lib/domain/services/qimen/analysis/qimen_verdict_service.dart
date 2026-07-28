@@ -222,21 +222,26 @@ class QimenVerdictService {
           final branches = _refValue(fact, 'voidBranches')
               ?.split(',')
               .where((value) => value.isNotEmpty)
+              .toSet()
               .toList(growable: false);
-          final branch = branches == null || branches.isEmpty
-              ? null
-              : (branches..sort()).first;
-          condition = branch == null
-              ? null
-              : _condition(
-                  fact: fact,
-                  label: '待$branch填实空亡',
-                  branch: branch,
-                  reason: '${fact.reason} 观察$branch到临填实，但不保证事情发生。',
-                  triggerKind: 'branch',
-                  triggerValue: branch,
-                  releaseScale: YingQiScale.ri,
-                );
+          if (branches != null) branches.sort();
+          if (branches == null || branches.isEmpty) {
+            condition = null;
+          } else {
+            for (final branch in branches) {
+              result.add(_condition(
+                fact: fact,
+                label: '待$branch填实空亡',
+                branch: branch,
+                reason: '${fact.reason} 观察$branch到临填实，但不保证事情发生。',
+                triggerKind: 'branch',
+                triggerValue: branch,
+                releaseScale: YingQiScale.ri,
+                conditionIdSuffix: branches.length > 1 ? branch : null,
+              ));
+            }
+            condition = null;
+          }
         case QimenRuleCatalog.qiYiTomb:
           final palace = fact.relatedPalaceNumbers.firstOrNull;
           final tombBranch = palace == null
@@ -297,6 +302,7 @@ class QimenVerdictService {
     required String triggerValue,
     required YingQiScale releaseScale,
     String? branch,
+    String? conditionIdSuffix,
   }) {
     final sources = <String>{
       ...fact.sourceIds,
@@ -304,7 +310,8 @@ class QimenVerdictService {
     }.toList(growable: false)
       ..sort();
     return QimenVerdictCondition(
-      conditionId: 'QMV1-COND@${fact.occurrenceId}',
+      conditionId: 'QMV1-COND@${fact.occurrenceId}'
+          '${conditionIdSuffix == null ? '' : ':$conditionIdSuffix'}',
       sourceFactId: fact.occurrenceId,
       ruleId: fact.ruleId,
       condition: VerdictCondition(

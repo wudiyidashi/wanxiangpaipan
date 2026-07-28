@@ -1,13 +1,14 @@
 # 奇门遁甲系统说明
 
-**状态**：Domain Engine Complete / Product Integration Pending  
+**状态**：Product Integration Complete / Enabled
 **规则范围**：时家转盘奇门  
-**结果 schema**：`qimen` / version `1`
+**结果 schema**：`qimen` / pan `1` / analysis `1` / projection `1`
 
 ## 1. 系统边界
 
-本模块提供可独立调用、可序列化和可由通用仓储保存的奇门排盘引擎。
-当前不注册到产品启动入口、不提供 Flutter 起局页或结果页；这些属于后续产品集成任务。
+本模块已注册到产品启动入口，提供排盘、规则分析、Flutter 起局与结果页、
+历史重开、数据管理和 AI 结构化解读。产品层只消费程序生成的强类型盘面与分析
+投影，不在 UI、历史或 AI 层重新排盘或改写裁决。
 
 支持：
 
@@ -17,8 +18,11 @@
 - 当地民用时间、北京时间、真太阳时
 - 子初换日、午夜换日
 - 完整九宫、三奇六仪、九星、八门、八神、暗干、旬空和驿马
+- 四值规则裁决、焦点与事实、冲突、来源和应期观察窗口
+- 历史重开、按系统统计与清理、备份导入导出
+- 奇门系统、综合和简要三类 AI 模板
 
-不支持：飞盘、阴盘、年家、月家、日家奇门和断局分析。
+不支持：飞盘、阴盘、年家、月家、日家奇门、自动定位和地图选点。
 
 ## 2. 输入合同
 
@@ -108,13 +112,65 @@ offset。真太阳时对每个交节时刻应用当时的经度与方程时校�
 
 反序列化会拒绝未知 schema、错误 system type 和不完整九宫。
 
-## 5. 持久化与集成
+## 5. 产品装配与页面合同
 
-Qimen 复用 `DivinationRepository` 的 JSON 存储与查询，不增加数据库表。调用方可在
-独立作用域把 `QimenSystem` 注册到 `DivinationRegistry` 后保存和读取；产品
-`registry_bootstrap.dart` 在后续 UI 任务前保持不变。
+产品启动同时注册 `QimenSystem`、`QimenUIFactory`、`QimenSystem` Provider、
+`QimenViewModel` 和 `QimenStructuredFormatter`。系统支持方式固定为
+`[CastMethod.time, CastMethod.manual]`，首页默认进入时间起局；任一必需依赖缺失
+都属于发布门失败。
 
-## 6. 规则来源
+起局提交顺序固定为：
+
+```text
+validate -> cast -> save result/question -> registry result navigation
+```
+
+保存失败不得导航。占问通过现有加密引用保存，不混入盘面 JSON。离开真太阳时后
+必须重建 `QimenPanParams` 并清除经度；手动 payload 必须显式组装，不能直接把
+`QimenPanParams.toJson()` 当作系统输入，也不能在 `params` 中加入 `juMethod`。
+
+结果页固定顺序为：时间与口径、局数和值符值使、洛书九宫、关键标记、规则裁决、
+焦点/事实/审计链、应期、AI。九宫固定按 `4-9-2 / 3-5-7 / 8-1-6` 取宫，
+不依赖持久化列表顺序。宫格只显示可扫描摘要，点击后在详情 sheet 展示主宫、寄宫、
+标记、命中规则和来源。
+
+## 6. 本地规则分析
+
+`QimenAnalyzer.analyze()` 只读消费 `QimenResult`，规则集固定为
+`qimen-shijia-zhuanpan-analysis/v1`。`QimenAnalysisReport` 与
+`QimenAnalysisProjection` 只在运行时派生，绝不写入排盘 JSON 或数据库。
+
+裁决顺序固定为显式冲突 pair、焦点特异性、层级、同层未决；输出只允许
+`可成 / 难成 / 待条件 / 趋势不明`，禁止百分比、权重、星级或标签计数。
+应期是由程序事实和未决条件生成的观察窗口，不保证事件发生，也不自动改变裁决。
+不支持或损坏的分析输入必须显示兼容诊断并禁用 AI 调用，已恢复的盘面仍可查看。
+
+AI 投影策略固定为：
+
+```json
+{
+  "calculationOwner": "program",
+  "mayRecalculatePan": false,
+  "mayRecalculateAnalysis": false,
+  "mayOverrideVerdict": false
+}
+```
+
+## 7. 持久化、历史与 AI
+
+Qimen 复用 `DivinationRepository` 的稳定 `systemType=qimen`、`method=time/manual`
+和完整结果 JSON，不增加数据库表。历史只能通过 `QimenSystem.resultFromJson()`
+恢复，再由 UI registry 构建结果页；分析按明确规则版本重新派生。
+
+数据管理必须包含奇门计数、筛选、独立清理和备份往返。覆盖导入在清理现有数据前
+完成全量预检；单条损坏或未知 schema 记录隔离报告，不得破坏同一归档中的合法记录。
+当前 AI 对话与模板选择也属于备份和稳定 ID 合同。
+
+`QimenStructuredFormatter` 只消费 `QimenResult` 与程序分析投影，按
+`calculationBasis / palaces / focusAndFacts / verdict / timing / policy`
+输出。AI 仅负责解释和组织，不得重排、补局、重算分析或覆盖程序裁决。
+
+## 8. 规则来源
 
 规划和裁决基线：
 `.trellis/tasks/07-28-qimen-module/research/qimen-rule-baseline.md`。

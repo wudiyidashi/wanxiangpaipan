@@ -1,3 +1,4 @@
+import '../../../../../divination_systems/qimen/models/qimen_enums.dart';
 import '../models/qimen_rule_models.dart';
 import 'qimen_source_catalog.dart';
 
@@ -49,6 +50,24 @@ class QimenFormationSpec {
   final bool earthMatchesDayStem;
   final bool heavenMatchesXunHiddenStem;
   final bool earthMatchesXunHiddenStem;
+}
+
+enum QimenConvergencePattern {
+  samePalaceWithEitherFavorableDoor,
+  matterGeneratesSelfWithBothFavorableDoors,
+  selfControlsMatterWithSelfFavorableDoor,
+  matterControlsSelfWithSelfAdverseDoor,
+  selfGeneratesMatterWithMatterAdverseDoor,
+}
+
+class QimenConvergenceSpec {
+  const QimenConvergenceSpec({
+    required this.ruleId,
+    required this.patterns,
+  });
+
+  final String ruleId;
+  final List<QimenConvergencePattern> patterns;
 }
 
 class QimenRuleSet {
@@ -193,6 +212,63 @@ class QimenRuleCatalog {
     '壬': 'REN',
     '癸': 'GUI',
   };
+
+  static const Set<String> favorableConvergenceDoors = <String>{
+    '开门',
+    '休门',
+    '生门',
+  };
+  static const Set<String> adverseConvergenceDoors = <String>{
+    '死门',
+    '伤门',
+    '惊门',
+  };
+  static const Map<String, Set<String>> threeWonderDutyPairs =
+      <String, Set<String>>{
+    '乙': <String>{'己', '辛'},
+    '丙': <String>{'戊', '庚'},
+    '丁': <String>{'壬', '癸'},
+  };
+  static const Map<QimenQuestionCategory, (String, String)>
+      convergenceFocusRoles = <QimenQuestionCategory, (String, String)>{
+    QimenQuestionCategory.general: ('self', 'matter'),
+    QimenQuestionCategory.career: ('self', 'matter'),
+    QimenQuestionCategory.wealth: ('self', 'matter'),
+    QimenQuestionCategory.relationship: (
+      'relationshipYi',
+      'relationshipGeng',
+    ),
+    QimenQuestionCategory.health: ('healthDisease', 'healthTreatment'),
+    QimenQuestionCategory.study: ('self', 'matter'),
+    QimenQuestionCategory.travel: ('self', 'matter'),
+    QimenQuestionCategory.litigation: ('self', 'matter'),
+  };
+  static const List<QimenConvergenceSpec> convergenceSpecs =
+      <QimenConvergenceSpec>[
+    QimenConvergenceSpec(
+      ruleId: favorableConvergence,
+      patterns: <QimenConvergencePattern>[
+        QimenConvergencePattern.samePalaceWithEitherFavorableDoor,
+        QimenConvergencePattern.matterGeneratesSelfWithBothFavorableDoors,
+        QimenConvergencePattern.selfControlsMatterWithSelfFavorableDoor,
+      ],
+    ),
+    QimenConvergenceSpec(
+      ruleId: adverseConvergence,
+      patterns: <QimenConvergencePattern>[
+        QimenConvergencePattern.matterControlsSelfWithSelfAdverseDoor,
+        QimenConvergencePattern.selfGeneratesMatterWithMatterAdverseDoor,
+      ],
+    ),
+  ];
+
+  static QimenConvergenceSpec convergenceSpec(String ruleId) =>
+      convergenceSpecs.singleWhere(
+        (spec) => spec.ruleId == ruleId,
+        orElse: () => throw ArgumentError(
+          'Unknown Qimen convergence rule: $ruleId',
+        ),
+      );
 
   static String stemResponseRuleId(String heavenStem, String earthStem) {
     final heaven = stemCodes[heavenStem];
@@ -396,14 +472,14 @@ class QimenRuleCatalog {
     QimenFormationSpec(
       ruleId: dragonDun,
       heavenStem: '乙',
-      allowedDoors: <String>['开门', '休门', '生门'],
+      door: '休门',
       palaceNumber: 1,
     ),
     QimenFormationSpec(
       ruleId: tigerDun,
       heavenStem: '乙',
       earthStem: '辛',
-      allowedDoors: <String>['开门', '休门', '生门'],
+      door: '休门',
       palaceNumber: 8,
     ),
     QimenFormationSpec(
@@ -414,7 +490,7 @@ class QimenRuleCatalog {
     ),
     QimenFormationSpec(
       ruleId: ghostDun,
-      heavenStem: '丁',
+      heavenStem: '乙',
       door: '杜门',
       deity: '九地',
     ),
@@ -669,7 +745,14 @@ class QimenRuleCatalog {
       ),
     _formationRule(dragonReturns, '青龙返首'),
     _formationRule(birdFalls, '飞鸟跌穴'),
-    _formationRule(threeWonderDuty, '三奇得使'),
+    _formationRule(
+      threeWonderDuty,
+      '三奇得使',
+      sources: const <String>[
+        QimenSourceCatalog.dunJiaYanYi,
+        QimenSourceCatalog.tongZong,
+      ],
+    ),
     _formationRule(threeWonderYi, '乙奇升殿'),
     _formationRule(threeWonderBing, '丙奇升殿'),
     _formationRule(threeWonderDing, '丁奇升殿'),
@@ -684,7 +767,15 @@ class QimenRuleCatalog {
       (spiritDun, '神遁'),
       (ghostDun, '鬼遁'),
     ])
-      _formationRule(entry.$1, entry.$2),
+      _formationRule(
+        entry.$1,
+        entry.$2,
+        sources: const <String>[
+          QimenSourceCatalog.dunJiaYanYi,
+          QimenSourceCatalog.tongZong,
+          QimenSourceCatalog.projectV1,
+        ],
+      ),
     for (final entry in const <(String, String)>[
       (greenDragonFlees, '青龙逃走'),
       (whiteTigerRages, '白虎猖狂'),
@@ -836,6 +927,19 @@ class QimenRuleCatalog {
         formationSpecs.length) {
       throw StateError('Qimen formation catalog contains duplicate formulas');
     }
+    if (convergenceFocusRoles.length != QimenQuestionCategory.values.length ||
+        convergenceSpecs.map((value) => value.ruleId).toSet().length != 2 ||
+        convergenceSpecs.any((value) => value.patterns.isEmpty)) {
+      throw StateError('Qimen convergence catalog is incomplete');
+    }
+    if (threeWonderDutyPairs.keys.toSet().length != 3 ||
+        threeWonderDutyPairs.values
+            .any((earthStems) => earthStems.length != 2) ||
+        threeWonderDutyPairs.values.expand((earthStems) => earthStems).length !=
+            6) {
+      throw StateError(
+          'Qimen Three-Wonder-Duty catalog must contain six pairs');
+    }
     if (_stemResponseWitness.length != 81 ||
         stemResponseSpecs.length != 81 ||
         stemResponseByPair.length != stemResponseSpecs.length ||
@@ -968,6 +1072,10 @@ class QimenRuleCatalog {
     String term, {
     QimenFactRole role = QimenFactRole.support,
     QimenConflictTier tier = QimenConflictTier.corroborating,
+    List<String> sources = const <String>[
+      QimenSourceCatalog.dunJiaYanYi,
+      QimenSourceCatalog.tuShu707,
+    ],
   }) =>
       _rule(
         id,
@@ -977,9 +1085,6 @@ class QimenRuleCatalog {
         role: role,
         tier: tier,
         scopes: const <QimenFactScope>[QimenFactScope.palace],
-        sources: const <String>[
-          QimenSourceCatalog.dunJiaYanYi,
-          QimenSourceCatalog.tuShu707,
-        ],
+        sources: sources,
       );
 }

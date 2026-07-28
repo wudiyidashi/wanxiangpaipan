@@ -151,8 +151,7 @@ class QimenFocus {
             QimenIndicatorKind.fromId(json['indicatorKind'] as String),
         indicatorValue: json['indicatorValue'] as String,
         palaceNumber: json['palaceNumber'] as int,
-        originPalaceNumber:
-            json['originPalaceNumber'] as int? ?? json['palaceNumber'] as int,
+        originPalaceNumber: json['originPalaceNumber'] as int,
         priority: QimenFocusPriority.fromId(json['priority'] as String),
         isHosted: json['isHosted'] as bool,
         reason: json['reason'] as String,
@@ -695,6 +694,17 @@ void validateQimenAnalysisGraph({
   for (final focus in focuses) {
     knownRule(focus.ruleId, 'focus ${focus.roleId}');
     referenceSources(focus.sourceIds, 'focus ${focus.roleId}');
+    if (focus.palaceNumber < 1 ||
+        focus.palaceNumber > 9 ||
+        focus.originPalaceNumber < 1 ||
+        focus.originPalaceNumber > 9 ||
+        (focus.isHosted
+            ? focus.originPalaceNumber != 5 || focus.palaceNumber == 5
+            : focus.originPalaceNumber != focus.palaceNumber)) {
+      throw FormatException(
+        'Focus ${focus.roleId} has invalid hosted/origin provenance',
+      );
+    }
   }
   for (final fact in facts) {
     knownRule(fact.ruleId, 'fact ${fact.occurrenceId}');
@@ -780,6 +790,61 @@ void validateQimenAnalysisGraph({
         'Condition ${condition.conditionId} has a dangling source fact',
       );
     }
+  }
+
+  final judgmentConditions = verdict.judgment.conditions
+      .map(qimenConditionToJson)
+      .toList(growable: false);
+  final linkedConditions = verdict.conditionLinks
+      .map((condition) => qimenConditionToJson(condition.condition))
+      .toList(growable: false);
+  if (jsonEncode(judgmentConditions) != jsonEncode(linkedConditions)) {
+    throw const FormatException(
+      'Qimen verdict judgment conditions differ from condition links',
+    );
+  }
+  for (final factor in verdict.judgment.factors) {
+    final expectedSources = <String>{};
+    final rule = factor.rule;
+    if (rule.startsWith('焦点·')) {
+      final roleId = rule.substring('焦点·'.length);
+      final focus = focusesById[roleId];
+      if (focus == null || focus.priority != QimenFocusPriority.primary) {
+        throw FormatException('Unknown Qimen verdict factor rule: $rule');
+      }
+      expectedSources.addAll(focus.sourceIds);
+    } else if (conditionsById.containsKey(rule)) {
+      expectedSources.addAll(conditionsById[rule]!.sourceIds);
+    } else if (rule == verdict.matchedDecisionRowId) {
+      expectedSources.addAll(QimenRuleCatalog.rule(rule).sourceIds);
+    } else {
+      for (final factId in verdict.participatingFactIds) {
+        final fact = factsById[factId]!;
+        if (fact.ruleId == rule) expectedSources.addAll(fact.sourceIds);
+      }
+      for (final conflictId in verdict.conflictResolutionIds) {
+        final conflict = conflictsById[conflictId]!;
+        if (conflict.policyId == rule) {
+          expectedSources.addAll(QimenRuleCatalog.rule(rule).sourceIds);
+        }
+      }
+      if (expectedSources.isEmpty) {
+        throw FormatException('Unknown Qimen verdict factor rule: $rule');
+      }
+    }
+    final factorSources = factor.source
+        .split(',')
+        .map((sourceId) => sourceId.trim())
+        .where((sourceId) => sourceId.isNotEmpty)
+        .toList(growable: false);
+    _requireUnique(factorSources, 'verdict factor source ID');
+    if (factorSources.toSet().length != expectedSources.length ||
+        !factorSources.toSet().containsAll(expectedSources)) {
+      throw FormatException(
+        'Qimen verdict factor $rule has inconsistent sources',
+      );
+    }
+    referenceSources(factorSources, 'verdict factor $rule');
   }
 
   for (final candidate in yingQiCandidates) {

@@ -183,7 +183,9 @@ class PromptAssembler {
       DivinationType.meiHua => '你是一位精通梅花易数的易学专家。',
       DivinationType.daLiuRen => '你是一位精通大六壬的易学专家。',
       DivinationType.xiaoLiuRen => '你是一位精通小六壬的易学专家。',
-      DivinationType.qiMen => throw UnsupportedError('奇门分析引擎尚未接入'),
+      DivinationType.qiMen => '''
+你是一位精通时家转盘奇门的易学解释者。盘面、规则事实、四值裁决与应期观察窗均由程序计算；你只能解释这些结构化结果，不得重排九宫、重算分析或覆盖程序裁决。
+''',
     };
   }
 

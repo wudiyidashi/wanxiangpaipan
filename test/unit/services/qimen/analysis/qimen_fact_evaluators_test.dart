@@ -1,4 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
+import 'package:wanxiang_paipan/divination_systems/qimen/models/qimen_result.dart';
 import 'package:wanxiang_paipan/domain/services/qimen/analysis/facts/qimen_constraint_fact_service.dart';
 import 'package:wanxiang_paipan/domain/services/qimen/analysis/facts/qimen_formation_service.dart';
 import 'package:wanxiang_paipan/domain/services/qimen/analysis/facts/qimen_star_door_state_service.dart';
@@ -377,6 +378,155 @@ void main() {
   });
 
   group('Qimen formation facts', () {
+    test('evaluates Dragon, Tiger, and Ghost Dun independently', () {
+      final cases = <({
+        String ruleId,
+        int palaceNumber,
+        String heavenStem,
+        String? earthStem,
+        String door,
+        String? deity,
+      })>[
+        (
+          ruleId: QimenRuleCatalog.dragonDun,
+          palaceNumber: 1,
+          heavenStem: '乙',
+          earthStem: null,
+          door: '休门',
+          deity: null,
+        ),
+        (
+          ruleId: QimenRuleCatalog.tigerDun,
+          palaceNumber: 8,
+          heavenStem: '乙',
+          earthStem: '辛',
+          door: '休门',
+          deity: null,
+        ),
+        (
+          ruleId: QimenRuleCatalog.ghostDun,
+          palaceNumber: 1,
+          heavenStem: '乙',
+          earthStem: null,
+          door: '杜门',
+          deity: '九地',
+        ),
+      ];
+
+      for (final testCase in cases) {
+        QimenResult fixture({required bool matches}) =>
+            mutatedQimenAnalysisResult((json) {
+              final palace =
+                  qimenAnalysisPalaceJson(json, testCase.palaceNumber)
+                    ..['heavenStem'] = testCase.heavenStem
+                    ..['door'] = testCase.door
+                    ..['hostedHeavenStem'] = null
+                    ..['hostedEarthStem'] = null;
+              if (testCase.earthStem != null) {
+                palace['earthStem'] = matches ? testCase.earthStem : '戊';
+              } else if (testCase.deity != null) {
+                palace['deity'] = matches ? testCase.deity : '九天';
+              } else if (!matches) {
+                palace['door'] = '开门';
+              }
+            });
+
+        final positive = QimenFormationService.evaluate(
+          fixture(matches: true),
+          const <QimenFocus>[],
+          ruleSetVersion: QimenRuleCatalog.v1,
+        );
+        final negative = QimenFormationService.evaluate(
+          fixture(matches: false),
+          const <QimenFocus>[],
+          ruleSetVersion: QimenRuleCatalog.v1,
+        );
+
+        expect(
+          _hasRuleAt(positive.facts, testCase.ruleId, testCase.palaceNumber),
+          true,
+          reason: 'positive ${testCase.ruleId}',
+        );
+        expect(
+          _hasRuleAt(negative.facts, testCase.ruleId, testCase.palaceNumber),
+          false,
+          reason: 'negative ${testCase.ruleId}',
+        );
+      }
+    });
+
+    test('evaluates all six Three-Wonder-Duty pairs without hiding adversity',
+        () {
+      const adverseByPair = <(String, String), String>{
+        ('乙', '辛'): QimenRuleCatalog.greenDragonFlees,
+        ('丙', '庚'): QimenRuleCatalog.fireEntersMetal,
+        ('丁', '癸'): QimenRuleCatalog.vermilionFallsRiver,
+      };
+      const invalidEarth = <String, String>{
+        '乙': '戊',
+        '丙': '己',
+        '丁': '庚',
+      };
+
+      for (final entry in QimenRuleCatalog.threeWonderDutyPairs.entries) {
+        for (final earthStem in entry.value) {
+          final positive = mutatedQimenAnalysisResult((json) {
+            qimenAnalysisPalaceJson(json, 1)
+              ..['heavenStem'] = entry.key
+              ..['earthStem'] = earthStem
+              ..['hostedHeavenStem'] = null
+              ..['hostedEarthStem'] = null;
+          });
+          final positiveBatch = QimenFormationService.evaluate(
+            positive,
+            const <QimenFocus>[],
+            ruleSetVersion: QimenRuleCatalog.v1,
+          );
+          final dutyFact = positiveBatch.facts.singleWhere(
+            (fact) =>
+                fact.ruleId == QimenRuleCatalog.threeWonderDuty &&
+                fact.relatedPalaceNumbers.contains(1),
+          );
+          expect(
+            dutyFact.inputRefs.map((ref) => ref.value),
+            <String>[entry.key, earthStem],
+            reason: '${entry.key}+$earthStem',
+          );
+
+          final adverseRule = adverseByPair[(entry.key, earthStem)];
+          if (adverseRule != null) {
+            expect(
+              _hasRuleAt(positiveBatch.facts, adverseRule, 1),
+              true,
+              reason: '$adverseRule must coexist with Three-Wonder-Duty',
+            );
+          }
+
+          final negative = mutatedQimenAnalysisResult((json) {
+            qimenAnalysisPalaceJson(json, 1)
+              ..['heavenStem'] = entry.key
+              ..['earthStem'] = invalidEarth[entry.key]
+              ..['hostedHeavenStem'] = null
+              ..['hostedEarthStem'] = null;
+          });
+          final negativeBatch = QimenFormationService.evaluate(
+            negative,
+            const <QimenFocus>[],
+            ruleSetVersion: QimenRuleCatalog.v1,
+          );
+          expect(
+            _hasRuleAt(
+              negativeBatch.facts,
+              QimenRuleCatalog.threeWonderDuty,
+              1,
+            ),
+            false,
+            reason: 'negative ${entry.key}+${invalidEarth[entry.key]}',
+          );
+        }
+      }
+    });
+
     test('distinguishes day-stem and xun-hidden flying/hidden formulas', () {
       final cases = <({
         String heaven,

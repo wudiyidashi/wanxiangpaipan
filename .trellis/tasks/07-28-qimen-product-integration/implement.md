@@ -18,7 +18,7 @@
   `QimenAnalyzer.analyze` / `analyzePersisted` 与
   `QimenAnalysisProjection.fromReport`。
 - 分析黄金 fixture SHA-256：
-  `9DE7FAA2A9247AB6C4071E2D86BD51440FC0BD9BDF46DDCE96F09FB37BFC14A4`。
+  `D575DC31D56C8F6585D365CB42212F36C56FD37D3C97A22DD288BEF9ADE73E2E`。
 - 排盘口径稳定 ID：定局 `chaiBu/maoShan/zhiRun/manual`，时间基准
   `localCivil/beijing/trueSolar`，换日 `ziInitial/midnight`，寄宫
   `kunTwo/yangEightYinTwo`，暗干
@@ -32,61 +32,61 @@
 
 - [x] 1.1 阅读统一术数接口、跨层/复用指南、父任务 integration map、两个上游 design/spec 和相关测试先例。
 - [x] 1.2 运行 `rg "DivinationType\\." lib test`、`rg "DivinationType.values" lib test`、`rg "systemType" lib/ai lib/presentation lib/domain/services`，保存所有穷举和硬编码列表清单。
-- [ ] 1.3 先新增 enum/registry/provider/data-management/AI 契约测试及 Qimen UI factory 类型错误测试，确认未接入状态下按预期失败。
+- [x] 1.3 先新增 enum/registry/provider/data-management/AI 契约测试及 Qimen UI factory 类型错误测试，确认未接入状态下按预期失败。
 - [x] 1.4 确认通用 Drift 表足够，不创建 migration；若发现存储合同不符，暂停并回到设计评审。
 
 ## 2. ViewModel 与起局页
 
-- [ ] 2.1 实现 `QimenViewModel` 两种类型化 cast 入口和通用保存桥接，覆盖 loading/error/result、加密占问与重复提交测试。
-- [ ] 2.2 实现 `QimenCastScreen` 基础结构、占问、问事类型、time/manual 方式和最近方式恢复。
-- [ ] 2.3 实现自动起局日期时间、三种定局、三种时间基准；真太阳时条件经度与边界校验先通过 widget/payload 测试。
-- [ ] 2.4 实现高级换日、寄宫、暗干控件及折叠摘要，确保隐藏字段不进入错误 payload。
-- [ ] 2.5 实现手动四柱、节气、阴阳遁、局数和三元；覆盖缺失、非法六十甲子、越界和合法提交。
-- [ ] 2.6 实现 cast -> save -> registry navigation 状态机；保存失败、unmounted 与连续点击测试通过后再进入结果页工作。
+- [x] 2.1 实现 `QimenViewModel` 两种类型化 cast 入口和通用保存桥接，覆盖 loading/error/result、加密占问与重复提交测试。
+- [x] 2.2 实现 `QimenCastScreen` 基础结构、占问、问事类型、time/manual 方式和最近方式恢复。
+- [x] 2.3 实现自动起局日期时间、三种定局、三种时间基准；真太阳时条件经度与边界校验先通过 widget/payload 测试。
+- [x] 2.4 实现高级换日、寄宫、暗干控件及折叠摘要，确保隐藏字段不进入错误 payload。
+- [x] 2.5 实现手动四柱、节气、阴阳遁、局数和三元；覆盖缺失、非法六十甲子、越界和合法提交。
+- [x] 2.6 实现 cast -> save -> registry navigation 状态机；保存失败、unmounted 与连续点击测试通过后再进入结果页工作。
 
 Rollback point：此阶段不注册系统，整组 UI/ViewModel 可撤销且不影响现有入口。
 
 ## 3. 九宫与结果页
 
-- [ ] 3.1 实现时间/口径、局数/值符值使结果 sections，全部读取 `QimenResult` 字段。
-- [ ] 3.2 实现固定洛书顺序的 `QimenNinePalaceGrid`，为宫格定义稳定 track 和 main/hosted 槽；添加九宫唯一与顺序测试。
-- [ ] 3.3 实现宫位详情 sheet，覆盖天地盘、星门神、暗干、寄宫、空亡/驿马、标记、规则和来源。
-- [ ] 3.4 在 320/390/600 logical px、宽屏、横竖屏和放大文字下运行 widget overflow 测试；修复任何重叠、裁切和点击区域问题。
-- [ ] 3.5 按冻结顺序装配 `QimenResultScreen`，确保九宫和全部 sections 在无分析/诊断状态下仍可展示。
+- [x] 3.1 实现时间/口径、局数/值符值使结果 sections，全部读取 `QimenResult` 字段。
+- [x] 3.2 实现固定洛书顺序的 `QimenNinePalaceGrid`，为宫格定义稳定 track 和 main/hosted 槽；添加九宫唯一与顺序测试。
+- [x] 3.3 实现宫位详情 sheet，覆盖天地盘、星门神、暗干、寄宫、空亡/驿马、标记、规则和来源。
+- [x] 3.4 在 320/390/600 logical px、宽屏、横竖屏和放大文字下运行 widget overflow 测试；修复任何重叠、裁切和点击区域问题。
+- [x] 3.5 按冻结顺序装配 `QimenResultScreen`，确保九宫和全部 sections 在无分析/诊断状态下仍可展示。
 
 ## 4. 本地分析展示
 
-- [ ] 4.1 接入 analyzer 的显式/current 规则版本，结果页只派生一次 report，不落库。
-- [ ] 4.2 实现四值裁决、条件、因素、焦点、事实、冲突与来源展示；完整 trace 按需展开。
-- [ ] 4.3 实现 Qimen 特有应期触发适配及观察窗口声明，不破坏现有共享 YingQi 消费者。
-- [ ] 4.4 覆盖 complete、unsupported pan schema、invalid pan facts、无唯一焦点和规则版本切换 UI 测试。
-- [ ] 4.5 搜索并拒绝 percent/score/rating/星级/加权/标签计数表现，颜色之外保留文本和 semantics。
+- [x] 4.1 接入 analyzer 的显式/current 规则版本，结果页只派生一次 report，不落库。
+- [x] 4.2 实现四值裁决、条件、因素、焦点、事实、冲突与来源展示；完整 trace 按需展开。
+- [x] 4.3 实现 Qimen 特有应期触发适配及观察窗口声明，不破坏现有共享 YingQi 消费者。
+- [x] 4.4 覆盖 complete、unsupported pan schema、invalid pan facts、无唯一焦点和规则版本切换 UI 测试。
+- [x] 4.5 搜索并拒绝 percent/score/rating/星级/加权/标签计数表现，颜色之外保留文本和 semantics。
 
 ## 5. 历史、数据管理与资源
 
-- [ ] 5.1 实现 `QimenUIFactory` 的 cast/result/history 构建和严格结果类型检查，但暂不启用 bootstrap。
-- [ ] 5.2 完成内存 Drift 保存、最近记录、按系统查询、历史卡片和 registry 详情重开的全链测试，深比较九宫和参数。
-- [ ] 5.3 更新数据统计、总量、奇门独立清理、导出/导入和设置 UI；同步测试 fake 与隔离测试。
-- [ ] 5.4 新增奇门系统色和 `qimen_background.png`；记录生成/许可信息，验证图片可解码、非空白、目标裁切可辨识和资源声明。
-- [ ] 5.5 更新首页/最近记录/历史卡片所有名称、背景和颜色分支，验证第五个系统时的窄屏网格。
+- [x] 5.1 实现 `QimenUIFactory` 的 cast/result/history 构建和严格结果类型检查，但暂不启用 bootstrap。
+- [x] 5.2 完成内存 Drift 保存、最近记录、按系统查询、历史卡片和 registry 详情重开的全链测试，深比较九宫和参数。
+- [x] 5.3 更新数据统计、总量、奇门独立清理、导出/导入和设置 UI；同步测试 fake 与隔离测试。
+- [x] 5.4 新增奇门系统色和 `qimen_background.png`；记录生成/许可信息，验证图片可解码、非空白、目标裁切可辨识和资源声明。
+- [x] 5.5 更新首页/最近记录/历史卡片所有名称、背景和颜色分支，验证第五个系统时的窄屏网格。
 
 ## 6. AI Formatter 与模板
 
-- [ ] 6.1 实现 `QimenStructuredFormatter`，只使用 result + analysis projection，输出 calculationBasis/palaces/focusAndFacts/verdict/timing/policy。
-- [ ] 6.2 添加 formatter 类型错误、完整字段、稳定顺序、来源和 no-recalculate/no-override policy 测试。
-- [ ] 6.3 注册奇门 formatter，新增系统/综合/简要模板，更新 prompt assembler、设置和聊天标签。
-- [ ] 6.4 补齐 AI 会话 enum JSON 代码生成和旧数据回归；无 provider/formatter/兼容诊断状态走受控降级。
-- [ ] 6.5 审查所有 prompt：只允许解释程序事实，不得要求 AI 重排、重算、补局或静默覆盖本地裁决。
+- [x] 6.1 实现 `QimenStructuredFormatter`，只使用 result + analysis projection，输出 calculationBasis/palaces/focusAndFacts/verdict/timing/policy。
+- [x] 6.2 添加 formatter 类型错误、完整字段、稳定顺序、来源和 no-recalculate/no-override policy 测试。
+- [x] 6.3 注册奇门 formatter，新增系统/综合/简要模板，更新 prompt assembler、设置和聊天标签。
+- [x] 6.4 补齐 AI 会话 enum JSON 代码生成和旧数据回归；无 provider/formatter/兼容诊断状态走受控降级。
+- [x] 6.5 审查所有 prompt：只允许解释程序事实，不得要求 AI 重排、重算、补局或静默覆盖本地裁决。
 
 ## 7. 最后注册与全仓收敛
 
-- [ ] 7.1 更新 `DivinationType` 全部 stable ID/display/fromId/count 测试与每个穷举 switch；运行 analyzer 消除遗漏。
-- [ ] 7.2 在 `main.dart` 注册 Provider/ViewModel，在 bootstrap 同时注册 system/UI factory，并仅在全部目标测试通过后设置 enabled。
-- [ ] 7.3 验证首页入口 -> 起局 -> 保存 -> 结果 -> 宫详情 -> 本地分析/应期 -> AI -> 历史重开 -> 导出导入 -> 清理完整流程。
-- [ ] 7.4 更新 `docs/architecture/divination-systems/qimen.md`、系统索引、统一接口文档和受影响 specs，确保字段和页面顺序与实现一致。
-- [ ] 7.5 运行代码生成、格式化、目标测试、静态分析和全量测试；失败时撤销启用而不是发布半闭环。
-- [ ] 7.6 派发 `trellis-check` 检查跨层数据流、穷举分支、响应式 UI、AI 边界、资源和回归，修复后重复完整质量门。
-- [ ] 7.7 按 finish workflow 更新 release notes/spec、提交并归档本子任务，再由父任务进行最终集成复核。
+- [x] 7.1 更新 `DivinationType` 全部 stable ID/display/fromId/count 测试与每个穷举 switch；运行 analyzer 消除遗漏。
+- [x] 7.2 在 `main.dart` 注册 Provider/ViewModel，在 bootstrap 同时注册 system/UI factory，并仅在全部目标测试通过后设置 enabled。
+- [x] 7.3 验证首页入口 -> 起局 -> 保存 -> 结果 -> 宫详情 -> 本地分析/应期 -> AI -> 历史重开 -> 导出导入 -> 清理完整流程。
+- [x] 7.4 更新 `docs/architecture/divination-systems/qimen.md`、系统索引、统一接口文档和受影响 specs，确保字段和页面顺序与实现一致。
+- [x] 7.5 运行代码生成、格式化、目标测试、静态分析和全量测试；失败时撤销启用而不是发布半闭环。
+- [x] 7.6 派发 `trellis-check` 检查跨层数据流、穷举分支、响应式 UI、AI 边界、资源和回归，修复后重复完整质量门。
+- [x] 7.7 按 finish workflow 更新 release notes/spec、提交并归档本子任务，再由父任务进行最终集成复核。
 
 ## Validation Commands
 
@@ -117,6 +117,23 @@ rg -n "Qimen(Time|Ju|Earth|Heaven|Duty|Door|Deity|Hidden|Marker).*Service" lib/d
 ```
 
 生产 UI/formatter 中命中排盘 service 或数值评分逻辑即为失败。
+
+## Completion Evidence
+
+- `dart run build_runner build --delete-conflicting-outputs`、格式检查、
+  `flutter analyze` 与 `git diff --check` 均通过。
+- 奇门产品套件 227 项、AI/数据管理套件 96 项、全量 `flutter test`
+  1,185 项通过；最终 `trellis-check` 未留未修复问题。
+- 独立验证工作树只装配本任务白名单，不含 `tmp/` 或并行大六壬改动；
+  `flutter pub get`、代码生成、格式检查与静态分析通过。
+- `DivinationType` 穷举逐项复核；评分术语与 Qimen UI/formatter
+  排盘阶段 service 导入审计均为零命中。
+- Android 模拟器已人工验收首页入口、自动/手动起局、保存、九宫结果、
+  宫位详情、本地裁决/应期、AI 降级、历史重开和数据管理主闭环。
+- 背景资源 `assets/images/screen_card/qimen_background.png` 可解码且非空白，
+  SHA-256 为
+  `610B2A284B27D79E85A3C239E1A0976302E6D5B5900EB0777943219C705D7C7D`；
+  生成提示词、工具与模型记录在同目录 provenance 文档中。
 
 ## Risk And Rollback
 

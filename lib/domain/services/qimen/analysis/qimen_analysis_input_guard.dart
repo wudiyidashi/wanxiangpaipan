@@ -53,15 +53,6 @@ class QimenAnalysisInputGuard {
     '九地',
     '九天',
   };
-  static const Map<String, String> _xunHiddenStems = <String, String>{
-    '甲子': '戊',
-    '甲戌': '己',
-    '甲申': '庚',
-    '甲午': '辛',
-    '甲辰': '壬',
-    '甲寅': '癸',
-  };
-
   static QimenInputGuardResult unsupportedSchema({
     required Object? schemaVersion,
   }) =>
@@ -135,8 +126,7 @@ class QimenAnalysisInputGuard {
       final center = palaces.singleWhere((palace) => palace.number == 5);
       for (final palace in palaces) {
         final path = '\$.palaces[number=${palace.number}]';
-        final expectedElement =
-            QimenConstants.palaceMeta[palace.number]!.element;
+        final expectedMeta = QimenConstants.palaceMeta[palace.number]!;
         if (palace.name.isEmpty ||
             palace.trigram.isEmpty ||
             palace.direction.isEmpty ||
@@ -150,12 +140,43 @@ class QimenAnalysisInputGuard {
             'palace ${palace.number} has an empty required fact',
           );
         }
-        if (palace.element != expectedElement) {
+        if (palace.name != expectedMeta.name) {
+          invalid(
+            'QMV1-E-PALACE-NAME',
+            '$path.name',
+            'palace ${palace.number} name ${palace.name} does not match '
+                'the frozen palace name ${expectedMeta.name}',
+          );
+        }
+        if (palace.trigram != expectedMeta.trigram) {
+          invalid(
+            'QMV1-E-PALACE-TRIGRAM',
+            '$path.trigram',
+            'palace ${palace.number} trigram ${palace.trigram} does not match '
+                'the frozen trigram ${expectedMeta.trigram}',
+          );
+        }
+        if (palace.direction != expectedMeta.direction) {
+          invalid(
+            'QMV1-E-PALACE-DIRECTION',
+            '$path.direction',
+            'palace ${palace.number} direction ${palace.direction} does not '
+                'match the frozen direction ${expectedMeta.direction}',
+          );
+        }
+        if (palace.element != expectedMeta.element) {
           invalid(
             'QMV1-E-PALACE-ELEMENT',
             '$path.element',
             'palace ${palace.number} element ${palace.element} does not match '
-                'the frozen palace element $expectedElement',
+                'the frozen palace element ${expectedMeta.element}',
+          );
+        }
+        if (!_sameValues(palace.branches, expectedMeta.branches)) {
+          invalid(
+            'QMV1-E-PALACE-BRANCHES',
+            '$path.branches',
+            'palace ${palace.number} branches do not match frozen metadata',
           );
         }
         if (palace.number == 5) {
@@ -241,22 +262,61 @@ class QimenAnalysisInputGuard {
       final hostedHeaven = palaces
           .where((palace) => palace.hostedHeavenStem != null)
           .toList(growable: false);
+      final earthHost = palaces.singleWhere(
+        (palace) => palace.number == expectedHost,
+      );
       if (hostedHeaven.length != 1 ||
-          hostedHeaven.single.hostedHeavenStem != center.heavenStem) {
+          hostedHeaven.single.hostedHeavenStem != center.heavenStem ||
+          hostedHeaven.single.heavenStem != earthHost.earthStem) {
         invalid(
           'QMV1-E-HOSTED-HEAVEN',
           r'$.palaces[*].hostedHeavenStem',
-          'hosted heaven stem must preserve the center heaven stem',
+          'hosted heaven stem must preserve the center stem at the rotated '
+              'host-source occurrence',
         );
       }
       final hostedStars = palaces
           .where((palace) => palace.hostedStar != null)
           .toList(growable: false);
-      if (hostedStars.length != 1 || hostedStars.single.hostedStar != '天禽') {
+      if (hostedStars.length != 1 ||
+          hostedStars.single.hostedStar != '天禽' ||
+          hostedStars.single.star != '天芮') {
         invalid(
           'QMV1-E-HOSTED-STAR',
           r'$.palaces[*].hostedStar',
-          'hosted star must preserve Tian Qin exactly once',
+          'hosted Tian Qin must occur exactly once with primary Tian Rui',
+        );
+      }
+
+      final hiddenStems = palaces
+          .map((palace) => palace.hiddenStem)
+          .whereType<String>()
+          .toList(growable: false);
+      if (result.panParams.hiddenStemMode ==
+          QimenHiddenStemMode.dutyDoorHourStem) {
+        _expectExactSet(
+          values: hiddenStems,
+          expected: QimenRuleCatalog.qiYi.toSet(),
+          code: 'QMV1-E-HIDDEN-STEMS',
+          path: r'$.palaces[*].hiddenStem',
+          invalid: invalid,
+        );
+      } else {
+        final expectedHidden = QimenRuleCatalog.qiYi.toSet()
+          ..remove(center.earthStem);
+        if (center.hiddenStem != null) {
+          invalid(
+            'QMV1-E-HIDDEN-STEMS',
+            r'$.palaces[number=5].hiddenStem',
+            'door-origin hidden-stem mode keeps the center field null',
+          );
+        }
+        _expectExactSet(
+          values: hiddenStems,
+          expected: expectedHidden,
+          code: 'QMV1-E-HIDDEN-STEMS',
+          path: r'$.palaces[*].hiddenStem',
+          invalid: invalid,
         );
       }
 
@@ -314,7 +374,7 @@ class QimenAnalysisInputGuard {
       }
     }
 
-    if (_xunHiddenStems[result.xunShou] != result.xunHiddenStem) {
+    if (QimenConstants.xunHiddenStem[result.xunShou] != result.xunHiddenStem) {
       invalid(
         'QMV1-E-XUN-HIDDEN-STEM',
         r'$.xunHiddenStem',
@@ -328,8 +388,9 @@ class QimenAnalysisInputGuard {
         'ju number must be from 1 through 9',
       );
     }
-    if (result.temporalContext.currentSolarTerm.isEmpty ||
-        result.juInfo.effectiveSolarTerm.isEmpty) {
+    if (!QimenConstants.solarTerms
+            .contains(result.temporalContext.currentSolarTerm) ||
+        !QimenConstants.solarTerms.contains(result.juInfo.effectiveSolarTerm)) {
       invalid(
         'QMV1-E-SOLAR-TERM',
         r'$.temporalContext.currentSolarTerm',
@@ -375,5 +436,13 @@ class QimenAnalysisInputGuard {
       if (palace.number == number) return palace;
     }
     return null;
+  }
+
+  static bool _sameValues(List<String> left, List<String> right) {
+    if (left.length != right.length) return false;
+    for (var index = 0; index < left.length; index++) {
+      if (left[index] != right[index]) return false;
+    }
+    return true;
   }
 }

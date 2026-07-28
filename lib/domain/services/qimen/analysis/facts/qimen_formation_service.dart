@@ -78,30 +78,20 @@ class QimenFormationService {
         }
       }
 
-      final wonderOccurrences = <_FormationOccurrence>[
-        _FormationOccurrence(
-          kind: 'primary',
-          heavenStem: palace.heavenStem,
-          heavenField: 'heavenStem',
-        ),
-        if (palace.hostedHeavenStem != null)
-          _FormationOccurrence(
-            kind: 'hosted',
-            heavenStem: palace.hostedHeavenStem!,
-            heavenField: 'hostedHeavenStem',
-          ),
-      ];
-      for (final occurrence in wonderOccurrences) {
-        if (palace.number == result.zhiShiPalace &&
-            const <String>{'乙', '丙', '丁'}.contains(occurrence.heavenStem)) {
+      for (final occurrence in _stemPairOccurrences(palace)) {
+        if (QimenRuleCatalog.threeWonderDutyPairs[occurrence.heavenStem]
+                ?.contains(occurrence.earthStem) ??
+            false) {
           final fact = QimenFactSupport.fact(
             ruleId: QimenRuleCatalog.threeWonderDuty,
             ruleSetVersion: ruleSetVersion,
             targetKey: 'p${palace.number}:${occurrence.kind}',
             category: QimenFactCategory.formation,
             scope: QimenFactScope.palace,
-            reason: '${occurrence.heavenStem}奇临值使${result.zhiShiDoor}所在'
-                '${palace.name}，命中三奇得使；作为来源化佐证。',
+            reason: '${palace.name}${occurrence.kind}天盘'
+                '${occurrence.heavenStem}加地盘${occurrence.earthStem}，'
+                '命中三奇得使固定仪对；若同时命中逃走、荧入太白或投江，'
+                '仍由冲突层保留双方复核。',
             inputRefs: <QimenInputRef>[
               QimenInputRef(
                 path: QimenFactSupport.palacePath(
@@ -111,10 +101,12 @@ class QimenFormationService {
                 value: occurrence.heavenStem,
               ),
               QimenInputRef(
-                path: r'$.zhiShiPalace',
-                value: result.zhiShiPalace.toString(),
+                path: QimenFactSupport.palacePath(
+                  palace.number,
+                  occurrence.earthField!,
+                ),
+                value: occurrence.earthStem!,
               ),
-              QimenInputRef(path: r'$.zhiShiDoor', value: result.zhiShiDoor),
             ],
             palaceNumbers: <int>[palace.number],
             focusRoleIds: QimenFactSupport.focusRolesAt(palace.number, focuses),
@@ -182,40 +174,45 @@ class QimenFormationService {
           ),
       ];
     }
-    return <_FormationOccurrence>[
-      _FormationOccurrence(
-        kind: 'primary',
-        heavenStem: palace.heavenStem,
-        heavenField: 'heavenStem',
-        earthStem: palace.earthStem,
-        earthField: 'earthStem',
-      ),
-      if (palace.hostedHeavenStem != null)
+    return _stemPairOccurrences(palace);
+  }
+
+  static List<_FormationOccurrence> _stemPairOccurrences(
+    QimenPalace palace,
+  ) =>
+      <_FormationOccurrence>[
         _FormationOccurrence(
-          kind: 'hostedHeaven',
-          heavenStem: palace.hostedHeavenStem!,
-          heavenField: 'hostedHeavenStem',
+          kind: 'primary',
+          heavenStem: palace.heavenStem,
+          heavenField: 'heavenStem',
           earthStem: palace.earthStem,
           earthField: 'earthStem',
         ),
-      if (palace.hostedEarthStem != null)
-        _FormationOccurrence(
-          kind: 'hostedEarth',
-          heavenStem: palace.heavenStem,
-          heavenField: 'heavenStem',
-          earthStem: palace.hostedEarthStem!,
-          earthField: 'hostedEarthStem',
-        ),
-      if (palace.hostedHeavenStem != null && palace.hostedEarthStem != null)
-        _FormationOccurrence(
-          kind: 'hostedBoth',
-          heavenStem: palace.hostedHeavenStem!,
-          heavenField: 'hostedHeavenStem',
-          earthStem: palace.hostedEarthStem!,
-          earthField: 'hostedEarthStem',
-        ),
-    ];
-  }
+        if (palace.hostedHeavenStem != null)
+          _FormationOccurrence(
+            kind: 'hostedHeaven',
+            heavenStem: palace.hostedHeavenStem!,
+            heavenField: 'hostedHeavenStem',
+            earthStem: palace.earthStem,
+            earthField: 'earthStem',
+          ),
+        if (palace.hostedEarthStem != null)
+          _FormationOccurrence(
+            kind: 'hostedEarth',
+            heavenStem: palace.heavenStem,
+            heavenField: 'heavenStem',
+            earthStem: palace.hostedEarthStem!,
+            earthField: 'hostedEarthStem',
+          ),
+        if (palace.hostedHeavenStem != null && palace.hostedEarthStem != null)
+          _FormationOccurrence(
+            kind: 'hostedBoth',
+            heavenStem: palace.hostedHeavenStem!,
+            heavenField: 'hostedHeavenStem',
+            earthStem: palace.hostedEarthStem!,
+            earthField: 'hostedEarthStem',
+          ),
+      ];
 
   static bool _matches({
     required QimenFormationSpec spec,

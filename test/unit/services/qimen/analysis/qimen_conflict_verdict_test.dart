@@ -53,6 +53,50 @@ void main() {
       );
     });
 
+    test('combined Fan-Yin explicitly subsumes both component facts', () {
+      final star = _fact(
+        ruleId: QimenRuleCatalog.starFanYin,
+        target: 'global',
+        role: QimenFactRole.neutral,
+        tier: QimenConflictTier.conditional,
+        scope: QimenFactScope.global,
+        palaces: const <int>[1, 2, 3, 4, 5, 6, 7, 8, 9],
+      );
+      final door = _fact(
+        ruleId: QimenRuleCatalog.doorFanYin,
+        target: 'global',
+        role: QimenFactRole.neutral,
+        tier: QimenConflictTier.conditional,
+        scope: QimenFactScope.global,
+        palaces: const <int>[1, 2, 3, 4, 5, 6, 7, 8, 9],
+      );
+      final combined = _fact(
+        ruleId: QimenRuleCatalog.combinedFanYin,
+        target: 'global',
+        role: QimenFactRole.suspend,
+        tier: QimenConflictTier.conditional,
+        scope: QimenFactScope.global,
+        palaces: const <int>[1, 2, 3, 4, 5, 6, 7, 8, 9],
+      );
+
+      final resolved = QimenConflictResolver.resolve(
+        <QimenFact>[star, door, combined],
+      );
+
+      expect(resolved.resolutions, hasLength(2));
+      expect(
+        resolved.resolutions.map((value) => value.policyId).toSet(),
+        <String>{QimenRuleCatalog.conflictExplicitPair},
+      );
+      expect(resolved.activeFacts, <QimenFact>[combined]);
+      expect(
+        resolved.resolutions
+            .expand((resolution) => resolution.suppressedOccurrenceIds)
+            .toSet(),
+        <String>{star.occurrenceId, door.occurrenceId},
+      );
+    });
+
     test('horse never suppresses or removes global combined Fu-Yin', () {
       final fuYin = _fact(
         ruleId: QimenRuleCatalog.combinedFuYin,

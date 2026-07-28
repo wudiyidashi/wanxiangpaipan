@@ -26,6 +26,8 @@ import 'divination_systems/xiaoliuren/xiaoliuren_system.dart';
 import 'divination_systems/xiaoliuren/viewmodels/xiaoliuren_viewmodel.dart';
 import 'divination_systems/daliuren/daliuren_system.dart';
 import 'divination_systems/daliuren/viewmodels/daliuren_viewmodel.dart';
+import 'divination_systems/qimen/qimen_system.dart';
+import 'divination_systems/qimen/viewmodels/qimen_viewmodel.dart';
 import 'divination_systems/registry_bootstrap.dart';
 import 'ai/ai_bootstrap.dart';
 import 'ai/service/ai_analysis_service.dart';
@@ -35,14 +37,20 @@ import 'ai/service/ai_conversation_service.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
-  // 注册所有术数系统和 UI 工厂
-  DivinationSystemBootstrap.registerAll();
+  // registerAll establishes structural formatters before evaluating the Qimen
+  // release gate; this does not require a configured AI provider.
+  final qimenReadiness = DivinationSystemBootstrap.registerAll(
+    qimenProvidersReady: WanxiangPaipanApp.qimenProvidersReady,
+  );
 
   // 验证注册（开发模式）
   if (kDebugMode) {
     final isValid = DivinationSystemBootstrap.verifyRegistration();
-    if (!isValid) {
-      throw StateError('System registration failed');
+    if (!isValid || !qimenReadiness.isReady) {
+      throw StateError(
+        'System registration failed; Qimen missing: '
+        '${qimenReadiness.missingDependencies.join(', ')}',
+      );
     }
     DivinationSystemBootstrap.printRegistrationInfo();
   }
@@ -52,6 +60,11 @@ void main() async {
 
 /// 应用根组件
 class WanxiangPaipanApp extends StatefulWidget {
+  /// Startup manifest for the Qimen system and view-model providers declared
+  /// in [_WanxiangPaipanAppState.build]. A widget test verifies the matching
+  /// providers remain available from the application root.
+  static const bool qimenProvidersReady = true;
+
   /// 构造函数
   const WanxiangPaipanApp({super.key});
 
@@ -216,6 +229,24 @@ class _WanxiangPaipanAppState extends State<WanxiangPaipanApp> {
           update: (_, system, repository, previousViewModel) =>
               previousViewModel ??
               DaLiuRenViewModel(
+                system: system,
+                repository: repository,
+              ),
+        ),
+
+        Provider<QimenSystem>(
+          create: (_) => QimenSystem(),
+        ),
+
+        ChangeNotifierProxyProvider2<QimenSystem, DivinationRepository,
+            QimenViewModel>(
+          create: (context) => QimenViewModel(
+            system: context.read<QimenSystem>(),
+            repository: context.read<DivinationRepository>(),
+          ),
+          update: (_, system, repository, previousViewModel) =>
+              previousViewModel ??
+              QimenViewModel(
                 system: system,
                 repository: repository,
               ),

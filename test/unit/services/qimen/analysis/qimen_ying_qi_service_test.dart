@@ -127,6 +127,59 @@ void main() {
       );
     });
 
+    test('keeps both void branches as distinct conditions and candidates', () {
+      final voidFact = _fact(
+        ruleId: QimenRuleCatalog.voidState,
+        target: 'two-branch-void',
+        category: QimenFactCategory.constraint,
+        role: QimenFactRole.suspend,
+        tier: QimenConflictTier.conditional,
+        focusRoles: const <String>['self'],
+        refs: const <QimenInputRef>[
+          QimenInputRef(
+            path: r'$.palaces[number=1].voidBranches',
+            value: '子,丑',
+          ),
+        ],
+      );
+      final verdict = QimenVerdictService.judge(
+        status: QimenAnalysisStatus.complete,
+        diagnostics: const <QimenAnalysisDiagnostic>[],
+        focuses: const <QimenFocus>[],
+        hasUniquePrimaryFocus: true,
+        activeFacts: <QimenFact>[voidFact],
+        conflicts: const <QimenConflictResolution>[],
+      ).result;
+
+      expect(verdict.matchedDecisionRowId, QimenRuleCatalog.decision20);
+      expect(
+        verdict.conditionLinks.map((link) => link.condition.branch).toSet(),
+        <String?>{'子', '丑'},
+      );
+      expect(
+        verdict.conditionLinks.map((link) => link.conditionId).toSet(),
+        hasLength(2),
+      );
+
+      final evaluation = QimenYingQiService.calculate(
+        activeFacts: <QimenFact>[voidFact],
+        verdict: verdict,
+      );
+      final releases = evaluation.candidates.where(
+        (candidate) =>
+            candidate.ruleId == QimenRuleCatalog.yingQiConditionRelease,
+      );
+      expect(releases, hasLength(2));
+      expect(
+        releases.map((candidate) => candidate.triggerValue).toSet(),
+        <String>{'子', '丑'},
+      );
+      expect(
+        releases.expand((candidate) => candidate.relatedConditionIds).toSet(),
+        verdict.conditionLinks.map((link) => link.conditionId).toSet(),
+      );
+    });
+
     test('rejects a condition candidate without its upstream fact', () {
       final condition = QimenVerdictCondition(
         conditionId: 'QMV1-COND@missing',

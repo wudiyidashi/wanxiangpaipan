@@ -171,6 +171,15 @@ class _DataManagementBody extends StatelessWidget {
                             DivinationType.xiaoLiuRen,
                           ),
                         ),
+                        onClearQimen: () => _confirmAndRun(
+                          context: context,
+                          title: '清理奇门遁甲记录',
+                          message: '将删除全部奇门遁甲历史记录，不影响其他术数、AI 配置和模板。',
+                          isDanger: true,
+                          action: () => viewModel.clearHistoryBySystem(
+                            DivinationType.qiMen,
+                          ),
+                        ),
                         onClearBefore30Days: () => _confirmAndRun(
                           context: context,
                           title: '清理 30 天前记录',
@@ -283,7 +292,7 @@ class _DataManagementBody extends StatelessWidget {
       }
       _showMessage(
         context,
-        '导入完成：历史 ${result.recordCount} 条，AI 配置 ${result.aiProfileCount} 套，模板 ${result.templateCount} 条，偏好 ${result.preferenceCount} 项。',
+        _formatImportResultMessage(result),
       );
     } catch (e) {
       if (!context.mounted) {
@@ -343,5 +352,21 @@ class _DataManagementBody extends StatelessWidget {
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(content: Text(message)),
     );
+  }
+
+  String _formatImportResultMessage(BackupImportResult result) {
+    final summary =
+        '导入完成：历史 ${result.recordCount} 条，AI 配置 ${result.aiProfileCount} 套，模板 ${result.templateCount} 条，偏好 ${result.preferenceCount} 项。';
+    if (result.skippedRecords.isEmpty) {
+      return summary;
+    }
+
+    final visible = result.skippedRecords
+        .take(3)
+        .map((item) => '${item.identifier}：${item.reason}')
+        .join('；');
+    final remaining = result.skippedRecordCount - 3;
+    final suffix = remaining > 0 ? '；另有 $remaining 条' : '';
+    return '$summary 跳过 ${result.skippedRecordCount} 条损坏记录：$visible$suffix。';
   }
 }

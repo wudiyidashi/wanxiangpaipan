@@ -21,6 +21,7 @@ class PromptTemplateSettingsScreen extends StatelessWidget {
     'daliuren': '大六壬',
     'meihua': '梅花易数',
     'xiaoliuren': '小六壬',
+    'qimen': '奇门遁甲',
   };
 
   @override

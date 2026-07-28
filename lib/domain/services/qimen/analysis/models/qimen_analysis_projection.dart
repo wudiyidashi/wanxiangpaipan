@@ -146,7 +146,13 @@ class QimenAnalysisProjection {
         'Qimen analysis projection fields do not match schema v1',
       );
     }
-    final policy = Map<String, dynamic>.from(json['policy'] as Map);
+    final rawPolicy = json['policy'];
+    if (rawPolicy is! Map) {
+      throw const FormatException(
+        'Qimen analysis projection policy must be an object',
+      );
+    }
+    final policy = Map<String, dynamic>.from(rawPolicy);
     if (policy.keys.toSet().difference(policyKeys).isNotEmpty ||
         policyKeys.difference(policy.keys.toSet()).isNotEmpty ||
         policy['calculationOwner'] != 'program' ||

@@ -20,6 +20,7 @@ This directory contains guidelines for frontend development. Fill in each file w
 | [State Management](./state-management.md) | Local state, global state, server state | To fill |
 | [Quality Guidelines](./quality-guidelines.md) | Code standards, forbidden patterns | To fill |
 | [Type Safety](./type-safety.md) | Type patterns, validation | To fill |
+| [Qimen Product Integration](./qimen-product-integration.md) | Executable UI, persistence, registry, and AI boundary contract | Current |
 
 ---
 
@@ -37,3 +38,12 @@ The goal is to help AI assistants and new team members understand how YOUR proje
 ---
 
 **Language**: All documentation should be written in **English**.
+
+## Pre-Development Checklist
+
+For Qimen product changes, read:
+
+1. [`qimen-product-integration.md`](./qimen-product-integration.md)
+2. [`../domain/qimen-pan-engine.md`](../domain/qimen-pan-engine.md)
+3. [`../domain/qimen-analysis-engine.md`](../domain/qimen-analysis-engine.md)
+4. [`../guides/cross-layer-thinking-guide.md`](../guides/cross-layer-thinking-guide.md)

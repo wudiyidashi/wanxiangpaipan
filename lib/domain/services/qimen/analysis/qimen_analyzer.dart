@@ -136,6 +136,7 @@ class QimenAnalyzer {
         inputPanSchemaVersion: schema is int ? schema : -1,
         inputResultId:
             persistedPan['id'] is String ? persistedPan['id'] as String : '',
+        hasInputResultId: persistedPan['id'] is String,
         guard: QimenAnalysisInputGuard.unsupportedSchema(
           schemaVersion: schema,
         ),
@@ -150,15 +151,11 @@ class QimenAnalyzer {
         inputPanSchemaVersion: schema as int,
         inputResultId:
             persistedPan['id'] is String ? persistedPan['id'] as String : '',
+        hasInputResultId: persistedPan['id'] is String,
         guard: QimenInputGuardResult(
           status: QimenAnalysisStatus.invalidPanFacts,
           diagnostics: <QimenAnalysisDiagnostic>[
-            QimenAnalysisDiagnostic(
-              code: 'QMV1-E-PAN-DESERIALIZATION',
-              path: r'$',
-              message: 'schema-v1 pan could not be deserialized: '
-                  '${error.runtimeType}',
-            ),
+            _deserializationDiagnostic(persistedPan, error),
           ],
         ),
       );
@@ -171,6 +168,7 @@ class QimenAnalyzer {
     required int inputPanSchemaVersion,
     required String inputResultId,
     required QimenInputGuardResult guard,
+    bool hasInputResultId = true,
   }) {
     final verdict = QimenVerdictService.judge(
       status: guard.status,
@@ -183,9 +181,9 @@ class QimenAnalyzer {
     final trace = _renumber(<QimenTraceStep>[
       _inputTrace(
         resultId: inputResultId,
+        includeResultIdRef: hasInputResultId,
         status: QimenEvaluationStatus.notApplicable,
         explanation: guard.diagnostics.map((value) => value.message).join('; '),
-        diagnostics: guard.diagnostics,
       ),
       ...verdict.trace,
     ]);
@@ -217,8 +215,7 @@ class QimenAnalyzer {
     required String resultId,
     required QimenEvaluationStatus status,
     required String explanation,
-    List<QimenAnalysisDiagnostic> diagnostics =
-        const <QimenAnalysisDiagnostic>[],
+    bool includeResultIdRef = true,
   }) =>
       QimenTraceStep(
         stepId: 'input:${QimenRuleCatalog.inputIntegrity}',
@@ -226,16 +223,67 @@ class QimenAnalyzer {
         stage: QimenTraceStage.input,
         ruleId: QimenRuleCatalog.inputIntegrity,
         status: status,
-        inputRefs: <QimenInputRef>[
-          QimenInputRef(path: r'$.id', value: resultId),
-          for (final diagnostic in diagnostics)
-            QimenInputRef(path: diagnostic.path, value: diagnostic.code),
-        ],
+        inputRefs: includeResultIdRef
+            ? <QimenInputRef>[
+                QimenInputRef(path: r'$.id', value: resultId),
+              ]
+            : const <QimenInputRef>[],
         outputOccurrenceIds: const <String>[],
         sourceIds:
             QimenRuleCatalog.rule(QimenRuleCatalog.inputIntegrity).sourceIds,
         explanation: explanation,
       );
+
+  static QimenAnalysisDiagnostic _deserializationDiagnostic(
+    Map<String, dynamic> persistedPan,
+    Object error,
+  ) {
+    const requiredFields = <String>[
+      'systemType',
+      'id',
+      'castTime',
+      'castMethod',
+      'lunarInfo',
+      'panParams',
+      'temporalContext',
+      'juInfo',
+      'palaces',
+      'xunShou',
+      'xunHiddenStem',
+      'zhiFuStar',
+      'zhiFuPalace',
+      'zhiShiDoor',
+      'zhiShiPalace',
+      'kongWangBranches',
+      'horseBranch',
+      'horsePalace',
+      'derivationSteps',
+    ];
+    var path = r'$';
+    for (final field in requiredFields) {
+      if (!persistedPan.containsKey(field)) {
+        path = '\$.$field';
+        break;
+      }
+    }
+    final message = error.toString();
+    if (path == r'$') {
+      if (message.contains('systemType')) {
+        path = r'$.systemType';
+      } else if (message.contains('castMethod')) {
+        path = r'$.castMethod';
+      } else if (message.contains('九宫') || persistedPan['palaces'] is! List) {
+        path = r'$.palaces';
+      } else if (message.contains('局数')) {
+        path = r'$.juInfo.juNumber';
+      }
+    }
+    return QimenAnalysisDiagnostic(
+      code: 'QMV1-E-PAN-DESERIALIZATION',
+      path: path,
+      message: 'schema-v1 pan could not be deserialized at $path: $message',
+    );
+  }
 
   static List<QimenTraceStep> _renumber(List<QimenTraceStep> trace) =>
       List<QimenTraceStep>.unmodifiable(<QimenTraceStep>[

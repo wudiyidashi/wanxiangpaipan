@@ -31,6 +31,17 @@ class QimenResult implements DivinationResult {
   });
 
   static const int currentSchemaVersion = 1;
+  static const List<int> luoShuPalaceOrder = <int>[
+    4,
+    9,
+    2,
+    3,
+    5,
+    7,
+    8,
+    1,
+    6,
+  ];
 
   @override
   final String id;

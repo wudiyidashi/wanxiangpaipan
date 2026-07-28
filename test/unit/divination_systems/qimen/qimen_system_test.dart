@@ -9,14 +9,35 @@ void main() {
   group('QimenSystem contract', () {
     final system = QimenSystem();
 
-    test('is available as a domain system but remains product-disabled', () {
+    test('is enabled with stable product and method IDs', () {
       expect(system.type, DivinationType.qiMen);
-      expect(system.isEnabled, false);
+      expect(system.type.id, 'qimen');
+      expect(system.isEnabled, true);
       expect(system.supportedMethods, [CastMethod.time, CastMethod.manual]);
+      expect(system.supportedMethods.map((method) => method.id), [
+        'time',
+        'manual',
+      ]);
     });
 
     test('time accepts omitted params and rejects malformed params', () {
       expect(system.validateInput(CastMethod.time, const {}), true);
+      expect(
+        system.validateInput(
+          CastMethod.time,
+          const {'unexpected': true},
+        ),
+        false,
+      );
+      expect(
+        system.validateInput(
+          CastMethod.time,
+          const {
+            'params': {'unexpected': true}
+          },
+        ),
+        false,
+      );
       expect(
         system.validateInput(
           CastMethod.time,
@@ -63,6 +84,29 @@ void main() {
     test('manual requires complete explicit pillars and ju facts', () {
       expect(system.validateInput(CastMethod.manual, qimenManualGoldenInput),
           true);
+      expect(
+        system.validateInput(
+          CastMethod.manual,
+          <String, dynamic>{
+            ...qimenManualGoldenInput,
+            'unexpected': true,
+          },
+        ),
+        false,
+      );
+      final manualWithJuMethod = <String, dynamic>{
+        ...qimenManualGoldenInput,
+        'params': <String, dynamic>{
+          ...Map<String, dynamic>.from(
+            qimenManualGoldenInput['params'] as Map,
+          ),
+          'juMethod': 'chaiBu',
+        },
+      };
+      expect(
+        system.validateInput(CastMethod.manual, manualWithJuMethod),
+        false,
+      );
       final missingHour = Map<String, dynamic>.from(qimenManualGoldenInput)
         ..remove('hourGanZhi');
       expect(system.validateInput(CastMethod.manual, missingHour), false);

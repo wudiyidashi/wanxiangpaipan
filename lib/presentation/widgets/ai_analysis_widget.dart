@@ -17,11 +17,13 @@ import 'ai_chat_sheet.dart';
 class AIAnalysisWidget extends StatefulWidget {
   final DivinationResult result;
   final String? question;
+  final String? unavailableReason;
 
   const AIAnalysisWidget({
     super.key,
     required this.result,
     this.question,
+    this.unavailableReason,
   });
 
   @override
@@ -54,16 +56,18 @@ class _AIAnalysisWidgetState extends State<AIAnalysisWidget> {
   @override
   Widget build(BuildContext context) {
     final aiService = context.watch<AIAnalysisService?>();
+    final unavailableReason = _resolveUnavailableReason(aiService);
 
-    if (aiService == null) {
-      return const SizedBox.shrink();
+    if (unavailableReason != null) {
+      return _buildUnavailableState(context, unavailableReason);
     }
 
-    final isCurrentResult = aiService.currentResultId == widget.result.id;
-    final isAnalyzing = isCurrentResult && aiService.isAnalyzing;
-    final error = isCurrentResult ? aiService.error : null;
+    final readyService = aiService!;
+    final isCurrentResult = readyService.currentResultId == widget.result.id;
+    final isAnalyzing = isCurrentResult && readyService.isAnalyzing;
+    final error = isCurrentResult ? readyService.error : null;
     final content =
-        isCurrentResult ? aiService.currentContent : _persistedContent;
+        isCurrentResult ? readyService.currentContent : _persistedContent;
     final hasContent = content.isNotEmpty;
 
     return Card(
@@ -73,7 +77,7 @@ class _AIAnalysisWidgetState extends State<AIAnalysisWidget> {
         children: [
           _buildHeader(
             context,
-            aiService,
+            readyService,
             isAnalyzing: isAnalyzing,
             hasContent: hasContent,
           ),
@@ -83,7 +87,7 @@ class _AIAnalysisWidgetState extends State<AIAnalysisWidget> {
               _isLoadingPersistedContent)
             _buildContent(
               context,
-              aiService,
+              readyService,
               isCurrentResult: isCurrentResult,
               isAnalyzing: isAnalyzing,
               content: content,
@@ -93,6 +97,70 @@ class _AIAnalysisWidgetState extends State<AIAnalysisWidget> {
       ),
     );
   }
+
+  String? _resolveUnavailableReason(AIAnalysisService? aiService) {
+    final callerReason = widget.unavailableReason?.trim();
+    if (callerReason != null && callerReason.isNotEmpty) {
+      return callerReason;
+    }
+    if (aiService == null) {
+      return 'AI 分析服务正在初始化或暂不可用，本地排盘与规则分析不受影响。';
+    }
+    if (!StructuredOutputFormatterRegistry.instance
+        .hasFormatter(widget.result.systemType)) {
+      return '当前术数的 AI 数据格式化组件未就绪。为避免发送不完整排盘，'
+          'AI 分析已暂停，本地结果仍可正常查看。';
+    }
+    return null;
+  }
+
+  Widget _buildUnavailableState(BuildContext context, String reason) =>
+      Semantics(
+        container: true,
+        label: 'AI 分析暂不可用：$reason',
+        child: Card(
+          key: const ValueKey('ai-analysis-unavailable'),
+          margin: const EdgeInsets.symmetric(vertical: 8),
+          child: Padding(
+            padding: const EdgeInsets.all(16),
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Icon(
+                  Icons.info_outline,
+                  size: 20,
+                  color: Theme.of(context).colorScheme.tertiary,
+                ),
+                const SizedBox(width: 10),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        'AI 智能分析暂不可用',
+                        style: Theme.of(context)
+                            .textTheme
+                            .titleMedium
+                            ?.copyWith(fontWeight: FontWeight.bold),
+                      ),
+                      const SizedBox(height: 6),
+                      Text(
+                        reason,
+                        style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                              color: Theme.of(context)
+                                  .colorScheme
+                                  .onSurfaceVariant,
+                              height: 1.5,
+                            ),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+      );
 
   Widget _buildHeader(
     BuildContext context,
@@ -299,6 +367,11 @@ class _AIAnalysisWidgetState extends State<AIAnalysisWidget> {
 
   Future<void> _startAnalysis(
       BuildContext context, AIAnalysisService aiService) async {
+    final unavailableReason = _resolveUnavailableReason(aiService);
+    if (unavailableReason != null) {
+      if (mounted) setState(() {});
+      return;
+    }
     try {
       final response = await aiService.analyze(
         widget.result,
@@ -339,6 +412,11 @@ class _AIAnalysisWidgetState extends State<AIAnalysisWidget> {
 
   Future<void> _startOrRestart(
       BuildContext context, AIAnalysisService aiService) async {
+    final unavailableReason = _resolveUnavailableReason(aiService);
+    if (unavailableReason != null) {
+      if (mounted) setState(() {});
+      return;
+    }
     final convService = context.read<AIConversationService>();
     final conv = convService.conversationOf(widget.result.id);
     if (conv != null && conv.messages.length > 1) {
@@ -378,6 +456,14 @@ class _AIAnalysisWidgetState extends State<AIAnalysisWidget> {
   }
 
   Future<String> _assemblePromptPreview() async {
+    final callerReason = widget.unavailableReason?.trim();
+    if (callerReason != null && callerReason.isNotEmpty) {
+      return '无法生成预览: $callerReason';
+    }
+    if (!StructuredOutputFormatterRegistry.instance
+        .hasFormatter(widget.result.systemType)) {
+      return '无法生成预览: 当前术数的 AI 数据格式化组件未就绪';
+    }
     try {
       final assembler = PromptAssembler(
         configManager: AIBootstrap.configManager,
@@ -540,8 +626,10 @@ class AIAnalysisFAB extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final aiService = context.watch<AIAnalysisService?>();
+    final hasFormatter = StructuredOutputFormatterRegistry.instance
+        .hasFormatter(result.systemType);
 
-    if (aiService == null || !aiService.hasAvailableProvider) {
+    if (aiService == null || !aiService.hasAvailableProvider || !hasFormatter) {
       return const SizedBox.shrink();
     }
 

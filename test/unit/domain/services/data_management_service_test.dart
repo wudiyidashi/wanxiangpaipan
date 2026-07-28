@@ -7,6 +7,10 @@ import 'package:drift/native.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:wanxiang_paipan/ai/config/ai_config_manager.dart';
 import 'package:wanxiang_paipan/ai/config/ai_provider_profile.dart';
+import 'package:wanxiang_paipan/ai/model/ai_chat_message.dart';
+import 'package:wanxiang_paipan/ai/model/ai_conversation.dart';
+import 'package:wanxiang_paipan/ai/model/cast_snapshot.dart';
+import 'package:wanxiang_paipan/ai/service/chat_repository.dart';
 import 'package:wanxiang_paipan/ai/template/prompt_template.dart' as tmpl;
 import 'package:wanxiang_paipan/data/database/app_database.dart';
 import 'package:wanxiang_paipan/data/repositories/divination_repository_impl.dart';
@@ -138,6 +142,7 @@ void main() {
       expect(records.single['question'], '源备份问题');
       expect(records.single['detail'], '源备份详情');
       expect(records.single['interpretation'], '源备份解读');
+      expect(records.single['conversation'], isA<String>());
 
       final profiles = List<Map<String, dynamic>>.from(
         (profilesJson['profiles'] as List).map(
@@ -294,6 +299,288 @@ void main() {
       expect(await target.manager.getString('stale_preference'), isNull);
       expect(await target.manager.getString('theme_mode'), 'antique');
     });
+
+    test('overwrite 在 profile 预检失败时不清理任何既有数据', () async {
+      final source = await _createHarness(registry);
+      final target = await _createHarness(registry);
+      disposers
+        ..add(source.dispose)
+        ..add(target.dispose);
+      await _seedSourceData(source);
+      await _seedSentinelTargetData(target);
+
+      final tempDir =
+          await Directory.systemTemp.createTemp('wanxiang_bad_profile_');
+      disposers.add(() => tempDir.delete(recursive: true));
+      final export =
+          await source.service.exportBackup(outputDirectory: tempDir);
+      final file = File(export.filePath);
+      final payload = _readArchiveJson(
+        _decodeArchive(file),
+        'ai_profiles.json',
+      );
+      (payload['profiles'] as List).add({'id': 42});
+      _replaceArchiveJson(file, 'ai_profiles.json', payload);
+
+      await expectLater(
+        target.service.importBackup(
+          file,
+          mode: BackupImportMode.overwrite,
+        ),
+        throwsA(anything),
+      );
+      await _expectSentinelTargetDataIntact(target);
+      expect(await target.repository.recordExists('source-record'), isFalse);
+    });
+
+    test('overwrite 在 template 预检失败时不清理任何既有数据', () async {
+      final source = await _createHarness(registry);
+      final target = await _createHarness(registry);
+      disposers
+        ..add(source.dispose)
+        ..add(target.dispose);
+      await _seedSourceData(source);
+      await _seedSentinelTargetData(target);
+
+      final tempDir =
+          await Directory.systemTemp.createTemp('wanxiang_bad_template_');
+      disposers.add(() => tempDir.delete(recursive: true));
+      final export =
+          await source.service.exportBackup(outputDirectory: tempDir);
+      final file = File(export.filePath);
+      final payload = _readArchiveJson(
+        _decodeArchive(file),
+        'prompt_templates.json',
+      );
+      (payload['templates'] as List).add({'id': 42});
+      _replaceArchiveJson(file, 'prompt_templates.json', payload);
+
+      await expectLater(
+        target.service.importBackup(
+          file,
+          mode: BackupImportMode.overwrite,
+        ),
+        throwsA(anything),
+      );
+      await _expectSentinelTargetDataIntact(target);
+      expect(await target.repository.recordExists('source-record'), isFalse);
+    });
+
+    test('merge 与 overwrite 均隔离损坏记录并导入同包合法记录', () async {
+      final source = await _createHarness(registry);
+      disposers.add(source.dispose);
+      await _seedSourceData(source);
+
+      final tempDir =
+          await Directory.systemTemp.createTemp('wanxiang_mixed_records_');
+      disposers.add(() => tempDir.delete(recursive: true));
+      final export =
+          await source.service.exportBackup(outputDirectory: tempDir);
+      final file = File(export.filePath);
+      final payload = _readArchiveJson(_decodeArchive(file), 'records.json');
+      final validRecord = Map<String, dynamic>.from(
+        (payload['records'] as List).single as Map,
+      );
+      final corruptRecord = Map<String, dynamic>.from(validRecord);
+      final corruptResult = Map<String, dynamic>.from(
+        corruptRecord['result'] as Map,
+      )
+        ..['id'] = 'corrupt-record'
+        ..remove('mainGua');
+      corruptRecord['result'] = corruptResult;
+      (payload['records'] as List).add(corruptRecord);
+      _replaceArchiveJson(file, 'records.json', payload);
+
+      for (final mode in BackupImportMode.values) {
+        final target = await _createHarness(registry);
+        disposers.add(target.dispose);
+        final existingId = 'existing-${mode.name}';
+        await target.repository.saveRecord(
+          _createMockLiuYaoResult(
+            id: existingId,
+            castTime: DateTime(2025, 1, 1),
+          ),
+        );
+
+        final result = await target.service.importBackup(file, mode: mode);
+
+        expect(result.recordCount, 1, reason: mode.name);
+        expect(result.skippedRecordCount, 1, reason: mode.name);
+        expect(result.skippedRecords.single.identifier, 'corrupt-record');
+        expect(result.skippedRecords.single.reason, isNotEmpty);
+        expect(await target.repository.recordExists('source-record'), isTrue);
+        expect(
+          await target.repository.recordExists(existingId),
+          mode == BackupImportMode.merge,
+          reason: mode.name,
+        );
+      }
+    });
+
+    test('overwrite 的空分区应清空历史、配置、自定义模板和偏好', () async {
+      final source = await _createHarness(registry);
+      final target = await _createHarness(registry);
+      disposers
+        ..add(source.dispose)
+        ..add(target.dispose);
+      await _seedSourceData(source);
+      await _seedSentinelTargetData(target);
+
+      final tempDir =
+          await Directory.systemTemp.createTemp('wanxiang_empty_sections_');
+      disposers.add(() => tempDir.delete(recursive: true));
+      final export =
+          await source.service.exportBackup(outputDirectory: tempDir);
+      final file = File(export.filePath);
+      _replaceArchiveJson(file, 'records.json', {'records': <Object>[]});
+      _replaceArchiveJson(file, 'ai_profiles.json', {
+        'activeProfileId': null,
+        'profiles': <Object>[],
+      });
+      _replaceArchiveJson(file, 'prompt_templates.json', {
+        'templates': <Object>[],
+      });
+      _replaceArchiveJson(file, 'preferences.json', {
+        'preferences': <String, String>{},
+      });
+
+      final result = await target.service.importBackup(
+        file,
+        mode: BackupImportMode.overwrite,
+      );
+
+      expect(result.recordCount, 0);
+      expect(result.aiProfileCount, 0);
+      expect(result.templateCount, 0);
+      expect(result.preferenceCount, 0);
+      expect(await target.repository.getAllRecords(), isEmpty);
+      expect(
+        await target.repository.readEncryptedField(
+          'conversation_sentinel-record',
+        ),
+        isNull,
+      );
+      expect(
+        await target.repository.readEncryptedField('question_sentinel-record'),
+        isNull,
+      );
+      expect(await target.manager.getProviderProfiles(), isEmpty);
+      expect(
+        await target.repository.readEncryptedField(
+          'llm_profile_sentinel-profile_apikey',
+        ),
+        isNull,
+      );
+      expect(
+        await _hasTemplate(target.manager, 'sentinel_custom_template'),
+        isFalse,
+      );
+      expect(await target.manager.getString('sentinel_preference'), isNull);
+      expect(
+        await target.manager.getAllTemplates(),
+        everyElement((tmpl.PromptTemplate item) => item.isBuiltIn),
+      );
+    });
+
+    test('conversation payload 在 overwrite 清理后仍可完整恢复', () async {
+      final source = await _createHarness(registry);
+      final target = await _createHarness(registry);
+      disposers
+        ..add(source.dispose)
+        ..add(target.dispose);
+      await _seedSourceData(source);
+      await _seedSentinelTargetData(target);
+      final sourceRaw = await source.repository.readEncryptedField(
+        'conversation_source-record',
+      );
+
+      final tempDir =
+          await Directory.systemTemp.createTemp('wanxiang_conversation_');
+      disposers.add(() => tempDir.delete(recursive: true));
+      final export =
+          await source.service.exportBackup(outputDirectory: tempDir);
+      final result = await target.service.importBackup(
+        File(export.filePath),
+        mode: BackupImportMode.overwrite,
+      );
+
+      expect(result.skippedRecords, isEmpty);
+      expect(
+        await target.repository.readEncryptedField(
+          'conversation_source-record',
+        ),
+        sourceRaw,
+      );
+      final conversation = await ChatRepository(
+        secureStorage: target.secureStorage,
+      ).load('source-record');
+      expect(conversation, _createConversation('source-record'));
+      expect(
+        await target.repository.readEncryptedField('question_source-record'),
+        '源备份问题',
+      );
+      expect(
+        await target.repository.readEncryptedField('detail_source-record'),
+        '源备份详情',
+      );
+      expect(
+        await target.repository.readEncryptedField(
+          'interpretation_source-record',
+        ),
+        '源备份解读',
+      );
+    });
+
+    test('legacy record payload without conversation keeps encrypted fields',
+        () async {
+      final source = await _createHarness(registry);
+      final target = await _createHarness(registry);
+      disposers
+        ..add(source.dispose)
+        ..add(target.dispose);
+      await _seedSourceData(source);
+
+      final tempDir =
+          await Directory.systemTemp.createTemp('wanxiang_legacy_record_');
+      disposers.add(() => tempDir.delete(recursive: true));
+      final export =
+          await source.service.exportBackup(outputDirectory: tempDir);
+      final file = File(export.filePath);
+      final payload = _readArchiveJson(_decodeArchive(file), 'records.json');
+      final record = Map<String, dynamic>.from(
+        (payload['records'] as List).single as Map,
+      )..remove('conversation');
+      payload['records'] = [record];
+      _replaceArchiveJson(file, 'records.json', payload);
+
+      final result = await target.service.importBackup(
+        file,
+        mode: BackupImportMode.merge,
+      );
+
+      expect(result.recordCount, 1);
+      expect(result.skippedRecords, isEmpty);
+      expect(
+        await target.repository.readEncryptedField('question_source-record'),
+        '源备份问题',
+      );
+      expect(
+        await target.repository.readEncryptedField('detail_source-record'),
+        '源备份详情',
+      );
+      expect(
+        await target.repository.readEncryptedField(
+          'interpretation_source-record',
+        ),
+        '源备份解读',
+      );
+      expect(
+        await target.repository.readEncryptedField(
+          'conversation_source-record',
+        ),
+        isNull,
+      );
+    });
   });
 }
 
@@ -338,6 +625,9 @@ Future<void> _seedSourceData(_TestHarness harness) async {
     'question_source-record': '源备份问题',
     'detail_source-record': '源备份详情',
     'interpretation_source-record': '源备份解读',
+    'conversation_source-record': jsonEncode(
+      _createConversation('source-record').toJson(),
+    ),
   });
 
   final profile = _createProfile(
@@ -356,6 +646,83 @@ Future<void> _seedSourceData(_TestHarness harness) async {
     ),
   );
   await harness.manager.setString('theme_mode', 'antique');
+}
+
+Future<void> _seedSentinelTargetData(_TestHarness harness) async {
+  await harness.repository.saveRecord(
+    _createMockLiuYaoResult(
+      id: 'sentinel-record',
+      castTime: DateTime(2025, 1, 1),
+    ),
+  );
+  await harness.repository.saveEncryptedFieldsBatch({
+    'question_sentinel-record': '保留问题',
+    'detail_sentinel-record': '保留详情',
+    'interpretation_sentinel-record': '保留解读',
+    'conversation_sentinel-record': jsonEncode(
+      _createConversation('sentinel-record').toJson(),
+    ),
+  });
+  await harness.manager.saveProviderProfile(
+    _createProfile(
+      id: 'sentinel-profile',
+      apiKey: 'sentinel-key',
+      model: 'sentinel-model',
+    ),
+  );
+  await harness.manager.setActiveProviderProfileId('sentinel-profile');
+  await harness.manager.saveTemplate(
+    _createCustomTemplate(
+      id: 'sentinel_custom_template',
+      content: 'sentinel template',
+    ),
+  );
+  await harness.manager.setString('sentinel_preference', 'keep-me');
+}
+
+Future<void> _expectSentinelTargetDataIntact(_TestHarness harness) async {
+  expect(await harness.repository.recordExists('sentinel-record'), isTrue);
+  expect(
+    await harness.repository.readEncryptedField('question_sentinel-record'),
+    '保留问题',
+  );
+  expect(
+    await harness.repository.readEncryptedField('conversation_sentinel-record'),
+    jsonEncode(_createConversation('sentinel-record').toJson()),
+  );
+  final profile = await harness.manager.getProviderProfile('sentinel-profile');
+  expect(profile, isNotNull);
+  expect(profile!.apiKey, 'sentinel-key');
+  expect(
+    await _hasTemplate(harness.manager, 'sentinel_custom_template'),
+    isTrue,
+  );
+  expect(await harness.manager.getString('sentinel_preference'), 'keep-me');
+}
+
+AIConversation _createConversation(String resultId) {
+  final timestamp = DateTime.utc(2026, 4, 23, 8, 30);
+  return AIConversation(
+    version: 1,
+    resultId: resultId,
+    systemType: DivinationType.liuYao,
+    castSnapshot: CastSnapshot(
+      systemPrompt: 'system prompt',
+      castUserPrompt: 'cast prompt',
+      model: 'gpt-4.1',
+      assembledAt: timestamp,
+    ),
+    messages: [
+      AIChatMessage(
+        id: 'message-1',
+        role: ChatRole.assistant,
+        content: '结构化解读',
+        timestamp: timestamp,
+        status: ChatMessageStatus.sent,
+      ),
+    ],
+    updatedAt: timestamp,
+  );
 }
 
 AIProviderProfile _createProfile({
@@ -403,6 +770,23 @@ Map<String, dynamic> _readArchiveJson(Archive archive, String name) {
   final file = archive.files.firstWhere((item) => item.name == name);
   final content = utf8.decode(file.content as List<int>);
   return Map<String, dynamic>.from(jsonDecode(content) as Map);
+}
+
+void _replaceArchiveJson(File file, String name, Object data) {
+  final source = _decodeArchive(file);
+  final replacement = utf8.encode(jsonEncode(data));
+  final updated = Archive();
+  for (final item in source.files) {
+    final content = item.name == name
+        ? replacement
+        : List<int>.from(item.content as List<int>);
+    updated.addFile(ArchiveFile(item.name, content.length, content));
+  }
+  final encoded = ZipEncoder().encode(updated);
+  if (encoded == null) {
+    throw StateError('测试备份重打包失败');
+  }
+  file.writeAsBytesSync(encoded, flush: true);
 }
 
 Future<bool> _hasTemplate(AIConfigManager manager, String templateId) async {

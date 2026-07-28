@@ -14,6 +14,8 @@ import 'ai_provider_profile.dart';
 import '../template/prompt_template.dart' as model;
 import '../template/builtin_templates.dart';
 
+typedef _TemplateScope = ({String systemType, String templateType});
+
 /// AI 配置管理器
 class AIConfigManager {
   final AppDatabase _database;
@@ -166,24 +168,111 @@ class AIConfigManager {
   /// 在应用首次启动时调用，插入所有内置模板。
   Future<void> initializeBuiltInTemplates() async {
     final builtInTemplates = BuiltInTemplates.getAll();
+    final existingTemplates = await _database.aIConfigDao.getAllTemplates();
+    final existingById = {
+      for (final template in existingTemplates) template.id: template,
+    };
+    final builtInScopes = {
+      for (final template in builtInTemplates)
+        _templateScope(template.systemType, template.templateType),
+    };
+    final activeByScope = <_TemplateScope, List<PromptTemplate>>{};
 
-    final companions = builtInTemplates
-        .map((t) => PromptTemplatesCompanion(
-              id: Value(t.id),
-              name: Value(t.name),
-              description: Value(t.description),
-              systemType: Value(t.systemType),
-              templateType: Value(t.templateType),
-              content: Value(t.content),
-              variablesJson: Value(t.variablesJson),
-              isBuiltIn: Value(t.isBuiltIn),
-              isActive: Value(t.isActive),
-              createdAt: Value(DateTime.now()),
-              updatedAt: Value(DateTime.now()),
-            ))
-        .toList();
+    for (final template in existingTemplates.where((item) => item.isActive)) {
+      final scope = _templateScope(template.systemType, template.templateType);
+      if (builtInScopes.contains(scope)) {
+        activeByScope.putIfAbsent(scope, () => []).add(template);
+      }
+    }
+
+    final selectedIdByScope = <_TemplateScope, String>{};
+    for (final entry in activeByScope.entries) {
+      selectedIdByScope[entry.key] = _preferredActiveTemplateId(entry.value);
+    }
+
+    for (final template in builtInTemplates.where((item) => item.isActive)) {
+      final scope = _templateScope(template.systemType, template.templateType);
+      selectedIdByScope.putIfAbsent(scope, () => template.id);
+    }
+
+    final now = DateTime.now();
+
+    final companions = builtInTemplates.map((template) {
+      final existing = existingById[template.id];
+      final scope = _templateScope(template.systemType, template.templateType);
+      final isSelected = selectedIdByScope[scope] == template.id;
+      final definitionChanged =
+          existing == null || _builtInDefinitionChanged(existing, template);
+      return PromptTemplatesCompanion(
+        id: Value(template.id),
+        name: Value(template.name),
+        description: Value(template.description),
+        systemType: Value(template.systemType),
+        templateType: Value(template.templateType),
+        content: Value(template.content),
+        variablesJson: Value(template.variablesJson),
+        isBuiltIn: Value(template.isBuiltIn),
+        isActive: Value(isSelected),
+        createdAt: Value(existing?.createdAt ?? template.createdAt ?? now),
+        updatedAt: Value(
+          definitionChanged ? (template.updatedAt ?? now) : existing.updatedAt,
+        ),
+      );
+    }).toList();
 
     await _database.aIConfigDao.insertTemplates(companions);
+
+    // Repair historical duplicate-active states without rewriting a valid
+    // persisted selection on every application start.
+    for (final entry in selectedIdByScope.entries) {
+      final systemType = entry.key.systemType;
+      final templateType = entry.key.templateType;
+      final templates = await _database.aIConfigDao.getTemplatesByType(
+        systemType,
+        templateType,
+      );
+      final activeTemplates = templates.where((item) => item.isActive).toList();
+      if (activeTemplates.length == 1 &&
+          activeTemplates.single.id == entry.value) {
+        continue;
+      }
+      await _database.aIConfigDao.setActiveTemplate(
+        entry.value,
+        systemType,
+        templateType,
+      );
+    }
+  }
+
+  _TemplateScope _templateScope(String systemType, String templateType) => (
+        systemType: systemType,
+        templateType: templateType,
+      );
+
+  String _preferredActiveTemplateId(List<PromptTemplate> templates) {
+    final customTemplates =
+        templates.where((template) => !template.isBuiltIn).toList();
+    final candidates = customTemplates.isNotEmpty ? customTemplates : templates;
+    candidates.sort((left, right) {
+      final updatedAtComparison = right.updatedAt.compareTo(left.updatedAt);
+      return updatedAtComparison != 0
+          ? updatedAtComparison
+          : left.id.compareTo(right.id);
+    });
+    return candidates.first.id;
+  }
+
+  bool _builtInDefinitionChanged(
+    PromptTemplate existing,
+    model.PromptTemplate builtIn,
+  ) {
+    return existing.name != builtIn.name ||
+        existing.description != builtIn.description ||
+        existing.systemType != builtIn.systemType ||
+        existing.templateType != builtIn.templateType ||
+        existing.content != builtIn.content ||
+        existing.variablesJson != builtIn.variablesJson ||
+        existing.isBuiltIn != builtIn.isBuiltIn;
   }
 
   /// 保存模板

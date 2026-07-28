@@ -539,6 +539,103 @@ class BuiltInTemplates {
 ''',
       );
 
+  // ==================== 奇门遁甲模板 ====================
+
+  static PromptTemplate get qimenSystemPrompt => PromptTemplate(
+        id: 'builtin_qimen_system',
+        name: '奇门遁甲系统提示词（默认）',
+        description: '解释程序生成的奇门盘面、裁决与应期观察窗',
+        systemType: 'qimen',
+        templateType: 'system',
+        isBuiltIn: true,
+        isActive: true,
+        content: '''
+你是一位精通时家转盘奇门遁甲的易学解释者。
+
+## 唯一计算边界
+1. 结构化排盘、九宫事实、焦点、规则事实、冲突裁决和应期观察窗均由程序生成，是本次解读的事实基础。
+2. calculationOwner=program。不得重排九宫、补局、重算盘面或重算规则分析。
+3. mayOverrideVerdict=false。不得覆盖、替换或静默改变程序给出的四值裁决；存在分歧时只能明确说明解释层疑问。
+4. 只解释结构化数据中实际出现的事实、条件、来源和应期候选，不凭空新增格局或应期。
+5. 应期仅为观察窗口，不承诺事件一定发生，也不代表结论自动转吉。
+
+## 解读顺序
+1. 排盘口径与时空背景
+2. 值符、值使和主次焦点
+3. 九宫事实与命中规则
+4. 冲突、压制事实和程序裁决
+5. 未决条件与应期观察窗口
+6. 结合用户问题给出可执行建议
+
+{{#if customInstructions}}
+## 用户自定义指令
+{{customInstructions}}
+{{/if}}
+''',
+      );
+
+  static PromptTemplate get qimenAnalysisPrompt => PromptTemplate(
+        id: 'builtin_qimen_analysis',
+        name: '奇门遁甲综合分析模板（默认）',
+        description: '基于程序投影解释奇门盘面和裁决',
+        systemType: 'qimen',
+        templateType: 'analysis',
+        isBuiltIn: true,
+        isActive: true,
+        content: '''
+请根据以下程序生成的奇门遁甲结构化结果进行解释：
+
+{{structuredOutput}}
+
+{{#if question}}
+【求测问题】{{question}}
+请围绕该问题组织解读，但不要改变程序的焦点、事实和裁决。
+{{/if}}
+
+## 输出结构
+### 1. 排盘口径
+说明时间基准、定局法、阴阳遁、局数、换日、寄宫和暗干口径对阅读本盘的意义。
+
+### 2. 值符值使与焦点
+解释程序投影列出的主焦点和类别辅助焦点，不自行重新取用。
+
+### 3. 九宫与规则事实
+围绕结构化九宫、active facts 和来源进行解释；被压制事实必须按 conflict trace 标明，不得作为独立裁决依据重复计算。
+
+### 4. 程序裁决
+以 matchedDecisionRowId、四值趋势、因素和条件为准，把程序摘要具体化；不得改成百分比、星级或加权评分。
+
+### 5. 应期观察窗口
+只解释 timing 中已有的触发、尺度、目标焦点和理由，并明确其不保证事件发生或结论自动转吉。
+
+{{#if includeAdvice}}
+### 6. 行动建议
+在不改变程序裁决的前提下，给出与未决条件和观察窗口相匹配的建议。
+{{/if}}
+''',
+      );
+
+  static PromptTemplate get qimenBriefPrompt => PromptTemplate(
+        id: 'builtin_qimen_brief',
+        name: '奇门遁甲简要分析模板',
+        description: '简要解释程序奇门裁决和关键证据',
+        systemType: 'qimen',
+        templateType: 'analysis',
+        isBuiltIn: true,
+        isActive: false,
+        content: '''
+请根据以下程序生成的奇门遁甲结构化结果进行简要解释：
+
+{{structuredOutput}}
+
+{{#if question}}
+【求测问题】{{question}}
+{{/if}}
+
+请在 200 字以内概括程序裁决、关键焦点/事实、未决条件与应期观察窗。不得重排、重算或覆盖裁决。
+''',
+      );
+
   /// 获取所有内置模板
   static List<PromptTemplate> getAll() => [
         liuYaoSystemPrompt,
@@ -554,6 +651,9 @@ class BuiltInTemplates {
         xiaoLiuRenSystemPrompt,
         xiaoLiuRenAnalysisPrompt,
         xiaoLiuRenBriefPrompt,
+        qimenSystemPrompt,
+        qimenAnalysisPrompt,
+        qimenBriefPrompt,
       ];
 
   /// 获取指定系统的内置模板

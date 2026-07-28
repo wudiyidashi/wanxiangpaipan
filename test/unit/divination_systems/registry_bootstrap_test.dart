@@ -1,31 +1,62 @@
 import 'package:flutter_test/flutter_test.dart';
+import 'package:wanxiang_paipan/ai/ai_bootstrap.dart';
+import 'package:wanxiang_paipan/ai/output/structured_output_formatter.dart';
 import 'package:wanxiang_paipan/divination_systems/registry_bootstrap.dart';
+import 'package:wanxiang_paipan/divination_systems/qimen/models/qimen_result.dart';
+import 'package:wanxiang_paipan/divination_systems/qimen/qimen_system.dart';
+import 'package:wanxiang_paipan/divination_systems/qimen/ui/qimen_ui_factory.dart';
 import 'package:wanxiang_paipan/domain/divination_registry.dart';
 import 'package:wanxiang_paipan/domain/divination_system.dart';
 import 'package:wanxiang_paipan/presentation/divination_ui_registry.dart';
+
+import '../services/qimen/analysis/helpers/qimen_analysis_fixtures.dart';
+
+QimenProductReadiness _registerAllProducts() =>
+    DivinationSystemBootstrap.registerAll();
 
 void main() {
   group('DivinationSystemBootstrap', () {
     setUp(() {
       // 每个测试前清空所有注册
+      AIBootstrap.reset();
       DivinationSystemBootstrap.clearAll();
     });
 
     tearDown(() {
       // 每个测试后清空所有注册
       DivinationSystemBootstrap.clearAll();
+      AIBootstrap.reset();
     });
 
     group('registerAll', () {
       test('应该成功注册所有系统和 UI 工厂', () {
-        DivinationSystemBootstrap.registerAll();
+        expect(
+          StructuredOutputFormatterRegistry.instance
+              .hasFormatter(DivinationType.qiMen),
+          isFalse,
+        );
+        final readiness = _registerAllProducts();
 
         final registry = DivinationRegistry();
         final uiRegistry = DivinationUIRegistry();
 
-        // 验证至少注册了六爻系统
-        expect(registry.isRegistered(DivinationType.liuYao), true);
-        expect(uiRegistry.isUIRegistered(DivinationType.liuYao), true);
+        expect(registry.getRegisteredTypes().toSet(),
+            DivinationType.values.toSet());
+        expect(
+          uiRegistry.getRegisteredTypes().toSet(),
+          DivinationType.values.toSet(),
+        );
+        expect(registry.count, DivinationType.values.length);
+        expect(uiRegistry.count, DivinationType.values.length);
+        expect(readiness.isReady, isTrue);
+        expect(readiness.deserializerReady, isTrue);
+        expect(readiness.providersReady, isTrue);
+        expect(readiness.formatterReady, isTrue);
+        expect(
+          StructuredOutputFormatterRegistry.instance
+              .hasFormatter(DivinationType.qiMen),
+          isTrue,
+        );
       });
 
       test('应该在注册后可以获取系统', () {
@@ -47,6 +78,81 @@ void main() {
 
         expect(uiFactory, isNotNull);
         expect(uiFactory.systemType, DivinationType.liuYao);
+      });
+
+      test('奇门系统和 UI 工厂应同时注册并启用', () {
+        _registerAllProducts();
+
+        final system = DivinationRegistry().getSystem(DivinationType.qiMen);
+        final uiFactory =
+            DivinationUIRegistry().getUIFactory(DivinationType.qiMen);
+
+        expect(system, isA<QimenSystem>());
+        expect(system.isEnabled, true);
+        expect(system.supportedMethods, [CastMethod.time, CastMethod.manual]);
+        expect(uiFactory, isA<QimenUIFactory>());
+        expect(uiFactory.systemType, system.type);
+      });
+
+      test('奇门注册系统可反序列化合法当前 schema wire', () {
+        _registerAllProducts();
+        final source = fixedQimenAnalysisResult();
+        final restored = DivinationRegistry()
+            .getSystem(DivinationType.qiMen)
+            .resultFromJson(source.toJson());
+
+        expect(restored, isA<QimenResult>());
+        expect(restored.toJson(), source.toJson());
+      });
+
+      test('奇门 Provider 未声明就绪时系统和 UI 均不注册', () {
+        AIBootstrap.registerFormatters();
+
+        final readiness = DivinationSystemBootstrap.registerAll(
+          qimenProvidersReady: false,
+        );
+
+        expect(readiness.isReady, isFalse);
+        expect(readiness.providersReady, isFalse);
+        expect(readiness.formatterReady, isTrue);
+        expect(
+          DivinationRegistry().isRegistered(DivinationType.qiMen),
+          isFalse,
+        );
+        expect(
+          DivinationUIRegistry().isUIRegistered(DivinationType.qiMen),
+          isFalse,
+        );
+      });
+
+      test('奇门 formatter 未就绪时系统和 UI 均不注册', () {
+        final readiness = DivinationSystemBootstrap.registerAll(
+          qimenProvidersReady: true,
+          initializeAiFormatters: false,
+        );
+
+        expect(readiness.isReady, isFalse);
+        expect(readiness.providersReady, isTrue);
+        expect(readiness.formatterReady, isFalse);
+        expect(
+          DivinationRegistry().isRegistered(DivinationType.qiMen),
+          isFalse,
+        );
+        expect(
+          DivinationUIRegistry().isUIRegistered(DivinationType.qiMen),
+          isFalse,
+        );
+      });
+
+      test('奇门注册后 formatter 漂移会使完整性验证失败', () {
+        _registerAllProducts();
+        StructuredOutputFormatterRegistry.instance.clear();
+
+        expect(DivinationSystemBootstrap.verifyRegistration(), isFalse);
+        expect(
+          DivinationSystemBootstrap.qimenProductReadiness.missingDependencies,
+          contains('formatter'),
+        );
       });
 
       test('应该支持重复注册（后注册覆盖先注册）', () {
@@ -105,6 +211,18 @@ void main() {
 
         final isValid = DivinationSystemBootstrap.verifyRegistration();
         expect(isValid, true);
+      });
+
+      test('奇门系统和 UI 均被移除时完整性验证仍返回 false', () {
+        _registerAllProducts();
+        DivinationRegistry().unregister(DivinationType.qiMen);
+        DivinationUIRegistry().unregisterUI(DivinationType.qiMen);
+
+        expect(DivinationSystemBootstrap.verifyRegistration(), isFalse);
+        expect(
+          DivinationSystemBootstrap.qimenProductReadiness.missingDependencies,
+          containsAll(<String>['system', 'ui', 'deserializer']),
+        );
       });
 
       test('应该在只注册系统但未注册 UI 工厂时返回 false', () {

@@ -52,7 +52,7 @@ void main() {
         QimenQuestionCategory.values.map((value) => value.id).toSet(),
       );
       expect(
-        cases.map((testCase) => _expected(testCase)['trend']).toSet(),
+        sourceCases.map((testCase) => _expected(testCase)['trend']).toSet(),
         <String>{'可成', '难成', '待条件', '趋势不明'},
       );
       expect(
@@ -162,11 +162,17 @@ void main() {
       }
     });
 
-    test('lock source palace assertions for G10 through G12', () {
+    test('lock source palace assertions for worked and formula cases', () {
       final byId = <String, Map<String, dynamic>>{
         for (final testCase in cases) testCase['caseId'] as String: testCase,
       };
-      for (final caseId in <String>['QM-G10', 'QM-G11', 'QM-G12']) {
+      for (final caseId in <String>[
+        'QM-G10',
+        'QM-G11',
+        'QM-G12',
+        'QM-G16',
+        'QM-G17',
+      ]) {
         final testCase = byId[caseId]!;
         final assertions = _maps(testCase['sourcePanAssertions']);
         expect(assertions, isNotEmpty, reason: caseId);

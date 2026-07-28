@@ -143,6 +143,7 @@ class _FakeStreamingProvider implements LLMProvider {
 
   /// Content returned for every chat/chatStream call.
   final String fixedContent;
+  int requestCount = 0;
 
   @override
   String get id => 'fake_provider';
@@ -167,6 +168,7 @@ class _FakeStreamingProvider implements LLMProvider {
 
   @override
   Future<AnalysisResponse> analyze(AnalysisRequest request) async {
+    requestCount++;
     return AnalysisResponse(
       content: fixedContent,
       tokensUsed: 0,
@@ -178,11 +180,13 @@ class _FakeStreamingProvider implements LLMProvider {
 
   @override
   Stream<String>? analyzeStream(AnalysisRequest request) {
+    requestCount++;
     return Stream<String>.fromIterable([fixedContent]);
   }
 
   @override
   Future<ChatResponse> chat(ChatRequest request) async {
+    requestCount++;
     return ChatResponse(
       content: fixedContent,
       tokensUsed: 0,
@@ -194,6 +198,7 @@ class _FakeStreamingProvider implements LLMProvider {
 
   @override
   Stream<String>? chatStream(ChatRequest request) {
+    requestCount++;
     return Stream<String>.fromIterable([fixedContent]);
   }
 
@@ -218,6 +223,7 @@ void main() {
     late LLMProviderRegistry providerRegistry;
     late AIAnalysisService analysisService;
     late AIConversationService conversationService;
+    late _FakeStreamingProvider fakeProvider;
     late _FakeRepository repository;
     late MockSecureStorage secureStorageForChat;
     late XiaoLiuRenResult resultA;
@@ -255,9 +261,8 @@ void main() {
 
       providerRegistry = LLMProviderRegistry.instance;
       providerRegistry.clear();
-      providerRegistry.register(
-        _FakeStreamingProvider('结果A分析内容'),
-      );
+      fakeProvider = _FakeStreamingProvider('结果A分析内容');
+      providerRegistry.register(fakeProvider);
 
       final promptAssembler = PromptAssembler(
         configManager: configManager,
@@ -293,6 +298,61 @@ void main() {
       await database.close();
     });
 
+    testWidgets('缺少 AIAnalysisService 时显示受控不可用状态', (tester) async {
+      await tester.pumpWidget(
+        MaterialApp(
+          home: Scaffold(
+            body: AIAnalysisWidget(result: resultA),
+          ),
+        ),
+      );
+      await tester.pumpAndSettle();
+
+      expect(
+        find.byKey(const ValueKey('ai-analysis-unavailable')),
+        findsOneWidget,
+      );
+      expect(find.text('AI 智能分析暂不可用'), findsOneWidget);
+      expect(find.textContaining('AI 分析服务正在初始化或暂不可用'), findsOneWidget);
+      expect(find.byTooltip('开始分析'), findsNothing);
+      expect(fakeProvider.requestCount, 0);
+    });
+
+    testWidgets('formatter 缺失时阻止 AI 调用并解释原因', (tester) async {
+      StructuredOutputFormatterRegistry.instance.clear();
+
+      await tester.pumpWidget(
+        _buildApp(
+          analysisService: analysisService,
+          conversationService: conversationService,
+          repository: repository,
+          result: resultA,
+        ),
+      );
+      await tester.pumpAndSettle();
+
+      expect(find.textContaining('AI 数据格式化组件未就绪'), findsOneWidget);
+      expect(find.byTooltip('开始分析'), findsNothing);
+      expect(fakeProvider.requestCount, 0);
+    });
+
+    testWidgets('调用方兼容诊断会阻止 AI 调用并保留本地结果', (tester) async {
+      await tester.pumpWidget(
+        _buildApp(
+          analysisService: analysisService,
+          conversationService: conversationService,
+          repository: repository,
+          result: resultA,
+          unavailableReason: '排盘分析未通过兼容校验，本地结果仍可查看。',
+        ),
+      );
+      await tester.pumpAndSettle();
+
+      expect(find.textContaining('排盘分析未通过兼容校验'), findsOneWidget);
+      expect(find.byTooltip('开始分析'), findsNothing);
+      expect(fakeProvider.requestCount, 0);
+    });
+
     testWidgets('切换排盘记录时应显示各自 AI 内容，并保存当前分析结果', (tester) async {
       await tester.pumpWidget(
         _buildApp(
@@ -312,6 +372,7 @@ void main() {
       await tester.pumpAndSettle();
 
       expect(find.text('结果A分析内容'), findsOneWidget);
+      expect(fakeProvider.requestCount, greaterThan(0));
       // 保存职责已移交给 ChatRepository（通过 AIConversationService）；
       // DivinationRepository 不再被写入 interpretation_<id> 字段。
       expect(
@@ -355,6 +416,7 @@ Widget _buildApp({
   required AIConversationService conversationService,
   required DivinationRepository repository,
   required DivinationResult result,
+  String? unavailableReason,
 }) {
   return MultiProvider(
     providers: [
@@ -365,7 +427,10 @@ Widget _buildApp({
     ],
     child: MaterialApp(
       home: Scaffold(
-        body: AIAnalysisWidget(result: result),
+        body: AIAnalysisWidget(
+          result: result,
+          unavailableReason: unavailableReason,
+        ),
       ),
     ),
   );

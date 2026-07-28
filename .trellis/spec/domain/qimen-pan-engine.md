@@ -9,7 +9,9 @@
 - `QimenSystem` 只负责输入校验、时间/定局/盘面阶段编排和结果组装。
 - 所有排盘算法是 `lib/domain/services/qimen/` 下的纯静态服务；不得访问仓储、UI 或设备状态。
 - 干支、六十甲子与旬空复用 `TianGanDiZhiService`；精确节气和 Exact/Exact2 四柱只通过 `lunar` 取得。
-- Qimen 在产品集成任务完成前不得加入 `registry_bootstrap.dart` 或 UI registry。
+- 产品层已通过 `registry_bootstrap.dart` 与 UI registry 启用 Qimen；注册层只能
+  调用 `QimenSystem.cast` / `validateInput` / `resultFromJson`，不得导入或复制
+  本目录的时间、定局、排盘阶段服务。
 
 ## 稳定合同
 

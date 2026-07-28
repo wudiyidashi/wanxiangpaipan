@@ -11,6 +11,7 @@ import 'output/formatters/liuyao_formatter.dart';
 import 'output/formatters/daliuren_formatter.dart';
 import 'output/formatters/meihua_formatter.dart';
 import 'output/formatters/xiaoliuren_formatter.dart';
+import 'output/formatters/qimen_formatter.dart';
 import 'providers/openai_compatible_provider.dart';
 import 'service/ai_conversation_service.dart';
 import 'service/chat_repository.dart';
@@ -88,6 +89,10 @@ class AIBootstrap {
     required AppDatabase database,
     required SecureStorage secureStorage,
   }) async {
+    // Formatter registration is a synchronous structural prerequisite. Keep it
+    // available even when provider/config initialization is still pending.
+    registerFormatters();
+
     if (_initialized) {
       return _analysisService!;
     }
@@ -101,22 +106,19 @@ class AIBootstrap {
     // 2. 初始化内置模板
     await _configManager!.initializeBuiltInTemplates();
 
-    // 3. 注册结构化输出格式化器
-    _registerFormatters();
-
-    // 4. 注册 LLM 提供者
+    // 3. 注册 LLM 提供者
     await _registerProviders();
 
-    // 5. 加载已保存的提供者配置
+    // 4. 加载已保存的提供者配置
     await _loadSavedConfigs();
 
-    // 6. 创建提示词组装器
+    // 5. 创建提示词组装器
     final promptAssembler = PromptAssembler(
       configManager: _configManager!,
       formatterRegistry: StructuredOutputFormatterRegistry.instance,
     );
 
-    // 7. 创建聊天仓库和对话服务
+    // 6. 创建聊天仓库和对话服务
     _chatRepository = ChatRepository(secureStorage: secureStorage);
     _conversationService = AIConversationService(
       providerRegistry: LLMProviderRegistry.instance,
@@ -125,7 +127,7 @@ class AIBootstrap {
       chatRepository: _chatRepository!,
     );
 
-    // 8. 创建分析服务
+    // 7. 创建分析服务
     _analysisService = AIAnalysisService(
       providerRegistry: LLMProviderRegistry.instance,
       configManager: _configManager!,
@@ -137,7 +139,10 @@ class AIBootstrap {
   }
 
   /// 注册结构化输出格式化器
-  static void _registerFormatters() {
+  /// Registers the formatters required to turn program-owned results into AI
+  /// input. This step is synchronous and does not require an AI provider or
+  /// user configuration, so product release gates may call it before [initialize].
+  static void registerFormatters() {
     final registry = StructuredOutputFormatterRegistry.instance;
 
     // 六爻格式化器
@@ -151,6 +156,9 @@ class AIBootstrap {
 
     // 小六壬格式化器
     registry.register(XiaoLiuRenStructuredFormatter());
+
+    // 奇门遁甲格式化器
+    registry.register(QimenStructuredFormatter());
 
     // 未来添加其他系统的格式化器...
   }

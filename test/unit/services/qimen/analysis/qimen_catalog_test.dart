@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:flutter_test/flutter_test.dart';
+import 'package:wanxiang_paipan/divination_systems/qimen/models/qimen_enums.dart';
 import 'package:wanxiang_paipan/domain/services/qimen/analysis/models/qimen_rule_models.dart';
 import 'package:wanxiang_paipan/domain/services/qimen/analysis/rules/qimen_rule_catalog.dart';
 import 'package:wanxiang_paipan/domain/services/qimen/analysis/rules/qimen_source_catalog.dart';
@@ -90,6 +91,101 @@ void main() {
           entry.value,
           reason: entry.key,
         );
+      }
+    });
+
+    test('formation and convergence predicates are catalog-owned', () {
+      expect(
+        QimenRuleCatalog.threeWonderDutyPairs,
+        const <String, Set<String>>{
+          '乙': <String>{'己', '辛'},
+          '丙': <String>{'戊', '庚'},
+          '丁': <String>{'壬', '癸'},
+        },
+      );
+      expect(
+        QimenRuleCatalog.convergenceFocusRoles,
+        const <QimenQuestionCategory, (String, String)>{
+          QimenQuestionCategory.general: ('self', 'matter'),
+          QimenQuestionCategory.career: ('self', 'matter'),
+          QimenQuestionCategory.wealth: ('self', 'matter'),
+          QimenQuestionCategory.relationship: (
+            'relationshipYi',
+            'relationshipGeng',
+          ),
+          QimenQuestionCategory.health: (
+            'healthDisease',
+            'healthTreatment',
+          ),
+          QimenQuestionCategory.study: ('self', 'matter'),
+          QimenQuestionCategory.travel: ('self', 'matter'),
+          QimenQuestionCategory.litigation: ('self', 'matter'),
+        },
+      );
+      expect(
+        QimenRuleCatalog.convergenceSpec(QimenRuleCatalog.favorableConvergence)
+            .patterns,
+        const <QimenConvergencePattern>[
+          QimenConvergencePattern.samePalaceWithEitherFavorableDoor,
+          QimenConvergencePattern.matterGeneratesSelfWithBothFavorableDoors,
+          QimenConvergencePattern.selfControlsMatterWithSelfFavorableDoor,
+        ],
+      );
+      expect(
+        QimenRuleCatalog.convergenceSpec(QimenRuleCatalog.adverseConvergence)
+            .patterns,
+        const <QimenConvergencePattern>[
+          QimenConvergencePattern.matterControlsSelfWithSelfAdverseDoor,
+          QimenConvergencePattern.selfGeneratesMatterWithMatterAdverseDoor,
+        ],
+      );
+      expect(
+        () => QimenRuleCatalog.convergenceSpec('QMV1-UNKNOWN'),
+        throwsArgumentError,
+      );
+    });
+
+    test('adopts the source-locked Dragon, Tiger, and Ghost Dun formulas', () {
+      final expected = <String,
+          ({
+        String heavenStem,
+        String? earthStem,
+        String door,
+        String? deity,
+        int? palaceNumber,
+      })>{
+        QimenRuleCatalog.dragonDun: (
+          heavenStem: '乙',
+          earthStem: null,
+          door: '休门',
+          deity: null,
+          palaceNumber: 1,
+        ),
+        QimenRuleCatalog.tigerDun: (
+          heavenStem: '乙',
+          earthStem: '辛',
+          door: '休门',
+          deity: null,
+          palaceNumber: 8,
+        ),
+        QimenRuleCatalog.ghostDun: (
+          heavenStem: '乙',
+          earthStem: null,
+          door: '杜门',
+          deity: '九地',
+          palaceNumber: null,
+        ),
+      };
+
+      for (final entry in expected.entries) {
+        final spec = QimenRuleCatalog.formationSpecs.singleWhere(
+          (candidate) => candidate.ruleId == entry.key,
+        );
+        expect(spec.heavenStem, entry.value.heavenStem, reason: entry.key);
+        expect(spec.earthStem, entry.value.earthStem, reason: entry.key);
+        expect(spec.door, entry.value.door, reason: entry.key);
+        expect(spec.deity, entry.value.deity, reason: entry.key);
+        expect(spec.palaceNumber, entry.value.palaceNumber, reason: entry.key);
       }
     });
 

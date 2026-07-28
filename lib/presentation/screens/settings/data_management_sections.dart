@@ -163,6 +163,10 @@ class DataManagementOverviewCard extends StatelessWidget {
             value: '${value.xiaoliurenCount} 条',
           ),
           _DataManagementInfoRow(
+            label: '奇门遁甲',
+            value: '${value.qimenCount} 条',
+          ),
+          _DataManagementInfoRow(
             label: '最近记录',
             value: value.latestRecordTime != null
                 ? formatDataManagementDateTime(value.latestRecordTime!)
@@ -230,6 +234,7 @@ class DataManagementHistorySection extends StatelessWidget {
     required this.onClearDaLiuRen,
     required this.onClearMeiHua,
     required this.onClearXiaoLiuRen,
+    required this.onClearQimen,
     required this.onClearBefore30Days,
     required this.onClearAll,
   });
@@ -240,6 +245,7 @@ class DataManagementHistorySection extends StatelessWidget {
   final VoidCallback onClearDaLiuRen;
   final VoidCallback onClearMeiHua;
   final VoidCallback onClearXiaoLiuRen;
+  final VoidCallback onClearQimen;
   final VoidCallback onClearBefore30Days;
   final VoidCallback onClearAll;
 
@@ -285,6 +291,14 @@ class DataManagementHistorySection extends StatelessWidget {
           busyKey: 'clear_xiaoliuren',
           activeBusyKey: activeBusyKey,
           onTap: value.xiaoliurenCount == 0 ? null : onClearXiaoLiuRen,
+        ),
+        _DataManagementActionTile(
+          title: '清理奇门遁甲记录',
+          subtitle: '当前 ${value.qimenCount} 条',
+          icon: Icons.grid_view_outlined,
+          busyKey: 'clear_qimen',
+          activeBusyKey: activeBusyKey,
+          onTap: value.qimenCount == 0 ? null : onClearQimen,
         ),
         _DataManagementActionTile(
           title: '清理 30 天前记录',

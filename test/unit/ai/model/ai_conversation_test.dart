@@ -92,5 +92,61 @@ void main() {
           [ChatRole.assistant, ChatRole.user, ChatRole.assistant]);
       expect(restored, equals(conv));
     });
+
+    test('writes stable divination type IDs on the JSON wire', () {
+      final conv = AIConversation(
+        version: 1,
+        resultId: 'qimen-result',
+        systemType: DivinationType.qiMen,
+        castSnapshot: null,
+        messages: const [],
+        updatedAt: DateTime.utc(2026, 7, 28),
+      );
+
+      expect(conv.toJson()['systemType'], 'qimen');
+    });
+
+    test('reads stable divination type IDs from literal JSON', () {
+      const stableIds = {
+        'liuyao': DivinationType.liuYao,
+        'daliuren': DivinationType.daLiuRen,
+        'xiaoliuren': DivinationType.xiaoLiuRen,
+        'meihua': DivinationType.meiHua,
+        'qimen': DivinationType.qiMen,
+      };
+
+      for (final entry in stableIds.entries) {
+        final restored = AIConversation.fromJson(
+          _literalConversationJson(entry.key),
+        );
+        expect(restored.systemType, entry.value, reason: entry.key);
+      }
+    });
+
+    test('reads legacy enum names from literal JSON', () {
+      const legacyNames = {
+        'liuYao': DivinationType.liuYao,
+        'daLiuRen': DivinationType.daLiuRen,
+        'xiaoLiuRen': DivinationType.xiaoLiuRen,
+        'meiHua': DivinationType.meiHua,
+        'qiMen': DivinationType.qiMen,
+      };
+
+      for (final entry in legacyNames.entries) {
+        final restored = AIConversation.fromJson(
+          _literalConversationJson(entry.key),
+        );
+        expect(restored.systemType, entry.value, reason: entry.key);
+      }
+    });
   });
 }
+
+Map<String, dynamic> _literalConversationJson(String systemType) => {
+      'version': 1,
+      'resultId': 'literal-result',
+      'systemType': systemType,
+      'castSnapshot': null,
+      'messages': <dynamic>[],
+      'updatedAt': '2026-07-28T00:00:00.000Z',
+    };

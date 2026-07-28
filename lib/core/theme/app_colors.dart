@@ -115,6 +115,9 @@ class AppColors {
   /// 大六壬 - 紫檀色
   static const Color daliurenColor = Color(0xFF5D3A6A);
 
+  /// 奇门遁甲 - 松柏青
+  static const Color qimenColor = Color(0xFF2F6B5E);
+
   // ==================== 渐变色 ====================
 
   /// 主渐变（黛蓝渐变）

@@ -627,6 +627,89 @@ final List<_GoldenSeed> _seeds = <_GoldenSeed>[
     coverageTags: <String>['case:missingPerson', 'palace:kanOne'],
   ),
   _GoldenSeed(
+    caseId: 'QM-G16',
+    title: '《奇门遁甲元灵经》大寒上元占升迁',
+    population: _Population.sourceBacked,
+    sourceNature: 'publishedWorkedExample',
+    sourceId: QimenSourceCatalog.yuanLingJing,
+    sourceSection: '奇门遁甲元灵经・占升迁例（大寒上元阳遁三局）',
+    sourceAssertion: '开门在兑得相、奇合，太岁天辅来生，原文断“主升无疑”。',
+    manualAdjudication: '锁定兑七宫开门与焦点有利收敛；但 matter 时干乙落巽四宫，'
+        '命中持久化辰巳空亡，冻结首行优先命中 QMV1-D20。原文“主升无疑”'
+        '不覆盖程序条件，也不改写为保证。',
+    inputQualification: '原例给出六己年、丙申日乙未时；取2030年大寒前的己酉年'
+        '作为六己年代表坐标，月柱只用于补全 schema 1。',
+    castTime: DateTime.utc(2030, 1, 25, 4),
+    solarTerm: '大寒',
+    dun: QimenDun.yang,
+    juNumber: 3,
+    yuan: QimenYuan.upper,
+    dayGanZhi: '丙申',
+    hourGanZhi: '乙未',
+    category: QimenQuestionCategory.career,
+    requiredRuleIds: <String>[QimenRuleCatalog.favorableConvergence],
+    requiredDecisionRowId: QimenRuleCatalog.decision20,
+    sourcePanAssertions: <_SourcePanAssertion>[
+      _SourcePanAssertion(
+        claim: '兑七宫见开门。',
+        palaceNumber: 7,
+        expectedFields: <String, Object?>{
+          'trigram': '兑',
+          'door': '开门',
+        },
+      ),
+    ],
+    coverageTags: <String>['case:careerPromotion', 'palace:duiSeven'],
+  ),
+  _GoldenSeed(
+    caseId: 'QM-G17',
+    title: '《遁甲演义》青龙返首与三奇得使公式见证',
+    population: _Population.sourceBacked,
+    sourceNature: 'classicalRuleExample',
+    sourceId: QimenSourceCatalog.dunJiaYanYi,
+    sourceSection: '奇门遁甲演义卷一・青龙返首与三奇得使格',
+    sourceAssertion: '戊加丙为青龙返首；乙加己、辛等固定仪对为三奇得使。',
+    manualAdjudication: '来源锁定格局公式；完整盘与综合可成趋势分别由手工盘面复核和'
+        'QMV1-D40 项目裁决锁定，不冒充古籍历史占例。',
+    inputQualification: '来源段落只给格局公式，未给完整四柱；采用大寒上元阳遁三局、'
+        '癸酉日辛酉时构造可复算 schema-1 公式见证。',
+    castTime: DateTime.utc(2026, 1, 25, 4),
+    solarTerm: '大寒',
+    dun: QimenDun.yang,
+    juNumber: 3,
+    yuan: QimenYuan.upper,
+    dayGanZhi: '癸酉',
+    hourGanZhi: '辛酉',
+    category: QimenQuestionCategory.general,
+    requiredRuleIds: <String>[
+      QimenRuleCatalog.dragonReturns,
+      QimenRuleCatalog.threeWonderDuty,
+      QimenRuleCatalog.favorableConvergence,
+    ],
+    requiredDecisionRowId: QimenRuleCatalog.decision40,
+    sourcePanAssertions: <_SourcePanAssertion>[
+      _SourcePanAssertion(
+        claim: '坎一宫见天盘戊加地盘丙，命中青龙返首。',
+        palaceNumber: 1,
+        expectedFields: <String, Object?>{
+          'trigram': '坎',
+          'heavenStem': '戊',
+          'earthStem': '丙',
+        },
+      ),
+      _SourcePanAssertion(
+        claim: '巽四宫见天盘乙加地盘己，命中三奇得使。',
+        palaceNumber: 4,
+        expectedFields: <String, Object?>{
+          'trigram': '巽',
+          'heavenStem': '乙',
+          'earthStem': '己',
+        },
+      ),
+    ],
+    coverageTags: <String>['formation:dragonReturns', 'sourceTrend:keCheng'],
+  ),
+  _GoldenSeed(
     caseId: 'QM-S-D10',
     title: '章法合成例：五不遇时决定性阻断',
     population: _Population.synthetic,

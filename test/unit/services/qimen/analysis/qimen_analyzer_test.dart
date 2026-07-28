@@ -178,6 +178,24 @@ void main() {
           ..['title'] = '被篡改的已知来源';
         sources[0] = source;
       });
+      rejects((wire) {
+        ((wire['focuses'] as List).first as Map<String, dynamic>)
+            .remove('originPalaceNumber');
+      });
+      rejects((wire) {
+        final verdict = wire['verdict'] as Map<String, dynamic>;
+        final judgment = verdict['judgment'] as Map<String, dynamic>;
+        final factor =
+            (judgment['factors'] as List).first as Map<String, dynamic>;
+        factor['rule'] = 'QMV1-UNKNOWN';
+      });
+      rejects((wire) {
+        final verdict = wire['verdict'] as Map<String, dynamic>;
+        final judgment = verdict['judgment'] as Map<String, dynamic>;
+        final factor =
+            (judgment['factors'] as List).first as Map<String, dynamic>;
+        factor['source'] = 'QMS-UNKNOWN';
+      });
     });
 
     test('history adapter reanalyzes v1 and diagnoses future schemas', () {
@@ -306,6 +324,16 @@ void main() {
         throwsFormatException,
       );
 
+      for (final invalidValue in <Object?>[null, 'not-an-object']) {
+        final nonMapPolicy = _deepMap(projection.toJson())
+          ..['policy'] = invalidValue;
+        expect(
+          () => QimenAnalysisProjection.fromJson(nonMapPolicy),
+          throwsFormatException,
+          reason: '$invalidValue',
+        );
+      }
+
       final additiveField = Map<String, dynamic>.from(projection.toJson())
         ..['rawCastTime'] = 'forbidden';
       expect(
@@ -359,6 +387,25 @@ void main() {
         restoredDiagnostic.diagnostics.single.code,
         'QMV1-E-UNSUPPORTED-PAN-SCHEMA',
       );
+      expect(
+        restoredDiagnostic.panFieldReferences.map((ref) => ref.toJson()),
+        <Map<String, dynamic>>[
+          <String, dynamic>{
+            'path': r'$.id',
+            'value': fixedQimenAnalysisPanMap()['id'],
+          },
+        ],
+      );
+      expect(
+        restoredDiagnostic.panFieldReferences.map((ref) => ref.value),
+        isNot(contains(restoredDiagnostic.diagnostics.single.code)),
+      );
+
+      final missingIdPan = fixedQimenAnalysisPanMap()..remove('id');
+      final missingIdProjection = QimenAnalysisProjection.fromReport(
+        QimenAnalyzer.analyzePersisted(missingIdPan),
+      );
+      expect(missingIdProjection.panFieldReferences, isEmpty);
     });
   });
 }

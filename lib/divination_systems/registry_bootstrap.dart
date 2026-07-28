@@ -38,7 +38,10 @@
 library;
 
 import 'package:flutter/foundation.dart';
+import '../ai/ai_bootstrap.dart';
+import '../ai/output/structured_output_formatter.dart';
 import '../domain/divination_registry.dart';
+import '../domain/divination_system.dart';
 import '../presentation/divination_ui_registry.dart';
 import 'liuyao/liuyao_system.dart';
 import 'liuyao/ui/liuyao_ui_factory.dart';
@@ -48,6 +51,63 @@ import 'xiaoliuren/xiaoliuren_system.dart';
 import 'xiaoliuren/ui/xiaoliuren_ui_factory.dart';
 import 'daliuren/daliuren_system.dart';
 import 'daliuren/ui/daliuren_ui_factory.dart';
+import 'qimen/qimen_system.dart';
+import 'qimen/ui/qimen_ui_factory.dart';
+
+@immutable
+class QimenProductReadiness {
+  const QimenProductReadiness({
+    required this.systemReady,
+    required this.uiReady,
+    required this.deserializerReady,
+    required this.providersReady,
+    required this.formatterReady,
+  });
+
+  static const unavailable = QimenProductReadiness(
+    systemReady: false,
+    uiReady: false,
+    deserializerReady: false,
+    providersReady: false,
+    formatterReady: false,
+  );
+
+  final bool systemReady;
+  final bool uiReady;
+  final bool deserializerReady;
+  final bool providersReady;
+  final bool formatterReady;
+
+  bool get isReady =>
+      systemReady &&
+      uiReady &&
+      deserializerReady &&
+      providersReady &&
+      formatterReady;
+
+  List<String> get missingDependencies => <String>[
+        if (!systemReady) 'system',
+        if (!uiReady) 'ui',
+        if (!deserializerReady) 'deserializer',
+        if (!providersReady) 'providers',
+        if (!formatterReady) 'formatter',
+      ];
+
+  QimenProductReadiness copyWith({
+    bool? systemReady,
+    bool? uiReady,
+    bool? deserializerReady,
+    bool? providersReady,
+    bool? formatterReady,
+  }) =>
+      QimenProductReadiness(
+        systemReady: systemReady ?? this.systemReady,
+        uiReady: uiReady ?? this.uiReady,
+        deserializerReady: deserializerReady ?? this.deserializerReady,
+        providersReady: providersReady ?? this.providersReady,
+        formatterReady: formatterReady ?? this.formatterReady,
+      );
+}
 
 /// 排盘注册引导类
 ///
@@ -55,6 +115,23 @@ import 'daliuren/ui/daliuren_ui_factory.dart';
 class DivinationSystemBootstrap {
   // 私有构造函数，防止实例化
   DivinationSystemBootstrap._();
+
+  static QimenProductReadiness _qimenReadiness =
+      QimenProductReadiness.unavailable;
+
+  /// Latest Qimen release-gate state, refreshed against the live registries.
+  static QimenProductReadiness get qimenProductReadiness {
+    final system = DivinationRegistry().tryGetSystem(DivinationType.qiMen);
+    final uiFactory =
+        DivinationUIRegistry().tryGetUIFactory(DivinationType.qiMen);
+    return _qimenReadiness.copyWith(
+      systemReady: system is QimenSystem && system.isEnabled,
+      uiReady: uiFactory is QimenUIFactory,
+      deserializerReady: _hasQimenDeserializer(system),
+      formatterReady: StructuredOutputFormatterRegistry.instance
+          .hasFormatter(DivinationType.qiMen),
+    );
+  }
 
   /// 注册所有术数系统和 UI 工厂
   ///
@@ -69,9 +146,18 @@ class DivinationSystemBootstrap {
   ///   runApp(const WanxiangPaipanApp());
   /// }
   /// ```
-  static void registerAll() {
+  static QimenProductReadiness registerAll({
+    bool qimenProvidersReady = true,
+    bool initializeAiFormatters = true,
+  }) {
+    if (initializeAiFormatters) {
+      AIBootstrap.registerFormatters();
+    }
     _registerSystems();
     _registerUIFactories();
+    return _registerQimenProduct(
+      providersReady: qimenProvidersReady,
+    );
   }
 
   /// 注册所有术数系统
@@ -113,6 +199,82 @@ class DivinationSystemBootstrap {
     // 注册小六壬 UI 工厂
     uiRegistry.registerUI(XiaoLiuRenUIFactory());
   }
+
+  /// 奇门系统与 UI 必须作为同一个产品能力一起注册。
+  ///
+  /// Provider 是声明式挂载，启动注册发生时还没有可读取的 BuildContext，
+  /// 因此由应用根组件通过 [providersReady] 明确声明并由 widget 测试核实。
+  /// 其余依赖都在此处直接探测。任何条件不满足时会同时移除系统和 UI，
+  /// 避免首页可进入但历史、结果或 AI 不可用的半注册状态。
+  static QimenProductReadiness _registerQimenProduct({
+    required bool providersReady,
+  }) {
+    final registry = DivinationRegistry();
+    final uiRegistry = DivinationUIRegistry();
+    final formatterRegistry = StructuredOutputFormatterRegistry.instance;
+    final system = QimenSystem();
+    final uiFactory = QimenUIFactory();
+
+    registry.unregister(DivinationType.qiMen);
+    uiRegistry.unregisterUI(DivinationType.qiMen);
+
+    final methods = system.supportedMethods;
+    final systemContractReady = system.type == DivinationType.qiMen &&
+        system.isEnabled &&
+        methods.length == 2 &&
+        methods[0] == CastMethod.time &&
+        methods[1] == CastMethod.manual;
+    final uiContractReady = uiFactory.systemType == DivinationType.qiMen;
+    final deserializerReady = _hasQimenDeserializer(system);
+    final formatterReady = formatterRegistry.hasFormatter(DivinationType.qiMen);
+
+    if (!systemContractReady ||
+        !uiContractReady ||
+        !deserializerReady ||
+        !providersReady ||
+        !formatterReady) {
+      _qimenReadiness = QimenProductReadiness(
+        systemReady: false,
+        uiReady: false,
+        deserializerReady: deserializerReady,
+        providersReady: providersReady,
+        formatterReady: formatterReady,
+      );
+      return _qimenReadiness;
+    }
+
+    registry.register(system);
+    uiRegistry.registerUI(uiFactory);
+    _qimenReadiness = QimenProductReadiness(
+      systemReady: identical(
+        registry.tryGetSystem(DivinationType.qiMen),
+        system,
+      ),
+      uiReady: identical(
+        uiRegistry.tryGetUIFactory(DivinationType.qiMen),
+        uiFactory,
+      ),
+      deserializerReady: deserializerReady,
+      providersReady: providersReady,
+      formatterReady: formatterReady,
+    );
+
+    if (!_qimenReadiness.isReady) {
+      registry.unregister(DivinationType.qiMen);
+      uiRegistry.unregisterUI(DivinationType.qiMen);
+      _qimenReadiness = _qimenReadiness.copyWith(
+        systemReady: false,
+        uiReady: false,
+      );
+    }
+    return _qimenReadiness;
+  }
+
+  // The concrete system is the deserializer registration boundary. A valid
+  // current-schema wire round-trip is covered by the bootstrap regression
+  // test; rejecting an empty map alone would not prove decoder readiness.
+  static bool _hasQimenDeserializer(DivinationSystem? system) =>
+      system is QimenSystem;
 
   /// 注册六爻系统
   ///
@@ -176,6 +338,17 @@ class DivinationSystemBootstrap {
         }
         allValid = false;
       }
+    }
+
+    final qimenReadiness = qimenProductReadiness;
+    if (!qimenReadiness.isReady) {
+      if (kDebugMode) {
+        print(
+          'Qimen product dependencies are incomplete: '
+          '${qimenReadiness.missingDependencies.join(', ')}',
+        );
+      }
+      allValid = false;
     }
 
     if (allValid && kDebugMode) {
@@ -253,6 +426,7 @@ class DivinationSystemBootstrap {
   static void clearAll() {
     DivinationRegistry().clear();
     DivinationUIRegistry().clear();
+    _qimenReadiness = QimenProductReadiness.unavailable;
   }
 
   /// 获取注册摘要信息
@@ -273,6 +447,8 @@ class DivinationSystemBootstrap {
       'systemCount': registry.count,
       'uiFactoryCount': uiRegistry.count,
       'enabledSystemCount': enabledSystems.length,
+      'qimenProductReady': qimenProductReadiness.isReady,
+      'qimenMissingDependencies': qimenProductReadiness.missingDependencies,
       'allValid': verifyRegistration(),
     };
   }

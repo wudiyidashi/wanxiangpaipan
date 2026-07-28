@@ -23,6 +23,7 @@ class DivinationResultPage extends StatelessWidget {
   final EdgeInsetsGeometry padding;
   final double sectionSpacing;
   final bool includeAiAnalysis;
+  final String? aiAnalysisUnavailableReason;
 
   const DivinationResultPage({
     super.key,
@@ -33,6 +34,7 @@ class DivinationResultPage extends StatelessWidget {
     this.padding = const EdgeInsets.all(16),
     this.sectionSpacing = 16,
     this.includeAiAnalysis = true,
+    this.aiAnalysisUnavailableReason,
   });
 
   @override
@@ -82,6 +84,7 @@ class DivinationResultPage extends StatelessWidget {
           key: ValueKey('ai-analysis-${result.id}'),
           result: result,
           question: question.isEmpty ? null : question,
+          unavailableReason: aiAnalysisUnavailableReason,
         ),
       );
     }

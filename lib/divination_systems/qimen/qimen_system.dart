@@ -13,6 +13,8 @@ import 'models/qimen_result.dart';
 import 'models/qimen_temporal_context.dart';
 
 class QimenSystem implements DivinationSystem {
+  static const List<String> supportedSolarTerms = QimenConstants.solarTerms;
+
   @override
   DivinationType get type => DivinationType.qiMen;
 
@@ -22,10 +24,8 @@ class QimenSystem implements DivinationSystem {
   @override
   String get description => '时家转盘奇门遁甲排盘与历法引擎';
 
-  /// The domain engine is complete, but product registration belongs to the
-  /// dedicated integration task.
   @override
-  bool get isEnabled => false;
+  bool get isEnabled => true;
 
   @override
   List<CastMethod> get supportedMethods => const <CastMethod>[

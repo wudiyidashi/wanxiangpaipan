@@ -1,7 +1,7 @@
 # 多术数系统输入输出契约
 
 **版本**：2.0  
-**修订日期**：2026-04-18  
+**修订日期**：2026-07-28
 **状态**：Current Contract  
 **适用范围**：`DivinationSystem` / `DivinationResult` / `DivinationUIFactory` / 历史记录 / 仓储层
 
@@ -686,7 +686,8 @@ Future<DivinationResult> cast({
 
 ## 4.5 奇门遁甲 `QimenSystem`
 
-当前状态：领域引擎已实现，`isEnabled = false`，不在产品启动入口注册。
+当前状态：完整产品集成已启用。`QimenSystem`、`QimenUIFactory`、Provider、
+`QimenViewModel` 与结构化 formatter 作为同一发布门注册。
 
 ### 支持方式
 
@@ -721,6 +722,12 @@ Future<DivinationResult> cast({
 `QimenResult` 必须包含 `schemaVersion=1`、稳定 `systemType=qimen`、全部时间
 校正事实、定局轨迹、九宫强类型结构、旬首遁仪、值符值使、旬空驿马和推导步骤。
 中五原始字段和寄宫字段必须分开保存。
+
+产品结果页只从该结果运行时派生 `QimenAnalysisReport` 与
+`QimenAnalysisProjection`；分析不得写回盘面或数据库。九宫按
+`4-9-2 / 3-5-7 / 8-1-6` 展示，历史通过稳定 `qimen` ID 和
+`resultFromJson()` 重开。AI formatter 只消费程序投影，并携带禁止重排、重算和
+覆盖裁决的 policy。
 
 摘要固定为：
 

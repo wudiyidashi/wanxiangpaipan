@@ -5,6 +5,7 @@ import 'package:path/path.dart' as p;
 import 'package:path_provider/path_provider.dart';
 import '../../ai/config/ai_config_manager.dart';
 import '../../ai/config/ai_provider_profile.dart';
+import '../../ai/model/ai_conversation.dart';
 import '../../ai/service/ai_analysis_service.dart';
 import '../../ai/template/prompt_template.dart' as tmpl;
 import '../divination_system.dart';
@@ -66,6 +67,7 @@ class BackupImportResult {
     required this.templateCount,
     required this.preferenceCount,
     required this.mode,
+    this.skippedRecords = const [],
   });
 
   final int recordCount;
@@ -73,6 +75,19 @@ class BackupImportResult {
   final int templateCount;
   final int preferenceCount;
   final BackupImportMode mode;
+  final List<BackupSkippedRecord> skippedRecords;
+
+  int get skippedRecordCount => skippedRecords.length;
+}
+
+class BackupSkippedRecord {
+  const BackupSkippedRecord({
+    required this.identifier,
+    required this.reason,
+  });
+
+  final String identifier;
+  final String reason;
 }
 
 class DataManagementSummary {
@@ -82,6 +97,7 @@ class DataManagementSummary {
     required this.daliurenCount,
     required this.meihuaCount,
     required this.xiaoliurenCount,
+    required this.qimenCount,
     required this.aiProfileCount,
     required this.customTemplateCount,
     this.latestRecordTime,
@@ -93,6 +109,7 @@ class DataManagementSummary {
   final int daliurenCount;
   final int meihuaCount;
   final int xiaoliurenCount;
+  final int qimenCount;
   final int aiProfileCount;
   final int customTemplateCount;
   final DateTime? latestRecordTime;
@@ -130,6 +147,8 @@ class DataManagementService {
         await _repository.getRecordCountBySystemType(DivinationType.meiHua);
     final xiaoliurenCount =
         await _repository.getRecordCountBySystemType(DivinationType.xiaoLiuRen);
+    final qimenCount =
+        await _repository.getRecordCountBySystemType(DivinationType.qiMen);
     final latestRecord = await _repository.getLatestRecord();
 
     final aiProfileCount = isAIModuleAvailable
@@ -147,6 +166,7 @@ class DataManagementService {
       daliurenCount: daliurenCount,
       meihuaCount: meihuaCount,
       xiaoliurenCount: xiaoliurenCount,
+      qimenCount: qimenCount,
       aiProfileCount: aiProfileCount,
       customTemplateCount: customTemplateCount,
       latestRecordTime: latestRecord?.castTime,
@@ -199,6 +219,7 @@ class DataManagementService {
         'question_${record.id}',
         'detail_${record.id}',
         'interpretation_${record.id}',
+        'conversation_${record.id}',
       ]);
 
       recordPayload.add({
@@ -207,6 +228,7 @@ class DataManagementService {
         'question': encrypted['question_${record.id}'],
         'detail': encrypted['detail_${record.id}'],
         'interpretation': encrypted['interpretation_${record.id}'],
+        'conversation': encrypted['conversation_${record.id}'],
       });
     }
 
@@ -296,54 +318,91 @@ class DataManagementService {
     await inspectBackup(file);
 
     final recordsJson = _readJsonMap(archive, 'records.json');
-    final recordsPayload = List<Map<String, dynamic>>.from(
-      (recordsJson['records'] as List? ?? const [])
-          .map((item) => Map<String, dynamic>.from(item as Map)),
+    final recordsPayload = _readJsonList(
+      recordsJson,
+      key: 'records',
+      fileName: 'records.json',
     );
 
     final aiProfilesJson = _readJsonMap(archive, 'ai_profiles.json');
-    final activeProfileId = aiProfilesJson['activeProfileId'] as String?;
-    final profilesPayload = List<Map<String, dynamic>>.from(
-      (aiProfilesJson['profiles'] as List? ?? const [])
-          .map((item) => Map<String, dynamic>.from(item as Map)),
+    final activeProfileId = _readOptionalString(
+      aiProfilesJson,
+      key: 'activeProfileId',
+      fileName: 'ai_profiles.json',
+    );
+    final profilesPayload = _readJsonList(
+      aiProfilesJson,
+      key: 'profiles',
+      fileName: 'ai_profiles.json',
     );
 
     final templatesJson = _readJsonMap(archive, 'prompt_templates.json');
-    final templatesPayload = List<Map<String, dynamic>>.from(
-      (templatesJson['templates'] as List? ?? const [])
-          .map((item) => Map<String, dynamic>.from(item as Map)),
+    final templatesPayload = _readJsonList(
+      templatesJson,
+      key: 'templates',
+      fileName: 'prompt_templates.json',
     );
 
     final preferencesJson = _readJsonMap(archive, 'preferences.json');
-    final preferencesPayload = Map<String, String>.from(
-      (preferencesJson['preferences'] as Map? ?? const <String, dynamic>{})
-          .map((key, value) => MapEntry(key.toString(), value.toString())),
+    final preferencesPayload = _preflightPreferences(
+      preferencesJson['preferences'],
     );
 
-    if (mode == BackupImportMode.overwrite) {
-      if (recordsPayload.isNotEmpty) {
-        await clearAllHistory();
-      }
-      if (profilesPayload.isNotEmpty) {
-        await clearAllAIProfiles();
-      }
-      if (templatesPayload.isNotEmpty) {
-        await manager.restoreBuiltInTemplates();
-      }
-      if (preferencesPayload.isNotEmpty) {
-        await manager.replaceExportablePreferences(
-          const <String, String>{},
-          clearExisting: true,
+    final preflightRecords = <_PreflightRecordPayload>[];
+    final skippedRecords = <BackupSkippedRecord>[];
+    for (var index = 0; index < recordsPayload.length; index++) {
+      final item = recordsPayload[index];
+      final identifier = _recordIdentifier(item, index);
+      try {
+        if (item is! Map) {
+          throw const FormatException('记录条目不是 JSON 对象');
+        }
+        preflightRecords.add(
+          _preflightRecord(Map<String, dynamic>.from(item)),
+        );
+      } catch (error) {
+        skippedRecords.add(
+          BackupSkippedRecord(
+            identifier: identifier,
+            reason: _describeImportError(error),
+          ),
         );
       }
     }
 
+    // Profiles and templates are all-or-nothing sections. Decode the entire
+    // archive before overwrite clears any existing data.
+    final preflightProfiles = <AIProviderProfile>[];
+    for (var index = 0; index < profilesPayload.length; index++) {
+      preflightProfiles.add(
+        _preflightProfile(profilesPayload[index], index),
+      );
+    }
+    final preflightTemplates = <tmpl.PromptTemplate>[];
+    for (var index = 0; index < templatesPayload.length; index++) {
+      preflightTemplates.add(
+        _preflightTemplate(templatesPayload[index], index),
+      );
+    }
+    if (activeProfileId != null &&
+        activeProfileId.isNotEmpty &&
+        !preflightProfiles.any((profile) => profile.id == activeProfileId)) {
+      throw const FormatException('ai_profiles.json 的激活配置不在 profiles 中');
+    }
+
+    if (mode == BackupImportMode.overwrite) {
+      await clearAllHistory();
+      await clearAllAIProfiles();
+      await manager.restoreBuiltInTemplates();
+      await manager.replaceExportablePreferences(
+        const <String, String>{},
+        clearExisting: true,
+      );
+    }
+
     var importedRecords = 0;
-    for (final item in recordsPayload) {
-      final systemType = DivinationType.fromId(item['systemType'] as String);
-      final resultJson = Map<String, dynamic>.from(item['result'] as Map);
-      final system = _registry.getSystem(systemType);
-      final result = system.resultFromJson(resultJson);
+    for (final item in preflightRecords) {
+      final result = item.result;
       if (await _repository.recordExists(result.id)) {
         await _repository.updateRecord(result);
       } else {
@@ -352,29 +411,31 @@ class DataManagementService {
 
       await _restoreEncryptedField(
         key: 'question_${result.id}',
-        value: item['question'] as String?,
+        value: item.question,
       );
       await _restoreEncryptedField(
         key: 'detail_${result.id}',
-        value: item['detail'] as String?,
+        value: item.detail,
       );
       await _restoreEncryptedField(
         key: 'interpretation_${result.id}',
-        value: item['interpretation'] as String?,
+        value: item.interpretation,
+      );
+      await _restoreConversation(
+        resultId: result.id,
+        value: item.conversation,
       );
       importedRecords++;
     }
 
     var importedProfiles = 0;
-    for (final item in profilesPayload) {
+    for (final decodedProfile in preflightProfiles) {
       final existingProfile = mode == BackupImportMode.merge
-          ? await manager.getProviderProfile(item['id'] as String? ?? '')
+          ? await manager.getProviderProfile(decodedProfile.id)
           : null;
-      final importedApiKey = item['apiKey'] as String?;
-      final profile = AIProviderProfile.fromJson(
-        item,
-        apiKey: importedApiKey?.trim().isNotEmpty == true
-            ? importedApiKey!
+      final profile = decodedProfile.copyWith(
+        apiKey: decodedProfile.apiKey.trim().isNotEmpty
+            ? decodedProfile.apiKey
             : (existingProfile?.apiKey ?? ''),
       );
       await manager.saveProviderProfile(profile);
@@ -389,8 +450,7 @@ class DataManagementService {
     }
 
     var importedTemplates = 0;
-    for (final item in templatesPayload) {
-      final template = tmpl.PromptTemplate.fromJson(item);
+    for (final template in preflightTemplates) {
       await manager.saveTemplate(template);
       importedTemplates++;
     }
@@ -408,6 +468,7 @@ class DataManagementService {
       templateCount: importedTemplates,
       preferenceCount: preferencesPayload.length,
       mode: mode,
+      skippedRecords: List.unmodifiable(skippedRecords),
     );
   }
 
@@ -417,6 +478,182 @@ class DataManagementService {
       throw StateError('AI 模块尚未初始化完成');
     }
     return manager;
+  }
+
+  _PreflightRecordPayload _preflightRecord(Map<String, dynamic> item) {
+    final rawSystemType = item['systemType'];
+    if (rawSystemType is! String) {
+      throw const FormatException('备份记录缺少合法 systemType');
+    }
+    final systemType = DivinationType.fromId(rawSystemType);
+    final system = _registry.tryGetSystem(systemType);
+    if (system == null) {
+      throw StateError('备份记录对应术数系统未注册: $rawSystemType');
+    }
+    final rawResult = item['result'];
+    if (rawResult is! Map) {
+      throw const FormatException('备份记录 result 格式错误');
+    }
+    final result = system.resultFromJson(
+      Map<String, dynamic>.from(rawResult),
+    );
+    if (result.systemType != systemType) {
+      throw const FormatException('备份记录内外 systemType 不一致');
+    }
+
+    String? optionalString(String key) {
+      final value = item[key];
+      if (value == null) return null;
+      if (value is! String) {
+        throw FormatException('备份记录 $key 格式错误');
+      }
+      return value;
+    }
+
+    return _PreflightRecordPayload(
+      result: result,
+      question: optionalString('question'),
+      detail: optionalString('detail'),
+      interpretation: optionalString('interpretation'),
+      conversation: _preflightConversation(
+        optionalString('conversation'),
+        result: result,
+      ),
+    );
+  }
+
+  AIProviderProfile _preflightProfile(Object? item, int index) {
+    if (item is! Map) {
+      throw FormatException('ai_profiles.json profiles[$index] 格式错误');
+    }
+    final json = Map<String, dynamic>.from(item);
+    final apiKey = json['apiKey'];
+    if (apiKey != null && apiKey is! String) {
+      throw FormatException('ai_profiles.json profiles[$index].apiKey 格式错误');
+    }
+    final profile = AIProviderProfile.fromJson(
+      json,
+      apiKey: apiKey as String? ?? '',
+    );
+    if (profile.id.trim().isEmpty) {
+      throw FormatException('ai_profiles.json profiles[$index].id 不能为空');
+    }
+    return profile;
+  }
+
+  tmpl.PromptTemplate _preflightTemplate(Object? item, int index) {
+    if (item is! Map) {
+      throw FormatException(
+        'prompt_templates.json templates[$index] 格式错误',
+      );
+    }
+    final template = tmpl.PromptTemplate.fromJson(
+      Map<String, dynamic>.from(item),
+    );
+    if (template.id.trim().isEmpty) {
+      throw FormatException(
+        'prompt_templates.json templates[$index].id 不能为空',
+      );
+    }
+    return template;
+  }
+
+  Map<String, String> _preflightPreferences(Object? payload) {
+    if (payload is! Map) {
+      throw const FormatException('preferences.json preferences 格式错误');
+    }
+    final preferences = <String, String>{};
+    for (final entry in payload.entries) {
+      if (entry.key is! String || entry.value is! String) {
+        throw const FormatException('preferences.json preferences 必须为字符串键值');
+      }
+      final key = entry.key as String;
+      if (AIConfigManager.internalPreferenceKeys.contains(key)) {
+        throw FormatException('preferences.json 包含内部偏好键: $key');
+      }
+      preferences[key] = entry.value as String;
+    }
+    return preferences;
+  }
+
+  String? _preflightConversation(
+    String? raw, {
+    required DivinationResult result,
+  }) {
+    if (raw == null) {
+      return null;
+    }
+    if (raw.trim().isEmpty) {
+      throw const FormatException('备份记录 conversation 格式错误');
+    }
+    final decoded = jsonDecode(raw);
+    if (decoded is! Map) {
+      throw const FormatException('备份记录 conversation 格式错误');
+    }
+    final conversation = AIConversation.fromJson(
+      Map<String, dynamic>.from(decoded),
+    );
+    if (conversation.resultId != result.id) {
+      throw const FormatException('备份记录 conversation 的 resultId 不一致');
+    }
+    if (conversation.systemType != result.systemType) {
+      throw const FormatException('备份记录 conversation 的 systemType 不一致');
+    }
+    return raw;
+  }
+
+  List<Object?> _readJsonList(
+    Map<String, dynamic> json, {
+    required String key,
+    required String fileName,
+  }) {
+    final value = json[key];
+    if (value is! List) {
+      throw FormatException('$fileName 的 $key 格式错误');
+    }
+    return List<Object?>.from(value);
+  }
+
+  String? _readOptionalString(
+    Map<String, dynamic> json, {
+    required String key,
+    required String fileName,
+  }) {
+    final value = json[key];
+    if (value == null) {
+      return null;
+    }
+    if (value is! String) {
+      throw FormatException('$fileName 的 $key 格式错误');
+    }
+    return value;
+  }
+
+  String _recordIdentifier(Object? item, int index) {
+    if (item is Map) {
+      final result = item['result'];
+      if (result is Map) {
+        final id = result['id'];
+        if (id is String && id.trim().isNotEmpty) {
+          return id;
+        }
+      }
+      final id = item['id'];
+      if (id is String && id.trim().isNotEmpty) {
+        return id;
+      }
+    }
+    return 'records[$index]';
+  }
+
+  String _describeImportError(Object error) {
+    if (error is FormatException) {
+      return error.message.toString();
+    }
+    if (error is ArgumentError) {
+      return error.message?.toString() ?? error.toString();
+    }
+    return error.toString();
   }
 
   void _addJsonFile(Archive archive, String name, Object data) {
@@ -457,6 +694,18 @@ class DataManagementService {
     await _repository.saveEncryptedField(key, normalized);
   }
 
+  Future<void> _restoreConversation({
+    required String resultId,
+    required String? value,
+  }) async {
+    final key = 'conversation_$resultId';
+    if (value == null) {
+      await _repository.deleteEncryptedField(key);
+      return;
+    }
+    await _repository.saveEncryptedField(key, value);
+  }
+
   String _formatFileTimestamp(DateTime time) {
     final year = time.year.toString().padLeft(4, '0');
     final month = time.month.toString().padLeft(2, '0');
@@ -466,4 +715,20 @@ class DataManagementService {
     final second = time.second.toString().padLeft(2, '0');
     return '$year$month${day}_$hour$minute$second';
   }
+}
+
+class _PreflightRecordPayload {
+  const _PreflightRecordPayload({
+    required this.result,
+    required this.question,
+    required this.detail,
+    required this.interpretation,
+    required this.conversation,
+  });
+
+  final DivinationResult result;
+  final String? question;
+  final String? detail;
+  final String? interpretation;
+  final String? conversation;
 }
