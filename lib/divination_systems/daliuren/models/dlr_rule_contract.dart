@@ -19,7 +19,8 @@ class DlrRuleSetVersions {
   static const String legacyUnknown = 'legacyUnknown';
   static const String evidenceCatalog = 'daliuren-classics/1.0.0';
   static const String panV1 = 'daliuren-pan/1.0.0';
-  static const String panCurrent = 'daliuren-pan/2.0.0';
+  static const String panV2 = 'daliuren-pan/2.0.0';
+  static const String panCurrent = 'daliuren-pan/3.0.0';
   static const String analysisCurrent = 'daliuren-analysis-project-v1/1.0.0';
   static const String castInputSchemaV1 = '1.0.0';
   static const String castInputSchema = '2.0.0';

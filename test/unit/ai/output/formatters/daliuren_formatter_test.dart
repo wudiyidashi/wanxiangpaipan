@@ -29,7 +29,6 @@ DaLiuRenResult _buildGoldenResult({
   required int s,
   required List<String> kongWang,
   String yueJian = '寅',
-  String shiZhi = '午',
   String yueJiang = '亥',
   DateTime? castTime,
   CastMethod castMethod = CastMethod.time,
@@ -38,16 +37,18 @@ DaLiuRenResult _buildGoldenResult({
   String? solarTerm,
 }) {
   final tianPanMap = _buildTianPanMap(s);
+  final anchoredShiZhi =
+      tianPanMap.entries.singleWhere((entry) => entry.value == yueJiang).key;
   final shenJiangConfig = ShenJiangService.configureShenJiang(
     riGan: riGan,
-    shiZhi: shiZhi,
+    shiZhi: anchoredShiZhi,
     tianPanMap: tianPanMap,
   );
   final siKe = SiKeService.arrangeSiKe(
     riGan: riGan,
     riZhi: riZhi,
     tianPanMap: tianPanMap,
-    shenJiangConfig: shenJiangConfig,
+    resolveChengShen: shenJiangConfig.getShenJiangByDiZhi,
   );
   final sanChuan = SanChuanService.deriveSanChuan(
     siKe: siKe,
@@ -59,7 +60,7 @@ DaLiuRenResult _buildGoldenResult({
     riGan: riGan,
     riZhi: riZhi,
     yueJian: yueJian,
-    shiZhi: shiZhi,
+    shiZhi: anchoredShiZhi,
   );
   return DaLiuRenResult(
     id: 'formatter-$riGan$riZhi-$s',
@@ -78,7 +79,7 @@ DaLiuRenResult _buildGoldenResult({
     tianPan: TianPan(
       yueJiang: yueJiang,
       yueJiangName: '登明',
-      shiZhi: shiZhi,
+      shiZhi: anchoredShiZhi,
       tianPanMap: tianPanMap,
     ),
     siKe: siKe,

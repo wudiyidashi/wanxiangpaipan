@@ -26,6 +26,7 @@ Map<String, String> buildTianPanMap(int s) {
     riGan: riGan,
     riZhi: riZhi,
     tianPanMap: tianPanMap,
+    resolveChengShen: (_) => ShenJiang.guiRen,
   );
   final sanChuan = SanChuanService.deriveSanChuan(
     siKe: siKe,

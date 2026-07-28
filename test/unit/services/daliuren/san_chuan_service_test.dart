@@ -20,6 +20,7 @@ Map<String, String> buildTianPanMap(int s) {
     riGan: riGan,
     riZhi: riZhi,
     tianPanMap: tianPanMap,
+    resolveChengShen: (_) => ShenJiang.guiRen,
   );
   final sanChuan = SanChuanService.deriveSanChuan(
     siKe: siKe,
@@ -165,6 +166,102 @@ void main() {
       expect(ke3.isZeiKe, false);
       expect(ke3.isBiYong, true);
       expect(ke3.wuXingRelation, '上克下');
+    });
+  });
+
+  group('SanChuanService strict entry contract', () {
+    test('rejects every malformed map class and a different valid plate', () {
+      final base = run('甲', '子', 1);
+      final invalidKey = buildTianPanMap(1)..remove('子');
+      invalidKey['甲'] = '丑';
+      final scrambled = buildTianPanMap(1);
+      final first = scrambled['子']!;
+      scrambled['子'] = scrambled['丑']!;
+      scrambled['丑'] = first;
+      final malformed = <Map<String, String>>[
+        <String, String>{},
+        <String, String>{'子': '子'},
+        invalidKey,
+        buildTianPanMap(1)..['子'] = '甲',
+        buildTianPanMap(1)..['子'] = '寅',
+        scrambled,
+      ];
+
+      for (final map in malformed) {
+        expect(
+          () => SanChuanService.deriveSanChuan(
+            siKe: base.siKe,
+            tianPanMap: map,
+          ),
+          throwsArgumentError,
+        );
+      }
+      expect(
+        () => SanChuanService.deriveSanChuan(
+          siKe: base.siKe,
+          tianPanMap: buildTianPanMap(2),
+        ),
+        throwsArgumentError,
+      );
+    });
+
+    test('rejects tampered lesson order, chain, and relation flags', () {
+      final base = run('甲', '子', 1);
+      final tampered = <SiKe>[
+        base.siKe.copyWith(riZhi: '丑'),
+        base.siKe.copyWith(
+          ke1: base.siKe.ke1.copyWith(index: 2),
+        ),
+        base.siKe.copyWith(
+          ke2: base.siKe.ke2.copyWith(shangShen: '午'),
+        ),
+        base.siKe.copyWith(
+          ke2: base.siKe.ke2.copyWith(xiaShen: '午'),
+        ),
+        base.siKe.copyWith(
+          ke2: base.siKe.ke2.copyWith(shangShenWuXing: 'invalid'),
+        ),
+        base.siKe.copyWith(
+          ke2: base.siKe.ke2.copyWith(xiaShenWuXing: 'invalid'),
+        ),
+        base.siKe.copyWith(
+          ke2: base.siKe.ke2.copyWith(wuXingRelation: '比和'),
+        ),
+        base.siKe.copyWith(
+          ke2: base.siKe.ke2.copyWith(hasKe: false),
+        ),
+        base.siKe.copyWith(
+          ke2: base.siKe.ke2.copyWith(isZeiKe: false),
+        ),
+        base.siKe.copyWith(
+          ke2: base.siKe.ke2.copyWith(isBiYong: true),
+        ),
+      ];
+
+      for (final siKe in tampered) {
+        expect(
+          () => SanChuanService.deriveSanChuan(
+            siKe: siKe,
+            tianPanMap: buildTianPanMap(1),
+          ),
+          throwsArgumentError,
+        );
+      }
+    });
+
+    test('chengShen remains outside C03 structural validation', () {
+      final base = run('甲', '子', 1);
+      final changedGeneral = base.siKe.copyWith(
+        ke1: base.siKe.ke1.copyWith(chengShen: ShenJiang.tengShe),
+      );
+
+      expect(
+        () => SanChuanService.deriveSanChuan(
+          siKe: changedGeneral,
+          tianPanMap: buildTianPanMap(1),
+        ),
+        returnsNormally,
+      );
     });
   });
 

@@ -1,5 +1,6 @@
 import '../../../divination_systems/daliuren/daliuren_constants.dart';
 import '../../../divination_systems/daliuren/models/tianpan.dart';
+import '../../../divination_systems/daliuren/models/tianpan_map_contract.dart';
 import 'yue_jiang_service.dart';
 
 /// 天盘排列服务
@@ -22,6 +23,9 @@ class TianPanService {
   /// [shiZhi] 时支
   /// 返回天盘映射表（地盘地支 -> 天盘地支）
   static Map<String, String> arrangeTianPan(String yueJiang, String shiZhi) {
+    TianPanMapContract.validateBranch(yueJiang, 'yueJiang');
+    TianPanMapContract.validateBranch(shiZhi, 'shiZhi');
+
     final diZhi = DaLiuRenConstants.diZhi;
     final tianPanMap = <String, String>{};
 
@@ -43,7 +47,7 @@ class TianPanService {
       tianPanMap[diPanZhi] = tianPanZhi;
     }
 
-    return tianPanMap;
+    return TianPanMapContract.validate(tianPanMap);
   }
 
   /// 创建天盘模型
@@ -75,17 +79,21 @@ class TianPanService {
   /// [diPanZhi] 地盘地支
   /// 返回对应的天盘地支
   static String getTianPanZhi(Map<String, String> tianPanMap, String diPanZhi) {
-    return tianPanMap[diPanZhi] ?? diPanZhi;
+    final validatedMap = TianPanMapContract.validate(tianPanMap);
+    TianPanMapContract.validateBranch(diPanZhi, 'diPanZhi');
+    return validatedMap[diPanZhi]!;
   }
 
   /// 根据天盘地支获取地盘地支
   ///
   /// [tianPanMap] 天盘映射表
   /// [tianPanZhi] 天盘地支
-  /// 返回对应的地盘地支列表（可能有多个）
+  /// 返回对应的地盘地支列表（合法双射中恰有一个）
   static List<String> getDiPanZhi(
       Map<String, String> tianPanMap, String tianPanZhi) {
-    return tianPanMap.entries
+    final validatedMap = TianPanMapContract.validate(tianPanMap);
+    TianPanMapContract.validateBranch(tianPanZhi, 'tianPanZhi');
+    return validatedMap.entries
         .where((entry) => entry.value == tianPanZhi)
         .map((entry) => entry.key)
         .toList();

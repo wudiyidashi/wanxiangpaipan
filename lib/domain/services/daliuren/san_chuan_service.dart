@@ -5,6 +5,7 @@ import '../../../divination_systems/daliuren/models/san_chuan.dart';
 import '../../../divination_systems/daliuren/models/si_ke.dart';
 import '../../../divination_systems/daliuren/models/shen_jiang_config.dart';
 import '../shared/wuxing_service.dart';
+import 'si_ke_service.dart';
 
 /// 三传推导内部结果
 typedef _Derivation = ({
@@ -54,7 +55,8 @@ class SanChuanService {
     ShenJiangConfig? shenJiangConfig,
     List<String>? kongWang,
   }) {
-    final derivation = _derive(siKe, tianPanMap);
+    final validatedMap = SiKeService.validateSiKe(siKe, tianPanMap);
+    final derivation = _derive(siKe, validatedMap);
 
     final chuChuan = _createChuan(
       position: ChuanPosition.chu,
@@ -101,8 +103,7 @@ class SanChuanService {
       return _deriveFanYin(siKe, tianPanMap);
     }
 
-    final isBaZhuanDay =
-        DaLiuRenConstants.isBaZhuanDay(siKe.riGan, siKe.riZhi);
+    final isBaZhuanDay = DaLiuRenConstants.isBaZhuanDay(siKe.riGan, siKe.riZhi);
     final hasAnyKe = siKe.hasZeiKe || siKe.hasBiYong;
 
     // 3. 八专日无克 → 八专法
@@ -255,9 +256,8 @@ class SanChuanService {
 
     // 3) 无孟 → 四仲者（察微）
     if (mengList.isEmpty) {
-      final zhongList = deepest
-          .where((shen) => _zhongZhi.contains(linGongOf[shen]))
-          .toList();
+      final zhongList =
+          deepest.where((shen) => _zhongZhi.contains(linGongOf[shen])).toList();
       if (zhongList.length == 1) {
         return (
           keType: KeType.sheHai,
@@ -293,14 +293,12 @@ class SanChuanService {
     while (index != homeIndex) {
       final gong = DaLiuRenConstants.getDiZhiByIndex(index);
       final gongWuXing = WuXingService.getWuXingFromBranch(gong);
-      if (gongWuXing != null &&
-          WuXingService.isKe(gongWuXing, shenWuXing)) {
+      if (gongWuXing != null && WuXingService.isKe(gongWuXing, shenWuXing)) {
         depth++;
       }
       for (final gan in DaLiuRenConstants.getGongJiGan(gong)) {
         final ganWuXing = WuXingService.getWuXingFromStem(gan);
-        if (ganWuXing != null &&
-            WuXingService.isKe(ganWuXing, shenWuXing)) {
+        if (ganWuXing != null && WuXingService.isKe(ganWuXing, shenWuXing)) {
           depth++;
         }
       }
@@ -316,7 +314,7 @@ class SanChuanService {
         return entry.key;
       }
     }
-    return shen;
+    throw StateError('合法天盘中找不到天盘支$shen所临地宫');
   }
 
   // ==================== 遥克 ====================
@@ -393,8 +391,7 @@ class SanChuanService {
   }
 
   /// 昴星：四课全、无上下克、无遥克。刚日仰取地盘酉宫上神，柔日俯取天盘酉下之支。
-  static _Derivation _deriveMaoXing(
-      SiKe siKe, Map<String, String> tianPanMap) {
+  static _Derivation _deriveMaoXing(SiKe siKe, Map<String, String> tianPanMap) {
     final ganShang = siKe.ke1.shangShen;
     final zhiShang = siKe.ke3.shangShen;
 
@@ -578,30 +575,21 @@ class SanChuanService {
 
   /// 判断是否伏吟
   static bool _isFuYin(Map<String, String> tianPanMap) {
-    for (final entry in tianPanMap.entries) {
-      if (entry.key != entry.value) {
-        return false;
-      }
-    }
-    return true;
+    return SiKeService.isFuYin(tianPanMap);
   }
 
   /// 判断是否反吟
   static bool _isFanYin(Map<String, String> tianPanMap) {
-    for (final entry in tianPanMap.entries) {
-      final diPan = entry.key;
-      final tianPan = entry.value;
-      final chong = DaLiuRenConstants.getChongZhi(diPan);
-      if (tianPan != chong) {
-        return false;
-      }
-    }
-    return true;
+    return SiKeService.isFanYin(tianPanMap);
   }
 
   /// 天盘链取值（地盘支 -> 天盘支）
   static String _tianPan(Map<String, String> tianPanMap, String zhi) {
-    return tianPanMap[zhi] ?? zhi;
+    final result = tianPanMap[zhi];
+    if (result == null) {
+      throw StateError('合法天盘缺少地盘支$zhi');
+    }
+    return result;
   }
 
   static bool _isSameParityAsRiGan(String branch, String riGan) {

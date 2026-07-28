@@ -39,7 +39,7 @@ DaLiuRenResult buildResult({
     riGan: riGan,
     riZhi: riZhi,
     tianPanMap: tianPanMap,
-    shenJiangConfig: shenJiangConfig,
+    resolveChengShen: shenJiangConfig.getShenJiangByDiZhi,
   );
   final sanChuan = SanChuanService.deriveSanChuan(
     siKe: siKe,
@@ -67,8 +67,8 @@ DaLiuRenResult buildResult({
       monthGanZhi: '壬寅',
     ),
     tianPan: TianPan(
-      yueJiang: '亥',
-      yueJiangName: '登明',
+      yueJiang: tianPanMap[shiZhi]!,
+      yueJiangName: '测试月将',
       shiZhi: shiZhi,
       tianPanMap: tianPanMap,
     ),

@@ -1,13 +1,16 @@
 import '../../../divination_systems/daliuren/daliuren_constants.dart';
 import '../../../divination_systems/daliuren/models/ke.dart';
 import '../../../divination_systems/daliuren/models/si_ke.dart';
-import '../../../divination_systems/daliuren/models/shen_jiang_config.dart';
+import '../../../divination_systems/daliuren/models/tianpan_map_contract.dart';
+import '../shared/tiangan_dizhi_service.dart';
 import '../shared/wuxing_service.dart';
+
+typedef ChengShenResolver = ShenJiang? Function(String tianPanZhi);
 
 /// 四课排列服务
 ///
 /// 大六壬四课的排列规则：
-/// - 一课：日干寄宫为下神，其上天盘地支为上神
+/// - 一课：日干为下神，日干寄宫上的天盘地支为上神
 /// - 二课：一课上神为下神，其上天盘地支为上神
 /// - 三课：日支为下神，其上天盘地支为上神
 /// - 四课：三课上神为下神，其上天盘地支为上神
@@ -19,60 +22,63 @@ class SiKeService {
   /// [riGan] 日干
   /// [riZhi] 日支
   /// [tianPanMap] 天盘映射表（地盘地支 -> 天盘地支）
-  /// [shenJiangConfig] 神将配置（可选，用于获取乘神）
+  /// [resolveChengShen] 按天盘上神解析乘神，查无结果时构造失败
   /// 返回 SiKe 模型
   static SiKe arrangeSiKe({
     required String riGan,
     required String riZhi,
     required Map<String, String> tianPanMap,
-    ShenJiangConfig? shenJiangConfig,
+    required ChengShenResolver resolveChengShen,
   }) {
+    _validateDayGanZhi(riGan, riZhi);
+    final validatedMap = TianPanMapContract.validate(tianPanMap);
+
     // 获取日干寄宫
     final riGanJiGong = DaLiuRenConstants.getGanJiGong(riGan);
 
     // 一课：日干为下神，其寄宫上的天盘地支为上神
     final ke1XiaShen = riGan;
-    final ke1ShangShenFromJiGong = tianPanMap[riGanJiGong] ?? riGanJiGong;
+    final ke1ShangShenFromJiGong = validatedMap[riGanJiGong]!;
 
     // 二课：一课上神为下神，其上天盘地支为上神
     final ke2XiaShen = ke1ShangShenFromJiGong;
-    final ke2ShangShen = tianPanMap[ke2XiaShen] ?? ke2XiaShen;
+    final ke2ShangShen = validatedMap[ke2XiaShen]!;
 
     // 三课：日支为下神，其上天盘地支为上神
     final ke3XiaShen = riZhi;
-    final ke3ShangShen = tianPanMap[ke3XiaShen] ?? ke3XiaShen;
+    final ke3ShangShen = validatedMap[ke3XiaShen]!;
 
     // 四课：三课上神为下神，其上天盘地支为上神
     final ke4XiaShen = ke3ShangShen;
-    final ke4ShangShen = tianPanMap[ke4XiaShen] ?? ke4XiaShen;
+    final ke4ShangShen = validatedMap[ke4XiaShen]!;
 
     // 创建四课
     final ke1 = _createKe(
       index: 1,
       shangShen: ke1ShangShenFromJiGong,
       xiaShen: ke1XiaShen,
-      shenJiangConfig: shenJiangConfig,
+      resolveChengShen: resolveChengShen,
     );
 
     final ke2 = _createKe(
       index: 2,
       shangShen: ke2ShangShen,
       xiaShen: ke2XiaShen,
-      shenJiangConfig: shenJiangConfig,
+      resolveChengShen: resolveChengShen,
     );
 
     final ke3 = _createKe(
       index: 3,
       shangShen: ke3ShangShen,
       xiaShen: ke3XiaShen,
-      shenJiangConfig: shenJiangConfig,
+      resolveChengShen: resolveChengShen,
     );
 
     final ke4 = _createKe(
       index: 4,
       shangShen: ke4ShangShen,
       xiaShen: ke4XiaShen,
-      shenJiangConfig: shenJiangConfig,
+      resolveChengShen: resolveChengShen,
     );
 
     return SiKe(
@@ -90,7 +96,25 @@ class SiKeService {
     required int index,
     required String shangShen,
     required String xiaShen,
-    ShenJiangConfig? shenJiangConfig,
+    required ChengShenResolver resolveChengShen,
+  }) {
+    final chengShen = resolveChengShen(shangShen);
+    if (chengShen == null) {
+      throw StateError('无法解析第$index课上神$shangShen的乘神');
+    }
+    return _createKeFromFacts(
+      index: index,
+      shangShen: shangShen,
+      xiaShen: xiaShen,
+      chengShen: chengShen,
+    );
+  }
+
+  static Ke _createKeFromFacts({
+    required int index,
+    required String shangShen,
+    required String xiaShen,
+    required ShenJiang chengShen,
   }) {
     // 获取上下神五行
     final shangShenWuXing = _getWuXing(shangShen);
@@ -131,15 +155,6 @@ class SiKeService {
       }
     }
 
-    // 获取乘神（神将）
-    ShenJiang chengShen = ShenJiang.guiRen; // 默认值
-    if (shenJiangConfig != null) {
-      final sj = shenJiangConfig.getShenJiangByDiZhi(shangShen);
-      if (sj != null) {
-        chengShen = sj;
-      }
-    }
-
     return Ke(
       index: index,
       shangShen: shangShen,
@@ -158,8 +173,8 @@ class SiKeService {
   ///
   /// 伏吟：天地盘同位（即天盘地支与地盘地支相同）
   static bool isFuYin(Map<String, String> tianPanMap) {
-    // 检查所有位置是否天地盘相同
-    for (final entry in tianPanMap.entries) {
+    final validatedMap = TianPanMapContract.validate(tianPanMap);
+    for (final entry in validatedMap.entries) {
       if (entry.key != entry.value) {
         return false;
       }
@@ -171,8 +186,8 @@ class SiKeService {
   ///
   /// 反吟：天地盘相冲（即天盘地支与地盘地支对冲）
   static bool isFanYin(Map<String, String> tianPanMap) {
-    // 检查所有位置是否天地盘相冲
-    for (final entry in tianPanMap.entries) {
+    final validatedMap = TianPanMapContract.validate(tianPanMap);
+    for (final entry in validatedMap.entries) {
       final diPan = entry.key;
       final tianPan = entry.value;
       final chong = DaLiuRenConstants.getChongZhi(diPan);
@@ -182,6 +197,64 @@ class SiKeService {
     }
     return true;
   }
+
+  /// Validates an existing four-lesson model against the same day and plate.
+  ///
+  /// The general attached to each lesson is intentionally excluded because
+  /// C04 owns the heaven-branch/general coordinate contract.
+  static Map<String, String> validateSiKe(
+    SiKe siKe,
+    Map<String, String> tianPanMap,
+  ) {
+    _validateDayGanZhi(siKe.riGan, siKe.riZhi);
+    final validatedMap = TianPanMapContract.validate(tianPanMap);
+    final ganGong = DaLiuRenConstants.getGanJiGong(siKe.riGan);
+    final ganShang = validatedMap[ganGong]!;
+    final zhiShang = validatedMap[siKe.riZhi]!;
+    final expectedPairs = <({String xia, String shang})>[
+      (xia: siKe.riGan, shang: ganShang),
+      (xia: ganShang, shang: validatedMap[ganShang]!),
+      (xia: siKe.riZhi, shang: zhiShang),
+      (xia: zhiShang, shang: validatedMap[zhiShang]!),
+    ];
+
+    for (var index = 0; index < expectedPairs.length; index++) {
+      final actual = siKe.allKe[index];
+      final pair = expectedPairs[index];
+      final expected = _createKeFromFacts(
+        index: index + 1,
+        shangShen: pair.shang,
+        xiaShen: pair.xia,
+        chengShen: actual.chengShen,
+      );
+      if (!_sameDerivedFacts(actual, expected)) {
+        throw ArgumentError.value(
+          siKe,
+          'siKe',
+          '第${index + 1}课的课序、上下神链或五行克向与日干支及天盘不一致',
+        );
+      }
+    }
+    return validatedMap;
+  }
+
+  static void _validateDayGanZhi(String riGan, String riZhi) {
+    final dayGanZhi = '$riGan$riZhi';
+    if (!TianGanDiZhiService.isValidGanZhi(dayGanZhi)) {
+      throw ArgumentError.value(dayGanZhi, 'riGan/riZhi', '必须组成合法六十甲子');
+    }
+  }
+
+  static bool _sameDerivedFacts(Ke actual, Ke expected) =>
+      actual.index == expected.index &&
+      actual.shangShen == expected.shangShen &&
+      actual.xiaShen == expected.xiaShen &&
+      actual.shangShenWuXing == expected.shangShenWuXing &&
+      actual.xiaShenWuXing == expected.xiaShenWuXing &&
+      actual.wuXingRelation == expected.wuXingRelation &&
+      actual.hasKe == expected.hasKe &&
+      actual.isZeiKe == expected.isZeiKe &&
+      actual.isBiYong == expected.isBiYong;
 
   static WuXing? _getWuXing(String symbol) {
     return WuXingService.getWuXingFromBranch(symbol) ??

@@ -7,7 +7,7 @@ part 'ke.g.dart';
 /// 单课模型
 ///
 /// 大六壬四课中的一课，包含上神、下神及其关系。
-/// 四课分别为：一课（日干上神）、二课（日支上神）、三课（日干寄宫上神）、四课（日支上神的上神）
+/// 四课依次为干上/日干、干阴/干上、支上/日支、支阴/支上。
 @freezed
 class Ke with _$Ke {
   const factory Ke({
@@ -17,7 +17,7 @@ class Ke with _$Ke {
     /// 上神（天盘地支）
     required String shangShen,
 
-    /// 下神（地盘地支）
+    /// 下神（第一课为日干，其余课为承接的地支下神）
     required String xiaShen,
 
     /// 乘神（十二神将）

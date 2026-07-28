@@ -234,9 +234,10 @@ void main() {
   });
 
   group('DlrRuleSetVersions', () {
-    test('C02 发布独立的 pan v2 与 snapshot v2 常量', () {
+    test('C03 发布 pan v3 并具名保留 pan v2 与 snapshot v2', () {
       expect(DlrRuleSetVersions.panV1, 'daliuren-pan/1.0.0');
-      expect(DlrRuleSetVersions.panCurrent, 'daliuren-pan/2.0.0');
+      expect(DlrRuleSetVersions.panV2, 'daliuren-pan/2.0.0');
+      expect(DlrRuleSetVersions.panCurrent, 'daliuren-pan/3.0.0');
       expect(DlrRuleSetVersions.castInputSchemaV1, '1.0.0');
       expect(DlrRuleSetVersions.castInputSchema, '2.0.0');
     });

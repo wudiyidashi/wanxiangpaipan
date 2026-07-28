@@ -324,7 +324,7 @@ class DaLiuRenSystem implements DivinationSystem {
       riGan: lunarInfo.riGan,
       riZhi: lunarInfo.riZhi,
       tianPanMap: tianPan.tianPanMap,
-      shenJiangConfig: shenJiangConfig,
+      resolveChengShen: shenJiangConfig.getShenJiangByDiZhi,
     );
     final sanChuan = SanChuanService.deriveSanChuan(
       siKe: siKe,

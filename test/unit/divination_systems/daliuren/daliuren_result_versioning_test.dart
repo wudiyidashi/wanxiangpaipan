@@ -123,6 +123,39 @@ void main() {
     );
   });
 
+  test('published pan v2 remains readable but is not current under v3', () {
+    final v2Json =
+        jsonDecode(jsonEncode(currentResult.toJson())) as Map<String, dynamic>;
+    v2Json['panRuleSetVersion'] = DlrRuleSetVersions.panV2;
+
+    final decoded = DaLiuRenResult.fromJson(v2Json);
+    final report = DaLiuRenAnalyzer.analyze(decoded);
+
+    expect(decoded.panRuleSetVersion, 'daliuren-pan/2.0.0');
+    expect(report.sourcePanRuleSetVersion, DlrRuleSetVersions.panV2);
+    expect(
+      report.compatibilityStatus,
+      DlrAnalysisCompatibility.versionMismatch,
+    );
+    expect(DlrRuleSetVersions.castInputSchema, '2.0.0');
+    expect(
+      DlrRuleSetVersions.evidenceCatalog,
+      'daliuren-classics/1.0.0',
+    );
+  });
+
+  test('nested malformed TianPan JSON cannot bypass result decoding', () {
+    final malformed =
+        jsonDecode(jsonEncode(currentResult.toJson())) as Map<String, dynamic>;
+    final tianPan = malformed['tianPan'] as Map<String, dynamic>;
+    tianPan['tianPanMap'] = <String, String>{'子': '子'};
+
+    expect(
+      () => DaLiuRenResult.fromJson(malformed),
+      throwsArgumentError,
+    );
+  });
+
   test('C01 v1 snapshot zone-less castTime 结合 offset 恢复且保持 v1', () {
     final v1Json = Map<String, dynamic>.from(currentResult.toJson())
       ..['panRuleSetVersion'] = DlrRuleSetVersions.panV1

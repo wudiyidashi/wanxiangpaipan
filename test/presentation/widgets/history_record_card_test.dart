@@ -127,9 +127,9 @@ DaLiuRenResult _daliurenResult({
       moChuan: _fakeChuan(ChuanPosition.mo, '辰'),
       keType: KeType.sheHai,
     ),
-    tianPan: const TianPan(
-      yueJiang: '申',
-      yueJiangName: '河魁',
+    tianPan: TianPan(
+      yueJiang: '寅',
+      yueJiangName: '功曹',
       shiZhi: '午',
       tianPanMap: {
         '子': '申',

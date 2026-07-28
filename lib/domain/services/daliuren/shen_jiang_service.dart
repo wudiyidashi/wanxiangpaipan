@@ -1,6 +1,7 @@
 import '../../../divination_systems/daliuren/daliuren_constants.dart';
 import '../../../divination_systems/daliuren/models/pan_params.dart';
 import '../../../divination_systems/daliuren/models/shen_jiang_config.dart';
+import '../../../divination_systems/daliuren/models/tianpan_map_contract.dart';
 
 /// 神将配置服务
 ///
@@ -25,6 +26,8 @@ class ShenJiangService {
     DaLiuRenDayNightMode dayNightMode = DaLiuRenDayNightMode.auto,
     DaLiuRenGuiRenVerse guiRenVerse = DaLiuRenGuiRenVerse.classic,
   }) {
+    final validatedMap = TianPanMapContract.validate(tianPanMap);
+
     // 判断昼夜（卯-申为昼，酉-寅为夜）
     final isDay = switch (dayNightMode) {
       DaLiuRenDayNightMode.auto => _isDay(shiZhi),
@@ -62,7 +65,7 @@ class ShenJiangService {
       }
 
       final diZhi = DaLiuRenConstants.getDiZhiByIndex(diZhiIndex);
-      final tianPanZhi = tianPanMap[diZhi] ?? diZhi;
+      final tianPanZhi = validatedMap[diZhi]!;
       final shenJiang = shenJiangOrder[i];
 
       positions.add(ShenJiangPosition(
