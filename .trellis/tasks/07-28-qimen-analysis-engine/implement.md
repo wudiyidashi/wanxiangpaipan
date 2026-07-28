@@ -100,7 +100,7 @@ Rollback point: if a golden adjudication disagrees, correct the source adjudicat
 - [x] 8.3 Run code generation and format only owned source/test paths.
 - [x] 8.4 Run target analysis tests, pan-to-analysis integration tests, report/history wire tests, shared model regressions, `flutter analyze`, and the full suite.
 - [x] 8.5 Dispatch `trellis-check` for source accuracy, spec compliance, no-scoring/no-recalculation architecture, cross-layer serialization, and test completeness. Fix findings and repeat the complete gate.
-- [ ] 8.6 Update release notes/specs as required by the finish workflow, commit and archive this child independently, then allow `07-28-qimen-product-integration` to consume the frozen report/projection contract.
+- [x] 8.6 Update release notes/specs as required by the finish workflow, commit and archive this child independently, then allow `07-28-qimen-product-integration` to consume the frozen report/projection contract. Work commit: `a83647e`.
 
 ### Final Verification Evidence (2026-07-28)
 
