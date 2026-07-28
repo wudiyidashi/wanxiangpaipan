@@ -34,7 +34,7 @@
   最终 fixture 与测试证据，不改写历史。
 - [x] 4.2 运行格式、聚焦测试、全部奇门测试、`flutter analyze`、全量测试、
   `git diff --check` 和 child/parent Trellis validate。
-- [ ] 4.3 只暂存纠偏白名单，提交并归档本任务；复核 staged 路径不含 Daliuren/tmp。
+- [x] 4.3 只暂存纠偏白名单，提交并归档本任务；复核 staged 路径不含 Daliuren/tmp。
 - [ ] 4.4 回到父任务，只有全部证据成立后勾选、提交、归档并记录 journal。
 
 ## Validation Commands

@@ -75,7 +75,7 @@
   零命中；无唯一焦点和规则版本选择 UI 证据明确。
 - [x] C8：聚焦测试、全部奇门测试、`flutter analyze`、全量 `flutter test`、
   `git diff --check` 与 Trellis validate 均通过。
-- [ ] C9：最终提交和归档不包含任何大六壬或 `tmp/` 路径。
+- [x] C9：最终提交和归档不包含任何大六壬或 `tmp/` 路径。
 
 ## Out Of Scope
 
