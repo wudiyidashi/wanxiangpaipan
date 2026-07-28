@@ -1,0 +1,30 @@
+{
+  "id": "daliuren-pan-foundation",
+  "name": "daliuren-pan-foundation",
+  "title": "大六壬基础排盘与起课正确性",
+  "description": "修复月将交节、天盘契约、十二天将坐标、手动起课与输入校验。",
+  "status": "planning",
+  "dev_type": null,
+  "scope": null,
+  "package": null,
+  "priority": "P1",
+  "creator": "yuekai",
+  "assignee": "yuekai",
+  "createdAt": "2026-07-28",
+  "completedAt": null,
+  "branch": null,
+  "base_branch": "main",
+  "worktree_path": null,
+  "commit": null,
+  "pr_url": null,
+  "subtasks": [],
+  "children": [
+    "07-28-daliuren-cast-yuejiang",
+    "07-28-daliuren-pan-sike-contracts",
+    "07-28-daliuren-shenjiang-coordinates"
+  ],
+  "parent": "07-28-daliuren-classics-audit",
+  "relatedFiles": [],
+  "notes": "",
+  "meta": {}
+}

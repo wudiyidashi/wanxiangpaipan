@@ -1,0 +1,5 @@
+{"file":".trellis/spec/domain/daliuren-pan-engine.md","reason":"检查课经没有重算或篡改基础盘事实"}
+{"file":".trellis/spec/domain/daliuren-analysis-engine.md","reason":"检查课经命中和最终裁决边界"}
+{"file":".trellis/tasks/07-28-daliuren-classics-audit/prd.md","reason":"一次性完整范围与古籍证据验收"}
+{"file":".trellis/tasks/07-28-daliuren-kejing/prd.md","reason":"64 条完整性、证据、正反例和兼容验收"}
+{"file":".trellis/tasks/07-28-daliuren-kejing/design.md","reason":"检查 typed predicate、冲突 trace 和稳定输出"}

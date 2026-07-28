@@ -1,0 +1,29 @@
+{
+  "id": "daliuren-rule-contract-history",
+  "name": "daliuren-rule-contract-history",
+  "title": "大六壬规则契约、版本与历史盘",
+  "description": "建立稳定规则标识、证据等级、排盘与分析版本、可重放输入及历史盘兼容策略。",
+  "status": "planning",
+  "dev_type": null,
+  "scope": null,
+  "package": null,
+  "priority": "P1",
+  "creator": "yuekai",
+  "assignee": "yuekai",
+  "createdAt": "2026-07-28",
+  "completedAt": null,
+  "branch": null,
+  "base_branch": "main",
+  "worktree_path": null,
+  "commit": null,
+  "pr_url": null,
+  "subtasks": [],
+  "children": [
+    "07-28-daliuren-rule-provenance",
+    "07-28-daliuren-legacy-recast"
+  ],
+  "parent": "07-28-daliuren-classics-audit",
+  "relatedFiles": [],
+  "notes": "",
+  "meta": {}
+}

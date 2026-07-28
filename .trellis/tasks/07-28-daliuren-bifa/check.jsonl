@@ -1,0 +1,5 @@
+{"file":".trellis/spec/domain/daliuren-pan-engine.md","reason":"检查百法只读基础事实且不修改盘面"}
+{"file":".trellis/spec/domain/daliuren-analysis-engine.md","reason":"检查百法不伪装成现有总裁决"}
+{"file":".trellis/tasks/07-28-daliuren-classics-audit/prd.md","reason":"完整体系、证据和跨层验收"}
+{"file":".trellis/tasks/07-28-daliuren-bifa/prd.md","reason":"100 法完整性、证据、正反例和组合验收"}
+{"file":".trellis/tasks/07-28-daliuren-bifa/design.md","reason":"检查 closed predicate、全量评估和冲突 trace"}

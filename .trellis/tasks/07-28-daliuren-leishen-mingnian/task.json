@@ -1,0 +1,29 @@
+{
+  "id": "daliuren-leishen-mingnian",
+  "name": "daliuren-leishen-mingnian",
+  "title": "大六壬类神占类、本命行年",
+  "description": "补齐占类类神选择、本命与行年输入、计算和分析联动。",
+  "status": "planning",
+  "dev_type": null,
+  "scope": null,
+  "package": null,
+  "priority": "P1",
+  "creator": "yuekai",
+  "assignee": "yuekai",
+  "createdAt": "2026-07-28",
+  "completedAt": null,
+  "branch": null,
+  "base_branch": "main",
+  "worktree_path": null,
+  "commit": null,
+  "pr_url": null,
+  "subtasks": [],
+  "children": [
+    "07-28-daliuren-benming-xingnian",
+    "07-28-daliuren-class-spirit"
+  ],
+  "parent": "07-28-daliuren-classics-audit",
+  "relatedFiles": [],
+  "notes": "",
+  "meta": {}
+}

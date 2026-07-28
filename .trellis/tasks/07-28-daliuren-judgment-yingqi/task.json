@@ -1,0 +1,30 @@
+{
+  "id": "daliuren-judgment-yingqi",
+  "name": "daliuren-judgment-yingqi",
+  "title": "大六壬传统断课与应期",
+  "description": "按指南重构证据化断课、冲突裁决和传统应期及日历映射。",
+  "status": "planning",
+  "dev_type": null,
+  "scope": null,
+  "package": null,
+  "priority": "P1",
+  "creator": "yuekai",
+  "assignee": "yuekai",
+  "createdAt": "2026-07-28",
+  "completedAt": null,
+  "branch": null,
+  "base_branch": "main",
+  "worktree_path": null,
+  "commit": null,
+  "pr_url": null,
+  "subtasks": [],
+  "children": [
+    "07-28-daliuren-analysis-contract-v2",
+    "07-28-daliuren-traditional-judgment",
+    "07-28-daliuren-timing-calendar"
+  ],
+  "parent": "07-28-daliuren-classics-audit",
+  "relatedFiles": [],
+  "notes": "",
+  "meta": {}
+}

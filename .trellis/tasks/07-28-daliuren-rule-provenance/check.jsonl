@@ -1,0 +1,10 @@
+{"file":".trellis/tasks/07-28-daliuren-classics-audit/prd.md","reason":"一次性交付范围、版本兼容与历史重排总约束"}
+{"file":".trellis/tasks/07-28-daliuren-classics-audit/research/task-decomposition.md","reason":"C01 边界、依赖和后续消费者"}
+{"file":".trellis/tasks/07-28-daliuren-classics-audit/research/capability-matrix.md","reason":"当前能力与版本化目标矩阵"}
+{"file":".trellis/tasks/07-28-daliuren-classics-audit/research/analysis-crosslayer-audit.md","reason":"分析、UI、AI 和历史契约缺口"}
+{"file":".trellis/tasks/07-28-daliuren-classics-audit/research/core-pan-audit.md","reason":"排盘事实、算法风险与版本边界"}
+{"file":".trellis/tasks/07-28-daliuren-classics-evidence/prd.md","reason":"C00 稳定规则 ID、证据等级与 source 契约"}
+{"file":".trellis/tasks/07-28-daliuren-classics-evidence/design.md","reason":"证据目录 schema、异文与 fixture 设计"}
+{"file":".trellis/spec/domain/index.md","reason":"Domain 纯函数和模块边界"}
+{"file":".trellis/spec/domain/daliuren-pan-engine.md","reason":"当前排盘规则与证据门槛"}
+{"file":".trellis/spec/domain/daliuren-analysis-engine.md","reason":"当前 project-v1 分析契约与证据声明"}

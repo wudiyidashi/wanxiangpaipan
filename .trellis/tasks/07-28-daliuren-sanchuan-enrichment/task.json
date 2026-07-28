@@ -1,0 +1,29 @@
+{
+  "id": "daliuren-sanchuan-enrichment",
+  "name": "daliuren-sanchuan-enrichment",
+  "title": "大六壬三传派生信息与九宗门验证",
+  "description": "补齐三传遁干、旺相关系并以古例覆盖九宗门全部决胜分支。",
+  "status": "planning",
+  "dev_type": null,
+  "scope": null,
+  "package": null,
+  "priority": "P1",
+  "creator": "yuekai",
+  "assignee": "yuekai",
+  "createdAt": "2026-07-28",
+  "completedAt": null,
+  "branch": null,
+  "base_branch": "main",
+  "worktree_path": null,
+  "commit": null,
+  "pr_url": null,
+  "subtasks": [],
+  "children": [
+    "07-28-daliuren-jiuzongmen-cases",
+    "07-28-daliuren-chuan-derived-facts"
+  ],
+  "parent": "07-28-daliuren-classics-audit",
+  "relatedFiles": [],
+  "notes": "",
+  "meta": {}
+}

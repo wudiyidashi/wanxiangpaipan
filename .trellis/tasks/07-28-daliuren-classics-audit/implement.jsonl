@@ -1,0 +1,8 @@
+{"file":".trellis/spec/domain/daliuren-pan-engine.md","reason":"现有排盘与九宗门锁定口径，实施时需核对并按影印证据修订"}
+{"file":".trellis/spec/domain/daliuren-analysis-engine.md","reason":"现有分析层边界、项目 v1 证据声明与跨层契约"}
+{"file":".trellis/tasks/07-28-daliuren-classics-audit/design.md","reason":"父任务统一底本、规则契约、版本策略、任务依赖和完成定义"}
+{"file":".trellis/tasks/07-28-daliuren-classics-audit/research/core-pan-audit.md","reason":"核心排盘确认缺陷、文件波及面和测试缺口"}
+{"file":".trellis/tasks/07-28-daliuren-classics-audit/research/analysis-crosslayer-audit.md","reason":"分析、UI、AI、历史盘的数据流缺陷和测试缺口"}
+{"file":".trellis/tasks/07-28-daliuren-classics-audit/research/classics-source-inventory.md","reason":"馆藏标识、证据等级和影印核验要求"}
+{"file":".trellis/tasks/07-28-daliuren-classics-audit/research/capability-matrix.md","reason":"60 项能力的现状、目标、有限范围与验证门槛"}
+{"file":".trellis/tasks/07-28-daliuren-classics-audit/research/task-decomposition.md","reason":"17 个实施单元的边界、依赖和父级验收"}

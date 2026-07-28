@@ -1,0 +1,8 @@
+{"file":".trellis/spec/domain/daliuren-pan-engine.md","reason":"检查基础盘、九宗门、兼容和黄金例规范是否被正确更新"}
+{"file":".trellis/spec/domain/daliuren-analysis-engine.md","reason":"检查事实/裁决边界、AI/UI 接入及项目规则证据声明"}
+{"file":".trellis/tasks/07-28-daliuren-classics-audit/prd.md","reason":"父任务完整范围和跨子任务验收标准"}
+{"file":".trellis/tasks/07-28-daliuren-classics-audit/design.md","reason":"检查底本、证据、版本、历史兼容和依赖约束"}
+{"file":".trellis/tasks/07-28-daliuren-classics-audit/research/core-pan-audit.md","reason":"复核核心排盘确认缺陷和漏测分支"}
+{"file":".trellis/tasks/07-28-daliuren-classics-audit/research/analysis-crosslayer-audit.md","reason":"复核跨层语义、历史和输出契约缺陷"}
+{"file":".trellis/tasks/07-28-daliuren-classics-audit/research/capability-matrix.md","reason":"检查完整体系没有漏项或模糊完成度"}
+{"file":".trellis/tasks/07-28-daliuren-classics-audit/research/task-decomposition.md","reason":"检查实施单元依赖和父级门禁全部满足"}
