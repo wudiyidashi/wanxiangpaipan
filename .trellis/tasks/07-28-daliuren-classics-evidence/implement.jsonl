@@ -1,0 +1,7 @@
+{"file":".trellis/spec/domain/index.md","reason":"领域服务纯函数和大六壬专属边界"}
+{"file":".trellis/tasks/07-28-daliuren-classics-audit/prd.md","reason":"父任务完整范围、底本和证据验收"}
+{"file":".trellis/tasks/07-28-daliuren-classics-audit/design.md","reason":"统一证据等级、规则目录和后续数据契约"}
+{"file":".trellis/tasks/07-28-daliuren-classics-audit/research/classics-source-inventory.md","reason":"已确认馆藏、固定转录和证据限制"}
+{"file":".trellis/tasks/07-28-daliuren-classics-audit/research/capability-matrix.md","reason":"需要冻结的 60 项能力、规则族和验证要求"}
+{"file":".trellis/tasks/07-28-daliuren-classics-audit/research/task-decomposition.md","reason":"C00 边界、后续依赖和父级门禁"}
+{"file":".trellis/tasks/07-28-daliuren-classics-evidence/design.md","reason":"证据目录 schema、页码、case 和 validator 设计"}

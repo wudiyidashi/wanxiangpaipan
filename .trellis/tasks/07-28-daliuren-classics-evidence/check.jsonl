@@ -1,0 +1,6 @@
+{"file":".trellis/spec/domain/index.md","reason":"检查证据产物没有越过领域边界或夹带产品算法"}
+{"file":".trellis/tasks/07-28-daliuren-classics-audit/prd.md","reason":"核对分层底本、一次性范围和证据标准"}
+{"file":".trellis/tasks/07-28-daliuren-classics-audit/research/classics-source-inventory.md","reason":"核对馆藏标识和 OCR 只能定位的限制"}
+{"file":".trellis/tasks/07-28-daliuren-classics-audit/research/capability-matrix.md","reason":"检查所有规则族、64/100 和外例覆盖"}
+{"file":".trellis/tasks/07-28-daliuren-classics-evidence/prd.md","reason":"本任务有限清单、页级证据、外例和 validator 验收"}
+{"file":".trellis/tasks/07-28-daliuren-classics-evidence/design.md","reason":"检查 source/rule/case schema 与越权防护"}

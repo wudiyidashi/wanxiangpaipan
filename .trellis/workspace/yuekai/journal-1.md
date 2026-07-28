@@ -147,3 +147,37 @@
 ### Next Steps
 
 - None - task complete
+
+
+## Session 5: 奇门排盘与历法引擎
+
+**Date**: 2026-07-28
+**Task**: 奇门排盘与历法引擎
+**Branch**: `main`
+
+### Summary
+
+完成时家转盘奇门时间归一化、拆补/茅山/置闰、九宫流水线、公开黄金盘、JSON 与仓储往返；修复跨时区交节、置闰周期、值使中五和天禽寄随规则。
+
+### Main Changes
+
+- Detailed change bullets were not supplied; see the summary above.
+
+### Git Commits
+
+| Hash | Message |
+|------|---------|
+| `06c9f56` | (see git log) |
+| `7d226a6` | (see git log) |
+
+### Testing
+
+- Validation was not recorded for this session.
+
+### Status
+
+[OK] **Completed**
+
+### Next Steps
+
+- None - task complete
