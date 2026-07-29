@@ -381,3 +381,39 @@
 ### Next Steps
 
 - None - task complete
+
+
+## Session 12: 大六壬神将坐标重构落盘 + 奇门卡片背景简化
+
+**Date**: 2026-07-29
+**Task**: 大六壬神将坐标重构落盘 + 奇门卡片背景简化
+**Branch**: `main`
+
+### Summary
+
+提交 C04 贵人/十二天将坐标重构（昼夜选贵、反查落宫、落宫定顺逆、天盘支/地盘宫双坐标、缺乘将显式失败）。奇门首页卡片背景由 3.5MB 全彩摆拍换为 300KB 单色宣纸水印（九宫格+八卦环），修复其资产守卫测试（尺寸 576x660、水印加深过对比度门槛）。tmp/ 加入 gitignore。全量 1274 tests 通过、analyze 零告警。
+
+### Main Changes
+
+- Detailed change bullets were not supplied; see the summary above.
+
+### Git Commits
+
+| Hash | Message |
+|------|---------|
+| `0aa92df` | (see git log) |
+| `1d50068` | (see git log) |
+| `3f72060` | (see git log) |
+| `dcdd3f0` | (see git log) |
+
+### Testing
+
+- Validation was not recorded for this session.
+
+### Status
+
+[OK] **Completed**
+
+### Next Steps
+
+- None - task complete
