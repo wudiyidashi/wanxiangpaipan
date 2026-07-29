@@ -14,6 +14,8 @@ import 'package:wanxiang_paipan/domain/services/daliuren/si_ke_service.dart';
 import 'package:wanxiang_paipan/domain/services/daliuren/yue_jiang_service.dart';
 import 'package:wanxiang_paipan/models/lunar_info.dart';
 
+import '../../../divination_systems/daliuren/fixtures/legacy_daliuren_wire_fixture.dart';
+
 /// 由位移 s 构造天盘映射（与分析层黄金课例同口径）
 Map<String, String> _buildTianPanMap(int s) {
   const diZhi = DaLiuRenConstants.diZhi;
@@ -48,7 +50,7 @@ DaLiuRenResult _buildGoldenResult({
     riGan: riGan,
     riZhi: riZhi,
     tianPanMap: tianPanMap,
-    resolveChengShen: shenJiangConfig.getShenJiangByDiZhi,
+    resolveChengShen: shenJiangConfig.generalForHeavenBranch,
   );
   final sanChuan = SanChuanService.deriveSanChuan(
     siKe: siKe,
@@ -123,7 +125,10 @@ void main() {
       expect(rendered, contains('- 日主：癸'));
       expect(rendered, contains('- 月将：戌将（戌加巳时）'));
       expect(rendered, contains('- 昼夜：昼占'));
-      expect(rendered, contains('- 贵人：昼贵巳'));
+      expect(rendered, contains('- 贵人：昼贵巳，临子宫'));
+      expect(rendered, contains('- 布将：顺布'));
+      expect(rendered, contains('- 盘面规则：daliuren-pan/4.0.0'));
+      expect(rendered, isNot(contains('- 兼容状态：')));
       expect(rendered, contains('- 旬首：甲寅旬'));
       expect(rendered, contains('- 课格：贼克课'));
       expect(rendered, contains('- 三传：午 → 亥 → 辰'));
@@ -133,8 +138,8 @@ void main() {
       expect(rendered, contains('- 子→巳'));
       expect(rendered, contains('- 亥→辰'));
       expect(rendered, contains('三、十二天将完整分布'));
-      expect(rendered, contains('- 贵人：巳（乘戌）'));
-      expect(rendered, contains('- 天后：辰（乘酉）'));
+      expect(rendered, contains('- 贵人：乘巳，临子宫'));
+      expect(rendered, contains('- 天后：乘辰，临亥宫'));
       expect(rendered, contains('四、四课（天盘/地盘/天将/生克）'));
       expect(rendered, contains('- 一课：午 / 癸 / 腾蛇 / 下克上'));
       expect(rendered, contains('- 三课：辰 / 亥 / 天后 / 上克下'));
@@ -148,6 +153,40 @@ void main() {
       expect(rendered, isNot(contains('二、起课参数')));
       expect(rendered, isNot(contains('关键标签')));
       expect(rendered, isNot(contains('排盘摘要')));
+
+      final overview = output.coreData['overview'] as Map<String, dynamic>;
+      expect(overview['selectedGuiRenTianBranch'], '巳');
+      expect(overview['guiRenEarthPalace'], '子');
+      expect(overview['actualDirection'], 'shun');
+      final generals = output.coreData['shenJiang'] as List<dynamic>;
+      final guiRen = generals.first as Map<String, dynamic>;
+      expect(guiRen['heavenBranch'], '巳');
+      expect(guiRen['earthPalace'], '子');
+      expect(guiRen, isNot(contains('diZhi')));
+      expect(guiRen, isNot(contains('tianPanZhi')));
+    });
+
+    test('历史规则盘在 human text 与 coreData 显式标注兼容状态', () async {
+      final current = await DaLiuRenSystem().cast(
+        method: CastMethod.time,
+        input: const <String, dynamic>{},
+        castTime: DateTime(2026, 4, 19, 9, 22),
+      ) as DaLiuRenResult;
+      final historical = DaLiuRenResult.fromJson(
+        legacyShenJiangResultJson(current),
+      );
+      final formatter = DaLiuRenStructuredFormatter();
+
+      final output = formatter.format(historical);
+      final rendered = formatter.render(output);
+      final overview = output.coreData['overview'] as Map<String, dynamic>;
+
+      expect(rendered, contains('- 盘面规则：daliuren-pan/3.0.0'));
+      expect(
+        rendered,
+        contains('- 兼容状态：versionMismatch（历史规则盘，按原盘事实分析）'),
+      );
+      expect(overview['analysisCompatibility'], 'versionMismatch');
     });
 
     test('analysis section：黄金例 K（戊子元首）锁定课格/裁决/应期', () {

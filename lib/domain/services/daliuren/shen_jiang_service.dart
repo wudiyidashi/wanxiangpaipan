@@ -1,4 +1,5 @@
 import '../../../divination_systems/daliuren/daliuren_constants.dart';
+import '../../../divination_systems/daliuren/models/dlr_rule_contract.dart';
 import '../../../divination_systems/daliuren/models/pan_params.dart';
 import '../../../divination_systems/daliuren/models/shen_jiang_config.dart';
 import '../../../divination_systems/daliuren/models/tianpan_map_contract.dart';
@@ -6,12 +7,21 @@ import '../../../divination_systems/daliuren/models/tianpan_map_contract.dart';
 /// 神将配置服务
 ///
 /// 大六壬十二神将的配置规则：
-/// 1. 先确定贵人位置（根据日干查表）
-/// 2. 判断昼夜用阳贵还是阴贵
-/// 3. 根据昼夜决定布神方向（昼课顺布，夜课逆布）
-/// 4. 从贵人位置开始，按顺序排列十二神将
+/// 1. 根据昼夜选择贵人所乘天盘支
+/// 2. 由天盘逆映射求贵人所临地盘宫
+/// 3. 按贵人落宫确定顺逆
+/// 4. 以固定将序和有符号步进布列十二将
 class ShenJiangService {
   ShenJiangService._();
+
+  static const Set<String> _dayBranches = <String>{
+    '卯',
+    '辰',
+    '巳',
+    '午',
+    '未',
+    '申',
+  };
 
   /// 配置十二神将
   ///
@@ -27,84 +37,79 @@ class ShenJiangService {
     DaLiuRenGuiRenVerse guiRenVerse = DaLiuRenGuiRenVerse.classic,
   }) {
     final validatedMap = TianPanMapContract.validate(tianPanMap);
+    if (!DaLiuRenConstants.tianGan.contains(riGan)) {
+      throw ArgumentError.value(riGan, 'riGan', '无效天干');
+    }
+    if (!DaLiuRenConstants.diZhi.contains(shiZhi)) {
+      throw ArgumentError.value(shiZhi, 'shiZhi', '无效地支');
+    }
+    if (guiRenVerse == DaLiuRenGuiRenVerse.jiaDayAlt) {
+      throw ArgumentError.value(
+        guiRenVerse,
+        'guiRenVerse',
+        'jiaDayAlt 仅用于历史盘解码，不得生成新盘',
+      );
+    }
 
-    // 判断昼夜（卯-申为昼，酉-寅为夜）
     final isDay = switch (dayNightMode) {
-      DaLiuRenDayNightMode.auto => _isDay(shiZhi),
+      DaLiuRenDayNightMode.auto => _dayBranches.contains(shiZhi),
       DaLiuRenDayNightMode.day => true,
       DaLiuRenDayNightMode.night => false,
     };
-
-    // 获取贵人位置（昼贵或夜贵）
     final guiRenPositions =
         DaLiuRenConstants.getGuiRenPositionByVerse(riGan, guiRenVerse);
     final isYangGui = isDay;
-    final guiRenPosition = isDay ? guiRenPositions[0] : guiRenPositions[1];
+    final selectedGuiRenTianBranch =
+        isDay ? guiRenPositions[0] : guiRenPositions[1];
+    final heavenBranchToEarthPalace = <String, String>{
+      for (final entry in validatedMap.entries) entry.value: entry.key,
+    };
+    final guiRenEarthPalace =
+        heavenBranchToEarthPalace[selectedGuiRenTianBranch];
+    if (guiRenEarthPalace == null) {
+      throw StateError('天盘中找不到贵人天盘支: $selectedGuiRenTianBranch');
+    }
 
-    // 获取神将顺序（昼课顺布，夜课逆布）
-    final shenJiangOrder = isDay
-        ? DaLiuRenConstants.shenJiangOrderYang
-        : DaLiuRenConstants.shenJiangOrderYin;
-
-    // 获取贵人所在地盘位置的索引
-    final guiRenDiZhiIndex = DaLiuRenConstants.getDiZhiIndex(guiRenPosition);
-
-    // 配置十二神将位置
+    final actualDirection =
+        ShenJiangConfig.shunEarthPalaces.contains(guiRenEarthPalace)
+            ? ShenJiangDirection.shun
+            : ShenJiangDirection.ni;
+    final step = actualDirection == ShenJiangDirection.shun ? 1 : -1;
+    final guiRenEarthIndex = DaLiuRenConstants.getDiZhiIndex(guiRenEarthPalace);
     final positions = <ShenJiangPosition>[];
-    final diZhiToShenJiang = <String, ShenJiang>{};
+    final tianBranchToGeneral = <String, ShenJiang>{};
+    final earthPalaceToGeneral = <String, ShenJiang>{};
 
-    for (var i = 0; i < 12; i++) {
-      // 计算当前神将所在地盘位置
-      int diZhiIndex;
-      if (isDay) {
-        // 昼课顺布
-        diZhiIndex = (guiRenDiZhiIndex + i) % 12;
-      } else {
-        // 夜课逆布
-        diZhiIndex = (guiRenDiZhiIndex - i + 12) % 12;
-      }
-
-      final diZhi = DaLiuRenConstants.getDiZhiByIndex(diZhiIndex);
-      final tianPanZhi = validatedMap[diZhi]!;
-      final shenJiang = shenJiangOrder[i];
+    for (var index = 0;
+        index < DaLiuRenConstants.shenJiangOrder.length;
+        index++) {
+      final earthIndex = (guiRenEarthIndex + step * index + 12) % 12;
+      final earthPalace = DaLiuRenConstants.getDiZhiByIndex(earthIndex);
+      final heavenBranch = validatedMap[earthPalace]!;
+      final shenJiang = DaLiuRenConstants.shenJiangOrder[index];
 
       positions.add(ShenJiangPosition(
         shenJiang: shenJiang,
-        diZhi: diZhi,
-        tianPanZhi: tianPanZhi,
+        heavenBranch: heavenBranch,
+        earthPalace: earthPalace,
       ));
-
-      diZhiToShenJiang[diZhi] = shenJiang;
+      tianBranchToGeneral[heavenBranch] = shenJiang;
+      earthPalaceToGeneral[earthPalace] = shenJiang;
     }
 
     return ShenJiangConfig(
-      guiRenPosition: guiRenPosition,
+      selectedGuiRenTianBranch: selectedGuiRenTianBranch,
+      guiRenEarthPalace: guiRenEarthPalace,
       isYangGui: isYangGui,
-      isYangRi: isDay,
+      actualDirection: actualDirection,
       positions: positions,
-      diZhiToShenJiang: diZhiToShenJiang,
+      tianBranchToGeneral: tianBranchToGeneral,
+      earthPalaceToGeneral: earthPalaceToGeneral,
+      executionRuleRef: DlrRuleRef.projectPan(
+        DlrProjectPanRuleIds.shenJiangLandingPalaceLayout,
+      ),
+      classicAttributionRuleIds: DlrShenJiangClassicRuleIds.currentAttributions,
     );
-  }
-
-  /// 判断是否为昼（白天）
-  ///
-  /// 昼：卯时至申时（05:00-19:00）
-  /// 夜：酉时至寅时（19:00-05:00）
-  ///
-  /// [shiZhi] 时支
-  /// 返回 true 为昼，false 为夜
-  static bool _isDay(String shiZhi) {
-    const dayBranches = ['卯', '辰', '巳', '午', '未', '申'];
-    return dayBranches.contains(shiZhi);
-  }
-
-  /// 根据地支获取神将
-  ///
-  /// [diZhi] 地盘地支
-  /// [config] 神将配置
-  /// 返回对应的神将
-  static ShenJiang? getShenJiangByDiZhi(String diZhi, ShenJiangConfig config) {
-    return config.diZhiToShenJiang[diZhi];
   }
 
   /// 获取神将的吉凶属性

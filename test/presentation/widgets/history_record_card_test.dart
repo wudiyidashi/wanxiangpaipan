@@ -9,7 +9,6 @@ import 'package:wanxiang_paipan/divination_systems/daliuren/models/daliuren_resu
 import 'package:wanxiang_paipan/divination_systems/daliuren/models/ke.dart';
 import 'package:wanxiang_paipan/divination_systems/daliuren/models/pan_params.dart';
 import 'package:wanxiang_paipan/divination_systems/daliuren/models/san_chuan.dart';
-import 'package:wanxiang_paipan/divination_systems/daliuren/models/shen_jiang_config.dart';
 import 'package:wanxiang_paipan/divination_systems/daliuren/models/shen_sha.dart';
 import 'package:wanxiang_paipan/divination_systems/daliuren/models/si_ke.dart';
 import 'package:wanxiang_paipan/divination_systems/daliuren/models/tianpan.dart';
@@ -18,6 +17,7 @@ import 'package:wanxiang_paipan/divination_systems/liuyao/models/gua.dart';
 import 'package:wanxiang_paipan/divination_systems/liuyao/models/yao.dart';
 import 'package:wanxiang_paipan/domain/divination_system.dart';
 import 'package:wanxiang_paipan/domain/repositories/divination_repository.dart';
+import 'package:wanxiang_paipan/domain/services/daliuren/shen_jiang_service.dart';
 import 'package:wanxiang_paipan/domain/services/shared/liuqin_service.dart';
 import 'package:wanxiang_paipan/domain/services/shared/wuxing_service.dart';
 import 'package:wanxiang_paipan/models/lunar_info.dart';
@@ -87,20 +87,31 @@ LiuYaoResult _liuyaoResult({
   );
 }
 
-Ke _fakeKe(int index, String shang, String xia) => Ke(
+Ke _fakeKe(
+  int index,
+  String shang,
+  String xia,
+  ShenJiang chengShen,
+) =>
+    Ke(
       index: index,
       shangShen: shang,
       xiaShen: xia,
-      chengShen: ShenJiang.guiRen,
+      chengShen: chengShen,
       shangShenWuXing: '水',
       xiaShenWuXing: '火',
     );
 
-Chuan _fakeChuan(ChuanPosition position, String diZhi) => Chuan(
+Chuan _fakeChuan(
+  ChuanPosition position,
+  String diZhi,
+  ShenJiang chengShen,
+) =>
+    Chuan(
       position: position,
       diZhi: diZhi,
       wuXing: '水',
-      chengShen: ShenJiang.baiHu,
+      chengShen: chengShen,
       liuQin: '妻财',
     );
 
@@ -108,51 +119,83 @@ DaLiuRenResult _daliurenResult({
   DateTime? castTime,
   String id = 'dlr-1',
 }) {
+  const tianPanMap = <String, String>{
+    '子': '申',
+    '丑': '酉',
+    '寅': '戌',
+    '卯': '亥',
+    '辰': '子',
+    '巳': '丑',
+    '午': '寅',
+    '未': '卯',
+    '申': '辰',
+    '酉': '巳',
+    '戌': '午',
+    '亥': '未',
+  };
+  final shenJiangConfig = ShenJiangService.configureShenJiang(
+    riGan: '戊',
+    shiZhi: '午',
+    tianPanMap: tianPanMap,
+  );
   return DaLiuRenResult(
     id: id,
     castTime: castTime ?? DateTime(2026, 4, 18, 14, 32),
     castMethod: CastMethod.time,
     lunarInfo: _fakeLunar(),
     siKe: SiKe(
-      ke1: _fakeKe(1, '子', '午'),
-      ke2: _fakeKe(2, '丑', '未'),
-      ke3: _fakeKe(3, '寅', '申'),
-      ke4: _fakeKe(4, '卯', '酉'),
+      ke1: _fakeKe(
+        1,
+        '子',
+        '午',
+        shenJiangConfig.generalForHeavenBranch('子')!,
+      ),
+      ke2: _fakeKe(
+        2,
+        '丑',
+        '未',
+        shenJiangConfig.generalForHeavenBranch('丑')!,
+      ),
+      ke3: _fakeKe(
+        3,
+        '寅',
+        '申',
+        shenJiangConfig.generalForHeavenBranch('寅')!,
+      ),
+      ke4: _fakeKe(
+        4,
+        '卯',
+        '酉',
+        shenJiangConfig.generalForHeavenBranch('卯')!,
+      ),
       riGan: '戊',
       riZhi: '午',
     ),
     sanChuan: SanChuan(
-      chuChuan: _fakeChuan(ChuanPosition.chu, '申'),
-      zhongChuan: _fakeChuan(ChuanPosition.zhong, '子'),
-      moChuan: _fakeChuan(ChuanPosition.mo, '辰'),
+      chuChuan: _fakeChuan(
+        ChuanPosition.chu,
+        '申',
+        shenJiangConfig.generalForHeavenBranch('申')!,
+      ),
+      zhongChuan: _fakeChuan(
+        ChuanPosition.zhong,
+        '子',
+        shenJiangConfig.generalForHeavenBranch('子')!,
+      ),
+      moChuan: _fakeChuan(
+        ChuanPosition.mo,
+        '辰',
+        shenJiangConfig.generalForHeavenBranch('辰')!,
+      ),
       keType: KeType.sheHai,
     ),
     tianPan: TianPan(
       yueJiang: '寅',
       yueJiangName: '功曹',
       shiZhi: '午',
-      tianPanMap: {
-        '子': '申',
-        '丑': '酉',
-        '寅': '戌',
-        '卯': '亥',
-        '辰': '子',
-        '巳': '丑',
-        '午': '寅',
-        '未': '卯',
-        '申': '辰',
-        '酉': '巳',
-        '戌': '午',
-        '亥': '未',
-      },
+      tianPanMap: tianPanMap,
     ),
-    shenJiangConfig: const ShenJiangConfig(
-      guiRenPosition: '丑',
-      isYangGui: true,
-      isYangRi: true,
-      positions: [],
-      diZhiToShenJiang: {},
-    ),
+    shenJiangConfig: shenJiangConfig,
     shenShaList: const ShenShaList(allShenSha: []),
     panParams: const DaLiuRenPanParams(),
     questionId: id,

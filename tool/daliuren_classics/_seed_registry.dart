@@ -261,7 +261,7 @@ Map<String, Object?> _sources() => <String, Object?>{
           'identifier': '20260504_20260504_1528',
           'accessUrl': 'https://archive.org/details/20260504_20260504_1528',
           'accessedAt': '2026-07-28',
-          'verificationStatus': 'candidate',
+          'verificationStatus': 'scanVerified',
           'locatorOnly': false,
           'usage': <String>['supplement', 'variantLocator'],
           'ruleLayers': <String>['pan', 'shenjiang', 'jiuzongmen'],
@@ -276,8 +276,11 @@ Map<String, Object?> _sources() => <String, Object?>{
               null,
             ),
           ],
-          'rightsNote': '候选补缺源；未核前不引用为 A/B。',
-          'limitations': <String>['文件质量、卷页和版本真伪尚未完成复核。'],
+          'rightsNote': '仅登记公开馆藏标识与短引；扫描件本体不入库。',
+          'limitations': <String>[
+            '卷上 PDF 18 / scan leaf 17 / printed leaf 七已经 C00 与 C04 核页；PDF 19 / scan leaf 18 / printed leaf 八由 C04 独立核页；其余页面仍须逐条复核。',
+            '馆藏所标“清康熙时期精钞本”的版本真伪尚未核定，本源只作 supplement/variant，不升为主底本或 approved source。',
+          ],
         },
       ],
       'unregisteredCandidates': <Object?>[
@@ -784,9 +787,12 @@ Map<String, Object?> _shenjiang() {
       ordinal: 1,
       name: '昼夜取贵',
       conditions: '卯至申用阳贵，酉至寅用阴贵；昼夜只负责选贵人支。',
-      interpretation: '候选《直指》给出昼夜边界；《六壬大全》另把十干分昼夜取贵与地盘定顺逆分开，二者不是同一步。',
+      interpretation: '《直指》逐支给出昼夜边界；《六壬大全》另把十干分昼夜取贵与地盘定顺逆分开，二者不是同一步。',
       targetCapability: 'daliuren.shenjiang.dayNightSelection',
       targetCodeDomain: 'lib/domain/services/daliuren/shen_jiang_service.dart',
+      status: 'adopted',
+      evidence: 'B',
+      locatorOnly: false,
       sourceRefs: <Map<String, Object?>>[
         _scan(
           siku,
@@ -795,13 +801,23 @@ Map<String, Object?> _shenjiang() {
           pdfPage: 62,
           shortQuote: '贵人从十干分昼夜治。',
           reviewer: 'C00 independent scan recheck',
+          additionalReviewers: <String>['C04 independent scan audit'],
         ),
-        _locator(
+        _scan(
           zhizhi,
-          '卷上 PDF 18 / scan leaf 17 / printed leaf 七',
-          '正时自卯至申用昼贵，即阳贵；自酉至寅用夜贵，即阴贵。',
+          '上下卷附析义',
+          scanLeaf: 17,
+          pdfPage: 18,
+          printedLeaf: '七',
+          shortQuote: '正时自卯至申用昼贵，即阳贵；自酉至寅用夜贵，即阴贵。',
+          reviewer: 'C00 independent scan recheck',
+          additionalReviewers: <String>['C04 independent scan audit'],
         ),
         _locator(source, '六壬存验-清-吴师青.txt:L329', '自卯至申为日间时……自酉至寅为夜间时。'),
+      ],
+      notes: <String>[
+        '只批准昼夜边界与“昼夜只用于取贵”的事实；不批准 002/003 贵人整表，也不把昼夜解释为顺逆。',
+        '缺少已批准的夜贵顺/逆完整课例，故保持 executableApproved=false。',
       ],
     ),
     _rule(
@@ -815,10 +831,15 @@ Map<String, Object?> _shenjiang() {
       targetCapability: 'daliuren.shenjiang.yangGuiTable',
       targetCodeDomain: 'lib/domain/services/daliuren/daliuren_constants.dart',
       sourceRefs: <Map<String, Object?>>[
-        _locator(
+        _scan(
           zhizhi,
-          '卷上 PDF 18 / scan leaf 17 / printed leaf 七',
-          '庚戊见牛甲在羊，乙猴己鼠丙鸡方，丁猪癸蛇壬兔位，六辛逢虎贵为阳。',
+          '上下卷附析义',
+          scanLeaf: 17,
+          pdfPage: 18,
+          printedLeaf: '七',
+          shortQuote: '庚戊见牛甲在羊，乙猴己鼠丙鸡方，丁猪癸蛇壬兔位，六辛逢虎贵为阳。',
+          reviewer: 'C00 independent scan recheck',
+          additionalReviewers: <String>['C04 independent scan audit'],
         ),
         _locator(source, '六壬存验-清-吴师青.txt:L347-L349', '阳贵：甲丑，己子，乙子，庚丑……'),
       ],
@@ -835,10 +856,15 @@ Map<String, Object?> _shenjiang() {
       targetCapability: 'daliuren.shenjiang.yinGuiTable',
       targetCodeDomain: 'lib/domain/services/daliuren/daliuren_constants.dart',
       sourceRefs: <Map<String, Object?>>[
-        _locator(
+        _scan(
           zhizhi,
-          '卷上 PDF 18 / scan leaf 17 / printed leaf 七',
-          '甲贵阴牛庚戊羊，乙贵在鼠己猴乡，丙猪丁鸡辛遇马，壬蛇癸兔属阴方。',
+          '上下卷附析义',
+          scanLeaf: 17,
+          pdfPage: 18,
+          printedLeaf: '七',
+          shortQuote: '甲贵阴牛庚戊羊，乙贵在鼠己猴乡，丙猪丁鸡辛遇马，壬蛇癸兔属阴方。',
+          reviewer: 'C00 independent scan recheck',
+          additionalReviewers: <String>['C04 independent scan audit'],
         ),
         _locator(source, '六壬存验-清-吴师青.txt:L347-L349', '阴贵：甲未，己申，乙申，庚未……'),
       ],
@@ -851,9 +877,11 @@ Map<String, Object?> _shenjiang() {
       ordinal: 4,
       name: '贵人落地宫定顺逆',
       conditions: '天盘贵人临地盘亥子丑寅卯辰则顺，临巳午未申酉戌则逆。',
-      interpretation: '主底本直接规定地盘定顺逆；十二支六区是由天门地户方位换算，仍待独立正反例批准。',
+      interpretation: '《直指》逐支明言六位顺、六位逆；《六壬大全》的“地盘一定顺逆”与天门地户说是同一方法的原则解释。',
       targetCapability: 'daliuren.shenjiang.actualDirection',
       targetCodeDomain: 'lib/domain/services/daliuren/shen_jiang_service.dart',
+      status: 'adopted',
+      evidence: 'B',
       locatorOnly: false,
       sourceRefs: <Map<String, Object?>>[
         _scan(
@@ -863,6 +891,7 @@ Map<String, Object?> _shenjiang() {
           pdfPage: 59,
           shortQuote: '地盘一定顺逆之序，顺布者则背天门，逆布者则向地户。',
           reviewer: 'C00 independent scan recheck',
+          additionalReviewers: <String>['C04 independent scan audit'],
         ),
         _scan(
           siku,
@@ -871,10 +900,24 @@ Map<String, Object?> _shenjiang() {
           pdfPage: 62,
           shortQuote: '顺治谓在天门之前、地户之后；逆治谓在地户之前、天门之后。',
           reviewer: 'C00 independent scan recheck',
+          additionalReviewers: <String>['C04 independent scan audit'],
+        ),
+        _scan(
+          zhizhi,
+          '上下卷附析义',
+          scanLeaf: 18,
+          pdfPage: 19,
+          printedLeaf: '八',
+          shortQuote: '贵人加于亥子丑寅卯辰六位则顺行，加于巳午未申酉戌六位则逆行。',
+          reviewer: 'C04 independent scan audit',
         ),
         _locator(source, '六壬存验-清-吴师青.txt:L329', '贵临地盘亥子丑寅卯辰六位顺行……巳午未申酉戌六位逆行。'),
       ],
       variantGroupId: 'dlr.variant.gui-ren-direction',
+      adoptedVariantId: 'landing-palace-six-zones',
+      notes: <String>[
+        '三张已批准《指南》课例只覆盖昼贵顺与昼贵逆；缺夜贵顺/逆批准课例，故保持 executableApproved=false。',
+      ],
     ),
     _rule(
       id: 'dlr.rule.shenjiang.005.twelve-generals-order',
@@ -886,6 +929,8 @@ Map<String, Object?> _shenjiang() {
       interpretation: '卷二直接列贵人前后诸将，可还原固定身份次序；方向只改变布列方向。',
       targetCapability: 'daliuren.shenjiang.generalOrder',
       targetCodeDomain: 'lib/domain/services/daliuren/daliuren_constants.dart',
+      status: 'adopted',
+      evidence: 'B',
       locatorOnly: false,
       sourceRefs: <Map<String, Object?>>[
         _scan(
@@ -895,6 +940,16 @@ Map<String, Object?> _shenjiang() {
           pdfPage: 58,
           shortQuote: '前有五位一蛇二雀三合四勾五龙……后有五位一后二阴三玄四常五虎。',
           reviewer: 'C00 independent scan recheck',
+          additionalReviewers: <String>['C04 independent scan audit'],
+        ),
+        _scan(
+          zhizhi,
+          '上下卷附析义',
+          scanLeaf: 18,
+          pdfPage: 19,
+          printedLeaf: '八',
+          shortQuote: '一贵人、二螣蛇、三朱雀、四六合、五勾陈、六青龙、七天空、八白虎、九太常、十玄武、十一太阴、十二天后。',
+          reviewer: 'C04 independent scan audit',
         ),
         _locator(source, '六壬存验-清-吴师青.txt:L345-L346', '十二神：贵人、螣蛇、朱雀、六合……天后。'),
       ],
@@ -904,12 +959,14 @@ Map<String, Object?> _shenjiang() {
       family: 'shenjiang',
       subfamily: 'coordinateContract',
       ordinal: 6,
-      name: '天盘乘将与地盘落将双坐标',
-      conditions: '同一位置事实同时保留天盘支所乘天将与天将所临地盘宫。',
-      interpretation: '主底本分别以课之天盘起贵神、以地盘定顺逆；软件需显式保存两类坐标，但数据结构本身是项目契约。',
+      name: '天盘起贵与地盘定向坐标分工',
+      conditions: '以课之天盘起贵神，再以贵人所临地盘宫定顺逆；两类坐标不得混为同一事实。',
+      interpretation: '主底本直接区分“以课之天盘起贵神”与“地盘一定顺逆”的坐标职责；显式保存两张 map 和双坐标 position 是项目数据契约，不是古籍逐字结构。',
       targetCapability: 'daliuren.shenjiang.dualCoordinates',
       targetCodeDomain:
           'lib/divination_systems/daliuren/models/shen_jiang_config.dart',
+      status: 'adopted',
+      evidence: 'B',
       locatorOnly: false,
       sourceRefs: <Map<String, Object?>>[
         _scan(
@@ -919,6 +976,7 @@ Map<String, Object?> _shenjiang() {
           pdfPage: 58,
           shortQuote: '以课之天盘起贵神之例。',
           reviewer: 'C00 independent scan recheck',
+          additionalReviewers: <String>['C04 independent scan audit'],
         ),
         _scan(
           siku,
@@ -927,8 +985,13 @@ Map<String, Object?> _shenjiang() {
           pdfPage: 59,
           shortQuote: '地盘一定顺逆之序。',
           reviewer: 'C00 independent scan recheck',
+          additionalReviewers: <String>['C04 independent scan audit'],
         ),
         _locator(source, '六壬存验-清-吴师青.txt:L329', '是以天盘之贵而临地盘之六位，非贵在地盘也。'),
+      ],
+      notes: <String>[
+        '古籍 attribution 只支持坐标职责分工；tianBranchToGeneral、earthPalaceToGeneral 及双坐标 positions 由项目执行规则承担。',
+        '完整排将链缺夜贵顺/逆批准课例，故保持 executableApproved=false。',
       ],
     ),
   ];
@@ -3629,6 +3692,7 @@ Map<String, Object?> _variantDecision({
   required String displayStrategy,
   required List<String> blockingRuleIds,
   required List<Map<String, Object?>> options,
+  String? adoptedVariantId,
 }) =>
     <String, Object?>{
       'variantGroupId': id,
@@ -3637,7 +3701,7 @@ Map<String, Object?> _variantDecision({
       'impact': impact,
       'status': status,
       'configurable': false,
-      'adoptedVariantId': null,
+      'adoptedVariantId': adoptedVariantId,
       'adoptionRationale': rationale,
       'nonAdoptedDisplayStrategy': displayStrategy,
       'blockingRuleIds': blockingRuleIds,
@@ -3874,10 +3938,13 @@ Map<String, Object?> _variants() {
             evidence: 'C',
             summary: '阳贵甲未乙申丙酉辛寅壬卯，阴贵相应对调；与当前表在甲乙丙辛壬五干冲突。',
             sourceRefs: <Map<String, Object?>>[
-              _variantLocator(
+              _variantScan(
                 zhizhi,
-                '卷上 PDF 18 / scan leaf 17 / printed leaf 七',
-                '正时自卯至申用昼贵……庚戊见牛甲在羊……甲贵阴牛庚戊羊。',
+                '上下卷附析义',
+                scanLeaf: 17,
+                pdfPage: 18,
+                printedLeaf: '七',
+                shortQuote: '正时自卯至申用昼贵……庚戊见牛甲在羊……甲贵阴牛庚戊羊。',
               ),
             ],
           ),
@@ -3900,33 +3967,26 @@ Map<String, Object?> _variants() {
           '改变十二天将在天盘支与地盘宫的完整分布。',
           '会改变四课、三传所乘天将及其后续分析。',
         ],
-        status: 'unresolved',
-        rationale: '主底本确认地盘定顺逆，但六支分区仍含天门地户方位推导；昼顺夜逆图又明言近不用。',
-        displayStrategy: '不提供运行时配置；在证据详情列出两项候选和主底本的否定说明。',
-        blockingRuleIds: <String>[
-          'dlr.rule.shenjiang.004.direction-by-earth-palace',
-          'dlr.rule.shenjiang.006.dual-coordinate-layout',
-        ],
+        status: 'adopted',
+        adoptedVariantId: 'landing-palace-six-zones',
+        rationale: '《直指》PDF 19 逐支明言亥子丑寅卯辰顺、巳午未申酉戌逆；《六壬大全》的地盘与天门地户原则是同一方法的交叉支持。昼顺夜逆图明言“近不用”，不采用。',
+        displayStrategy: '不提供运行时方向开关；非采用的昼顺夜逆只作否定性史料展示，不得重新解释历史盘或驱动新盘。',
+        blockingRuleIds: <String>[],
         options: <Map<String, Object?>>[
           _variantOption(
             id: 'landing-palace-six-zones',
             label: '贵人落地宫分顺逆六位',
-            evidence: 'C',
-            summary: '先求天盘贵人所临地宫，再按亥至辰顺、巳至戌逆；只有固定转录。',
+            evidence: 'B',
+            summary: '先求天盘贵人所临地宫，再按亥子丑寅卯辰顺、巳午未申酉戌逆；《直指》逐支明文与《大全》天门地户原则合并为同一采用项。',
             sourceRefs: <Map<String, Object?>>[
-              _variantLocator(
-                cunyan,
-                '六壬存验-清-吴师青.txt:L329',
-                '贵临地盘亥子丑寅卯辰六位顺行……巳午未申酉戌六位逆行。',
+              _variantScan(
+                zhizhi,
+                '上下卷附析义',
+                scanLeaf: 18,
+                pdfPage: 19,
+                printedLeaf: '八',
+                shortQuote: '贵人加于亥子丑寅卯辰六位则顺行，加于巳午未申酉戌六位则逆行。',
               ),
-            ],
-          ),
-          _variantOption(
-            id: 'siku-heaven-earth-gate-direction',
-            label: '主底本天门地户定顺逆',
-            evidence: 'C',
-            summary: '卷二直接规定以地盘和天门地户定顺逆，但未逐支枚举亥至辰与巳至戌两区。',
-            sourceRefs: <Map<String, Object?>>[
               _variantScan(
                 siku,
                 '卷二',
@@ -3940,6 +4000,11 @@ Map<String, Object?> _variants() {
                 scanLeaf: 62,
                 pdfPage: 62,
                 shortQuote: '顺治谓在天门之前、地户之后；逆治谓在地户之前、天门之后。',
+              ),
+              _variantLocator(
+                cunyan,
+                '六壬存验-清-吴师青.txt:L329',
+                '贵临地盘亥子丑寅卯辰六位顺行……巳午未申酉戌六位逆行。',
               ),
             ],
           ),

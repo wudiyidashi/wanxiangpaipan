@@ -154,7 +154,7 @@ ShenJiangConfig ShenJiangService.configureShenJiang({
 SanChuan SanChuanService.deriveSanChuan({
   required SiKe siKe,
   required Map<String, String> tianPanMap,
-  ShenJiangConfig? shenJiangConfig,
+  required ShenJiangConfig shenJiangConfig,
   List<String>? kongWang,
 });
 ```
@@ -164,7 +164,7 @@ SanChuan SanChuanService.deriveSanChuan({
 - 合法天盘必须恰有十二地支键、十二个不重复的地支值，且存在同一固定位移 `delta`，使 `P(B[i]) == B[(i + delta) mod 12]`。任意乱序双射不是天盘。
 - `TianPanMapContract.validate()` 是唯一结构校验实现，成功时返回基于输入快照的不可变 map。`TianPanService`、`TianPan`、`ShenJiangService`、`SiKeService` 和 `SanChuanService` 均不得绕过它或保留原 map 引用。
 - `TianPan` 还必须满足 `tianPanMap[shiZhi] == yueJiang`。`fromJson`、`copyWith`、`toJson`、正反向查询与完整显示都不得用“查不到就回本支”补缺；`yueJiangName` 只是展示元数据。
-- `ShenJiangService` 在任何昼夜或坐标计算前先取得已验证快照，`ShenJiangPosition.tianPanZhi` 只能从该快照读取。这一要求不决定贵人表、顺逆或神将键坐标。
+- `ShenJiangService` 在任何昼夜或坐标计算前先取得已验证快照，`ShenJiangPosition.heavenBranch` 只能从同一张天盘按 `earthPalace` 读取。贵人选择、落宫与顺逆的具体合同见下一节。
 - 日干支必须组成六十甲子。设 `G=日干寄宫`、`P(x)=tianPanMap[x]`，四课依次为 `P(G)/日干`、`P(P(G))/P(G)`、`P(日支)/日支`、`P(P(日支))/P(日支)`。
 - `isZeiKe` 只表示下克上，`isBiYong` 只表示上克下。`ChengShenResolver` 按每课上神解析乘神，返回 `null` 时必须失败，禁止默认“贵人”。
 - 三传入口必须重算并核对 1-4 课序、上下神链、五行、关系文案和克向标志；`chengShen` 不在 C03 重算。伏吟只是完整同位盘，反吟只是完整六冲盘。
@@ -192,7 +192,7 @@ SanChuan SanChuanService.deriveSanChuan({
 - `tianpan_service_test.dart`：12x12 月将/时支、固定循环、不可变快照、全部 malformed map 类型、月将锚点、正反查询、模型 JSON，以及神将入口在坐标计算前拒绝非法 map。
 - `si_ke_service_test.dart`：六十甲子、五类五行关系、resolver 失败、完整伏/反吟，以及三张《指南》独立固定 oracle。
 - `san_chuan_service_test.dart`：空/部分/不同合法盘、篡改课序/链路/克向失败，且 13 个原三传位移盘零改期望。
-- `daliuren_result_versioning_test.dart`：合法 TianPan round-trip、嵌套 malformed TianPan 失败、v3 current 及 v2/v1/legacy/future 兼容。
+- `daliuren_result_versioning_test.dart`：合法 TianPan round-trip、嵌套 malformed TianPan 失败、v4 current、v3/v2/v1/legacy/future 兼容及旧神将 wire 迁移。
 
 ### 7. Wrong vs Correct
 
@@ -208,6 +208,85 @@ final chengShen = resolveChengShen(shangShen);
 if (chengShen == null) {
   throw StateError('无法解析上神的乘神');
 }
+```
+
+## 场景：贵人与十二天将双坐标合同
+
+### 1. Scope / Trigger
+
+凡修改贵人昼夜选择、十二天将布列、四课/三传乘将、圆盘落将、结果 JSON 或历史盘读取，都必须使用本节合同。候选《御定六壬直指》的贵人整表仍未裁决；当前完整表只称项目基线，`jiaDayAlt` 仅供旧 JSON 解码，不能生成新盘。
+
+### 2. Signatures
+
+```dart
+ShenJiangConfig ShenJiangService.configureShenJiang({
+  required String riGan,
+  required String shiZhi,
+  required Map<String, String> tianPanMap,
+  DaLiuRenDayNightMode dayNightMode,
+  DaLiuRenGuiRenVerse guiRenVerse,
+});
+
+ShenJiang? ShenJiangConfig.generalForHeavenBranch(String heavenBranch);
+ShenJiang? ShenJiangConfig.generalForEarthPalace(String earthPalace);
+ShenJiangPosition? ShenJiangConfig.positionOf(ShenJiang general);
+void ShenJiangConfig.validateAgainstTianPan(Map<String, String> earthToHeaven);
+void ShenJiangConfig.validateForPanRuleSetVersion(String panRuleSetVersion);
+```
+
+Current wire 明确保存 `selectedGuiRenTianBranch`、`guiRenEarthPalace`、`actualDirection`、`positions[].heavenBranch/earthPalace`、`tianBranchToGeneral`、`earthPalaceToGeneral`、`executionRuleRef` 和 `classicAttributionRuleIds`。
+
+### 3. Contracts
+
+- 自动模式以卯至申为昼贵、酉至寅为夜贵；强制昼/夜只覆盖贵人选择。非法日干或时支抛错，不回退丑未。
+- 设合法天盘为 `P: earthPalace -> heavenBranch`。先选贵人天盘支 `Q`，再以 `inverse(P)[Q]` 得贵人落宫 `E`；昼夜不能直接决定顺逆。
+- `E` 在亥子丑寅卯辰时顺布，在巳午未申酉戌时逆布。十二将身份次序固定为贵人、腾蛇、朱雀、六合、勾陈、青龙、天空、白虎、太常、玄武、太阴、天后。
+- `tianBranchToGeneral` 只供四课、三传等天盘上神消费者；`earthPalaceToGeneral` 只供圆盘与落宫展示。禁止重新引入含混的通用地支 resolver。
+- current config 构造和 JSON 读取必须验证十二支/十二将双射、positions 与两张 map 一致、贵人双锚点、相邻将序、落宫六区方向、精确 execution rule 和 `001/004/005/006` attribution 集合，并对所有集合做防御性快照。
+- `DaLiuRenResult` 的公开构造、手写 `copyWith`、`fromJson` 及 `DaLiuRenSystem` 产盘都必须执行结果级交叉校验：每个 `heavenBranch == tianPanMap[earthPalace]`，四课/三传乘将与天盘支 map 一致，且嵌套 execution rule ID/version、证据目录与顶层 `panRuleSetVersion` 相符。Freezed 私有构造器不能作为外部入口。
+- 当前盘使用 `dlr.project.pan.shenjiang.landing-palace-layout@daliuren-pan/4.0.0`。古籍 001/004/005/006 只作 attribution，完整算法仍不得声称 classic executable。
+- v1/v2/v3/缺版本旧五字段 wire 只在 `DaLiuRenResult.fromJson` 边界迁移：旧 `diZhiToShenJiang` 按历史实际语义恢复为天盘支 map，从旧 positions 恢复天盘并反查地宫；不得重算四课、三传或乘将。v4 搭配旧 shape 必须拒绝。
+- 旧布局使用 `dlr.project.pan.shenjiang.legacy-layout-import`，规则版本与来源盘一致、attribution 为空；新写出统一使用 current shape，但顶层历史盘版本保持不变。
+
+### 4. Validation & Error Matrix
+
+| 条件 | 必须行为 |
+|---|---|
+| 非法日干/时支，或新盘选择 `jiaDayAlt` | `ArgumentError`；不产盘 |
+| 天盘不完整、非固定位移或贵人天盘支无法反查 | `ArgumentError` / `StateError`；不伪造落宫 |
+| map 缺支、重复将、position/map 矛盾、贵人锚点或方向矛盾 | config 构造/JSON 抛 `ArgumentError` |
+| 四课或三传查不到上神乘将 | `StateError`；禁止默认贵人 |
+| current pan 与 legacy rule/shape，或历史 pan 与 current rule | 结果边界抛 `ArgumentError` |
+| 旧 positions 恢复的天盘与结果天盘不同 | 迁移失败；repository/backup 不静默改盘 |
+| future 规范 pan version 与嵌套 rule version 不同 | 抛 `ArgumentError`；不把 future 当 current |
+
+### 5. Good / Base / Bad Cases
+
+- Good：壬寅日癸卯时、巳将，昼贵巳反查临卯，落顺区后顺布；四课、三传按天盘支取将，圆盘按地宫显示同一 positions。
+- Base：旧 v3 五字段配置读取后得到双坐标 current shape，但顶层仍是 v3、execution identity 仍是 v3 legacy import，原四课三传逐字段不变。
+- Bad：把“夜贵”直接解释成逆布；把所选贵人天盘支当地宫；四课和圆盘共用同一个含混 map；缺乘将时返回贵人；让 v4 JSON 携带旧五字段结构。
+
+### 6. Tests Required
+
+- `shen_jiang_service_test.dart`：昼/夜贵 x 顺/逆区四类固定预期、十二时支边界、强制昼夜、非法输入及三张《指南》昼贵盘。
+- `shen_jiang_config_test.dart`：完整 malformed 矩阵、精确 rule/attribution、六区方向、集合快照、copyWith 与天盘交叉校验。
+- `daliuren_result_versioning_test.dart`：公开构造/copyWith 无法绕过版本、证据目录、四课/三传乘将合同；current 与 legacy/future 的嵌套规则版本保持一致。
+- system/san-chuan/formatter/widget：四课三传取 heaven map，圆盘取 earth map，结果页和 AI 同时显示所选天盘支、落宫与实际方向。
+- result/repository/backup：缺版本、`legacyUnknown`、v1、v2、v3 的真实五字段 fixture，v4 old-shape rejection，重存/导入零 skipped 且旧四课三传不变。
+
+### 7. Wrong vs Correct
+
+```dart
+// Wrong: 同一个“地支”方法同时服务天盘与地盘，并从昼夜猜顺逆。
+final general = config.getShenJiangByDiZhi(branch) ?? ShenJiang.guiRen;
+final direction = isDay ? ShenJiangDirection.shun : ShenJiangDirection.ni;
+
+// Correct: 调用者声明坐标；顺逆来自贵人落宫。
+final lessonGeneral = config.generalForHeavenBranch(shangShen);
+final diskGeneral = config.generalForEarthPalace(earthPalace);
+final direction = ShenJiangConfig.shunEarthPalaces.contains(guiRenEarthPalace)
+    ? ShenJiangDirection.shun
+    : ShenJiangDirection.ni;
 ```
 
 ## 三传九宗门（`san_chuan_service.dart`）
@@ -229,5 +308,5 @@ if (chengShen == null) {
 ## 兼容约定
 
 - `TianPan`/`Ke`/`SiKe`/`SanChuan`/`Chuan` JSON 字段结构冻结；规则修正只发生在计算侧，历史存量记录不迁移。
-- 当前盘面规则集为 `daliuren-pan/3.0.0`；`daliuren-pan/2.0.0` 具名保留且可读，但 compatibility 为 `versionMismatch`。snapshot 仍为 `2.0.0`，证据目录仍为 `daliuren-classics/1.0.0`。
+- 当前盘面规则集为 `daliuren-pan/4.0.0`；`daliuren-pan/1.0.0`、`2.0.0`、`3.0.0` 具名保留且可读，但 compatibility 为 `versionMismatch`。snapshot 仍为 `2.0.0`，证据目录为 `daliuren-classics/1.1.0`。
 - 修改任何取传规则必须同步更新黄金课例并保持零改期望通过；新增课体分支须补黄金例。

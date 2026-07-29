@@ -324,7 +324,7 @@ class DaLiuRenSystem implements DivinationSystem {
       riGan: lunarInfo.riGan,
       riZhi: lunarInfo.riZhi,
       tianPanMap: tianPan.tianPanMap,
-      resolveChengShen: shenJiangConfig.getShenJiangByDiZhi,
+      resolveChengShen: shenJiangConfig.generalForHeavenBranch,
     );
     final sanChuan = SanChuanService.deriveSanChuan(
       siKe: siKe,
@@ -339,7 +339,7 @@ class DaLiuRenSystem implements DivinationSystem {
       shiZhi: shiZhi,
     );
 
-    return DaLiuRenResult(
+    final result = DaLiuRenResult(
       id: _generateId(),
       castTime: castTime,
       castMethod: castMethod,
@@ -356,6 +356,8 @@ class DaLiuRenSystem implements DivinationSystem {
       civilTime: civilTime,
       monthGeneralResolution: monthGeneralResolution,
     );
+    result.validateShenJiangContract();
+    return result;
   }
 
   @override
@@ -425,6 +427,9 @@ class DaLiuRenSystem implements DivinationSystem {
       final guiRenVerse = map['guiRenVerse'] is String
           ? DaLiuRenGuiRenVerse.fromId(map['guiRenVerse'] as String)
           : DaLiuRenGuiRenVerse.classic;
+      if (guiRenVerse == DaLiuRenGuiRenVerse.jiaDayAlt) {
+        return null;
+      }
       final xunShouMode = map['xunShouMode'] is String
           ? DaLiuRenXunShouMode.fromId(map['xunShouMode'] as String)
           : DaLiuRenXunShouMode.day;

@@ -112,6 +112,27 @@ void main() {
       expect(ref.isExecutable, isTrue);
     });
 
+    test(
+        'shenjiang project pan IDs are stable and legacy import keeps source version',
+        () {
+      expect(
+        DlrProjectPanRuleIds.shenJiangLandingPalaceLayout,
+        'dlr.project.pan.shenjiang.landing-palace-layout',
+      );
+      expect(
+        DlrProjectPanRuleIds.shenJiangLegacyLayoutImport,
+        'dlr.project.pan.shenjiang.legacy-layout-import',
+      );
+
+      final imported = DlrRuleRef.projectPan(
+        DlrProjectPanRuleIds.shenJiangLegacyLayoutImport,
+        ruleSetVersion: DlrRuleSetVersions.panV3,
+      );
+      expect(imported.ruleSetVersion, DlrRuleSetVersions.panV3);
+      expect(imported.kind, DlrRuleKind.project);
+      expect(imported.evidenceLevel, DlrEvidenceLevel.d);
+    });
+
     test('project pan helper 拒绝 analysis 命名域', () {
       expect(
         () => DlrRuleRef.projectPan(DlrProjectRuleIds.keGeChongShen),
@@ -234,10 +255,15 @@ void main() {
   });
 
   group('DlrRuleSetVersions', () {
-    test('C03 发布 pan v3 并具名保留 pan v2 与 snapshot v2', () {
+    test('C04 发布 pan v4 并具名保留 pan v3 与 snapshot v2', () {
       expect(DlrRuleSetVersions.panV1, 'daliuren-pan/1.0.0');
       expect(DlrRuleSetVersions.panV2, 'daliuren-pan/2.0.0');
-      expect(DlrRuleSetVersions.panCurrent, 'daliuren-pan/3.0.0');
+      expect(DlrRuleSetVersions.panV3, 'daliuren-pan/3.0.0');
+      expect(DlrRuleSetVersions.panCurrent, 'daliuren-pan/4.0.0');
+      expect(
+        DlrRuleSetVersions.evidenceCatalog,
+        'daliuren-classics/1.1.0',
+      );
       expect(DlrRuleSetVersions.castInputSchemaV1, '1.0.0');
       expect(DlrRuleSetVersions.castInputSchema, '2.0.0');
     });

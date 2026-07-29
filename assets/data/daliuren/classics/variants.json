@@ -291,13 +291,13 @@
           "sourceRefs": [
             {
               "sourceId": "dlr.source.yuding-liuren-zhizhi-candidate",
-              "referenceKind": "locator",
-              "volume": null,
-              "scanLeaf": null,
-              "printedLeaf": null,
-              "pdfPage": null,
+              "referenceKind": "scan",
+              "volume": "上下卷附析义",
+              "scanLeaf": 17,
+              "printedLeaf": "七",
+              "pdfPage": 18,
               "imageLabel": null,
-              "locator": "卷上 PDF 18 / scan leaf 17 / printed leaf 七",
+              "locator": null,
               "shortQuote": "正时自卯至申用昼贵……庚戊见牛甲在羊……甲贵阴牛庚戊羊。"
             }
           ],
@@ -323,40 +323,29 @@
         "改变十二天将在天盘支与地盘宫的完整分布。",
         "会改变四课、三传所乘天将及其后续分析。"
       ],
-      "status": "unresolved",
+      "status": "adopted",
       "configurable": false,
-      "adoptedVariantId": null,
-      "adoptionRationale": "主底本确认地盘定顺逆，但六支分区仍含天门地户方位推导；昼顺夜逆图又明言近不用。",
-      "nonAdoptedDisplayStrategy": "不提供运行时配置；在证据详情列出两项候选和主底本的否定说明。",
-      "blockingRuleIds": [
-        "dlr.rule.shenjiang.004.direction-by-earth-palace",
-        "dlr.rule.shenjiang.006.dual-coordinate-layout"
-      ],
+      "adoptedVariantId": "landing-palace-six-zones",
+      "adoptionRationale": "《直指》PDF 19 逐支明言亥子丑寅卯辰顺、巳午未申酉戌逆；《六壬大全》的地盘与天门地户原则是同一方法的交叉支持。昼顺夜逆图明言“近不用”，不采用。",
+      "nonAdoptedDisplayStrategy": "不提供运行时方向开关；非采用的昼顺夜逆只作否定性史料展示，不得重新解释历史盘或驱动新盘。",
+      "blockingRuleIds": [],
       "options": [
         {
           "variantId": "landing-palace-six-zones",
           "label": "贵人落地宫分顺逆六位",
-          "evidenceLevel": "C",
+          "evidenceLevel": "B",
           "sourceRefs": [
             {
-              "sourceId": "dlr.source.cunyan-transcription-d2a44794",
-              "referenceKind": "locator",
-              "volume": null,
-              "scanLeaf": null,
-              "printedLeaf": null,
-              "pdfPage": null,
+              "sourceId": "dlr.source.yuding-liuren-zhizhi-candidate",
+              "referenceKind": "scan",
+              "volume": "上下卷附析义",
+              "scanLeaf": 18,
+              "printedLeaf": "八",
+              "pdfPage": 19,
               "imageLabel": null,
-              "locator": "六壬存验-清-吴师青.txt:L329",
-              "shortQuote": "贵临地盘亥子丑寅卯辰六位顺行……巳午未申酉戌六位逆行。"
-            }
-          ],
-          "summary": "先求天盘贵人所临地宫，再按亥至辰顺、巳至戌逆；只有固定转录。"
-        },
-        {
-          "variantId": "siku-heaven-earth-gate-direction",
-          "label": "主底本天门地户定顺逆",
-          "evidenceLevel": "C",
-          "sourceRefs": [
+              "locator": null,
+              "shortQuote": "贵人加于亥子丑寅卯辰六位则顺行，加于巳午未申酉戌六位则逆行。"
+            },
             {
               "sourceId": "dlr.source.siku-liuren-daquan",
               "referenceKind": "scan",
@@ -378,9 +367,20 @@
               "imageLabel": null,
               "locator": null,
               "shortQuote": "顺治谓在天门之前、地户之后；逆治谓在地户之前、天门之后。"
+            },
+            {
+              "sourceId": "dlr.source.cunyan-transcription-d2a44794",
+              "referenceKind": "locator",
+              "volume": null,
+              "scanLeaf": null,
+              "printedLeaf": null,
+              "pdfPage": null,
+              "imageLabel": null,
+              "locator": "六壬存验-清-吴师青.txt:L329",
+              "shortQuote": "贵临地盘亥子丑寅卯辰六位顺行……巳午未申酉戌六位逆行。"
             }
           ],
-          "summary": "卷二直接规定以地盘和天门地户定顺逆，但未逐支枚举亥至辰与巳至戌两区。"
+          "summary": "先求天盘贵人所临地宫，再按亥子丑寅卯辰顺、巳午未申酉戌逆；《直指》逐支明文与《大全》天门地户原则合并为同一采用项。"
         },
         {
           "variantId": "day-forward-night-reverse-disused",

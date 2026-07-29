@@ -701,7 +701,7 @@
       "identifier": "20260504_20260504_1528",
       "accessUrl": "https://archive.org/details/20260504_20260504_1528",
       "accessedAt": "2026-07-28",
-      "verificationStatus": "candidate",
+      "verificationStatus": "scanVerified",
       "locatorOnly": false,
       "usage": [
         "supplement",
@@ -740,9 +740,10 @@
           }
         }
       ],
-      "rightsNote": "候选补缺源；未核前不引用为 A/B。",
+      "rightsNote": "仅登记公开馆藏标识与短引；扫描件本体不入库。",
       "limitations": [
-        "文件质量、卷页和版本真伪尚未完成复核。"
+        "卷上 PDF 18 / scan leaf 17 / printed leaf 七已经 C00 与 C04 核页；PDF 19 / scan leaf 18 / printed leaf 八由 C04 独立核页；其余页面仍须逐条复核。",
+        "馆藏所标“清康熙时期精钞本”的版本真伪尚未核定，本源只作 supplement/variant，不升为主底本或 approved source。"
       ]
     }
   ],

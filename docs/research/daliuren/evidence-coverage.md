@@ -17,7 +17,7 @@
 | 规则族 | 总数 | 批准 | 待核 | 排除 | 争议 | Locator-only | 可执行 |
 |---|---:|---:|---:|---:|---:|---:|---:|
 | pan | 8 | 7 | 1 | 0 | 0 | 0 | 5 |
-| shenjiang | 6 | 0 | 6 | 0 | 0 | 3 | 0 |
+| shenjiang | 6 | 4 | 2 | 0 | 0 | 2 | 0 |
 | jiuzongmen | 9 | 0 | 9 | 0 | 0 | 0 | 0 |
 | derivedFacts | 6 | 0 | 6 | 0 | 0 | 6 | 0 |
 | shensha | 238 | 233 | 0 | 3 | 2 | 1 | 0 |
@@ -33,8 +33,8 @@
 | 等级 | 规则数 | 可执行批准 |
 |---|---:|---:|
 | A | 0 | 0 |
-| B | 408 | 5 |
-| C | 51 | 0 |
+| B | 412 | 5 |
+| C | 47 | 0 |
 | D | 15 | 0 |
 
 ## 外部课例
@@ -56,7 +56,6 @@
 - `dlr.variant.shensha-gushen-guchen-identity`：unresolved；configurable=false。
 - `dlr.variant.bifa-076-wording`：unresolved；configurable=false。
 - `dlr.variant.gui-ren-table`：unresolved；configurable=false。
-- `dlr.variant.gui-ren-direction`：unresolved；configurable=false。
 - `dlr.variant.shehai-tie-break`：unresolved；configurable=false。
 - `dlr.variant.bieze-yang-method`：unresolved；configurable=false。
 - `dlr.variant.bazhuan-with-ke-label`：unresolved；configurable=false。
@@ -65,7 +64,7 @@
 ## 证据阻塞项
 
 - pan 尚有 1 条待核或争议规则。
-- shenjiang 尚有 6 条待核或争议规则。
+- shenjiang 尚有 2 条待核或争议规则。
 - jiuzongmen 尚有 9 条待核或争议规则。
 - derivedFacts 尚有 6 条待核或争议规则。
 - shensha 尚有 2 条待核或争议规则。

@@ -7,6 +7,7 @@ import 'package:wanxiang_paipan/divination_systems/daliuren/models/san_chuan.dar
 import 'package:wanxiang_paipan/divination_systems/daliuren/models/si_ke.dart';
 import 'package:wanxiang_paipan/domain/services/daliuren/analysis/ke_ge_service.dart';
 import 'package:wanxiang_paipan/domain/services/daliuren/san_chuan_service.dart';
+import 'package:wanxiang_paipan/domain/services/daliuren/shen_jiang_service.dart';
 import 'package:wanxiang_paipan/domain/services/daliuren/si_ke_service.dart';
 import 'package:wanxiang_paipan/domain/services/shared/analysis/models/polarity.dart';
 import 'package:wanxiang_paipan/domain/services/shared/wuxing_service.dart';
@@ -22,15 +23,21 @@ Map<String, String> buildTianPanMap(int s) {
 /// 直调排盘服务：排四课 + 推三传（复用黄金课例输入）
 ({SiKe siKe, SanChuan sanChuan}) run(String riGan, String riZhi, int s) {
   final tianPanMap = buildTianPanMap(s);
+  final shenJiangConfig = ShenJiangService.configureShenJiang(
+    riGan: riGan,
+    shiZhi: '卯',
+    tianPanMap: tianPanMap,
+  );
   final siKe = SiKeService.arrangeSiKe(
     riGan: riGan,
     riZhi: riZhi,
     tianPanMap: tianPanMap,
-    resolveChengShen: (_) => ShenJiang.guiRen,
+    resolveChengShen: shenJiangConfig.generalForHeavenBranch,
   );
   final sanChuan = SanChuanService.deriveSanChuan(
     siKe: siKe,
     tianPanMap: tianPanMap,
+    shenJiangConfig: shenJiangConfig,
   );
   return (siKe: siKe, sanChuan: sanChuan);
 }

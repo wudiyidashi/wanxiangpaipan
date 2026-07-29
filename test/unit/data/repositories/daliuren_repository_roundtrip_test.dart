@@ -12,6 +12,7 @@ import 'package:wanxiang_paipan/domain/divination_registry.dart';
 import 'package:wanxiang_paipan/domain/divination_system.dart';
 
 import 'divination_repository_test.dart' show MockSecureStorage;
+import '../../divination_systems/daliuren/fixtures/legacy_daliuren_wire_fixture.dart';
 
 void main() {
   group('DaLiuRen repository roundtrip', () {
@@ -79,9 +80,11 @@ void main() {
     });
 
     test('C01 v1 zone-less snapshot restores by its saved offset', () async {
-      final v1Json = _jsonCopy(currentResult.toJson())
-        ..['id'] = 'daliuren-c01-v1'
-        ..['panRuleSetVersion'] = DlrRuleSetVersions.panV1
+      final v1Json = legacyShenJiangResultJson(
+        currentResult,
+        id: 'daliuren-c01-v1',
+        panRuleSetVersion: DlrRuleSetVersions.panV1,
+      )
         ..['castInputSnapshot'] = <String, dynamic>{
           'schemaVersion': DlrRuleSetVersions.castInputSchemaV1,
           'castMethod': CastMethod.time.name,
@@ -129,8 +132,11 @@ void main() {
 
     test('legacy JSON missing additive fields remains readable after resave',
         () async {
-      final legacyJson = _jsonCopy(currentResult.toJson())
-        ..['id'] = 'daliuren-legacy-no-additive-fields'
+      final legacyJson = legacyShenJiangResultJson(
+        currentResult,
+        id: 'daliuren-legacy-no-additive-fields',
+        omitPanRuleSetVersion: true,
+      )
         ..remove('panRuleSetVersion')
         ..remove('evidenceCatalogVersion')
         ..remove('castInputSnapshot')
@@ -162,11 +168,48 @@ void main() {
       final reloaded = await repository.getRecordById(daliuren.id);
       expect(reloaded!.toJson(), daliuren.toJson());
     });
+
+    test('v3 old shenjiang wire loads and resaves with new coordinates',
+        () async {
+      final legacyJson = legacyShenJiangResultJson(
+        currentResult,
+        id: 'daliuren-v3-old-shenjiang-wire',
+      );
+      final originalSiKe = legacyJson['siKe'];
+      final originalSanChuan = legacyJson['sanChuan'];
+      await _insertRawResultJson(database, legacyJson);
+
+      final loaded = await repository.getRecordById(
+        'daliuren-v3-old-shenjiang-wire',
+      );
+      expect(loaded, isA<DaLiuRenResult>());
+      final daliuren = loaded! as DaLiuRenResult;
+      expect(daliuren.panRuleSetVersion, DlrRuleSetVersions.panV3);
+      expect(
+        daliuren.shenJiangConfig.executionRuleRef.ruleId,
+        DlrProjectPanRuleIds.shenJiangLegacyLayoutImport,
+      );
+      expect(daliuren.toJson()['siKe'], originalSiKe);
+      expect(daliuren.toJson()['sanChuan'], originalSanChuan);
+
+      expect(await repository.updateRecord(daliuren), isTrue);
+      final stored = await database.divinationRecordDao.getRecordById(
+        daliuren.id,
+      );
+      final normalized = jsonDecode(stored!.resultData) as Map<String, dynamic>;
+      final normalizedConfig =
+          normalized['shenJiangConfig'] as Map<String, dynamic>;
+      expect(normalizedConfig, contains('selectedGuiRenTianBranch'));
+      expect(normalizedConfig, contains('tianBranchToGeneral'));
+      expect(normalizedConfig, contains('earthPalaceToGeneral'));
+      expect(normalizedConfig, isNot(contains('guiRenPosition')));
+      expect(normalizedConfig, isNot(contains('isYangRi')));
+      expect(normalizedConfig, isNot(contains('diZhiToShenJiang')));
+      expect(normalized['siKe'], originalSiKe);
+      expect(normalized['sanChuan'], originalSanChuan);
+    });
   });
 }
-
-Map<String, dynamic> _jsonCopy(Map<String, dynamic> source) =>
-    jsonDecode(jsonEncode(source)) as Map<String, dynamic>;
 
 Future<void> _insertRawResultJson(
   AppDatabase database,

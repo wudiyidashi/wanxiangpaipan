@@ -16,6 +16,8 @@ import 'package:wanxiang_paipan/domain/divination_registry.dart';
 import 'package:wanxiang_paipan/domain/divination_system.dart';
 import 'package:wanxiang_paipan/domain/services/data_management_service.dart';
 
+import '../../divination_systems/daliuren/fixtures/legacy_daliuren_wire_fixture.dart';
+
 void main() {
   group('Daliuren data management integration', () {
     late DivinationRegistry registry;
@@ -84,8 +86,9 @@ void main() {
       ) as DaLiuRenResult;
       final v1 = _buildV1(current);
       final legacy = _buildLegacy(current);
+      final v3 = _buildV3(current);
 
-      for (final result in <DaLiuRenResult>[current, v1, legacy]) {
+      for (final result in <DaLiuRenResult>[current, v1, legacy, v3]) {
         await source.repository.saveRecord(result);
       }
       await source.repository.saveEncryptedFieldsBatch(<String, String>{
@@ -101,6 +104,7 @@ void main() {
         directory,
         v1Id: v1.id,
         legacyId: legacy.id,
+        v3Id: v3.id,
       );
       final imported = await target.service.importBackup(
         legacyShapedBackup,
@@ -113,9 +117,11 @@ void main() {
           await target.repository.getRecordById(v1.id) as DaLiuRenResult?;
       final restoredLegacy =
           await target.repository.getRecordById(legacy.id) as DaLiuRenResult?;
+      final restoredV3 =
+          await target.repository.getRecordById(v3.id) as DaLiuRenResult?;
       final summary = await target.service.loadSummary();
 
-      expect(imported.recordCount, 3);
+      expect(imported.recordCount, 4);
       expect(imported.skippedRecordCount, 0);
       expect(restoredCurrent!.toJson(), current.toJson());
       expect(restoredV1!.toJson(), v1.toJson());
@@ -128,8 +134,16 @@ void main() {
       expect(restoredLegacy.castInputSnapshot, isNull);
       expect(restoredLegacy.civilTime, isNull);
       expect(restoredLegacy.monthGeneralResolution, isNull);
-      expect(summary.totalRecords, 3);
-      expect(summary.daliurenCount, 3);
+      expect(restoredV3!.id, v3.id);
+      expect(restoredV3.panRuleSetVersion, DlrRuleSetVersions.panV3);
+      expect(restoredV3.siKe, v3.siKe);
+      expect(restoredV3.sanChuan, v3.sanChuan);
+      expect(
+        restoredV3.shenJiangConfig.executionRuleRef.ruleId,
+        DlrProjectPanRuleIds.shenJiangLegacyLayoutImport,
+      );
+      expect(summary.totalRecords, 4);
+      expect(summary.daliurenCount, 4);
       expect(
         await target.repository.readEncryptedField('question_${current.id}'),
         '大六壬备份占问',
@@ -139,9 +153,11 @@ void main() {
 }
 
 DaLiuRenResult _buildV1(DaLiuRenResult source) {
-  final json = jsonDecode(jsonEncode(source.toJson())) as Map<String, dynamic>
-    ..['id'] = '${source.id}_v1'
-    ..['panRuleSetVersion'] = DlrRuleSetVersions.panV1
+  final json = legacyShenJiangResultJson(
+    source,
+    id: '${source.id}_v1',
+    panRuleSetVersion: DlrRuleSetVersions.panV1,
+  )
     ..['castInputSnapshot'] = <String, dynamic>{
       'schemaVersion': DlrRuleSetVersions.castInputSchemaV1,
       'castMethod': CastMethod.time.name,
@@ -159,8 +175,11 @@ DaLiuRenResult _buildV1(DaLiuRenResult source) {
 }
 
 DaLiuRenResult _buildLegacy(DaLiuRenResult source) {
-  final json = jsonDecode(jsonEncode(source.toJson())) as Map<String, dynamic>
-    ..['id'] = '${source.id}_legacy'
+  final json = legacyShenJiangResultJson(
+    source,
+    id: '${source.id}_legacy',
+    omitPanRuleSetVersion: true,
+  )
     ..remove('panRuleSetVersion')
     ..remove('evidenceCatalogVersion')
     ..remove('castInputSnapshot')
@@ -170,11 +189,19 @@ DaLiuRenResult _buildLegacy(DaLiuRenResult source) {
   return DaLiuRenResult.fromJson(json);
 }
 
+DaLiuRenResult _buildV3(DaLiuRenResult source) => DaLiuRenResult.fromJson(
+      legacyShenJiangResultJson(
+        source,
+        id: '${source.id}_v3_old_shenjiang',
+      ),
+    );
+
 Future<File> _rewriteDlrCompatibilityShapes(
   File source,
   Directory directory, {
   required String v1Id,
   required String legacyId,
+  required String v3Id,
 }) async {
   final decoded = ZipDecoder().decodeBytes(await source.readAsBytes());
   final rewritten = Archive();
@@ -209,6 +236,8 @@ Future<File> _rewriteDlrCompatibilityShapes(
           ..remove('civilTime')
           ..remove('monthGeneralResolution')
           ..remove('recastFromId');
+      } else if (result['id'] == v3Id) {
+        result['shenJiangConfig'] = legacyShenJiangConfigJson(result);
       }
       record['result'] = result;
     }

@@ -8,6 +8,7 @@ import '../../../presentation/widgets/extended_info_section.dart';
 import '../../../presentation/widgets/ying_qi_card.dart';
 import '../models/daliuren_result.dart';
 import '../models/dlr_cast_time.dart';
+import '../models/dlr_rule_contract.dart';
 import '../models/pan_params.dart';
 import 'daliuren_result_sections.dart';
 import 'widgets/daliuren_ke_ge_card.dart';
@@ -51,6 +52,10 @@ class DaLiuRenResultScreen extends StatelessWidget {
           dunGanText: _buildDunGanText(),
           yueJiangText: _buildYueJiangText(),
           guiRenText: _buildGuiRenText(),
+          ruleVersionText:
+              report.compatibilityStatus == DlrAnalysisCompatibility.current
+                  ? result.panRuleSetVersion
+                  : '${result.panRuleSetVersion}（历史规则盘，按原盘事实展示）',
         ),
         DaLiuRenKeGeCard(report: report),
         upperSection,
@@ -142,7 +147,9 @@ class DaLiuRenResultScreen extends StatelessWidget {
 
   String _buildGuiRenText() {
     final guiRenType = result.shenJiangConfig.isYangGui ? '昼贵' : '夜贵';
-    return '$guiRenType （${result.panParams.guiRenVerseLabel}）';
+    return '$guiRenType${result.shenJiangConfig.selectedGuiRenTianBranch}'
+        '，临${result.shenJiangConfig.guiRenEarthPalace}宫，'
+        '${result.shenJiangConfig.directionDescription}';
   }
 
   String _resolveXunName(String ganZhi) {

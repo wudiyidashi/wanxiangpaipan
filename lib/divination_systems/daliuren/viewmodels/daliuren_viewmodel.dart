@@ -201,12 +201,17 @@ class DaLiuRenViewModel extends DivinationViewModel<DaLiuRenResult> {
 
   /// 获取特定神将的位置信息
   ShenJiangPosition? getShenJiangPosition(ShenJiang shenJiang) {
-    return shenJiangConfig?.getPositionByShenJiang(shenJiang);
+    return shenJiangConfig?.positionOf(shenJiang);
   }
 
-  /// 根据地支获取神将
-  ShenJiang? getShenJiangByDiZhi(String diZhi) {
-    return shenJiangConfig?.getShenJiangByDiZhi(diZhi);
+  /// 根据天盘支获取乘神（四课、三传语义）
+  ShenJiang? getGeneralForHeavenBranch(String heavenBranch) {
+    return shenJiangConfig?.generalForHeavenBranch(heavenBranch);
+  }
+
+  /// 根据地盘宫获取落将（圆盘、宫位展示语义）
+  ShenJiang? getGeneralForEarthPalace(String earthPalace) {
+    return shenJiangConfig?.generalForEarthPalace(earthPalace);
   }
 
   /// 获取吉神列表

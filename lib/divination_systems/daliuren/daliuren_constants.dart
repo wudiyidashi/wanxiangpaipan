@@ -7,7 +7,7 @@ import 'models/pan_params.dart';
 
 /// 十二神将枚举
 ///
-/// 大六壬中的十二位神将，按阳顺阴逆的顺序排列。
+/// 大六壬中的十二位神将，按固定身份次序排列。
 enum ShenJiang {
   guiRen('贵人', '天乙贵人，主吉庆、贵人相助'),
   tengShe('腾蛇', '腾蛇，主惊恐、怪异、虚诈'),
@@ -302,37 +302,10 @@ class DaLiuRenConstants {
     '午': '未', '未': '午', // 午未合土
   };
 
-  /// 十二神将顺序（阳顺）
-  static const List<ShenJiang> shenJiangOrderYang = [
-    ShenJiang.guiRen,
-    ShenJiang.tengShe,
-    ShenJiang.zhuQue,
-    ShenJiang.liuHe,
-    ShenJiang.gouChen,
-    ShenJiang.qingLong,
-    ShenJiang.tianKong,
-    ShenJiang.baiHu,
-    ShenJiang.taiChang,
-    ShenJiang.xuanWu,
-    ShenJiang.taiYin,
-    ShenJiang.tianHou,
-  ];
-
-  /// 十二神将顺序（阴逆）
-  static const List<ShenJiang> shenJiangOrderYin = [
-    ShenJiang.guiRen,
-    ShenJiang.tianHou,
-    ShenJiang.taiYin,
-    ShenJiang.xuanWu,
-    ShenJiang.taiChang,
-    ShenJiang.baiHu,
-    ShenJiang.tianKong,
-    ShenJiang.qingLong,
-    ShenJiang.gouChen,
-    ShenJiang.liuHe,
-    ShenJiang.zhuQue,
-    ShenJiang.tengShe,
-  ];
+  /// 十二神将固定身份次序
+  ///
+  /// 实际布列方向由贵人所临地盘宫决定，不另行维护反向将序。
+  static const List<ShenJiang> shenJiangOrder = ShenJiang.values;
 
   /// 阳干列表
   static const List<String> yangGan = ['甲', '丙', '戊', '庚', '壬'];
@@ -414,8 +387,13 @@ class DaLiuRenConstants {
   static bool isBaZhuanDay(String gan, String zhi) => ganJiGong[gan] == zhi;
 
   /// 获取贵人位置
-  static List<String> getGuiRenPosition(String gan) =>
-      ganGuiRen[gan] ?? ['丑', '未'];
+  static List<String> getGuiRenPosition(String gan) {
+    final positions = ganGuiRen[gan];
+    if (positions == null) {
+      throw ArgumentError.value(gan, 'gan', '无效天干，无法获取贵人位置');
+    }
+    return List<String>.unmodifiable(positions);
+  }
 
   /// 获取指定口诀版本下的贵人位置
   static List<String> getGuiRenPositionByVerse(

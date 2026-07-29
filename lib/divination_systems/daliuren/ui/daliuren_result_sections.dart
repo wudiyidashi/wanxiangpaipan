@@ -17,6 +17,7 @@ class DaLiuRenPanParamsSection extends StatelessWidget {
     required this.dunGanText,
     required this.yueJiangText,
     required this.guiRenText,
+    required this.ruleVersionText,
   });
 
   final String question;
@@ -24,6 +25,7 @@ class DaLiuRenPanParamsSection extends StatelessWidget {
   final String dunGanText;
   final String yueJiangText;
   final String guiRenText;
+  final String ruleVersionText;
 
   @override
   Widget build(BuildContext context) {
@@ -39,6 +41,7 @@ class DaLiuRenPanParamsSection extends StatelessWidget {
           DaLiuRenInfoRow('遁干', dunGanText),
           DaLiuRenInfoRow('月将', yueJiangText),
           DaLiuRenInfoRow('贵神', guiRenText),
+          DaLiuRenInfoRow('规则', ruleVersionText),
         ],
       ),
     );
@@ -258,8 +261,8 @@ class DaLiuRenSanChuanSection extends StatelessWidget {
     return _DaLiuRenChuanCircle(
       label: label,
       chuan: chuan,
-      tags: currentReport?.topTagsForChuan(chuan.position, count: 2)
-          ?? const [],
+      tags:
+          currentReport?.topTagsForChuan(chuan.position, count: 2) ?? const [],
       onTap: currentReport == null
           ? null
           : () => showDlrChuanDetailSheet(
@@ -330,8 +333,12 @@ class DaLiuRenShenJiangSection extends StatelessWidget {
           const AntiqueDivider(),
           const SizedBox(height: 4),
           DaLiuRenInfoRow(
-            '贵人',
-            '${result.shenJiangConfig.guiRenPosition}（${result.shenJiangConfig.guiRenTypeDescription}）',
+            '取贵',
+            '${result.shenJiangConfig.selectedGuiRenTianBranch}（${result.shenJiangConfig.guiRenTypeDescription}）',
+          ),
+          DaLiuRenInfoRow(
+            '临宫',
+            '${result.shenJiangConfig.guiRenEarthPalace}宫',
           ),
           DaLiuRenInfoRow('布神', result.shenJiangConfig.directionDescription),
           const SizedBox(height: 12),
@@ -340,8 +347,8 @@ class DaLiuRenShenJiangSection extends StatelessWidget {
                 .map(
                   (pos) => DaLiuRenGridItem(
                     title: pos.name,
-                    primary: pos.diZhi,
-                    secondary: '乘${pos.tianPanZhi}',
+                    primary: '乘${pos.heavenBranch}',
+                    secondary: '临${pos.earthPalace}宫',
                   ),
                 )
                 .toList(),

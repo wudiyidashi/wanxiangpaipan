@@ -17,10 +17,11 @@ class DlrRuleSetVersions {
   DlrRuleSetVersions._();
 
   static const String legacyUnknown = 'legacyUnknown';
-  static const String evidenceCatalog = 'daliuren-classics/1.0.0';
+  static const String evidenceCatalog = 'daliuren-classics/1.1.0';
   static const String panV1 = 'daliuren-pan/1.0.0';
   static const String panV2 = 'daliuren-pan/2.0.0';
-  static const String panCurrent = 'daliuren-pan/3.0.0';
+  static const String panV3 = 'daliuren-pan/3.0.0';
+  static const String panCurrent = 'daliuren-pan/4.0.0';
   static const String analysisCurrent = 'daliuren-analysis-project-v1/1.0.0';
   static const String castInputSchemaV1 = '1.0.0';
   static const String castInputSchema = '2.0.0';
@@ -66,6 +67,31 @@ class DlrClassicExecutableRuleIds {
     thirdLesson,
     fourthLesson,
   };
+}
+
+/// The classic facts attributed by the current project Shen Jiang layout.
+///
+/// These rules are evidence attribution only. They deliberately remain
+/// separate from [DlrClassicExecutableRuleIds] because the complete placement
+/// algorithm is executed under a `dlr.project.pan.*` rule.
+class DlrShenJiangClassicRuleIds {
+  DlrShenJiangClassicRuleIds._();
+
+  static const String dayNightSelection =
+      'dlr.rule.shenjiang.001.day-night-selection';
+  static const String directionByEarthPalace =
+      'dlr.rule.shenjiang.004.direction-by-earth-palace';
+  static const String twelveGeneralsOrder =
+      'dlr.rule.shenjiang.005.twelve-generals-order';
+  static const String dualCoordinateLayout =
+      'dlr.rule.shenjiang.006.dual-coordinate-layout';
+
+  static const List<String> currentAttributions = <String>[
+    dayNightSelection,
+    directionByEarthPalace,
+    twelveGeneralsOrder,
+    dualCoordinateLayout,
+  ];
 }
 
 /// Stable identities for the current project-v1 analysis heuristics.
@@ -154,6 +180,10 @@ class DlrProjectPanRuleIds {
       'dlr.project.pan.month-general.manual-override';
   static const String civilPillarsFixedOffset =
       'dlr.project.pan.calendar.civil-pillars-fixed-offset';
+  static const String shenJiangLandingPalaceLayout =
+      'dlr.project.pan.shenjiang.landing-palace-layout';
+  static const String shenJiangLegacyLayoutImport =
+      'dlr.project.pan.shenjiang.legacy-layout-import';
 }
 
 /// A validated, immutable rule identity.
@@ -195,7 +225,10 @@ class DlrRuleRef {
         evidenceLevel: DlrEvidenceLevel.d,
       );
 
-  factory DlrRuleRef.projectPan(String ruleId) {
+  factory DlrRuleRef.projectPan(
+    String ruleId, {
+    String ruleSetVersion = DlrRuleSetVersions.panCurrent,
+  }) {
     if (!ruleId.startsWith('dlr.project.pan.')) {
       throw ArgumentError.value(
         ruleId,
@@ -205,7 +238,7 @@ class DlrRuleRef {
     }
     return DlrRuleRef(
       ruleId: ruleId,
-      ruleSetVersion: DlrRuleSetVersions.panCurrent,
+      ruleSetVersion: ruleSetVersion,
       kind: DlrRuleKind.project,
       evidenceLevel: DlrEvidenceLevel.d,
     );

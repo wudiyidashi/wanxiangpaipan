@@ -9,6 +9,7 @@ import 'package:lunar/lunar.dart';
 import '../../../divination_systems/daliuren/models/chuan.dart';
 import '../../../divination_systems/daliuren/models/daliuren_result.dart';
 import '../../../divination_systems/daliuren/models/dlr_cast_time.dart';
+import '../../../divination_systems/daliuren/models/dlr_rule_contract.dart';
 import '../../../divination_systems/daliuren/models/pan_params.dart';
 import '../../../divination_systems/daliuren/models/shen_sha.dart';
 import '../../../domain/divination_system.dart';
@@ -84,10 +85,14 @@ class DaLiuRenStructuredFormatter
         'kongWang': result.lunarInfo.kongWang,
         'yueJiang': '${result.tianPan.yueJiang}将',
         'dayOrNight': _isDay(result) ? '昼占' : '夜占',
-        'guiRen':
-            '${_isDay(result) ? '昼贵' : '夜贵'}${result.shenJiangConfig.guiRenPosition}',
-        'buJiang': result.shenJiangConfig.directionDescription,
+        'selectedGuiRenTianBranch':
+            result.shenJiangConfig.selectedGuiRenTianBranch,
+        'guiRenEarthPalace': result.shenJiangConfig.guiRenEarthPalace,
+        'actualDirection': result.shenJiangConfig.actualDirection.name,
         'guiRenVerse': result.panParams.guiRenVerseLabel,
+        'panRuleSetVersion': result.panRuleSetVersion,
+        'evidenceCatalogVersion': result.evidenceCatalogVersion,
+        'analysisCompatibility': report.compatibilityStatus.name,
         'xunShou': result.panParams.xunShouModeLabel,
         'xunShouGanZhi': _resolveXunShouGanZhi(result),
         'keType': result.keTypeName,
@@ -104,8 +109,8 @@ class DaLiuRenStructuredFormatter
       'shenJiang': result.shenJiangConfig.positions
           .map((position) => {
                 'name': position.name,
-                'diZhi': position.diZhi,
-                'tianPanZhi': position.tianPanZhi,
+                'heavenBranch': position.heavenBranch,
+                'earthPalace': position.earthPalace,
               })
           .toList(),
       'siKe': result.siKe.allKe
@@ -147,7 +152,7 @@ class DaLiuRenStructuredFormatter
       StructuredSection(
         key: 'overview',
         title: '一、排盘总览',
-        content: _formatOverview(result, lunarDateText),
+        content: _formatOverview(result, lunarDateText, report),
         priority: 1,
       ),
       StructuredSection(
@@ -250,7 +255,11 @@ class DaLiuRenStructuredFormatter
     return buffer.toString().trimRight();
   }
 
-  String _formatOverview(DaLiuRenResult result, String? lunarDateText) {
+  String _formatOverview(
+    DaLiuRenResult result,
+    String? lunarDateText,
+    DaLiuRenAnalysisReport report,
+  ) {
     final buffer = StringBuffer();
     if (_isRawManual(result)) {
       buffer.writeln('- 起课：原始四柱（未校历）');
@@ -289,9 +298,17 @@ class DaLiuRenStructuredFormatter
     buffer.writeln('- 节气：${result.lunarInfo.solarTerm ?? '未校历'}');
     buffer.writeln('- 昼夜：${_isDay(result) ? '昼占' : '夜占'}');
     buffer.writeln(
-      '- 贵人：${_isDay(result) ? '昼贵' : '夜贵'}${result.shenJiangConfig.guiRenPosition}',
+      '- 贵人：${_isDay(result) ? '昼贵' : '夜贵'}'
+      '${result.shenJiangConfig.selectedGuiRenTianBranch}'
+      '，临${result.shenJiangConfig.guiRenEarthPalace}宫',
     );
     buffer.writeln('- 布将：${result.shenJiangConfig.directionDescription}');
+    buffer.writeln('- 盘面规则：${result.panRuleSetVersion}');
+    if (report.compatibilityStatus != DlrAnalysisCompatibility.current) {
+      buffer.writeln(
+        '- 兼容状态：${report.compatibilityStatus.name}（历史规则盘，按原盘事实分析）',
+      );
+    }
     buffer.writeln('- 贵人口诀：${result.panParams.guiRenVerseLabel}');
     buffer.writeln('- 旬位：${result.panParams.xunShouModeLabel}');
     buffer.writeln('- 旬首：${_resolveXunShouGanZhi(result)}旬');
@@ -316,7 +333,7 @@ class DaLiuRenStructuredFormatter
     final buffer = StringBuffer();
     for (final position in result.shenJiangConfig.positions) {
       buffer.writeln(
-        '- ${position.name}：${position.diZhi}（乘${position.tianPanZhi}）',
+        '- ${position.name}：乘${position.heavenBranch}，临${position.earthPalace}宫',
       );
     }
     return buffer.toString().trimRight();

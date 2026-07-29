@@ -12,8 +12,7 @@ import '../../models/daliuren_result.dart';
 /// 宫位角度换算：子在正下方（π/2），顺时针每宫 30°。
 ///
 /// 画布坐标 y 轴向下，角度增加即视觉顺时针。
-double panDiskAngle(int branchIndex) =>
-    math.pi / 2 + branchIndex * math.pi / 6;
+double panDiskAngle(int branchIndex) => math.pi / 2 + branchIndex * math.pi / 6;
 
 /// 地支 → 宫位角度（弧度）；无效地支抛 [ArgumentError]。
 double panDiskAngleForBranch(String branch) {
@@ -33,6 +32,13 @@ String? panDiskPalaceOf(Map<String, String> tianPanMap, String tianPanZhi) {
   }
   return null;
 }
+
+/// Resolves the general painted at an earth-palace position on the disk.
+ShenJiang? panDiskGeneralForEarthPalace(
+  DaLiuRenResult result,
+  String earthPalace,
+) =>
+    result.shenJiangConfig.generalForEarthPalace(earthPalace);
 
 /// 天地盘圆盘图入口卡
 class DaLiuRenPanDiskEntrySection extends StatelessWidget {
@@ -332,7 +338,7 @@ class _PanDiskPainter extends CustomPainter {
   void _drawShenJiangRing(Canvas canvas, Offset center, double radius) {
     for (var i = 0; i < 12; i++) {
       final diPan = DaLiuRenConstants.diZhi[i];
-      final shenJiang = result.shenJiangConfig.getShenJiangByDiZhi(diPan);
+      final shenJiang = panDiskGeneralForEarthPalace(result, diPan);
       if (shenJiang == null) continue;
       final isJi = _jiJiang.contains(shenJiang);
       _paintText(
@@ -376,10 +382,10 @@ class _PanDiskPainter extends CustomPainter {
   void _drawArrowhead(Canvas canvas, Offset from, Offset to, Color color) {
     final angle = math.atan2(to.dy - from.dy, to.dx - from.dx);
     const arrowSize = 7.0;
-    final p1 = to -
-        Offset(math.cos(angle - 0.45), math.sin(angle - 0.45)) * arrowSize;
-    final p2 = to -
-        Offset(math.cos(angle + 0.45), math.sin(angle + 0.45)) * arrowSize;
+    final p1 =
+        to - Offset(math.cos(angle - 0.45), math.sin(angle - 0.45)) * arrowSize;
+    final p2 =
+        to - Offset(math.cos(angle + 0.45), math.sin(angle + 0.45)) * arrowSize;
     canvas.drawPath(
       Path()
         ..moveTo(to.dx, to.dy)

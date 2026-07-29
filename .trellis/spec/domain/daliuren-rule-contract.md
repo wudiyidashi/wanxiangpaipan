@@ -23,7 +23,10 @@ DlrRuleRef.project(
   String ruleSetVersion,
 });
 
-DlrRuleRef.projectPan(String ruleId);
+DlrRuleRef.projectPan(
+  String ruleId, {
+  String ruleSetVersion = DlrRuleSetVersions.panCurrent,
+});
 
 DlrCivilTime({
   required DateTime instant,
@@ -48,9 +51,10 @@ DlrCastInputSnapshot.capture({
 - 古籍规则使用 `dlr.rule.*`；项目分析启发式使用 `dlr.project.analysis.*`；项目盘面规则使用 `dlr.project.pan.*`；纯展示使用 `dlr.display.*`。中文 `term`、`geName`、`reason` 和本地化文本不得参与相等性、裁决或持久化身份。
 - `classic` A/B 规则必须引用 C00 `dlr.source.*`；`project`、`display` 只能为 D 级且不得挂古籍来源。C00 的 `adopted` 或 A/B 证据都不等于 `executableApproved`；只有 C00 当前明确批准的 A/B rule ID 可以把该位设为 `true`。
 - `executableApproved` 只适用于 classic；project/display 必须保持 `false`。`isExecutable` 对 classic 读取批准位、对 project 为真、对 display 为假，消费者仍须校验 kind 与其支持的精确规则集版本。
-- 当前发布常量为 `daliuren-classics/1.0.0`、`daliuren-pan/3.0.0`、snapshot `2.0.0` 和 `daliuren-analysis-project-v1/1.0.0`。具名保留 `panV1=daliuren-pan/1.0.0`、`panV2=daliuren-pan/2.0.0` 与 `castInputSchemaV1=1.0.0`；发布后不原地改义。
-- 盘面执行来源必须用 `DlrRuleRef.projectPan()` 生成 `dlr.project.pan.*@daliuren-pan/3.0.0`；`DlrRuleRef.project()` 的默认规则集属于 analysis，不能用于月将或历法执行身份。自动月将可把 `pan.001/.002` 记录为非执行 attribution，但它们不得成为 `executionRuleRef`。
+- 当前发布常量为 `daliuren-classics/1.1.0`、`daliuren-pan/4.0.0`、snapshot `2.0.0` 和 `daliuren-analysis-project-v1/1.0.0`。具名保留 `panV1=daliuren-pan/1.0.0`、`panV2=daliuren-pan/2.0.0`、`panV3=daliuren-pan/3.0.0` 与 `castInputSchemaV1=1.0.0`；发布后不原地改义。
+- 盘面执行来源必须用 `DlrRuleRef.projectPan()` 生成 `dlr.project.pan.*@daliuren-pan/4.0.0`；只有旧盘迁移可显式传入来源 pan 版本。`DlrRuleRef.project()` 的默认规则集属于 analysis，不能用于月将、历法或神将执行身份。自动月将可把 `pan.001/.002` 记录为非执行 attribution，但它们不得成为 `executionRuleRef`。
 - typed 月将反序列化可保留未来 `daliuren-pan/*` 执行版本，但必须拒绝 analysis 规则集；古籍 attribution 只能是 `dlr.rule.*`，且 `manualOverride` 必须为空，不能把人工输入伪装成古籍推导。
+- current 神将配置必须使用 `dlr.project.pan.shenjiang.landing-palace-layout`、current pan version 和精确的 `001/004/005/006` attribution 集合；历史布局导入必须使用 `dlr.project.pan.shenjiang.legacy-layout-import`、来源 pan version 和空 attribution。结果公开构造、手写 `copyWith` 与 JSON 边界必须共用交叉校验，同时绑定嵌套身份、顶层 pan version、证据目录及四课/三传乘将事实；不得保留可绕过门禁的生成 `copyWith`。
 - 新 snapshot 的 `castTime` 和 `DlrCivilTime.instantUtc` wire 必须带明确 zone 并统一 UTC 序列化；`utcOffsetMinutes/sourceUtcOffsetMinutes` 独立保存且限制为整数 `[-840, 840]`。顶层结果 `castTime` 保持跨系统 legacy 角色，不静默改义。
 - C01 v1 无 zone 的 snapshot `castTime` 必须把词法墙上字段放入 UTC 容器后减保存的 offset，确定性恢复 absolute instant；v2 及 future schema 的无 zone 时间必须拒绝。带 `Z`/offset 的所有版本按显式 zone 解析。
 - 旧 JSON 缺新增字段时必须读取为 `legacyUnknown/null`；未知未来版本必须原样保留，并优先判为 `versionMismatch`。
@@ -77,8 +81,9 @@ DlrCastInputSnapshot.capture({
 | `complete` 带 `missingFields` | 抛 `ArgumentError` |
 | `incomplete` 无 `missingFields` | 抛 `ArgumentError` |
 | 旧结果缺版本字段 | 正常读取为 `legacyUnknown`，不得补 current |
-| `panRuleSetVersion` 为具名 v1/v2 | 保留原版本并可读，compatibility=`versionMismatch` |
-| `panRuleSetVersion=daliuren-pan/3.0.0` 且 snapshot 非 legacy | compatibility=`current` |
+| `panRuleSetVersion` 为具名 v1/v2/v3 | 保留原版本并可读，compatibility=`versionMismatch` |
+| `panRuleSetVersion=daliuren-pan/4.0.0` 且 snapshot 非 legacy | compatibility=`current` |
+| current pan 搭配旧神将 shape/legacy execution ref，或历史 pan 搭配 current ref | 抛 `ArgumentError` |
 | future、大小写不同或带空白的 pan version | 保留原串，compatibility=`versionMismatch` |
 
 ## 5. Good / Base / Bad Cases
@@ -90,7 +95,7 @@ DlrCastInputSnapshot.capture({
 ## 6. Tests Required
 
 - `dlr_rule_contract_test.dart`：命名域、证据组合、JSON-safe 深复制、非法 fromJson、replay 状态不变量。
-- `daliuren_result_versioning_test.dart`：v3 current、v2/v1 mismatch、legacy/future JSON、UTC wire、`civilTime`/typed resolution、`recastFromId`、snapshot round-trip 和外部 Map 隔离。
+- `daliuren_result_versioning_test.dart`：v4 current、v3/v2/v1 mismatch、legacy/future JSON、神将执行身份交叉校验、旧五字段迁移、UTC wire、`civilTime`/typed resolution、`recastFromId`、snapshot round-trip 和外部 Map 隔离。
 - `daliuren_system_test.dart`：四种起课快照、fixed offset、两种 manual mode、输入白名单、resolved 值与 missing fields。
 - repository/backup round-trip：current/v1/legacy 结果不丢 civil time、typed resolution、版本或兼容状态，且不增加数据库 migration。
 - 分析生产者测试必须断言 `ruleRef.ruleId`；裁决测试必须覆盖中文改名、display-only 和未知规则集不改变行为。

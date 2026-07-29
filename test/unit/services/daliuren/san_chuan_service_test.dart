@@ -1,8 +1,10 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:wanxiang_paipan/divination_systems/daliuren/daliuren_constants.dart';
 import 'package:wanxiang_paipan/divination_systems/daliuren/models/san_chuan.dart';
+import 'package:wanxiang_paipan/divination_systems/daliuren/models/shen_jiang_config.dart';
 import 'package:wanxiang_paipan/divination_systems/daliuren/models/si_ke.dart';
 import 'package:wanxiang_paipan/domain/services/daliuren/san_chuan_service.dart';
+import 'package:wanxiang_paipan/domain/services/daliuren/shen_jiang_service.dart';
 import 'package:wanxiang_paipan/domain/services/daliuren/si_ke_service.dart';
 
 /// 由位移 s 构造天盘映射（天盘支 = 地盘支 + s，mod 12，子=0…亥=11）
@@ -14,19 +16,33 @@ Map<String, String> buildTianPanMap(int s) {
 }
 
 /// 直调服务：排四课 + 推三传
-({SiKe siKe, SanChuan sanChuan}) run(String riGan, String riZhi, int s) {
+({
+  SiKe siKe,
+  SanChuan sanChuan,
+  ShenJiangConfig shenJiangConfig,
+}) run(String riGan, String riZhi, int s) {
   final tianPanMap = buildTianPanMap(s);
+  final shenJiangConfig = ShenJiangService.configureShenJiang(
+    riGan: riGan,
+    shiZhi: '卯',
+    tianPanMap: tianPanMap,
+  );
   final siKe = SiKeService.arrangeSiKe(
     riGan: riGan,
     riZhi: riZhi,
     tianPanMap: tianPanMap,
-    resolveChengShen: (_) => ShenJiang.guiRen,
+    resolveChengShen: shenJiangConfig.generalForHeavenBranch,
   );
   final sanChuan = SanChuanService.deriveSanChuan(
     siKe: siKe,
     tianPanMap: tianPanMap,
+    shenJiangConfig: shenJiangConfig,
   );
-  return (siKe: siKe, sanChuan: sanChuan);
+  return (
+    siKe: siKe,
+    sanChuan: sanChuan,
+    shenJiangConfig: shenJiangConfig,
+  );
 }
 
 void expectSanChuan(SanChuan sanChuan, String chu, String zhong, String mo) {
@@ -192,6 +208,7 @@ void main() {
           () => SanChuanService.deriveSanChuan(
             siKe: base.siKe,
             tianPanMap: map,
+            shenJiangConfig: base.shenJiangConfig,
           ),
           throwsArgumentError,
         );
@@ -200,6 +217,7 @@ void main() {
         () => SanChuanService.deriveSanChuan(
           siKe: base.siKe,
           tianPanMap: buildTianPanMap(2),
+          shenJiangConfig: base.shenJiangConfig,
         ),
         throwsArgumentError,
       );
@@ -243,6 +261,7 @@ void main() {
           () => SanChuanService.deriveSanChuan(
             siKe: siKe,
             tianPanMap: buildTianPanMap(1),
+            shenJiangConfig: base.shenJiangConfig,
           ),
           throwsArgumentError,
         );
@@ -259,6 +278,7 @@ void main() {
         () => SanChuanService.deriveSanChuan(
           siKe: changedGeneral,
           tianPanMap: buildTianPanMap(1),
+          shenJiangConfig: base.shenJiangConfig,
         ),
         returnsNormally,
       );

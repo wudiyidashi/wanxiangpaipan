@@ -95,7 +95,6 @@ class _DaLiuRenCastScreenState extends State<DaLiuRenCastScreen> {
   DaLiuRenMonthGeneralMode _monthGeneralMode = DaLiuRenMonthGeneralMode.auto;
   String _manualMonthGeneral = '戌';
   DaLiuRenDayNightMode _dayNightMode = DaLiuRenDayNightMode.auto;
-  DaLiuRenGuiRenVerse _guiRenVerse = DaLiuRenGuiRenVerse.classic;
   DaLiuRenXunShouMode _xunShouMode = DaLiuRenXunShouMode.day;
   bool _showSanChuanOnTop = true;
 
@@ -259,7 +258,6 @@ class _DaLiuRenCastScreenState extends State<DaLiuRenCastScreen> {
           ? _manualMonthGeneral
           : null,
       dayNightMode: _dayNightMode,
-      guiRenVerse: _guiRenVerse,
       xunShouMode: _xunShouMode,
       showSanChuanOnTop: _showSanChuanOnTop,
     );
@@ -374,10 +372,6 @@ class _DaLiuRenCastScreenState extends State<DaLiuRenCastScreen> {
                 xunShouMode: _xunShouMode,
                 onXunShouModeChanged: (value) {
                   setState(() => _xunShouMode = value);
-                },
-                guiRenVerse: _guiRenVerse,
-                onGuiRenVerseChanged: (value) {
-                  setState(() => _guiRenVerse = value);
                 },
                 monthGeneralMode: _monthGeneralMode,
                 onMonthGeneralModeChanged: (value) {

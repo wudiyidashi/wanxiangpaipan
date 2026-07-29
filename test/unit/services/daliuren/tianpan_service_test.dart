@@ -140,7 +140,7 @@ void main() {
 
       expect(config.positions, hasLength(12));
       for (final position in config.positions) {
-        expect(position.tianPanZhi, map[position.diZhi]);
+        expect(position.heavenBranch, map[position.earthPalace]);
       }
     });
   });

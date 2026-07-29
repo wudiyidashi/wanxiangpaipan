@@ -11,12 +11,12 @@
       "subfamily": "guiRenSelection",
       "ordinal": 1,
       "traditionalName": "昼夜取贵",
-      "adoptedStatus": "pending",
+      "adoptedStatus": "adopted",
       "conditionsSummary": "卯至申用阳贵，酉至寅用阴贵；昼夜只负责选贵人支。",
       "prioritySummary": "同规则族内的优先关系尚未由影印页冻结；不得按目录顺序推断执行优先级。",
-      "interpretation": "候选《直指》给出昼夜边界；《六壬大全》另把十干分昼夜取贵与地盘定顺逆分开，二者不是同一步。",
-      "evidenceLevel": "C",
-      "locatorOnly": true,
+      "interpretation": "《直指》逐支给出昼夜边界；《六壬大全》另把十干分昼夜取贵与地盘定顺逆分开，二者不是同一步。",
+      "evidenceLevel": "B",
+      "locatorOnly": false,
       "executableApproved": false,
       "sourceRefs": [
         {
@@ -33,20 +33,33 @@
             {
               "reviewer": "C00 independent scan recheck",
               "date": "2026-07-28"
+            },
+            {
+              "reviewer": "C04 independent scan audit",
+              "date": "2026-07-28"
             }
           ]
         },
         {
           "sourceId": "dlr.source.yuding-liuren-zhizhi-candidate",
-          "referenceKind": "locator",
-          "volume": null,
-          "scanLeaf": null,
-          "printedLeaf": null,
-          "pdfPage": null,
+          "referenceKind": "scan",
+          "volume": "上下卷附析义",
+          "scanLeaf": 17,
+          "printedLeaf": "七",
+          "pdfPage": 18,
           "imageLabel": null,
-          "locator": "卷上 PDF 18 / scan leaf 17 / printed leaf 七",
+          "locator": null,
           "shortQuote": "正时自卯至申用昼贵，即阳贵；自酉至寅用夜贵，即阴贵。",
-          "verifiedBy": []
+          "verifiedBy": [
+            {
+              "reviewer": "C00 independent scan recheck",
+              "date": "2026-07-28"
+            },
+            {
+              "reviewer": "C04 independent scan audit",
+              "date": "2026-07-28"
+            }
+          ]
         },
         {
           "sourceId": "dlr.source.cunyan-transcription-d2a44794",
@@ -66,7 +79,10 @@
       "fixtureIds": [],
       "targetCapabilityId": "daliuren.shenjiang.dayNightSelection",
       "targetCodeDomain": "lib/domain/services/daliuren/shen_jiang_service.dart",
-      "notes": []
+      "notes": [
+        "只批准昼夜边界与“昼夜只用于取贵”的事实；不批准 002/003 贵人整表，也不把昼夜解释为顺逆。",
+        "缺少已批准的夜贵顺/逆完整课例，故保持 executableApproved=false。"
+      ]
     },
     {
       "ruleId": "dlr.rule.shenjiang.002.yang-gui-table",
@@ -84,15 +100,24 @@
       "sourceRefs": [
         {
           "sourceId": "dlr.source.yuding-liuren-zhizhi-candidate",
-          "referenceKind": "locator",
-          "volume": null,
-          "scanLeaf": null,
-          "printedLeaf": null,
-          "pdfPage": null,
+          "referenceKind": "scan",
+          "volume": "上下卷附析义",
+          "scanLeaf": 17,
+          "printedLeaf": "七",
+          "pdfPage": 18,
           "imageLabel": null,
-          "locator": "卷上 PDF 18 / scan leaf 17 / printed leaf 七",
+          "locator": null,
           "shortQuote": "庚戊见牛甲在羊，乙猴己鼠丙鸡方，丁猪癸蛇壬兔位，六辛逢虎贵为阳。",
-          "verifiedBy": []
+          "verifiedBy": [
+            {
+              "reviewer": "C00 independent scan recheck",
+              "date": "2026-07-28"
+            },
+            {
+              "reviewer": "C04 independent scan audit",
+              "date": "2026-07-28"
+            }
+          ]
         },
         {
           "sourceId": "dlr.source.cunyan-transcription-d2a44794",
@@ -130,15 +155,24 @@
       "sourceRefs": [
         {
           "sourceId": "dlr.source.yuding-liuren-zhizhi-candidate",
-          "referenceKind": "locator",
-          "volume": null,
-          "scanLeaf": null,
-          "printedLeaf": null,
-          "pdfPage": null,
+          "referenceKind": "scan",
+          "volume": "上下卷附析义",
+          "scanLeaf": 17,
+          "printedLeaf": "七",
+          "pdfPage": 18,
           "imageLabel": null,
-          "locator": "卷上 PDF 18 / scan leaf 17 / printed leaf 七",
+          "locator": null,
           "shortQuote": "甲贵阴牛庚戊羊，乙贵在鼠己猴乡，丙猪丁鸡辛遇马，壬蛇癸兔属阴方。",
-          "verifiedBy": []
+          "verifiedBy": [
+            {
+              "reviewer": "C00 independent scan recheck",
+              "date": "2026-07-28"
+            },
+            {
+              "reviewer": "C04 independent scan audit",
+              "date": "2026-07-28"
+            }
+          ]
         },
         {
           "sourceId": "dlr.source.cunyan-transcription-d2a44794",
@@ -166,11 +200,11 @@
       "subfamily": "layoutDirection",
       "ordinal": 4,
       "traditionalName": "贵人落地宫定顺逆",
-      "adoptedStatus": "pending",
+      "adoptedStatus": "adopted",
       "conditionsSummary": "天盘贵人临地盘亥子丑寅卯辰则顺，临巳午未申酉戌则逆。",
       "prioritySummary": "同规则族内的优先关系尚未由影印页冻结；不得按目录顺序推断执行优先级。",
-      "interpretation": "主底本直接规定地盘定顺逆；十二支六区是由天门地户方位换算，仍待独立正反例批准。",
-      "evidenceLevel": "C",
+      "interpretation": "《直指》逐支明言六位顺、六位逆；《六壬大全》的“地盘一定顺逆”与天门地户说是同一方法的原则解释。",
+      "evidenceLevel": "B",
       "locatorOnly": false,
       "executableApproved": false,
       "sourceRefs": [
@@ -187,6 +221,10 @@
           "verifiedBy": [
             {
               "reviewer": "C00 independent scan recheck",
+              "date": "2026-07-28"
+            },
+            {
+              "reviewer": "C04 independent scan audit",
               "date": "2026-07-28"
             }
           ]
@@ -205,6 +243,27 @@
             {
               "reviewer": "C00 independent scan recheck",
               "date": "2026-07-28"
+            },
+            {
+              "reviewer": "C04 independent scan audit",
+              "date": "2026-07-28"
+            }
+          ]
+        },
+        {
+          "sourceId": "dlr.source.yuding-liuren-zhizhi-candidate",
+          "referenceKind": "scan",
+          "volume": "上下卷附析义",
+          "scanLeaf": 18,
+          "printedLeaf": "八",
+          "pdfPage": 19,
+          "imageLabel": null,
+          "locator": null,
+          "shortQuote": "贵人加于亥子丑寅卯辰六位则顺行，加于巳午未申酉戌六位则逆行。",
+          "verifiedBy": [
+            {
+              "reviewer": "C04 independent scan audit",
+              "date": "2026-07-28"
             }
           ]
         },
@@ -222,11 +281,13 @@
         }
       ],
       "variantGroupId": "dlr.variant.gui-ren-direction",
-      "adoptedVariantId": null,
+      "adoptedVariantId": "landing-palace-six-zones",
       "fixtureIds": [],
       "targetCapabilityId": "daliuren.shenjiang.actualDirection",
       "targetCodeDomain": "lib/domain/services/daliuren/shen_jiang_service.dart",
-      "notes": []
+      "notes": [
+        "三张已批准《指南》课例只覆盖昼贵顺与昼贵逆；缺夜贵顺/逆批准课例，故保持 executableApproved=false。"
+      ]
     },
     {
       "ruleId": "dlr.rule.shenjiang.005.twelve-generals-order",
@@ -234,11 +295,11 @@
       "subfamily": "generalOrder",
       "ordinal": 5,
       "traditionalName": "十二天将次序",
-      "adoptedStatus": "pending",
+      "adoptedStatus": "adopted",
       "conditionsSummary": "贵人、螣蛇、朱雀、六合、勾陈、青龙、天空、白虎、太常、玄武、太阴、天后。",
       "prioritySummary": "同规则族内的优先关系尚未由影印页冻结；不得按目录顺序推断执行优先级。",
       "interpretation": "卷二直接列贵人前后诸将，可还原固定身份次序；方向只改变布列方向。",
-      "evidenceLevel": "C",
+      "evidenceLevel": "B",
       "locatorOnly": false,
       "executableApproved": false,
       "sourceRefs": [
@@ -255,6 +316,27 @@
           "verifiedBy": [
             {
               "reviewer": "C00 independent scan recheck",
+              "date": "2026-07-28"
+            },
+            {
+              "reviewer": "C04 independent scan audit",
+              "date": "2026-07-28"
+            }
+          ]
+        },
+        {
+          "sourceId": "dlr.source.yuding-liuren-zhizhi-candidate",
+          "referenceKind": "scan",
+          "volume": "上下卷附析义",
+          "scanLeaf": 18,
+          "printedLeaf": "八",
+          "pdfPage": 19,
+          "imageLabel": null,
+          "locator": null,
+          "shortQuote": "一贵人、二螣蛇、三朱雀、四六合、五勾陈、六青龙、七天空、八白虎、九太常、十玄武、十一太阴、十二天后。",
+          "verifiedBy": [
+            {
+              "reviewer": "C04 independent scan audit",
               "date": "2026-07-28"
             }
           ]
@@ -284,12 +366,12 @@
       "family": "shenjiang",
       "subfamily": "coordinateContract",
       "ordinal": 6,
-      "traditionalName": "天盘乘将与地盘落将双坐标",
-      "adoptedStatus": "pending",
-      "conditionsSummary": "同一位置事实同时保留天盘支所乘天将与天将所临地盘宫。",
+      "traditionalName": "天盘起贵与地盘定向坐标分工",
+      "adoptedStatus": "adopted",
+      "conditionsSummary": "以课之天盘起贵神，再以贵人所临地盘宫定顺逆；两类坐标不得混为同一事实。",
       "prioritySummary": "同规则族内的优先关系尚未由影印页冻结；不得按目录顺序推断执行优先级。",
-      "interpretation": "主底本分别以课之天盘起贵神、以地盘定顺逆；软件需显式保存两类坐标，但数据结构本身是项目契约。",
-      "evidenceLevel": "C",
+      "interpretation": "主底本直接区分“以课之天盘起贵神”与“地盘一定顺逆”的坐标职责；显式保存两张 map 和双坐标 position 是项目数据契约，不是古籍逐字结构。",
+      "evidenceLevel": "B",
       "locatorOnly": false,
       "executableApproved": false,
       "sourceRefs": [
@@ -307,6 +389,10 @@
             {
               "reviewer": "C00 independent scan recheck",
               "date": "2026-07-28"
+            },
+            {
+              "reviewer": "C04 independent scan audit",
+              "date": "2026-07-28"
             }
           ]
         },
@@ -323,6 +409,10 @@
           "verifiedBy": [
             {
               "reviewer": "C00 independent scan recheck",
+              "date": "2026-07-28"
+            },
+            {
+              "reviewer": "C04 independent scan audit",
               "date": "2026-07-28"
             }
           ]
@@ -345,7 +435,10 @@
       "fixtureIds": [],
       "targetCapabilityId": "daliuren.shenjiang.dualCoordinates",
       "targetCodeDomain": "lib/divination_systems/daliuren/models/shen_jiang_config.dart",
-      "notes": []
+      "notes": [
+        "古籍 attribution 只支持坐标职责分工；tianBranchToGeneral、earthPalaceToGeneral 及双坐标 positions 由项目执行规则承担。",
+        "完整排将链缺夜贵顺/逆批准课例，故保持 executableApproved=false。"
+      ]
     }
   ]
 }

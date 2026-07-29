@@ -429,7 +429,7 @@ Future<DivinationResult> cast({
 | `monthGeneralMode` | `String` | 否 | `auto` 或 `manual` |
 | `manualMonthGeneral` | `String?` | 否 | 仅 `monthGeneralMode = manual` 时有效，必须是合法地支 |
 | `dayNightMode` | `String` | 否 | `auto`、`day`、`night` |
-| `guiRenVerse` | `String` | 否 | `classic` 对应 `甲戊庚牛羊`，`jiaDayAlt` 对应 `甲羊戊庚牛` |
+| `guiRenVerse` | `String` | 否 | 新起课只允许 `classic`，表示项目当前贵人表基线；不表示该整表已获古籍执行批准 |
 | `xunShouMode` | `String` | 否 | `day` 表示日柱旬遁干，`hour` 表示时柱旬遁干 |
 | `showSanChuanOnTop` | `bool` | 否 | 纯显示选项，不参与算法 |
 
@@ -440,6 +440,8 @@ Future<DivinationResult> cast({
 - `guiRenVerse = classic`
 - `xunShouMode = day`
 - `showSanChuanOnTop = true`
+
+`jiaDayAlt` 只保留给旧结果 JSON 的枚举解码。它只交换甲日，不能代表《御定六壬直指》同时涉及甲、乙、丙、辛、壬五干的完整异文；新起课输入必须拒绝该值。
 
 ### 输出规范
 
@@ -457,6 +459,8 @@ Future<DivinationResult> cast({
 | `sanChuan` | `SanChuan` | 三传 |
 | `shenJiangConfig` | `ShenJiangConfig` | 十二神将 |
 | `shenShaList` | `ShenShaList` | 神煞 |
+| `panRuleSetVersion` | `String` | 当前新盘写 `daliuren-pan/4.0.0`；旧盘保留其来源版本 |
+| `evidenceCatalogVersion` | `String` | 当前证据归属版本为 `daliuren-classics/1.1.0` |
 | `questionId` | `String` | 加密问事引用 |
 | `detailId` | `String` | 加密详情引用 |
 | `interpretationId` | `String` | 加密解读引用 |
@@ -466,7 +470,9 @@ Future<DivinationResult> cast({
 - `tianPan` 不能只保存月将摘要，必须足以表达完整 12 宫天地盘映射
 - `siKe` 不能只保存简化的上下神，必须保留四课序、天将、六亲、上下生克关系
 - `sanChuan` 不能只保存三个地支，必须保留课体名称和取传说明
-- `shenJiangConfig` 不能只保存“贵人位置 + 顺逆方向”，必须足以表达完整 12 将落宫
+- `shenJiangConfig` 必须显式保存 `selectedGuiRenTianBranch`、`guiRenEarthPalace`、`actualDirection`、`tianBranchToGeneral`、`earthPalaceToGeneral`，以及 12 个同时含 `heavenBranch/earthPalace` 的位置事实
+- 四课、三传按 `tianBranchToGeneral` 解析乘将；圆盘和地盘位置展示按 `earthPalaceToGeneral` 解析，不得复用含混坐标查询
+- 当前 `daliuren-pan/4.0.0` 结果只接受新 shape；旧 v1/v2/v3/未知版本的旧 shape 只能在父级结果读取边界迁移，且不得重算旧四课、三传或乘将
 - `toJson()` / `fromJson()` 必须能完整还原这些结构
 
 ### 摘要规范

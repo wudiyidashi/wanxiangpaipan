@@ -12,6 +12,8 @@ import 'package:wanxiang_paipan/domain/services/daliuren/shen_sha_service.dart';
 import 'package:wanxiang_paipan/domain/services/daliuren/si_ke_service.dart';
 import 'package:wanxiang_paipan/models/lunar_info.dart';
 
+import '../../../divination_systems/daliuren/fixtures/legacy_daliuren_wire_fixture.dart';
+
 /// 由位移 s 构造天盘映射（与黄金课例同口径）
 Map<String, String> buildTianPanMap(int s) {
   const diZhi = DaLiuRenConstants.diZhi;
@@ -39,7 +41,7 @@ DaLiuRenResult buildResult({
     riGan: riGan,
     riZhi: riZhi,
     tianPanMap: tianPanMap,
-    resolveChengShen: shenJiangConfig.getShenJiangByDiZhi,
+    resolveChengShen: shenJiangConfig.generalForHeavenBranch,
   );
   final sanChuan = SanChuanService.deriveSanChuan(
     siKe: siKe,
@@ -149,30 +151,41 @@ void main() {
     });
 
     test('报告声明 analysis/source pan 版本并区分三种 compatibility', () {
-      final legacy = buildResult(
+      final currentBase = buildResult(
         riGan: '戊',
         riZhi: '子',
         s: 4,
         kongWang: const ['午', '未'],
       );
+      final legacy = DaLiuRenResult.fromJson(
+        legacyShenJiangResultJson(
+          currentBase,
+          omitPanRuleSetVersion: true,
+        ),
+      );
       final currentSnapshot = DlrCastInputSnapshot.capture(
         castMethod: CastMethod.time,
-        castTime: legacy.castTime,
-        utcOffsetMinutes: legacy.castTime.timeZoneOffset.inMinutes,
+        castTime: currentBase.castTime,
+        utcOffsetMinutes: currentBase.castTime.timeZoneOffset.inMinutes,
         normalizedInput: const <String, dynamic>{
           'params': <String, dynamic>{},
         },
         replayStatus: DlrReplayStatus.complete,
       );
-      final current = legacy.copyWith(
-        panRuleSetVersion: DlrRuleSetVersions.panCurrent,
+      final current = currentBase.copyWith(
         castInputSnapshot: currentSnapshot,
       );
-      final currentWithoutSnapshot = legacy.copyWith(
-        panRuleSetVersion: DlrRuleSetVersions.panCurrent,
+      final currentWithoutSnapshot = currentBase;
+      const futureVersion = 'daliuren-pan/99.0.0';
+      final futureConfig = currentBase.shenJiangConfig.copyWith(
+        executionRuleRef: DlrRuleRef.projectPan(
+          DlrProjectPanRuleIds.shenJiangLandingPalaceLayout,
+          ruleSetVersion: futureVersion,
+        ),
       );
-      final future = legacy.copyWith(
-        panRuleSetVersion: 'daliuren-pan/99.0.0',
+      final future = currentBase.copyWith(
+        panRuleSetVersion: futureVersion,
+        shenJiangConfig: futureConfig,
       );
 
       final legacyReport = DaLiuRenAnalyzer.analyze(legacy);

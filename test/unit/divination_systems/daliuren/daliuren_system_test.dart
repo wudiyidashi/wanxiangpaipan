@@ -13,9 +13,30 @@ import 'package:wanxiang_paipan/divination_systems/daliuren/models/shen_sha.dart
 import 'package:wanxiang_paipan/divination_systems/daliuren/models/si_ke.dart';
 import 'package:wanxiang_paipan/divination_systems/daliuren/models/tianpan.dart';
 import 'package:wanxiang_paipan/domain/divination_system.dart';
+import 'package:wanxiang_paipan/domain/services/daliuren/shen_jiang_service.dart';
 import 'package:wanxiang_paipan/models/lunar_info.dart';
 
+const _identityTianPanMap = <String, String>{
+  '子': '子',
+  '丑': '丑',
+  '寅': '寅',
+  '卯': '卯',
+  '辰': '辰',
+  '巳': '巳',
+  '午': '午',
+  '未': '未',
+  '申': '申',
+  '酉': '酉',
+  '戌': '戌',
+  '亥': '亥',
+};
+
 DaLiuRenResult _buildTestDaLiuRenResult(LunarInfo lunarInfo) {
+  final shenJiangConfig = ShenJiangService.configureShenJiang(
+    riGan: lunarInfo.riGan,
+    shiZhi: '子',
+    tianPanMap: _identityTianPanMap,
+  );
   return DaLiuRenResult(
     id: 'test-id',
     castTime: DateTime(2025, 1, 16, 12, 0),
@@ -25,27 +46,14 @@ DaLiuRenResult _buildTestDaLiuRenResult(LunarInfo lunarInfo) {
       yueJiang: '子',
       yueJiangName: '神后',
       shiZhi: '子',
-      tianPanMap: const <String, String>{
-        '子': '子',
-        '丑': '丑',
-        '寅': '寅',
-        '卯': '卯',
-        '辰': '辰',
-        '巳': '巳',
-        '午': '午',
-        '未': '未',
-        '申': '申',
-        '酉': '酉',
-        '戌': '戌',
-        '亥': '亥',
-      },
+      tianPanMap: _identityTianPanMap,
     ),
     siKe: SiKe(
       ke1: Ke(
         index: 1,
         shangShen: '子',
         xiaShen: '子',
-        chengShen: ShenJiang.guiRen,
+        chengShen: ShenJiang.baiHu,
         shangShenWuXing: '水',
         xiaShenWuXing: '水',
       ),
@@ -53,7 +61,7 @@ DaLiuRenResult _buildTestDaLiuRenResult(LunarInfo lunarInfo) {
         index: 2,
         shangShen: '丑',
         xiaShen: '丑',
-        chengShen: ShenJiang.tengShe,
+        chengShen: ShenJiang.tianKong,
         shangShenWuXing: '土',
         xiaShenWuXing: '土',
       ),
@@ -61,7 +69,7 @@ DaLiuRenResult _buildTestDaLiuRenResult(LunarInfo lunarInfo) {
         index: 3,
         shangShen: '寅',
         xiaShen: '寅',
-        chengShen: ShenJiang.zhuQue,
+        chengShen: ShenJiang.qingLong,
         shangShenWuXing: '木',
         xiaShenWuXing: '木',
       ),
@@ -69,7 +77,7 @@ DaLiuRenResult _buildTestDaLiuRenResult(LunarInfo lunarInfo) {
         index: 4,
         shangShen: '卯',
         xiaShen: '卯',
-        chengShen: ShenJiang.liuHe,
+        chengShen: ShenJiang.gouChen,
         shangShenWuXing: '木',
         xiaShenWuXing: '木',
       ),
@@ -81,44 +89,32 @@ DaLiuRenResult _buildTestDaLiuRenResult(LunarInfo lunarInfo) {
         position: ChuanPosition.chu,
         diZhi: '子',
         wuXing: '水',
-        chengShen: ShenJiang.guiRen,
+        chengShen: ShenJiang.baiHu,
         liuQin: '兄弟',
       ),
       zhongChuan: Chuan(
         position: ChuanPosition.zhong,
         diZhi: '丑',
         wuXing: '土',
-        chengShen: ShenJiang.tengShe,
+        chengShen: ShenJiang.tianKong,
         liuQin: '父母',
       ),
       moChuan: Chuan(
         position: ChuanPosition.mo,
         diZhi: '寅',
         wuXing: '木',
-        chengShen: ShenJiang.zhuQue,
+        chengShen: ShenJiang.qingLong,
         liuQin: '妻财',
       ),
       keType: KeType.zeiKe,
     ),
-    shenJiangConfig: ShenJiangConfig(
-      guiRenPosition: '子',
-      isYangGui: true,
-      isYangRi: true,
-      positions: <ShenJiangPosition>[
-        ShenJiangPosition(
-          shenJiang: ShenJiang.guiRen,
-          diZhi: '子',
-          tianPanZhi: '子',
-        ),
-      ],
-      diZhiToShenJiang: <String, ShenJiang>{
-        '子': ShenJiang.guiRen,
-      },
-    ),
+    shenJiangConfig: shenJiangConfig,
     shenShaList: ShenShaList(
       allShenSha: <ShenSha>[],
     ),
     panParams: const DaLiuRenPanParams(),
+    panRuleSetVersion: DlrRuleSetVersions.panCurrent,
+    evidenceCatalogVersion: DlrRuleSetVersions.evidenceCatalog,
   );
 }
 
@@ -211,6 +207,24 @@ void main() {
         );
       });
 
+      test('jiaDayAlt 只保留历史解码，不得进入新起盘', () async {
+        const input = <String, dynamic>{
+          'params': <String, dynamic>{'guiRenVerse': 'jiaDayAlt'},
+        };
+
+        expect(
+          const DaLiuRenPanParams(
+            guiRenVerse: DaLiuRenGuiRenVerse.jiaDayAlt,
+          ).guiRenVerseLabel,
+          '历史甲日特例（无古籍批准）',
+        );
+        expect(system.validateInput(CastMethod.time, input), isFalse);
+        await expectLater(
+          system.cast(method: CastMethod.time, input: input),
+          throwsArgumentError,
+        );
+      });
+
       test('手动月将参数应覆盖自动月将', () async {
         final result = await system.cast(
           method: CastMethod.time,
@@ -265,9 +279,11 @@ void main() {
         expect(dlr.lunarInfo.riGanZhi, '壬戌');
         expect(dlr.tianPan.yueJiang, '戌');
 
-        expect(dlr.shenJiangConfig.guiRenPosition, '卯');
+        expect(dlr.shenJiangConfig.selectedGuiRenTianBranch, '卯');
+        expect(dlr.shenJiangConfig.guiRenEarthPalace, '辰');
         expect(dlr.shenJiangConfig.guiRenTypeDescription, '阴贵（夜贵）');
-        expect(dlr.shenJiangConfig.directionDescription, '夜课逆布');
+        expect(dlr.shenJiangConfig.actualDirection, ShenJiangDirection.shun);
+        expect(dlr.shenJiangConfig.directionDescription, '顺布');
 
         expect(dlr.siKe.ke1.shangShen, '戌');
         expect(dlr.siKe.ke1.xiaShen, '壬');
@@ -278,12 +294,38 @@ void main() {
         expect(dlr.zhongChuan, '酉');
         expect(dlr.moChuan, '申');
 
-        expect(dlr.shenJiangConfig.getShenJiangByDiZhi('卯'), ShenJiang.guiRen);
         expect(
-            dlr.shenJiangConfig.getShenJiangByDiZhi('申'), ShenJiang.qingLong);
+          dlr.shenJiangConfig.generalForHeavenBranch('卯'),
+          ShenJiang.guiRen,
+        );
         expect(
-            dlr.shenJiangConfig.getShenJiangByDiZhi('酉'), ShenJiang.tianKong);
-        expect(dlr.shenJiangConfig.getShenJiangByDiZhi('戌'), ShenJiang.baiHu);
+          dlr.shenJiangConfig.generalForHeavenBranch('申'),
+          ShenJiang.qingLong,
+        );
+        expect(
+          dlr.shenJiangConfig.generalForHeavenBranch('酉'),
+          ShenJiang.tianKong,
+        );
+        expect(
+          dlr.shenJiangConfig.generalForHeavenBranch('戌'),
+          ShenJiang.baiHu,
+        );
+        expect(
+          dlr.shenJiangConfig.generalForEarthPalace('辰'),
+          ShenJiang.guiRen,
+        );
+        for (final lesson in dlr.siKe.allKe) {
+          expect(
+            lesson.chengShen,
+            dlr.shenJiangConfig.generalForHeavenBranch(lesson.shangShen),
+          );
+        }
+        for (final transmission in dlr.sanChuan.allChuan) {
+          expect(
+            transmission.chengShen,
+            dlr.shenJiangConfig.generalForHeavenBranch(transmission.diZhi),
+          );
+        }
       });
 
       test('时间起课只保存白名单参数并深复制 caller input', () async {

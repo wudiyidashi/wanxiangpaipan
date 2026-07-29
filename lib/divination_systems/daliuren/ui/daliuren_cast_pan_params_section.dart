@@ -16,8 +16,6 @@ class DaLiuRenCastPanParamsSection extends StatelessWidget {
     required this.onDayNightModeChanged,
     required this.xunShouMode,
     required this.onXunShouModeChanged,
-    required this.guiRenVerse,
-    required this.onGuiRenVerseChanged,
     required this.monthGeneralMode,
     required this.onMonthGeneralModeChanged,
     required this.manualMonthGeneral,
@@ -33,8 +31,6 @@ class DaLiuRenCastPanParamsSection extends StatelessWidget {
   final ValueChanged<DaLiuRenDayNightMode> onDayNightModeChanged;
   final DaLiuRenXunShouMode xunShouMode;
   final ValueChanged<DaLiuRenXunShouMode> onXunShouModeChanged;
-  final DaLiuRenGuiRenVerse guiRenVerse;
-  final ValueChanged<DaLiuRenGuiRenVerse> onGuiRenVerseChanged;
   final DaLiuRenMonthGeneralMode monthGeneralMode;
   final ValueChanged<DaLiuRenMonthGeneralMode> onMonthGeneralModeChanged;
   final String manualMonthGeneral;
@@ -100,60 +96,34 @@ class DaLiuRenCastPanParamsSection extends StatelessWidget {
             ],
           ),
           const SizedBox(height: 12),
-          Row(
-            children: [
-              Expanded(
-                child: DaLiuRenDropdownField(
-                  label: '贵人口诀',
-                  value: guiRenVerse.id,
-                  items: DaLiuRenGuiRenVerse.values.map((e) => e.id).toList(),
+          forceManualMonthGeneral
+              ? DaLiuRenDropdownField(
+                  label: '月将',
+                  value: manualMonthGeneral,
+                  items: diZhiOptions,
+                  onChanged: (value) {
+                    if (value != null) {
+                      onManualMonthGeneralChanged(value);
+                    }
+                  },
+                )
+              : DaLiuRenDropdownField(
+                  label: '月将模式',
+                  value: effectiveMonthGeneralMode.id,
+                  items:
+                      DaLiuRenMonthGeneralMode.values.map((e) => e.id).toList(),
                   labels: const {
-                    'classic': '甲戊庚牛羊',
-                    'jiaDayAlt': '甲羊戊庚牛',
+                    'auto': '自动',
+                    'manual': '手动',
                   },
                   onChanged: (value) {
                     if (value != null) {
-                      onGuiRenVerseChanged(
-                        DaLiuRenGuiRenVerse.fromId(value),
+                      onMonthGeneralModeChanged(
+                        DaLiuRenMonthGeneralMode.fromId(value),
                       );
                     }
                   },
                 ),
-              ),
-              const SizedBox(width: 12),
-              Expanded(
-                child: forceManualMonthGeneral
-                    ? DaLiuRenDropdownField(
-                        label: '月将',
-                        value: manualMonthGeneral,
-                        items: diZhiOptions,
-                        onChanged: (value) {
-                          if (value != null) {
-                            onManualMonthGeneralChanged(value);
-                          }
-                        },
-                      )
-                    : DaLiuRenDropdownField(
-                        label: '月将模式',
-                        value: effectiveMonthGeneralMode.id,
-                        items: DaLiuRenMonthGeneralMode.values
-                            .map((e) => e.id)
-                            .toList(),
-                        labels: const {
-                          'auto': '自动',
-                          'manual': '手动',
-                        },
-                        onChanged: (value) {
-                          if (value != null) {
-                            onMonthGeneralModeChanged(
-                              DaLiuRenMonthGeneralMode.fromId(value),
-                            );
-                          }
-                        },
-                      ),
-              ),
-            ],
-          ),
           if (!forceManualMonthGeneral &&
               effectiveMonthGeneralMode == DaLiuRenMonthGeneralMode.manual) ...[
             const SizedBox(height: 12),

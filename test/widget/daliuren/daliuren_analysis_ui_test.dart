@@ -25,6 +25,8 @@ import 'package:wanxiang_paipan/domain/services/shared/analysis/models/polarity.
 import 'package:wanxiang_paipan/domain/services/shared/analysis/models/verdict_models.dart';
 import 'package:wanxiang_paipan/models/lunar_info.dart';
 
+import '../../unit/divination_systems/daliuren/fixtures/legacy_daliuren_wire_fixture.dart';
+
 /// 由位移 s 构造天盘映射（与分析层黄金课例同口径）
 Map<String, String> buildTianPanMap(int s) {
   const diZhi = DaLiuRenConstants.diZhi;
@@ -52,7 +54,7 @@ DaLiuRenResult buildResult({
     riGan: riGan,
     riZhi: riZhi,
     tianPanMap: tianPanMap,
-    resolveChengShen: shenJiangConfig.getShenJiangByDiZhi,
+    resolveChengShen: shenJiangConfig.generalForHeavenBranch,
   );
   final sanChuan = SanChuanService.deriveSanChuan(
     siKe: siKe,
@@ -105,6 +107,31 @@ void main() {
     kongWang: const ['午', '未'],
   );
   final reportK = DaLiuRenAnalyzer.analyze(resultK);
+
+  test('圆盘天将环严格按地盘宫位取将', () {
+    const expected = <String, ShenJiang>{
+      '子': ShenJiang.xuanWu,
+      '丑': ShenJiang.taiChang,
+      '寅': ShenJiang.baiHu,
+      '卯': ShenJiang.tianKong,
+      '辰': ShenJiang.qingLong,
+      '巳': ShenJiang.gouChen,
+      '午': ShenJiang.liuHe,
+      '未': ShenJiang.zhuQue,
+      '申': ShenJiang.tengShe,
+      '酉': ShenJiang.guiRen,
+      '戌': ShenJiang.tianHou,
+      '亥': ShenJiang.taiYin,
+    };
+
+    for (final entry in expected.entries) {
+      expect(
+        panDiskGeneralForEarthPalace(resultK, entry.key),
+        entry.value,
+        reason: '地盘${entry.key}宫',
+      );
+    }
+  });
 
   group('DaLiuRenKeGeCard', () {
     testWidgets('展示格名、课体、polarity 徽标与基调', (tester) async {
@@ -263,6 +290,37 @@ void main() {
       expect(find.text('课体断诀'), findsOneWidget);
       expect(find.text('天地盘圆盘图'), findsOneWidget);
       expect(find.text('应期推算'), findsOneWidget);
+    });
+
+    testWidgets('贵人天盘支、地盘宫与实际顺逆分开展示', (tester) async {
+      await tester.pumpWidget(buildScreen(resultK));
+      await tester.pumpAndSettle();
+
+      expect(find.text('昼贵丑，临酉宫，逆布'), findsOneWidget);
+      expect(find.text('丑（阳贵（昼贵））'), findsOneWidget);
+      expect(find.text('酉宫'), findsAtLeastNWidgets(1));
+      expect(find.text('逆布'), findsOneWidget);
+      expect(find.text('乘丑'), findsOneWidget);
+      expect(find.text('临酉宫'), findsOneWidget);
+      expect(find.textContaining('昼课顺布'), findsNothing);
+      expect(find.textContaining('夜课逆布'), findsNothing);
+    });
+
+    testWidgets('历史规则盘显式标注且不重排', (tester) async {
+      final historical = DaLiuRenResult.fromJson(
+        legacyShenJiangResultJson(resultK),
+      );
+      final persistedFacts = historical.toJson();
+
+      await tester.pumpWidget(buildScreen(historical));
+      await tester.pumpAndSettle();
+
+      expect(
+        find.text('daliuren-pan/3.0.0（历史规则盘，按原盘事实展示）'),
+        findsOneWidget,
+      );
+      expect(historical.toJson()['siKe'], persistedFacts['siKe']);
+      expect(historical.toJson()['sanChuan'], persistedFacts['sanChuan']);
     });
 
     testWidgets('点击入口弹出天地盘圆盘图 Dialog', (tester) async {

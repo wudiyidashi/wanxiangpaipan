@@ -96,7 +96,7 @@ class DaLiuRenPanParams with _$DaLiuRenPanParams {
 
   String get guiRenVerseLabel => switch (guiRenVerse) {
         DaLiuRenGuiRenVerse.classic => '甲戊庚牛羊',
-        DaLiuRenGuiRenVerse.jiaDayAlt => '甲羊戊庚牛',
+        DaLiuRenGuiRenVerse.jiaDayAlt => '历史甲日特例（无古籍批准）',
       };
 
   String get xunShouModeLabel => switch (xunShouMode) {

@@ -46,16 +46,17 @@ class SanChuanService {
   ///
   /// [siKe] 四课
   /// [tianPanMap] 天盘映射表
-  /// [shenJiangConfig] 神将配置（可选）
+  /// [shenJiangConfig] 已按同一天盘验证的神将配置
   /// [kongWang] 空亡地支列表（可选）
   /// 返回 SanChuan 模型
   static SanChuan deriveSanChuan({
     required SiKe siKe,
     required Map<String, String> tianPanMap,
-    ShenJiangConfig? shenJiangConfig,
+    required ShenJiangConfig shenJiangConfig,
     List<String>? kongWang,
   }) {
     final validatedMap = SiKeService.validateSiKe(siKe, tianPanMap);
+    shenJiangConfig.validateAgainstTianPan(validatedMap);
     final derivation = _derive(siKe, validatedMap);
 
     final chuChuan = _createChuan(
@@ -602,7 +603,7 @@ class SanChuanService {
     required ChuanPosition position,
     required String diZhi,
     required String riGan,
-    ShenJiangConfig? shenJiangConfig,
+    required ShenJiangConfig shenJiangConfig,
     List<String>? kongWang,
   }) {
     // 获取五行
@@ -622,13 +623,9 @@ class SanChuanService {
       };
     }
 
-    // 获取乘神
-    ShenJiang chengShen = ShenJiang.guiRen;
-    if (shenJiangConfig != null) {
-      final sj = shenJiangConfig.getShenJiangByDiZhi(diZhi);
-      if (sj != null) {
-        chengShen = sj;
-      }
+    final chengShen = shenJiangConfig.generalForHeavenBranch(diZhi);
+    if (chengShen == null) {
+      throw StateError('三传天盘支缺少乘神: $diZhi');
     }
 
     // 判断是否空亡

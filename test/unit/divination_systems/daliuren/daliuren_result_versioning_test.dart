@@ -1,12 +1,16 @@
 import 'dart:convert';
 
 import 'package:flutter_test/flutter_test.dart';
+import 'package:wanxiang_paipan/divination_systems/daliuren/daliuren_constants.dart';
 import 'package:wanxiang_paipan/divination_systems/daliuren/daliuren_system.dart';
 import 'package:wanxiang_paipan/divination_systems/daliuren/models/daliuren_result.dart';
 import 'package:wanxiang_paipan/divination_systems/daliuren/models/dlr_cast_time.dart';
 import 'package:wanxiang_paipan/divination_systems/daliuren/models/dlr_rule_contract.dart';
+import 'package:wanxiang_paipan/divination_systems/daliuren/models/pan_params.dart';
 import 'package:wanxiang_paipan/domain/divination_system.dart';
 import 'package:wanxiang_paipan/domain/services/daliuren/analysis/daliuren_analyzer.dart';
+
+import 'fixtures/legacy_daliuren_wire_fixture.dart';
 
 void main() {
   late DaLiuRenResult currentResult;
@@ -57,6 +61,14 @@ void main() {
     expect(decoded.civilTime, civilTime);
     expect(decoded.monthGeneralResolution, monthGeneralResolution);
     expect(decoded.recastFromId, 'legacy-dlr-001');
+    final cleared = linked.copyWith(
+      civilTime: null,
+      monthGeneralResolution: null,
+      recastFromId: null,
+    );
+    expect(cleared.civilTime, isNull);
+    expect(cleared.monthGeneralResolution, isNull);
+    expect(cleared.recastFromId, isNull);
     expect(encoded['castTime'], linked.castTime.toIso8601String());
     expect(
       (encoded['civilTime'] as Map<String, dynamic>)['instantUtc'],
@@ -69,8 +81,83 @@ void main() {
     );
   });
 
+  test('公开构造与 copyWith 均拒绝版本或四课乘将矛盾', () {
+    final originalLesson = currentResult.siKe.ke1;
+    final wrongGeneral = ShenJiang.values.firstWhere(
+      (general) => general != originalLesson.chengShen,
+    );
+    final inconsistentSiKe = currentResult.siKe.copyWith(
+      ke1: originalLesson.copyWith(chengShen: wrongGeneral),
+    );
+
+    expect(
+      () => currentResult.copyWith(
+        panRuleSetVersion: DlrRuleSetVersions.panV3,
+      ),
+      throwsArgumentError,
+    );
+    expect(
+      () => currentResult.copyWith(
+        evidenceCatalogVersion: DlrRuleSetVersions.legacyUnknown,
+      ),
+      throwsArgumentError,
+    );
+    expect(
+      () => currentResult.copyWith(siKe: inconsistentSiKe),
+      throwsArgumentError,
+    );
+    expect(
+      () => DaLiuRenResult(
+        id: currentResult.id,
+        castTime: currentResult.castTime,
+        castMethod: currentResult.castMethod,
+        lunarInfo: currentResult.lunarInfo,
+        tianPan: currentResult.tianPan,
+        siKe: inconsistentSiKe,
+        sanChuan: currentResult.sanChuan,
+        shenJiangConfig: currentResult.shenJiangConfig,
+        shenShaList: currentResult.shenShaList,
+        panParams: currentResult.panParams,
+        castInputSnapshot: currentResult.castInputSnapshot,
+        civilTime: currentResult.civilTime,
+        monthGeneralResolution: currentResult.monthGeneralResolution,
+      ),
+      throwsArgumentError,
+    );
+  });
+
+  test('当前盘结果边界拒绝历史甲日特例', () {
+    final historicalOnlyParams = currentResult.panParams.copyWith(
+      guiRenVerse: DaLiuRenGuiRenVerse.jiaDayAlt,
+    );
+
+    expect(
+      historicalOnlyParams.guiRenVerseLabel,
+      '历史甲日特例（无古籍批准）',
+    );
+    expect(
+      () => currentResult.copyWith(panParams: historicalOnlyParams),
+      throwsArgumentError,
+    );
+  });
+
+  test('反序列化拒绝三传乘将与天盘支映射矛盾', () {
+    final invalid =
+        jsonDecode(jsonEncode(currentResult.toJson())) as Map<String, dynamic>;
+    final sanChuan = invalid['sanChuan'] as Map<String, dynamic>;
+    final chuChuan = sanChuan['chuChuan'] as Map<String, dynamic>;
+    final original = currentResult.sanChuan.chuChuan.chengShen;
+    chuChuan['chengShen'] =
+        ShenJiang.values.firstWhere((general) => general != original).name;
+
+    expect(() => DaLiuRenResult.fromJson(invalid), throwsArgumentError);
+  });
+
   test('旧 JSON 缺 additive 字段时明确读成 legacy unknown/null', () {
-    final legacyJson = Map<String, dynamic>.from(currentResult.toJson())
+    final legacyJson = legacyShenJiangResultJson(
+      currentResult,
+      omitPanRuleSetVersion: true,
+    )
       ..remove('panRuleSetVersion')
       ..remove('evidenceCatalogVersion')
       ..remove('castInputSnapshot')
@@ -106,6 +193,10 @@ void main() {
         resolution['executionRuleRef'] as Map<String, dynamic>;
     futureJson['panRuleSetVersion'] = futureVersion;
     executionRuleRef['ruleSetVersion'] = futureVersion;
+    final shenJiang = futureJson['shenJiangConfig'] as Map<String, dynamic>;
+    final shenJiangExecutionRule =
+        shenJiang['executionRuleRef'] as Map<String, dynamic>;
+    shenJiangExecutionRule['ruleSetVersion'] = futureVersion;
     futureJson.remove('castInputSnapshot');
 
     final decoded = DaLiuRenResult.fromJson(futureJson);
@@ -123,16 +214,14 @@ void main() {
     );
   });
 
-  test('published pan v2 remains readable but is not current under v3', () {
-    final v2Json =
-        jsonDecode(jsonEncode(currentResult.toJson())) as Map<String, dynamic>;
-    v2Json['panRuleSetVersion'] = DlrRuleSetVersions.panV2;
+  test('published pan v3 remains readable but is not current under v4', () {
+    final v3Json = legacyShenJiangResultJson(currentResult);
 
-    final decoded = DaLiuRenResult.fromJson(v2Json);
+    final decoded = DaLiuRenResult.fromJson(v3Json);
     final report = DaLiuRenAnalyzer.analyze(decoded);
 
-    expect(decoded.panRuleSetVersion, 'daliuren-pan/2.0.0');
-    expect(report.sourcePanRuleSetVersion, DlrRuleSetVersions.panV2);
+    expect(decoded.panRuleSetVersion, 'daliuren-pan/3.0.0');
+    expect(report.sourcePanRuleSetVersion, DlrRuleSetVersions.panV3);
     expect(
       report.compatibilityStatus,
       DlrAnalysisCompatibility.versionMismatch,
@@ -140,8 +229,123 @@ void main() {
     expect(DlrRuleSetVersions.castInputSchema, '2.0.0');
     expect(
       DlrRuleSetVersions.evidenceCatalog,
-      'daliuren-classics/1.0.0',
+      'daliuren-classics/1.1.0',
     );
+  });
+
+  test('v3 real old shenjiang shape migrates read-old/write-new losslessly',
+      () {
+    final legacyJson = legacyShenJiangResultJson(currentResult);
+    final originalSiKe = legacyJson['siKe'];
+    final originalSanChuan = legacyJson['sanChuan'];
+
+    final decoded = DaLiuRenResult.fromJson(legacyJson);
+    final rewrittenConfig =
+        decoded.toJson()['shenJiangConfig'] as Map<String, dynamic>;
+
+    expect(decoded.panRuleSetVersion, DlrRuleSetVersions.panV3);
+    expect(
+      decoded.shenJiangConfig.selectedGuiRenTianBranch,
+      currentResult.shenJiangConfig.selectedGuiRenTianBranch,
+    );
+    expect(
+      decoded.shenJiangConfig.isYangGui,
+      currentResult.shenJiangConfig.isYangGui,
+    );
+    expect(decoded.shenJiangConfig.actualDirection.name, 'shun');
+    expect(
+      decoded.shenJiangConfig.executionRuleRef.ruleId,
+      DlrProjectPanRuleIds.shenJiangLegacyLayoutImport,
+    );
+    expect(
+      decoded.shenJiangConfig.executionRuleRef.ruleSetVersion,
+      DlrRuleSetVersions.panV3,
+    );
+    expect(decoded.shenJiangConfig.classicAttributionRuleIds, isEmpty);
+    expect(decoded.toJson()['siKe'], originalSiKe);
+    expect(decoded.toJson()['sanChuan'], originalSanChuan);
+    expect(rewrittenConfig, isNot(contains('guiRenPosition')));
+    expect(rewrittenConfig, isNot(contains('isYangRi')));
+    expect(rewrittenConfig, isNot(contains('diZhiToShenJiang')));
+    expect(rewrittenConfig, contains('selectedGuiRenTianBranch'));
+    expect(rewrittenConfig, contains('tianBranchToGeneral'));
+    expect(rewrittenConfig, contains('earthPalaceToGeneral'));
+  });
+
+  test('v4 rejects old shenjiang shape instead of treating it as current', () {
+    final invalid = legacyShenJiangResultJson(currentResult)
+      ..['panRuleSetVersion'] = DlrRuleSetVersions.panCurrent;
+
+    expect(() => DaLiuRenResult.fromJson(invalid), throwsArgumentError);
+  });
+
+  test('old shenjiang positions must recover the persisted TianPan exactly',
+      () {
+    final invalid = legacyShenJiangResultJson(currentResult);
+    final config = invalid['shenJiangConfig'] as Map<String, dynamic>;
+    final positions = config['positions'] as List<dynamic>;
+    final first = positions.first as Map<String, dynamic>;
+    first['tianPanZhi'] = first['tianPanZhi'] == '子' ? '丑' : '子';
+
+    expect(() => DaLiuRenResult.fromJson(invalid), throwsArgumentError);
+  });
+
+  test('known historical versions reject a current-layout execution identity',
+      () {
+    for (final version in <String>[
+      DlrRuleSetVersions.legacyUnknown,
+      DlrRuleSetVersions.panV1,
+      DlrRuleSetVersions.panV2,
+      DlrRuleSetVersions.panV3,
+    ]) {
+      final invalid = jsonDecode(jsonEncode(currentResult.toJson()))
+          as Map<String, dynamic>
+        ..['panRuleSetVersion'] = version;
+
+      expect(
+        () => DaLiuRenResult.fromJson(invalid),
+        throwsArgumentError,
+        reason: version,
+      );
+    }
+  });
+
+  test('all historical version forms migrate the real old shenjiang wire', () {
+    final cases = <({String label, String? version})>[
+      (label: 'missing', version: null),
+      (label: 'legacyUnknown', version: DlrRuleSetVersions.legacyUnknown),
+      (label: 'v1', version: DlrRuleSetVersions.panV1),
+      (label: 'v2', version: DlrRuleSetVersions.panV2),
+      (label: 'v3', version: DlrRuleSetVersions.panV3),
+    ];
+
+    for (final testCase in cases) {
+      final oldJson = legacyShenJiangResultJson(
+        currentResult,
+        panRuleSetVersion: testCase.version ?? DlrRuleSetVersions.legacyUnknown,
+        omitPanRuleSetVersion: testCase.version == null,
+        id: 'legacy-${testCase.label}',
+      );
+      final originalSiKe = jsonEncode(oldJson['siKe']);
+      final originalSanChuan = jsonEncode(oldJson['sanChuan']);
+
+      final decoded = DaLiuRenResult.fromJson(oldJson);
+      final rewritten = decoded.toJson();
+      final decodedAgain = DaLiuRenResult.fromJson(
+        jsonDecode(jsonEncode(rewritten)) as Map<String, dynamic>,
+      );
+      final expectedVersion =
+          testCase.version ?? DlrRuleSetVersions.legacyUnknown;
+
+      expect(decoded.panRuleSetVersion, expectedVersion,
+          reason: testCase.label);
+      expect(decoded.shenJiangConfig.executionRuleRef.ruleSetVersion,
+          expectedVersion,
+          reason: testCase.label);
+      expect(decodedAgain.id, 'legacy-${testCase.label}');
+      expect(jsonEncode(decodedAgain.toJson()['siKe']), originalSiKe);
+      expect(jsonEncode(decodedAgain.toJson()['sanChuan']), originalSanChuan);
+    }
   });
 
   test('nested malformed TianPan JSON cannot bypass result decoding', () {
@@ -157,8 +361,10 @@ void main() {
   });
 
   test('C01 v1 snapshot zone-less castTime 结合 offset 恢复且保持 v1', () {
-    final v1Json = Map<String, dynamic>.from(currentResult.toJson())
-      ..['panRuleSetVersion'] = DlrRuleSetVersions.panV1
+    final v1Json = legacyShenJiangResultJson(
+      currentResult,
+      panRuleSetVersion: DlrRuleSetVersions.panV1,
+    )
       ..['castInputSnapshot'] = <String, dynamic>{
         'schemaVersion': DlrRuleSetVersions.castInputSchemaV1,
         'castMethod': CastMethod.manual.name,
