@@ -35,7 +35,10 @@ class QimenAnalyzer {
       );
     }
 
-    final focus = QimenFocusResolver.resolve(result);
+    final focus = QimenFocusResolver.resolve(
+      result,
+      ruleSetVersion: ruleSet.version,
+    );
     final batches = <QimenFactBatch>[
       QimenStarDoorStateService.evaluate(
         result,

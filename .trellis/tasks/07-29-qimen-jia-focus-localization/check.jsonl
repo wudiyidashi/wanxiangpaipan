@@ -1,0 +1,5 @@
+{"file":".trellis/tasks/07-29-qimen-jia-focus-localization/prd.md","reason":"Verify every user-visible and AI acceptance criterion."}
+{"file":".trellis/tasks/07-29-qimen-jia-focus-localization/design.md","reason":"Verify versioning, data flow, and rollback boundaries."}
+{"file":".trellis/tasks/07-29-qimen-jia-focus-localization/implement.md","reason":"Verify the ordered execution and quality gates completed."}
+{"file":".trellis/spec/domain/qimen-analysis-engine.md","reason":"Check v1 immutability and v2 focus semantics."}
+{"file":".trellis/spec/frontend/qimen-product-integration.md","reason":"Check localization and real AI invocation without bypassing diagnostics."}

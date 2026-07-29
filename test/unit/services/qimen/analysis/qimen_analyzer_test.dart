@@ -19,7 +19,7 @@ void main() {
         () {
       final result = fixedQimenAnalysisResult();
       final first = QimenAnalyzer.analyze(result, ruleSetVersion: 'v1');
-      final second = QimenAnalyzer.analyze(result);
+      final second = QimenAnalyzer.analyze(result, ruleSetVersion: 'v1');
 
       expect(first.toCanonicalJson(), second.toCanonicalJson());
       expect(first.status, QimenAnalysisStatus.complete);
@@ -43,6 +43,39 @@ void main() {
         List<int>.generate(first.trace.length, (index) => index + 1),
       );
       expect(result.toJson(), isNot(contains('analysis')));
+    });
+
+    test('current v2 completes a Jia-day report with unique primary focuses',
+        () {
+      final result = mutatedQimenAnalysisResult((json) {
+        final context = Map<String, dynamic>.from(
+          json['temporalContext'] as Map,
+        )..['dayGanZhi'] = '甲子';
+        json['temporalContext'] = context;
+      });
+      final report = QimenAnalyzer.analyze(result);
+      final projection = QimenAnalysisProjection.fromReport(report);
+
+      expect(report.ruleSetVersion, QimenRuleCatalog.v2);
+      expect(report.status, QimenAnalysisStatus.complete);
+      expect(report.diagnostics, isEmpty);
+      expect(
+        report.focuses.where((focus) => focus.roleId == 'self'),
+        hasLength(1),
+      );
+      expect(
+        report.focuses.where((focus) => focus.roleId == 'matter'),
+        hasLength(1),
+      );
+      expect(projection.status, QimenAnalysisStatus.complete);
+      expect(projection.diagnostics, isEmpty);
+
+      final legacy = QimenAnalyzer.analyze(result, ruleSetVersion: 'v1');
+      expect(legacy.ruleSetVersion, QimenRuleCatalog.v1);
+      expect(
+        legacy.diagnostics.map((diagnostic) => diagnostic.code),
+        contains('QMV1-E-DAY-JIA-FOCUS-UNRESOLVED'),
+      );
     });
 
     test('report survives a real JSON wire round-trip deeply', () {

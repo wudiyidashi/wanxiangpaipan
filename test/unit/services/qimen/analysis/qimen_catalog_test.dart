@@ -9,16 +9,18 @@ import 'package:wanxiang_paipan/domain/services/qimen/analysis/rules/qimen_sourc
 import 'helpers/qimen_stem_response_expectations.dart';
 
 void main() {
-  group('Qimen v1 catalogs', () {
+  group('Qimen released catalogs', () {
     test('have unique, sourced, internally valid stable IDs', () {
       expect(QimenRuleCatalog.validate, returnsNormally);
       expect(QimenSourceCatalog.validate, returnsNormally);
       expect(QimenRuleCatalog.byId, hasLength(QimenRuleCatalog.all.length));
       expect(QimenSourceCatalog.byId, hasLength(QimenSourceCatalog.all.length));
-      expect(QimenRuleCatalog.resolve('current').version, 'v1');
+      expect(QimenRuleCatalog.resolve('current').version, 'v2');
       expect(
           QimenRuleCatalog.resolve('v1').ruleSetId, QimenRuleCatalog.ruleSetId);
-      expect(() => QimenRuleCatalog.resolve('v2'), throwsArgumentError);
+      expect(
+          QimenRuleCatalog.resolve('v2').ruleSetId, QimenRuleCatalog.ruleSetId);
+      expect(() => QimenRuleCatalog.resolve('v3'), throwsArgumentError);
     });
 
     test('the stem-response table covers all 81 QiYi pairs once', () {
@@ -66,6 +68,10 @@ void main() {
       expect(() => QimenRuleCatalog.released.clear(), throwsUnsupportedError);
       expect(
         () => QimenRuleCatalog.resolve('v1').rules.clear(),
+        throwsUnsupportedError,
+      );
+      expect(
+        () => QimenRuleCatalog.resolve('v2').rules.clear(),
         throwsUnsupportedError,
       );
       expect(

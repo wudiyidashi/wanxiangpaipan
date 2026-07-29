@@ -1,0 +1,6 @@
+{"file":".trellis/spec/domain/qimen-analysis-engine.md","reason":"Implement the immutable v1 and forward-versioned analysis contract."}
+{"file":".trellis/spec/domain/qimen-pan-engine.md","reason":"Preserve schema-1 pan facts and avoid pan-service recomputation."}
+{"file":".trellis/spec/frontend/qimen-product-integration.md","reason":"Preserve the AI compatibility gate and Qimen presentation boundary."}
+{"file":".trellis/spec/guides/cross-layer-thinking-guide.md","reason":"Trace analyzer to projection to result UI and AI invocation."}
+{"file":".trellis/tasks/archive/2026-07/07-28-qimen-release-audit/research/release-evidence.md","reason":"Respect the released v1 baseline and historical evidence."}
+{"file":".trellis/tasks/07-29-qimen-jia-focus-localization/design.md","reason":"Follow the approved v2 and localization design."}

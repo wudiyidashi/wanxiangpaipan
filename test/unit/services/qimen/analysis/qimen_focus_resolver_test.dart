@@ -100,7 +100,10 @@ void main() {
         )..['hourGanZhi'] = '甲子';
         json['temporalContext'] = context;
       });
-      final resolution = QimenFocusResolver.resolve(result);
+      final resolution = QimenFocusResolver.resolve(
+        result,
+        ruleSetVersion: 'v1',
+      );
       final matter = resolution.focuses.singleWhere(
         (focus) => focus.roleId == 'matter',
       );
@@ -126,7 +129,10 @@ void main() {
         )..['dayGanZhi'] = '甲子';
         json['temporalContext'] = context;
       });
-      final resolution = QimenFocusResolver.resolve(result);
+      final resolution = QimenFocusResolver.resolve(
+        result,
+        ruleSetVersion: 'v1',
+      );
 
       expect(
         resolution.focuses.where((focus) => focus.roleId == 'self'),
@@ -136,6 +142,108 @@ void main() {
       expect(
         resolution.diagnostics.map((value) => value.code),
         contains('QMV1-E-DAY-JIA-FOCUS-UNRESOLVED'),
+      );
+    });
+
+    const jiaXunCases =
+        <({String dayGanZhi, String hiddenStem, int palaceNumber})>[
+      (dayGanZhi: '甲子', hiddenStem: '戊', palaceNumber: 4),
+      (dayGanZhi: '甲戌', hiddenStem: '己', palaceNumber: 7),
+      (dayGanZhi: '甲申', hiddenStem: '庚', palaceNumber: 3),
+      (dayGanZhi: '甲午', hiddenStem: '辛', palaceNumber: 6),
+      (dayGanZhi: '甲辰', hiddenStem: '壬', palaceNumber: 9),
+      (dayGanZhi: '甲寅', hiddenStem: '癸', palaceNumber: 2),
+    ];
+
+    for (final testCase in jiaXunCases) {
+      test('v2 resolves ${testCase.dayGanZhi} self from the day xun', () {
+        final result = mutatedQimenAnalysisResult((json) {
+          final context = Map<String, dynamic>.from(
+            json['temporalContext'] as Map,
+          )..['dayGanZhi'] = testCase.dayGanZhi;
+          json['temporalContext'] = context;
+        });
+        final resolution = QimenFocusResolver.resolve(
+          result,
+          ruleSetVersion: 'v2',
+        );
+        final self = resolution.focuses.singleWhere(
+          (focus) => focus.roleId == 'self',
+        );
+        final selfTrace = resolution.trace.singleWhere(
+          (step) => step.stepId.endsWith(':self'),
+        );
+
+        expect(resolution.hasUniquePrimaryFocus, true);
+        expect(resolution.diagnostics, isEmpty);
+        expect(
+          resolution.focuses
+              .where((focus) => focus.priority == QimenFocusPriority.secondary)
+              .map((focus) => focus.reason),
+          everyElement(contains('奇门分析 v2')),
+        );
+        expect(self.indicatorValue, testCase.hiddenStem);
+        expect(self.palaceNumber, testCase.palaceNumber);
+        expect(
+          selfTrace.inputRefs,
+          contains(
+            isA<QimenInputRef>()
+                .having(
+                  (ref) => ref.path,
+                  'path',
+                  r'$.temporalContext.dayGanZhi',
+                )
+                .having(
+                  (ref) => ref.value,
+                  'value',
+                  testCase.dayGanZhi,
+                ),
+          ),
+        );
+        expect(
+          selfTrace.inputRefs.map((ref) => ref.path),
+          isNot(contains(r'$.xunHiddenStem')),
+        );
+        for (final ref in selfTrace.inputRefs) {
+          expect(QimenInputRefResolver.matches(result, ref), true);
+        }
+      });
+    }
+
+    test('v2 Jia self preserves center origin and explicit hosted action', () {
+      final result = mutatedQimenAnalysisResult((json) {
+        final context = Map<String, dynamic>.from(
+          json['temporalContext'] as Map,
+        )..['dayGanZhi'] = '甲子';
+        json['temporalContext'] = context;
+        final palace4 = qimenAnalysisPalaceJson(json, 4);
+        final palace5 = qimenAnalysisPalaceJson(json, 5);
+        palace4
+          ..['heavenStem'] = '丁'
+          ..['hostedHeavenStem'] = '戊';
+        palace5['heavenStem'] = '戊';
+      });
+      final resolution = QimenFocusResolver.resolve(
+        result,
+        ruleSetVersion: 'v2',
+      );
+      final self = resolution.focuses.singleWhere(
+        (focus) => focus.roleId == 'self',
+      );
+      final refs = resolution.trace
+          .singleWhere((step) => step.stepId.endsWith(':self'))
+          .inputRefs;
+
+      expect(self.originPalaceNumber, 5);
+      expect(self.palaceNumber, 4);
+      expect(self.isHosted, true);
+      expect(
+        refs.map((ref) => ref.path),
+        containsAll(<String>[
+          r'$.palaces[number=5].heavenStem',
+          r'$.palaces[number=4].hostedHeavenStem',
+          r'$.temporalContext.dayGanZhi',
+        ]),
       );
     });
 

@@ -10,6 +10,7 @@ import '../../../domain/services/shared/analysis/models/verdict_models.dart';
 import '../../../presentation/widgets/antique/antique.dart';
 import '../models/qimen_enums.dart';
 import '../models/qimen_result.dart';
+import 'qimen_analysis_presentation.dart';
 import 'widgets/qimen_nine_palace_grid.dart';
 import 'widgets/qimen_palace_detail_sheet.dart';
 
@@ -189,7 +190,8 @@ class QimenVerdictSection extends StatelessWidget {
     final color = _trendColor(judgment.trend);
     return AntiqueCard(
       child: Semantics(
-        label: '程序裁决，${judgment.trend.name}。${judgment.summary}',
+        label: '程序裁决，${judgment.trend.name}。'
+            '${QimenAnalysisPresentation.narrativeLabel(judgment.summary, facts: projection.facts)}',
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -219,7 +221,9 @@ class QimenVerdictSection extends StatelessWidget {
                     ),
                   ),
                   Text(
-                    projection.verdict.matchedDecisionRowId,
+                    QimenAnalysisPresentation.ruleLabel(
+                      projection.verdict.matchedDecisionRowId,
+                    ),
                     style: const TextStyle(
                       color: AppColors.guhe,
                       fontSize: 11,
@@ -231,7 +235,10 @@ class QimenVerdictSection extends StatelessWidget {
             ),
             const SizedBox(height: 10),
             Text(
-              judgment.summary,
+              QimenAnalysisPresentation.narrativeLabel(
+                judgment.summary,
+                facts: projection.facts,
+              ),
               style: AppTextStyles.antiqueBody.copyWith(
                 height: 1.55,
                 letterSpacing: 0,
@@ -251,8 +258,10 @@ class QimenVerdictSection extends StatelessWidget {
               const SizedBox(height: 6),
               ...projection.verdict.conditionLinks.map(
                 (condition) => _BulletText(
-                  '${condition.condition.label}：${condition.condition.reason}；'
-                  '观察 ${condition.releaseScale.name}尺度 '
+                  '${condition.condition.label}：'
+                  '${QimenAnalysisPresentation.narrativeLabel(condition.condition.reason, facts: projection.facts)}；'
+                  '观察 ${QimenAnalysisPresentation.yingQiScaleLabel(condition.releaseScale)}尺度·'
+                  '${QimenAnalysisPresentation.releaseTriggerLabel(condition.releaseTriggerKind)} '
                   '${condition.releaseTriggerValue}',
                   icon: Icons.pending_actions_outlined,
                 ),
@@ -272,8 +281,10 @@ class QimenVerdictSection extends StatelessWidget {
                 children: judgment.factors
                     .map(
                       (factor) => _BulletText(
-                        '${factor.effect.name} · ${factor.rule}：'
-                        '${factor.reason}（${factor.source}）',
+                        '${factor.effect.name} · '
+                        '${QimenAnalysisPresentation.verdictFactorRuleLabel(factor.rule)}：'
+                        '${QimenAnalysisPresentation.narrativeLabel(factor.reason, facts: projection.facts)}（'
+                        '${QimenAnalysisPresentation.verdictSourceLabel(factor.source)}）',
                       ),
                     )
                     .toList(),
@@ -318,9 +329,10 @@ class QimenFactsSection extends StatelessWidget {
           const SizedBox(height: 6),
           ...projection.focuses.map(
             (focus) => _BulletText(
-              '${focus.roleId} · ${focus.indicatorValue}落${focus.palaceNumber}宫'
+              '${QimenAnalysisPresentation.roleLabel(focus.roleId)} · '
+              '${focus.indicatorValue}落${focus.palaceNumber}宫'
               '${focus.isHosted ? '（原宫${focus.originPalaceNumber}，寄宫）' : ''}：'
-              '${focus.reason}',
+              '${QimenAnalysisPresentation.narrativeLabel(focus.reason, facts: projection.facts)}',
               icon: focus.priority == QimenFocusPriority.primary
                   ? Icons.center_focus_strong
                   : Icons.adjust,
@@ -363,9 +375,10 @@ class QimenFactsSection extends StatelessWidget {
                 : projection.conflicts
                     .map(
                       (conflict) => _BulletText(
-                        '${conflict.policyId}：${conflict.reason}\n'
-                        '胜出 ${conflict.winnerOccurrenceId ?? '未决'}；'
-                        '压制 ${conflict.suppressedOccurrenceIds.isEmpty ? '无' : conflict.suppressedOccurrenceIds.join('、')}',
+                        '${QimenAnalysisPresentation.ruleLabel(conflict.policyId)}：'
+                        '${QimenAnalysisPresentation.narrativeLabel(conflict.reason, facts: projection.facts)}\n'
+                        '胜出 ${QimenAnalysisPresentation.occurrenceLabel(conflict.winnerOccurrenceId, projection.facts)}；'
+                        '压制 ${QimenAnalysisPresentation.occurrenceLabels(conflict.suppressedOccurrenceIds, projection.facts)}',
                         icon: conflict.isUnresolved
                             ? Icons.help_outline
                             : Icons.rule,
@@ -377,7 +390,7 @@ class QimenFactsSection extends StatelessWidget {
             tilePadding: EdgeInsets.zero,
             childrenPadding: const EdgeInsets.only(bottom: 4),
             title: Text(
-              '完整推理 trace（${projection.trace.length}）',
+              '完整推理链（${projection.trace.length}）',
               style: AppTextStyles.antiqueBody.copyWith(
                 fontWeight: FontWeight.w600,
                 letterSpacing: 0,
@@ -386,8 +399,11 @@ class QimenFactsSection extends StatelessWidget {
             children: projection.trace
                 .map(
                   (trace) => _BulletText(
-                    '${trace.sequence}. ${trace.stage.id} / ${trace.ruleId} / '
-                    '${trace.status.id}：${trace.explanation}',
+                    '${trace.sequence}. '
+                    '${QimenAnalysisPresentation.traceStageLabel(trace.stage)} · '
+                    '${QimenAnalysisPresentation.ruleLabel(trace.ruleId)} · '
+                    '${QimenAnalysisPresentation.evaluationStatusLabel(trace.status)}：'
+                    '${QimenAnalysisPresentation.narrativeLabel(trace.explanation, facts: projection.facts)}',
                   ),
                 )
                 .toList(),
@@ -405,8 +421,7 @@ class QimenFactsSection extends StatelessWidget {
             children: projection.sources
                 .map(
                   (source) => _BulletText(
-                    '${source.sourceId} · ${source.title}\n'
-                    '${source.editionOrRevision} · ${source.locator}\n'
+                    '${source.title}\n'
                     '${source.claimSummary}',
                     icon: Icons.menu_book_outlined,
                   ),
@@ -415,7 +430,8 @@ class QimenFactsSection extends StatelessWidget {
           ),
           const SizedBox(height: 4),
           Text(
-            '分析规则 ${projection.ruleSetId}/${projection.ruleSetVersion}',
+            '分析规则 '
+            '${QimenAnalysisPresentation.ruleSetLabel(projection.ruleSetVersion)}',
             style: const TextStyle(
               color: AppColors.guhe,
               fontSize: 11,
@@ -428,9 +444,11 @@ class QimenFactsSection extends StatelessWidget {
   }
 
   Widget _factWidget(QimenFact fact) => _BulletText(
-        '${fact.ruleId} · ${fact.polarity.name}：${fact.reason}\n'
+        '${QimenAnalysisPresentation.ruleLabel(fact.ruleId)} · '
+        '${QimenAnalysisPresentation.polarityLabel(fact.polarity)}：'
+        '${QimenAnalysisPresentation.narrativeLabel(fact.reason, facts: projection.facts)}\n'
         '宫位 ${fact.relatedPalaceNumbers.join('、')} · '
-        '来源 ${fact.sourceIds.join('、')}',
+        '来源 ${QimenAnalysisPresentation.sourceLabels(fact.sourceIds)}',
         icon: _polarityIcon(fact.polarity),
         color: _polarityColor(fact.polarity),
       );
@@ -465,10 +483,12 @@ class QimenTimingSection extends StatelessWidget {
             else
               ...candidates.map(
                 (candidate) => _BulletText(
-                  '${candidate.scale.name}尺度 · ${candidate.triggerKind.id} '
-                  '${candidate.triggerValue}：${candidate.reason}\n'
-                  '目标 ${candidate.targetFocusRoleId ?? '全局'} · '
-                  '来源 ${candidate.sourceIds.join('、')}',
+                  '${QimenAnalysisPresentation.yingQiScaleLabel(candidate.scale)}尺度 · '
+                  '${QimenAnalysisPresentation.triggerKindLabel(candidate.triggerKind)} '
+                  '${candidate.triggerValue}：'
+                  '${QimenAnalysisPresentation.narrativeLabel(candidate.reason)}\n'
+                  '目标 ${QimenAnalysisPresentation.roleLabel(candidate.targetFocusRoleId)} · '
+                  '来源 ${QimenAnalysisPresentation.sourceLabels(candidate.sourceIds)}',
                   icon: Icons.event_available_outlined,
                   color: AppColors.qimenColor,
                 ),
@@ -579,15 +599,47 @@ class _DiagnosticPanel extends StatelessWidget {
             ),
             const SizedBox(height: 4),
             ...projection.diagnostics.map(
-              (item) => Text(
-                '${item.code} · ${item.path}\n${item.message}',
-                style: const TextStyle(
-                  color: AppColors.huise,
+              (item) => Padding(
+                padding: const EdgeInsets.only(bottom: 6),
+                child: Text(
+                  '${QimenAnalysisPresentation.diagnosticFieldLabel(item.path)}：'
+                  '${QimenAnalysisPresentation.diagnosticSummary(item)}',
+                  style: const TextStyle(
+                    color: AppColors.huise,
+                    fontSize: 12,
+                    height: 1.5,
+                    letterSpacing: 0,
+                  ),
+                ),
+              ),
+            ),
+            ExpansionTile(
+              tilePadding: EdgeInsets.zero,
+              childrenPadding: EdgeInsets.zero,
+              title: const Text(
+                '技术详情',
+                style: TextStyle(
+                  color: AppColors.guhe,
                   fontSize: 12,
-                  height: 1.5,
                   letterSpacing: 0,
                 ),
               ),
+              children: projection.diagnostics
+                  .map(
+                    (item) => Padding(
+                      padding: const EdgeInsets.only(bottom: 6),
+                      child: SelectableText(
+                        '${item.code} · ${item.path}\n${item.message}',
+                        style: const TextStyle(
+                          color: AppColors.guhe,
+                          fontSize: 11,
+                          height: 1.45,
+                          letterSpacing: 0,
+                        ),
+                      ),
+                    ),
+                  )
+                  .toList(),
             ),
           ],
         ),

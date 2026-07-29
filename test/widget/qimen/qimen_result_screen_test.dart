@@ -1,5 +1,18 @@
+import 'package:drift/native.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:provider/provider.dart';
+import 'package:wanxiang_paipan/ai/config/ai_config_manager.dart';
+import 'package:wanxiang_paipan/ai/llm_provider.dart';
+import 'package:wanxiang_paipan/ai/llm_provider_registry.dart';
+import 'package:wanxiang_paipan/ai/output/formatters/qimen_formatter.dart';
+import 'package:wanxiang_paipan/ai/output/structured_output_formatter.dart';
+import 'package:wanxiang_paipan/ai/service/ai_analysis_service.dart';
+import 'package:wanxiang_paipan/ai/service/ai_conversation_service.dart';
+import 'package:wanxiang_paipan/ai/service/chat_repository.dart';
+import 'package:wanxiang_paipan/ai/service/prompt_assembler.dart';
+import 'package:wanxiang_paipan/data/database/app_database.dart';
+import 'package:wanxiang_paipan/divination_systems/qimen/ui/qimen_analysis_presentation.dart';
 import 'package:wanxiang_paipan/divination_systems/qimen/ui/qimen_result_screen.dart';
 import 'package:wanxiang_paipan/divination_systems/qimen/ui/qimen_result_sections.dart';
 import 'package:wanxiang_paipan/divination_systems/qimen/ui/widgets/qimen_nine_palace_grid.dart';
@@ -10,6 +23,76 @@ import 'package:wanxiang_paipan/domain/services/qimen/analysis/qimen_analyzer.da
 import 'package:wanxiang_paipan/presentation/widgets/ai_analysis_widget.dart';
 
 import '../../unit/services/qimen/analysis/helpers/qimen_analysis_fixtures.dart';
+import '../../unit/data/repositories/divination_repository_test.dart'
+    show MockSecureStorage;
+
+class _FakeQimenProvider implements LLMProvider {
+  _FakeQimenProvider(this.content);
+
+  final String content;
+  int requestCount = 0;
+  ChatRequest? lastRequest;
+
+  @override
+  String get id => 'fake-qimen-provider';
+  @override
+  String get displayName => '奇门测试服务';
+  @override
+  String get description => '奇门集成测试';
+  @override
+  List<String> get supportedModels => const <String>['fake-model'];
+  @override
+  String get defaultModel => 'fake-model';
+  @override
+  bool get isConfigured => true;
+  @override
+  LLMProviderStatus get status => LLMProviderStatus.valid;
+
+  @override
+  Future<AnalysisResponse> analyze(AnalysisRequest request) async =>
+      AnalysisResponse(
+        content: content,
+        tokensUsed: 0,
+        latency: Duration.zero,
+        model: defaultModel,
+        providerId: id,
+      );
+
+  @override
+  Stream<String>? analyzeStream(AnalysisRequest request) =>
+      Stream<String>.value(content);
+
+  @override
+  Future<ChatResponse> chat(ChatRequest request) async {
+    requestCount++;
+    lastRequest = request;
+    return ChatResponse(
+      content: content,
+      tokensUsed: 0,
+      latency: Duration.zero,
+      model: defaultModel,
+      providerId: id,
+    );
+  }
+
+  @override
+  Stream<String>? chatStream(ChatRequest request) {
+    requestCount++;
+    lastRequest = request;
+    return Stream<String>.value(content);
+  }
+
+  @override
+  void clearConfig() {}
+  @override
+  Map<String, dynamic>? getConfigInfo() => <String, dynamic>{
+        'model': defaultModel,
+      };
+  @override
+  void updateConfig(LLMConfig config) {}
+  @override
+  Future<bool> validateConfig() async => true;
+}
 
 void main() {
   final result = fixedQimenAnalysisResult();
@@ -199,6 +282,11 @@ void main() {
         scrollable: find.byType(Scrollable).last,
       );
       expect(find.text('命中规则与来源'), findsOneWidget);
+      expect(find.textContaining('QMV1-'), findsNothing);
+      expect(find.textContaining('QMS-'), findsNothing);
+      if (palace.number == 4) {
+        expect(find.textContaining('求测者 · 戊 · 主焦点'), findsOneWidget);
+      }
 
       await tester.tap(find.byTooltip('关闭宫位详情'));
       await tester.pumpAndSettle();
@@ -228,7 +316,12 @@ void main() {
 
     expect(find.text('趋势不明'), findsOneWidget);
     expect(find.text('分析兼容诊断'), findsOneWidget);
-    expect(find.textContaining('QMV1-E-UNSUPPORTED-PAN-SCHEMA'), findsWidgets);
+    expect(find.textContaining('排盘版本暂不支持'), findsOneWidget);
+    expect(find.textContaining('QMV1-E-UNSUPPORTED-PAN-SCHEMA'), findsNothing);
+    await tester.tap(find.text('技术详情'));
+    await tester.pumpAndSettle();
+    expect(
+        find.textContaining('QMV1-E-UNSUPPORTED-PAN-SCHEMA'), findsOneWidget);
     expect(tester.takeException(), isNull);
   });
 
@@ -250,14 +343,15 @@ void main() {
 
     final aiWidget =
         tester.widget<AIAnalysisWidget>(find.byType(AIAnalysisWidget));
-    expect(aiWidget.unavailableReason, contains('QMV1-E-EMPTY-RESULT-ID'));
+    expect(aiWidget.unavailableReason, contains('排盘记录缺少有效标识'));
+    expect(aiWidget.unavailableReason, isNot(contains('QMV1-E-')));
     expect(find.textContaining('AI 分析已暂停'), findsOneWidget);
     expect(find.byTooltip('开始分析'), findsNothing);
     expect(find.text('重新分析'), findsNothing);
     expect(tester.takeException(), isNull);
   });
 
-  testWidgets('unresolved primary focus shows diagnostics and disables AI',
+  testWidgets('current v2 resolves Jia-day focus and enables AI',
       (tester) async {
     final unresolved = mutatedQimenAnalysisResult((json) {
       final context = Map<String, dynamic>.from(
@@ -273,20 +367,160 @@ void main() {
     );
     await tester.pumpAndSettle();
 
-    expect(find.text('趋势不明'), findsOneWidget);
-    expect(find.text('分析兼容诊断'), findsOneWidget);
-    expect(
-      find.textContaining('QMV1-E-DAY-JIA-FOCUS-UNRESOLVED'),
-      findsWidgets,
-    );
+    expect(find.text('分析兼容诊断'), findsNothing);
+    expect(find.textContaining('求测者 · 戊落4宫'), findsOneWidget);
     expect(find.text('洛书九宫'), findsOneWidget);
     expect(
       tester
           .widget<AIAnalysisWidget>(find.byType(AIAnalysisWidget))
           .unavailableReason,
-      contains('QMV1-E-DAY-JIA-FOCUS-UNRESOLVED'),
+      isNull,
     );
     expect(tester.takeException(), isNull);
+  });
+
+  testWidgets('explicit v1 keeps Jia-day compatibility gate', (tester) async {
+    final unresolved = mutatedQimenAnalysisResult((json) {
+      final context = Map<String, dynamic>.from(
+        json['temporalContext'] as Map,
+      )..['dayGanZhi'] = '甲子';
+      json['temporalContext'] = context;
+    });
+
+    await tester.pumpWidget(
+      MaterialApp(
+        home: QimenResultScreen(
+          result: unresolved,
+          ruleSetVersion: 'v1',
+        ),
+      ),
+    );
+    await tester.pumpAndSettle();
+
+    expect(find.text('分析兼容诊断'), findsOneWidget);
+    expect(find.textContaining('日干焦点无法定位'), findsWidgets);
+    expect(
+      tester
+          .widget<AIAnalysisWidget>(find.byType(AIAnalysisWidget))
+          .unavailableReason,
+      isNotNull,
+    );
+    expect(find.byTooltip('开始分析'), findsNothing);
+  });
+
+  testWidgets('Jia-day v2 invokes configured AI and renders its response',
+      (tester) async {
+    final database = AppDatabase.forTesting(NativeDatabase.memory());
+    final configManager = AIConfigManager(
+      database: database,
+      secureStorage: MockSecureStorage(),
+    );
+    await configManager.initializeBuiltInTemplates();
+    final formatterRegistry = StructuredOutputFormatterRegistry.instance;
+    final previousFormatters = <StructuredOutputFormatter>[
+      for (final type in formatterRegistry.registeredTypes)
+        formatterRegistry.getFormatter(type),
+    ];
+    formatterRegistry
+      ..clear()
+      ..register(QimenStructuredFormatter());
+    final providerRegistry = LLMProviderRegistry.instance;
+    final previousProviders = providerRegistry.providers;
+    final previousDefaultProviderId = providerRegistry.defaultProviderId;
+    providerRegistry.clear();
+    final fakeProvider = _FakeQimenProvider('甲日奇门 AI 分析已完成');
+    providerRegistry.register(fakeProvider);
+    final promptAssembler = PromptAssembler(
+      configManager: configManager,
+      formatterRegistry: formatterRegistry,
+    );
+    final conversationService = AIConversationService(
+      providerRegistry: providerRegistry,
+      promptAssembler: promptAssembler,
+      configManager: configManager,
+      chatRepository: ChatRepository(secureStorage: MockSecureStorage()),
+    );
+    final analysisService = AIAnalysisService(
+      providerRegistry: providerRegistry,
+      configManager: configManager,
+      conversationService: conversationService,
+    );
+    addTearDown(() async {
+      analysisService.dispose();
+      conversationService.dispose();
+      providerRegistry.clear();
+      formatterRegistry.clear();
+      for (final provider in previousProviders) {
+        providerRegistry.register(provider);
+      }
+      if (previousDefaultProviderId != null &&
+          providerRegistry.getProvider(previousDefaultProviderId) != null) {
+        providerRegistry.setDefaultProvider(previousDefaultProviderId);
+      }
+      for (final formatter in previousFormatters) {
+        formatterRegistry.register(formatter);
+      }
+      await database.close();
+    });
+    final jiaResult = mutatedQimenAnalysisResult((json) {
+      final context = Map<String, dynamic>.from(
+        json['temporalContext'] as Map,
+      )..['dayGanZhi'] = '甲子';
+      json['temporalContext'] = context;
+    });
+
+    await tester.pumpWidget(
+      MultiProvider(
+        providers: [
+          ChangeNotifierProvider<AIAnalysisService>.value(
+            value: analysisService,
+          ),
+          ChangeNotifierProvider<AIConversationService>.value(
+            value: conversationService,
+          ),
+        ],
+        child: MaterialApp(home: QimenResultScreen(result: jiaResult)),
+      ),
+    );
+    await tester.pumpAndSettle();
+
+    final start = find.byTooltip('开始分析');
+    await tester.ensureVisible(start);
+    await tester.tap(start);
+    await tester.pump();
+    await tester.pumpAndSettle();
+
+    expect(fakeProvider.requestCount, 1);
+    expect(fakeProvider.lastRequest, isNotNull);
+    expect(
+      fakeProvider.lastRequest!.messages.last.content,
+      contains('qimen-shijia-zhuanpan-analysis/v2'),
+    );
+    expect(
+      fakeProvider.lastRequest!.messages.last.content,
+      contains('焦点 self：戊落4宫'),
+    );
+    expect(find.text('甲日奇门 AI 分析已完成'), findsOneWidget);
+    expect(tester.takeException(), isNull);
+  });
+
+  test('presentation fallbacks never echo unknown stable IDs', () {
+    expect(
+      QimenAnalysisPresentation.roleLabel('futureRoleId'),
+      '未识别焦点',
+    );
+    expect(
+      QimenAnalysisPresentation.ruleLabel('QMV9-F-FUTURE'),
+      '未识别规则',
+    );
+    expect(
+      QimenAnalysisPresentation.sourceLabel('QMS-FUTURE'),
+      '未识别来源',
+    );
+    expect(
+      QimenAnalysisPresentation.ruleSetLabel('v99'),
+      '时家转盘奇门（未知版本）',
+    );
   });
 
   testWidgets('supports current and explicit released rule-set selection',
@@ -302,7 +536,7 @@ void main() {
     );
     await tester.pumpAndSettle();
     expect(
-      find.text('分析规则 qimen-shijia-zhuanpan-analysis/v1'),
+      find.text('分析规则 时家转盘奇门 v2'),
       findsOneWidget,
     );
 
@@ -318,9 +552,50 @@ void main() {
     await tester.pumpAndSettle();
 
     expect(
-      find.text('分析规则 qimen-shijia-zhuanpan-analysis/v1'),
+      find.text('分析规则 时家转盘奇门 v1'),
       findsOneWidget,
     );
+    expect(tester.takeException(), isNull);
+  });
+
+  testWidgets('audit sections render centralized Chinese labels without IDs',
+      (tester) async {
+    final projection = QimenAnalysisProjection.fromReport(
+      QimenAnalyzer.analyze(result),
+    );
+    await tester.pumpWidget(
+      MaterialApp(
+        home: Scaffold(
+          body: SingleChildScrollView(
+            padding: const EdgeInsets.all(12),
+            child: QimenFactsSection(projection: projection),
+          ),
+        ),
+      ),
+    );
+    await tester.pumpAndSettle();
+
+    for (final title in <String>[
+      '全部格局与宫位事实（${projection.facts.length}）',
+      '冲突与压制（${projection.conflicts.length}）',
+      '完整推理链（${projection.trace.length}）',
+      '规则来源（${projection.sources.length}）',
+    ]) {
+      final tile = find.text(title);
+      await tester.ensureVisible(tile);
+      await tester.tap(tile);
+      await tester.pumpAndSettle();
+    }
+
+    expect(find.textContaining('求测者 · 戊落4宫'), findsOneWidget);
+    expect(find.textContaining('时家转盘奇门 v2'), findsOneWidget);
+    expect(find.textContaining('焦点定位'), findsWidgets);
+    expect(find.textContaining('已命中'), findsWidgets);
+    expect(find.textContaining('《奇门遁甲统宗》'), findsWidgets);
+    expect(find.textContaining('QMV1-'), findsNothing);
+    expect(find.textContaining('QMS-'), findsNothing);
+    expect(find.textContaining('generalDutyStar'), findsNothing);
+    expect(find.textContaining('qimen-shijia-zhuanpan-analysis'), findsNothing);
     expect(tester.takeException(), isNull);
   });
 
@@ -353,7 +628,7 @@ void main() {
       tester
           .widget<AIAnalysisWidget>(find.byType(AIAnalysisWidget))
           .unavailableReason,
-      contains('QMV1-E-EMPTY-RESULT-ID'),
+      contains('排盘记录缺少有效标识'),
     );
     expect(find.text('分析兼容诊断'), findsOneWidget);
     expect(tester.takeException(), isNull);

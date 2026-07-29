@@ -5,6 +5,7 @@ import '../../../domain/services/qimen/analysis/models/qimen_analysis_projection
 import '../../../domain/services/qimen/analysis/qimen_analyzer.dart';
 import '../../../presentation/divination/divination_result_page.dart';
 import '../models/qimen_result.dart';
+import 'qimen_analysis_presentation.dart';
 import 'qimen_result_sections.dart';
 
 class QimenResultScreen extends StatefulWidget {
@@ -53,11 +54,13 @@ class _QimenResultScreenState extends State<QimenResultScreen> {
         _projection.diagnostics.isEmpty) {
       return null;
     }
-    final diagnosticCodes =
-        _projection.diagnostics.map((diagnostic) => diagnostic.code).join('、');
-    final detail =
-        diagnosticCodes.isEmpty ? _projection.status.id : diagnosticCodes;
-    return '当前奇门分析未通过兼容校验（$detail）。为避免基于不完整盘面事实'
+    final detail = _projection.diagnostics.isEmpty
+        ? QimenAnalysisPresentation.analysisStatusLabel(_projection.status)
+        : _projection.diagnostics
+            .map(QimenAnalysisPresentation.diagnosticSummary)
+            .toSet()
+            .join('、');
+    return '当前奇门分析未通过完整性校验：$detail\n为避免基于不完整盘面事实'
         '生成解释，AI 分析已暂停；本地盘面、裁决和兼容诊断仍可查看。';
   }
 

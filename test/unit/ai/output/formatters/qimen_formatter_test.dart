@@ -27,7 +27,7 @@ void main() {
       final basis = output.coreData['calculationBasis'] as Map;
       expect(basis['panSchemaVersion'], 1);
       expect(basis['analysisProjectionSchemaVersion'], 1);
-      expect(basis['analysisRuleSetVersion'], 'v1');
+      expect(basis['analysisRuleSetVersion'], 'v2');
       expect(basis['timeBasis'], 'beijing');
       expect(basis['hostingMode'], 'kunTwo');
       expect(basis['hiddenStemMode'], 'dutyDoorHourStem');
@@ -48,6 +48,40 @@ void main() {
         },
       );
       expect(output.coreData['sources'], isNotEmpty);
+    });
+
+    test('甲日 v2 生成完整 AI 输入且仍由程序独占计算', () {
+      final result = mutatedQimenAnalysisResult((json) {
+        final context = Map<String, dynamic>.from(
+          json['temporalContext'] as Map,
+        )..['dayGanZhi'] = '甲子';
+        json['temporalContext'] = context;
+      });
+      final formatter = QimenStructuredFormatter();
+      final output = formatter.format(result, question: '项目是否可行？');
+      final basis = output.coreData['calculationBasis'] as Map<String, dynamic>;
+      final focusAndFacts =
+          output.coreData['focusAndFacts'] as Map<String, dynamic>;
+
+      expect(basis['analysisRuleSetVersion'], 'v2');
+      expect(focusAndFacts['status'], 'complete');
+      expect(focusAndFacts['diagnostics'], isEmpty);
+      expect(
+        (focusAndFacts['focuses'] as List)
+            .cast<Map<String, dynamic>>()
+            .where((focus) => focus['roleId'] == 'self'),
+        hasLength(1),
+      );
+      expect(
+        output.coreData['policy'],
+        <String, dynamic>{
+          'calculationOwner': 'program',
+          'mayRecalculatePan': false,
+          'mayRecalculateAnalysis': false,
+          'mayOverrideVerdict': false,
+        },
+      );
+      expect(formatter.render(output), contains('calculationOwner=program'));
     });
 
     test('渲染包含裁决、压制链、来源和应期免责，不产生评分', () {

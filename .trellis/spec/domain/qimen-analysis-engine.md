@@ -1,8 +1,8 @@
 # 奇门遁甲分析引擎规范
 
-规则集固定为 `qimen-shijia-zhuanpan-analysis/v1`。本层只读消费时家转盘
-`QimenResult`，按“焦点 -> 事实 -> 冲突 -> 四值裁决 -> 应期观察窗”运行；分析
-报告是运行时派生数据，不写回排盘 JSON、仓储或数据库。
+已发布规则集为 `qimen-shijia-zhuanpan-analysis/v1` 与 `v2`，`current` 指向
+`v2`。本层只读消费时家转盘 `QimenResult`，按“焦点 -> 事实 -> 冲突 -> 四值裁决
+-> 应期观察窗”运行；分析报告是运行时派生数据，不写回排盘 JSON、仓储或数据库。
 
 ## 首次发布基线
 
@@ -44,6 +44,11 @@ QimenAnalysisReport QimenAnalyzer.analyzePersisted(
 QimenAnalysisProjection QimenAnalysisProjection.fromReport(
   QimenAnalysisReport report,
 )
+
+QimenFocusResolution QimenFocusResolver.resolve(
+  QimenResult result, {
+  String ruleSetVersion = 'current',
+})
 ```
 
 报告 `analysisSchemaVersion=1`，投影 `projectionSchemaVersion=1`。规则、来源、
@@ -69,7 +74,11 @@ $.xunHiddenStem
   寄宫、值符值使、空亡、驿马、旬首遁仪和局数；只报错，不补值。
 - `self` 为日干天盘落宫，`matter` 为时干天盘落宫，二者始终是 primary。
 - 时干为甲时读取持久化 `xunHiddenStem`；日干为甲时 schema 1 没有日旬遁仪，
-  `self` 必须返回 `QMV1-E-DAY-JIA-FOCUS-UNRESOLVED`，不得借用时旬遁仪。
+  显式 `v1` 必须返回 `QMV1-E-DAY-JIA-FOCUS-UNRESOLVED`，不得借用时旬遁仪。
+- `current` / `v2` 遇日干甲时，必须从持久化完整 `dayGanZhi` 在六十甲子中的索引
+  计算日旬首，再查冻结 `QimenConstants.xunHiddenStem` 得到日旬遁仪；不得读取结果的
+  时旬 `xunHiddenStem`，也不得调用排盘阶段 service。焦点 trace 必须引用
+  `$.temporalContext.dayGanZhi` 及最终命中的天盘干/寄宫字段。
 - 中五干的 `originPalaceNumber=5`，作用宫只取显式 `hostedHeavenStem`。
 - `general/career/wealth/relationship/health/study/travel/litigation` 八类只添加
   secondary 指标，不能替换 primary。
@@ -179,7 +188,9 @@ QMV1-D60 只有背景或无决定规则 -> 趋势不明
 | raw pan schema 非 1 | `unsupportedPanSchema` + `QMV1-E-UNSUPPORTED-PAN-SCHEMA` + D00 |
 | schema 1 JSON 不能反序列化 | `invalidPanFacts` + `QMV1-E-PAN-DESERIALIZATION` + D00 |
 | 月/日/时柱或九宫事实无效 | `invalidPanFacts` + 精确稳定 error code + D00 |
-| 日干甲缺少日旬遁仪 | focus diagnostic + D00，不猜 `self` |
+| 显式 v1 的日干甲 | `QMV1-E-DAY-JIA-FOCUS-UNRESOLVED` + D00，不猜 `self` |
+| current/v2 的合法日干甲 | 由 `dayGanZhi` 推导日旬遁仪，生成唯一 `self`，完整分析 |
+| current/v2 日柱或落宫事实损坏 | 精确 diagnostic + D00，禁止 AI，不降级借用时旬 |
 | 未知规则集版本 | `ArgumentError` |
 | report/projection schema 未支持 | `QimenAnalysisCompatibilityException` |
 | report/projection 含未知 rule/source | `FormatException` |
@@ -188,20 +199,22 @@ QMV1-D60 只有背景或无决定规则 -> 趋势不明
 
 ### 5. Good / Base / Bad Cases
 
-- Good：历史 schema-1 pan 经 `QimenSystem.resultFromJson` 恢复，再以显式 `v1`
-  分析；完整 report 做真实 JSON round-trip 后规范 JSON 相等，原 pan 无
-  `analysis` 字段。
+- Good：历史 schema-1 甲日 pan 经 `QimenSystem.resultFromJson` 恢复，再以
+  `current` / `v2` 分析；日旬遁仪由持久化日柱确定，完整 report 做真实 JSON
+  round-trip 后规范 JSON 相等，原 pan 无 `analysis` 字段。
 - Base：只有 contextual/corroborating 事实，命中 D60；报告仍包含完整 non-match
   trace 和来源链。
-- Bad：用当前节气代替月柱支算星门旺衰；把宫号当 `palaces` 的零基数组下标；
-  扫描所有天盘干判六仪击刑；把癸加癸标天网；用 secondary 驿马解除全局伏吟。
+- Bad：甲日 `self` 借用时旬 `xunHiddenStem`；用当前节气代替月柱支算星门旺衰；
+  把宫号当 `palaces` 的零基数组下标；扫描所有天盘干判六仪击刑；把癸加癸标天网；
+  用 secondary 驿马解除全局伏吟。
 
 ### 6. Tests Required
 
 - catalog：来源 fixed revision、唯一 ID、81 pair 完整性、不可变集合、未知 ID。
 - evaluator：星/门五态独立公式；门宫与门迫分离；入墓完整表；仅旬首仪击刑；
   飞/伏干与飞/伏宫方向；癸加癸显式排除；81 pair 各自正反例。
-- focus：八类别、时干甲、日干甲、中五 origin/hosted。
+- focus：八类别、时干甲、显式 v1 日干甲诊断、v2 六个甲旬遁仪矩阵、中五
+  origin/hosted，且 v2 证据不引用 `$.xunHiddenStem`。
 - conflict/verdict：每个 policy branch、D00..D60、首行唯一命中、无关事实不改变
   结论、入墓解除条件。
 - YingQi：日/月尺度、dedupe、稳定顺序、orphan 拒绝、不保证成败措辞。
@@ -218,6 +231,16 @@ final path = r'$.palaces[9].heavenStem';
 
 // Correct: select by persisted stable palace number.
 final path = r'$.palaces[number=9].heavenStem';
+```
+
+```dart
+// Wrong: the persisted xunHiddenStem belongs to the hour xun, not the day xun.
+final selfStem = result.xunHiddenStem;
+
+// Correct: v2 derives the day-xun hidden stem from persisted dayGanZhi.
+final dayIndex = TianGanDiZhiService.getGanZhiIndex(dayGanZhi);
+final dayXunShou = TianGanDiZhiService.getGanZhi(dayIndex - dayIndex % 10);
+final selfStem = QimenConstants.xunHiddenStem[dayXunShou];
 ```
 
 ```dart

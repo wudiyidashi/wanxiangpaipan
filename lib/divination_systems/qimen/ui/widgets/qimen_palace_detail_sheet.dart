@@ -4,6 +4,7 @@ import '../../../../core/theme/app_colors.dart';
 import '../../../../core/theme/app_text_styles.dart';
 import '../../../../domain/services/qimen/analysis/models/qimen_analysis_models.dart';
 import '../../models/qimen_palace.dart';
+import '../qimen_analysis_presentation.dart';
 
 Future<void> showQimenPalaceDetailSheet(
   BuildContext context, {
@@ -127,9 +128,12 @@ class _QimenPalaceDetailSheet extends StatelessWidget {
                     focus
                         .map(
                           (item) => _paragraph(
-                            '${item.roleId} · ${item.indicatorValue} · '
-                            '${item.priority.id}\n${item.reason}\n'
-                            '规则 ${item.ruleId} · 来源 ${item.sourceIds.join('、')}',
+                            '${QimenAnalysisPresentation.roleLabel(item.roleId)} · '
+                            '${item.indicatorValue} · '
+                            '${QimenAnalysisPresentation.focusPriorityLabel(item.priority)}\n'
+                            '${QimenAnalysisPresentation.narrativeLabel(item.reason, facts: report.facts)}\n'
+                            '规则 ${QimenAnalysisPresentation.ruleLabel(item.ruleId)} · '
+                            '来源 ${QimenAnalysisPresentation.sourceLabels(item.sourceIds)}',
                           ),
                         )
                         .toList(),
@@ -143,10 +147,11 @@ class _QimenPalaceDetailSheet extends StatelessWidget {
                       : facts
                           .map(
                             (fact) => _paragraph(
-                              '${fact.ruleId} · ${fact.polarity.name}\n'
-                              '${fact.reason}\n'
-                              '事实 ${fact.occurrenceId}\n'
-                              '来源 ${fact.sourceIds.join('、')}',
+                              '${QimenAnalysisPresentation.ruleLabel(fact.ruleId)} · '
+                              '${QimenAnalysisPresentation.polarityLabel(fact.polarity)}\n'
+                              '${QimenAnalysisPresentation.narrativeLabel(fact.reason, facts: report.facts)}\n'
+                              '事实 ${QimenAnalysisPresentation.ruleLabel(fact.ruleId)}\n'
+                              '来源 ${QimenAnalysisPresentation.sourceLabels(fact.sourceIds)}',
                             ),
                           )
                           .toList(),

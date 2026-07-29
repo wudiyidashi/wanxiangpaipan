@@ -87,7 +87,8 @@ class QimenRuleCatalog {
 
   static const String ruleSetId = 'qimen-shijia-zhuanpan-analysis';
   static const String v1 = 'v1';
-  static const String current = v1;
+  static const String v2 = 'v2';
+  static const String current = v2;
 
   static const String inputIntegrity = 'QMV1-I-INTEGRITY';
   static const String focusSelf = 'QMV1-C-FOCUS-SELF';
@@ -864,6 +865,7 @@ class QimenRuleCatalog {
   static final Map<String, QimenRuleSet> released =
       Map<String, QimenRuleSet>.unmodifiable(<String, QimenRuleSet>{
     v1: QimenRuleSet(ruleSetId: ruleSetId, version: v1, rules: all),
+    v2: QimenRuleSet(ruleSetId: ruleSetId, version: v2, rules: all),
   });
 
   static QimenRuleSet resolve(String version) {

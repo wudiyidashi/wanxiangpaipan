@@ -1,5 +1,7 @@
 import '../../../../divination_systems/qimen/models/qimen_palace.dart';
 import '../../../../divination_systems/qimen/models/qimen_result.dart';
+import '../../shared/tiangan_dizhi_service.dart';
+import '../qimen_constants.dart';
 import 'models/qimen_analysis_models.dart';
 import 'models/qimen_rule_models.dart';
 import 'qimen_input_ref_resolver.dart';
@@ -27,14 +29,18 @@ class QimenFocusResolution {
 class QimenFocusResolver {
   QimenFocusResolver._();
 
-  static QimenFocusResolution resolve(QimenResult result) {
+  static QimenFocusResolution resolve(
+    QimenResult result, {
+    String ruleSetVersion = 'current',
+  }) {
+    final resolvedVersion = QimenRuleCatalog.resolve(ruleSetVersion).version;
     final focuses = <QimenFocus>[];
     final diagnostics = <QimenAnalysisDiagnostic>[];
     final trace = <QimenTraceStep>[];
     final dayStem = result.temporalContext.dayGanZhi.substring(0, 1);
     final rawHourStem = result.temporalContext.hourGanZhi.substring(0, 1);
 
-    if (dayStem == '甲') {
+    if (dayStem == '甲' && resolvedVersion == QimenRuleCatalog.v1) {
       diagnostics.add(const QimenAnalysisDiagnostic(
         code: 'QMV1-E-DAY-JIA-FOCUS-UNRESOLVED',
         path: r'$.temporalContext.dayGanZhi',
@@ -54,13 +60,19 @@ class QimenFocusResolver {
         explanation: '日干为甲，但 schema v1 只保存时旬遁仪；不借用时旬首猜测日干落宫。',
       ));
     } else {
+      final requestedStem = dayStem == '甲'
+          ? _dayXunHiddenStem(result.temporalContext.dayGanZhi)
+          : dayStem;
       _addStemFocus(
         result: result,
-        requestedStem: dayStem,
+        requestedStem: requestedStem,
         roleId: 'self',
         priority: QimenFocusPriority.primary,
         ruleId: QimenRuleCatalog.focusSelf,
-        reason: '日干$dayStem代表求测者，只读取已排定天盘干及显式寄宫字段。',
+        reason: dayStem == '甲'
+            ? '日干甲按日柱${result.temporalContext.dayGanZhi}所在旬的遁仪$requestedStem'
+                '定位求测者；只读取已排定天盘干及显式寄宫字段。'
+            : '日干$dayStem代表求测者，只读取已排定天盘干及显式寄宫字段。',
         focuses: focuses,
         diagnostics: diagnostics,
         trace: trace,
@@ -105,6 +117,7 @@ class QimenFocusResolver {
     for (final indicator in categoryRule.indicators) {
       _addSecondaryFocus(
         result: result,
+        ruleSetVersion: resolvedVersion,
         ruleId: categoryRule.ruleId,
         indicator: indicator,
         focuses: focuses,
@@ -118,6 +131,19 @@ class QimenFocusResolver {
       diagnostics: List<QimenAnalysisDiagnostic>.unmodifiable(diagnostics),
       trace: List<QimenTraceStep>.unmodifiable(trace),
     );
+  }
+
+  static String _dayXunHiddenStem(String dayGanZhi) {
+    final dayIndex = TianGanDiZhiService.getGanZhiIndex(dayGanZhi);
+    if (dayIndex < 0) {
+      throw StateError('无法由日柱推导日旬：$dayGanZhi');
+    }
+    final xunShou = TianGanDiZhiService.getGanZhi(dayIndex - dayIndex % 10);
+    final hiddenStem = QimenConstants.xunHiddenStem[xunShou];
+    if (hiddenStem == null) {
+      throw StateError('无法由旬首推导遁仪：$xunShou');
+    }
+    return hiddenStem;
   }
 
   static void _addStemFocus({
@@ -194,6 +220,7 @@ class QimenFocusResolver {
 
   static void _addSecondaryFocus({
     required QimenResult result,
+    required String ruleSetVersion,
     required String ruleId,
     required QimenFocusIndicatorSpec indicator,
     required List<QimenFocus> focuses,
@@ -207,7 +234,7 @@ class QimenFocusResolver {
         roleId: indicator.roleId,
         priority: QimenFocusPriority.secondary,
         ruleId: ruleId,
-        reason: '${indicator.reason} 本项目约定（奇门分析 v1）。',
+        reason: '${indicator.reason} 本项目约定（奇门分析 $ruleSetVersion）。',
         focuses: focuses,
         diagnostics: diagnostics,
         trace: trace,
@@ -321,7 +348,7 @@ class QimenFocusResolver {
       originPalaceNumber: originPalaceNumber,
       priority: QimenFocusPriority.secondary,
       isHosted: isHosted,
-      reason: '${indicator.reason} 本项目约定（奇门分析 v1）。',
+      reason: '${indicator.reason} 本项目约定（奇门分析 $ruleSetVersion）。',
       ruleId: ruleId,
       sourceIds: sourceIds,
     );
