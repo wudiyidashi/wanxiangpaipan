@@ -1,1 +1,11 @@
-{"_example": "Fill with {\"file\": \"<path>\", \"reason\": \"<why>\"}. Put spec/research files only — no code paths. Run `python .trellis/scripts/get_context.py --mode packages` to list available specs. Delete this line once real entries are added."}
+{"file":".trellis/spec/domain/index.md","reason":"领域层纯函数服务与大六壬规范入口。"}
+{"file":".trellis/spec/domain/daliuren-pan-engine.md","reason":"天盘、四课、神将证据门槛和失败语义的现行合同。"}
+{"file":".trellis/spec/domain/daliuren-rule-contract.md","reason":"盘面版本、project/classic rule identity、历史兼容与不可改义要求。"}
+{"file":".trellis/spec/frontend/index.md","reason":"结果页、起课参数、圆盘和 formatter 的前端规范入口。"}
+{"file":".trellis/spec/frontend/quality-guidelines.md","reason":"跨 UI 修改的质量与可维护性检查。"}
+{"file":".trellis/spec/frontend/type-safety.md","reason":"新 enum、wire 字段和 resolver API 的类型安全约束。"}
+{"file":".trellis/spec/guides/cross-layer-thinking-guide.md","reason":"模型、服务、持久化、UI、AI 多层数据流必须同步。"}
+{"file":".trellis/spec/guides/code-reuse-thinking-guide.md","reason":"避免两张映射、resolver 和校验在多个消费者重复实现。"}
+{"file":".trellis/tasks/07-28-daliuren-shenjiang-coordinates/research/classics-evidence-audit.md","reason":"PDF 18/19 新直接证据、贵人表异文和 executable fixture 门禁。"}
+{"file":".trellis/tasks/07-28-daliuren-shenjiang-coordinates/research/current-code-audit.md","reason":"现行昼夜双反转、坐标混用、fallback 与测试缺口。"}
+{"file":".trellis/tasks/07-28-daliuren-shenjiang-coordinates/research/wire-compatibility-audit.md","reason":"旧 config 真实语义、无损迁移算法和版本回归要求。"}

@@ -1,1 +1,11 @@
-{"_example": "Fill with {\"file\": \"<path>\", \"reason\": \"<why>\"}. Put spec/research files only — no code paths. Run `python .trellis/scripts/get_context.py --mode packages` to list available specs. Delete this line once real entries are added."}
+{"file":".trellis/spec/domain/index.md","reason":"复核领域服务纯函数与系统专属边界。"}
+{"file":".trellis/spec/domain/daliuren-pan-engine.md","reason":"复核神将证据门槛、天盘合同、失败矩阵和黄金例。"}
+{"file":".trellis/spec/domain/daliuren-rule-contract.md","reason":"复核 v4/version mismatch、rule identity 和 old JSON 兼容。"}
+{"file":".trellis/spec/frontend/index.md","reason":"复核前端消费边界。"}
+{"file":".trellis/spec/frontend/quality-guidelines.md","reason":"复核 UI、formatter 与 widget 质量。"}
+{"file":".trellis/spec/frontend/type-safety.md","reason":"复核模型/wire 的显式类型和非法状态门禁。"}
+{"file":".trellis/spec/guides/cross-layer-thinking-guide.md","reason":"检查领域事实到持久化、UI、AI、圆盘的完整链路。"}
+{"file":".trellis/spec/guides/code-reuse-thinking-guide.md","reason":"检查校验与映射是否复用唯一实现。"}
+{"file":".trellis/tasks/07-28-daliuren-shenjiang-coordinates/research/classics-evidence-audit.md","reason":"核对 catalog 状态、直接引文、异文边界和 fixture 门禁。"}
+{"file":".trellis/tasks/07-28-daliuren-shenjiang-coordinates/research/current-code-audit.md","reason":"逐项确认旧缺陷与 fallback 已消除。"}
+{"file":".trellis/tasks/07-28-daliuren-shenjiang-coordinates/research/wire-compatibility-audit.md","reason":"复核 v3 迁移不重算及 repository/backup 行为。"}
