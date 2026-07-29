@@ -8,6 +8,8 @@
 .pub-cache/
 .pub/
 /build/
+.tmp/
+tmp/
 # Note: /android/ was previously blanket-ignored here, which broke CI (no
 # Gradle project reached the runner). The specific android/* ignores below
 # now keep build artifacts and secrets out without nuking the scaffold.
