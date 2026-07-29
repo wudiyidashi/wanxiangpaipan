@@ -18,8 +18,8 @@ void main() {
       final frame = await codec.getNextFrame();
       final image = frame.image;
       try {
-        expect(image.width, 1024);
-        expect(image.height, 1536);
+        expect(image.width, 576);
+        expect(image.height, 660);
 
         final rgba = await image.toByteData(format: ui.ImageByteFormat.rawRgba);
         expect(rgba, isNotNull);
