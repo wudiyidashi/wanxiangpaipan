@@ -55,16 +55,22 @@ class _FakeConversationService extends ChangeNotifier
       {String? question}) async {}
 }
 
-AIConversation _sample({List<AIChatMessage>? messages}) => AIConversation(
+AIConversation _sample({
+  List<AIChatMessage>? messages,
+  DivinationType systemType = DivinationType.liuYao,
+  CastSnapshot? snapshot,
+}) =>
+    AIConversation(
       version: 1,
       resultId: 'r1',
-      systemType: DivinationType.liuYao,
-      castSnapshot: CastSnapshot(
-        systemPrompt: 'sys',
-        castUserPrompt: 'user',
-        model: 'gpt-4',
-        assembledAt: DateTime.utc(2026, 4, 23),
-      ),
+      systemType: systemType,
+      castSnapshot: snapshot ??
+          CastSnapshot(
+            systemPrompt: 'sys',
+            castUserPrompt: 'user',
+            model: 'gpt-4',
+            assembledAt: DateTime.utc(2026, 4, 23),
+          ),
       messages: messages ??
           [
             AIChatMessage(
@@ -122,5 +128,43 @@ void main() {
     await tester.pumpAndSettle();
 
     expect(find.textContaining('六爻'), findsWidgets);
+    expect(find.text('旧版冻结提示词'), findsOneWidget);
+  });
+
+  testWidgets('六爻标题显示冻结的分析、投影与提示策略版本', (tester) async {
+    final snapshot = CastSnapshot(
+      systemPrompt: 'sys',
+      castUserPrompt: 'user',
+      model: 'model',
+      assembledAt: DateTime.utc(2026, 8, 1),
+      analysisSchemaVersion: '1',
+      projectionSchemaVersion: '1',
+      ruleSetId: 'liuyao-zengshan-primary',
+      ruleSetVersion: 'v2',
+      sourceCatalogVersion: 'liuyao-evidence/1.0.0',
+      promptPolicyVersion: 'liuyao-ai-policy/1.0.0',
+      systemTemplateId: 'builtin_liuyao_system',
+      analysisTemplateId: 'builtin_liuyao_analysis',
+    );
+    final svc = _FakeConversationService()..seed(_sample(snapshot: snapshot));
+    await tester.pumpWidget(_wrap(svc));
+    await tester.tap(find.text('打开'));
+    await tester.pumpAndSettle();
+
+    expect(
+      find.text('冻结提示词 · 分析 v2 · 投影 1 · 提示策略 1.0.0'),
+      findsOneWidget,
+    );
+  });
+
+  testWidgets('非六爻对话不显示六爻版本行', (tester) async {
+    final svc = _FakeConversationService()
+      ..seed(_sample(systemType: DivinationType.xiaoLiuRen));
+    await tester.pumpWidget(_wrap(svc));
+    await tester.tap(find.text('打开'));
+    await tester.pumpAndSettle();
+
+    expect(find.byKey(const ValueKey('liuyao-chat-snapshot-version')),
+        findsNothing);
   });
 }

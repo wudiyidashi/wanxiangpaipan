@@ -1,0 +1,11 @@
+{"file":".trellis/spec/domain/index.md","reason":"Domain purity, ownership, and shared-vs-system-specific placement rules for the analysis/catalog work."}
+{"file":".trellis/spec/domain/liuyao-analysis-engine.md","reason":"Authoritative Liuyao rule hierarchy, verdict semantics, derived-data contract, timing behavior, compatibility requirements, and golden-suite gates."}
+{"file":".trellis/spec/domain/qimen-analysis-engine.md","reason":"Repository precedent for stable rule/source IDs, versioned report/projection schemas, input evidence refs, immutable AI policy, and condition-driven timing."}
+{"file":".trellis/spec/domain/daliuren-rule-contract.md","reason":"Repository precedent separating executable identity, display text, evidence grade, rule-set version, project conventions, and legacy compatibility."}
+{"file":".trellis/spec/guides/index.md","reason":"Routes the cross-layer and reuse checks required by a domain-to-AI-to-UI change."}
+{"file":".trellis/spec/guides/cross-layer-thinking-guide.md","reason":"Requires one typed owner for report/projection data and verifies that IDs, sources, conditions, and versions survive every boundary."}
+{"file":".trellis/spec/guides/code-reuse-thinking-guide.md","reason":"Prevents duplicate rule catalogs, fixture manifests, payload parsing, and policy constants across analyzer, formatter, evaluator, and UI."}
+{"file":".trellis/tasks/08-01-liuyao-classics-analysis-prompt/research/domain-audit.md","reason":"Maps the current analyzer stages, string-identity defects, directional-force bugs, actor asymmetry, timing order, compatibility risks, and exact test anchors."}
+{"file":".trellis/tasks/08-01-liuyao-classics-analysis-prompt/research/classics-audit.md","reason":"Defines the current classical inventory, 26+14 golden-case limits, project-vs-classical attribution gaps, and minimum evidence/catalog contract."}
+{"file":".trellis/tasks/08-01-liuyao-classics-analysis-prompt/research/source-verification.md","reason":"Locks local source fingerprints, four page-verified Zengshan witnesses, Bushi Zhengzong locator-only limits, and absolute-path prohibition."}
+{"file":".trellis/tasks/08-01-liuyao-classics-analysis-prompt/research/ai-prompt-audit.md","reason":"Maps the real formatter/assembler/provider/snapshot path and specifies reproducible paired evaluation, custom-template guards, and secret handling."}

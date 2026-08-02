@@ -11,6 +11,7 @@ import '../../ai/service/chat_request_builder.dart';
 import '../../domain/divination_system.dart';
 import 'ai_chat_bubble.dart';
 import 'ai_chat_input_bar.dart';
+import 'ai_snapshot_version_text.dart';
 
 class AIChatSheet extends StatefulWidget {
   final String resultId;
@@ -150,6 +151,12 @@ class _AIChatSheetState extends State<AIChatSheet> {
       AIConversationService service) {
     final title =
         conv == null ? 'AI 对话' : 'AI 对话 · ${_systemLabel(conv.systemType)}';
+    final snapshotVersionText = conv == null
+        ? null
+        : aiSnapshotVersionText(
+            systemType: conv.systemType,
+            snapshot: conv.castSnapshot,
+          );
     return Padding(
       padding: const EdgeInsets.fromLTRB(16, 8, 8, 8),
       child: Row(
@@ -157,9 +164,29 @@ class _AIChatSheetState extends State<AIChatSheet> {
           const Icon(Icons.smart_toy),
           const SizedBox(width: 8),
           Expanded(
-            child: Text(title,
-                style:
-                    const TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  title,
+                  style: const TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                if (snapshotVersionText != null)
+                  Text(
+                    snapshotVersionText,
+                    key: const ValueKey('liuyao-chat-snapshot-version'),
+                    maxLines: 2,
+                    overflow: TextOverflow.ellipsis,
+                    style: Theme.of(context).textTheme.labelSmall?.copyWith(
+                          color: Theme.of(context).colorScheme.onSurfaceVariant,
+                        ),
+                  ),
+              ],
+            ),
           ),
           PopupMenuButton<String>(
             icon: const Icon(Icons.more_vert),

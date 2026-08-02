@@ -153,7 +153,11 @@ class _TagRow extends StatelessWidget {
           YaoTagBadge(
             tag: tag,
             dense: false,
-            onTap: () => showTermGlossaryDialog(context, tag.term),
+            onTap: () => showTermGlossaryDialog(
+              context,
+              tag.term,
+              ruleId: tag.ruleId,
+            ),
           ),
           const SizedBox(width: 10),
           Expanded(

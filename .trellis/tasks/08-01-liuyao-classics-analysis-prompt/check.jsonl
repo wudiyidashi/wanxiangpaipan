@@ -1,0 +1,11 @@
+{"file":".trellis/spec/domain/index.md","reason":"Check domain services remain pure and Liuyao-specific logic does not leak into shared or persistence layers."}
+{"file":".trellis/spec/domain/liuyao-analysis-engine.md","reason":"Verify every semantic change preserves the locked hierarchy, first-match verdict, runtime derivation, timing/calendar compatibility, and required tests."}
+{"file":".trellis/spec/domain/qimen-analysis-engine.md","reason":"Cross-check versioned projection, immutable calculation policy, stable provenance, trace, and timing-link invariants against the established repository pattern."}
+{"file":".trellis/spec/domain/daliuren-rule-contract.md","reason":"Audit that stable IDs, evidence states, project rules, display aliases, and legacy defaults cannot be confused at runtime."}
+{"file":".trellis/spec/guides/index.md","reason":"Ensure the review covers all applicable cross-layer and reuse quality prompts."}
+{"file":".trellis/spec/guides/cross-layer-thinking-guide.md","reason":"Trace source/rule IDs, ordered factors, conditions, timing links, and policy from domain through formatter, prompt, snapshots, and UI."}
+{"file":".trellis/spec/guides/code-reuse-thinking-guide.md","reason":"Check that catalogs, fixtures, guards, aliases, and projections each have one source of truth rather than parallel implementations."}
+{"file":".trellis/tasks/08-01-liuyao-classics-analysis-prompt/research/domain-audit.md","reason":"Independently verify all diagnosed behavioral defects, compatibility risks, and missing regression cases were addressed without case-specific patches."}
+{"file":".trellis/tasks/08-01-liuyao-classics-analysis-prompt/research/classics-audit.md","reason":"Audit completeness and honest attribution for all rule families, golden metadata, aliases, and project-convention decision rows."}
+{"file":".trellis/tasks/08-01-liuyao-classics-analysis-prompt/research/source-verification.md","reason":"Verify quotes and locators stay within page-reviewed evidence, weak sources remain non-decision-capable, and no local path is exposed."}
+{"file":".trellis/tasks/08-01-liuyao-classics-analysis-prompt/research/ai-prompt-audit.md","reason":"Verify real Liuyao assembly, custom/brief/built-in guard coverage, frozen conversations, paired model controls, hard gates, and zero-secret artifacts."}

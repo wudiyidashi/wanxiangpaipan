@@ -5,14 +5,13 @@ import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_text_styles.dart';
 import '../../../domain/repositories/divination_repository.dart';
 import '../../../domain/services/fushen_service.dart';
-import '../../../domain/services/liuyao/analysis/models/analysis_report.dart';
 import '../../../domain/services/shared/tiangan_dizhi_service.dart';
 import '../../../presentation/divination/divination_result_page.dart';
-import '../../../presentation/screens/calendar/calendar_gua_context.dart';
 import '../../../presentation/widgets/antique/antique.dart';
 import '../../../presentation/widgets/diagram_comparison_row.dart';
 import '../liuyao_result.dart';
 import '../viewmodels/liuyao_analysis_controller.dart';
+import 'liuyao_calendar_context_mapper.dart';
 import 'widgets/analysis_overview_card.dart';
 import 'widgets/liuyao_share_dialog.dart';
 import 'widgets/relation_graph_dialog.dart';
@@ -130,21 +129,12 @@ class _LiuYaoResultView extends StatelessWidget {
 
     Navigator.of(context).pushNamed(
       '/calendar',
-      arguments: CalendarGuaContext(
+      arguments: LiuYaoCalendarContextMapper.build(
         title: '${result.mainGua.name} · 用神'
             '${yongShenYao.liuQin.name}${yongShenYao.branch}'
             '${yongShenYao.wuXing.name}',
         yongShenBranch: yongShenYao.branch,
-        yingQiByBranch: {
-          for (final candidate in report.yingQi ?? <YingQiCandidate>[])
-            if (candidate.scale == YingQiScale.ri)
-              candidate.branch: candidate.reason,
-        },
-        yingQiMonthByBranch: {
-          for (final candidate in report.yingQi ?? <YingQiCandidate>[])
-            if (candidate.scale == YingQiScale.yue)
-              candidate.branch: candidate.reason,
-        },
+        candidates: report.yingQi ?? const [],
       ),
     );
   }

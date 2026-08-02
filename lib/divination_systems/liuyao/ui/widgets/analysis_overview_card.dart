@@ -55,6 +55,17 @@ class AnalysisOverviewCard extends StatelessWidget {
             _buildGuideState(context)
           else
             _buildAnalysisState(context),
+          const SizedBox(height: 12),
+          Align(
+            alignment: Alignment.centerRight,
+            child: Text(
+              '当前分析 ${report.ruleSetVersion} · 契约 ${report.analysisSchemaVersion}',
+              key: const ValueKey('liuyao-current-analysis-version'),
+              style: AppTextStyles.antiqueLabel.copyWith(
+                color: AppColors.huise,
+              ),
+            ),
+          ),
         ],
       ),
     );

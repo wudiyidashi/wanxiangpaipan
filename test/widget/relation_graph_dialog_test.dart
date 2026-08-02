@@ -22,14 +22,20 @@ LunarInfo _lunar({String yueJian = '寅', String riGanZhi = '甲寅'}) {
 void main() {
   testWidgets('有跨爻关系时渲染六爻节点、日月节点与图例', (tester) async {
     final qian = GuaCalculator.calculateGua([9, 7, 7, 7, 7, 7]);
+    final changing = GuaCalculator.generateChangingGua(qian);
     final lunar = _lunar();
-    final report =
-        LiuYaoAnalyzer.analyze(qian, null, lunar, yongShenPosition: 2);
+    final report = LiuYaoAnalyzer.analyze(
+      qian,
+      changing,
+      lunar,
+      yongShenPosition: 2,
+    );
 
     await tester.pumpWidget(MaterialApp(
       home: Scaffold(
         body: RelationGraphView(
           mainGua: qian,
+          changingGua: changing,
           lunarInfo: lunar,
           report: report,
           yongShenPosition: 2,
@@ -53,13 +59,15 @@ void main() {
 
   testWidgets('点击分类开关切换显隐不崩溃', (tester) async {
     final qian = GuaCalculator.calculateGua([9, 7, 7, 7, 7, 7]);
+    final changing = GuaCalculator.generateChangingGua(qian);
     final lunar = _lunar();
-    final report = LiuYaoAnalyzer.analyze(qian, null, lunar);
+    final report = LiuYaoAnalyzer.analyze(qian, changing, lunar);
 
     await tester.pumpWidget(MaterialApp(
       home: Scaffold(
         body: RelationGraphView(
           mainGua: qian,
+          changingGua: changing,
           lunarInfo: lunar,
           report: report,
         ),

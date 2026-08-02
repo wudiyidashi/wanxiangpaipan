@@ -10,6 +10,7 @@ import '../../ai/output/structured_output_formatter.dart';
 import '../../core/theme/app_text_styles.dart';
 import '../../domain/divination_system.dart';
 import 'ai_chat_sheet.dart';
+import 'ai_snapshot_version_text.dart';
 
 /// AI 分析组件
 ///
@@ -56,6 +57,8 @@ class _AIAnalysisWidgetState extends State<AIAnalysisWidget> {
   @override
   Widget build(BuildContext context) {
     final aiService = context.watch<AIAnalysisService?>();
+    final conversationService = context.watch<AIConversationService?>();
+    final conversation = conversationService?.conversationOf(widget.result.id);
     final unavailableReason = _resolveUnavailableReason(aiService);
 
     if (unavailableReason != null) {
@@ -80,6 +83,12 @@ class _AIAnalysisWidgetState extends State<AIAnalysisWidget> {
             readyService,
             isAnalyzing: isAnalyzing,
             hasContent: hasContent,
+            snapshotVersionText: conversation == null
+                ? null
+                : aiSnapshotVersionText(
+                    systemType: conversation.systemType,
+                    snapshot: conversation.castSnapshot,
+                  ),
           ),
           if (isAnalyzing ||
               hasContent ||
@@ -167,6 +176,7 @@ class _AIAnalysisWidgetState extends State<AIAnalysisWidget> {
     AIAnalysisService aiService, {
     required bool isAnalyzing,
     required bool hasContent,
+    required String? snapshotVersionText,
   }) {
     final isConfigured = aiService.hasAvailableProvider;
 
@@ -183,11 +193,27 @@ class _AIAnalysisWidgetState extends State<AIAnalysisWidget> {
           ),
           const SizedBox(width: 8),
           Expanded(
-            child: Text(
-              'AI 智能分析',
-              style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                    fontWeight: FontWeight.bold,
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  'AI 智能分析',
+                  style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                        fontWeight: FontWeight.bold,
+                      ),
+                ),
+                if (snapshotVersionText != null)
+                  Text(
+                    snapshotVersionText,
+                    key: const ValueKey('liuyao-ai-snapshot-version'),
+                    maxLines: 2,
+                    overflow: TextOverflow.ellipsis,
+                    style: Theme.of(context).textTheme.labelSmall?.copyWith(
+                          color: Theme.of(context).colorScheme.onSurfaceVariant,
+                        ),
                   ),
+              ],
             ),
           ),
           // 复制按钮
