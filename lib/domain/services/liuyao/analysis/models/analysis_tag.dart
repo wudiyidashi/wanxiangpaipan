@@ -37,5 +37,17 @@ class YaoAnalysisTag with _$YaoAnalysisTag {
     required int priority,
     required String reason,
     @Default(<int>[]) List<int> relatedYao,
+
+    /// Stable catalog identity. Legacy callers may omit it; the analyzer binds it.
+    @Default('') String ruleId,
+
+    /// Deterministic identity for this occurrence in one analysis report.
+    @Default('') String occurrenceId,
+    @Default(<String>[]) List<String> sourceIds,
+
+    /// Suppressed facts remain inspectable but cannot enter the verdict.
+    @Default(true) bool active,
+    @Default(<String>[]) List<String> suppressedByRuleIds,
+    @Default(<String>[]) List<String> suppressedByOccurrenceIds,
   }) = _YaoAnalysisTag;
 }

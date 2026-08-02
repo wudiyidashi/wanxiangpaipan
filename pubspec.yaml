@@ -27,6 +27,7 @@ dependencies:
   path_provider: ^2.1.4
   path: ^1.9.0
   archive: ^3.6.1
+  crypto: ^3.0.7
 
   # 加密存储
   flutter_secure_storage: ^9.2.2

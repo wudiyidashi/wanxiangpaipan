@@ -1,6 +1,7 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:wanxiang_paipan/domain/services/liuyao/analysis/models/analysis_report.dart';
 import 'package:wanxiang_paipan/domain/services/liuyao/analysis/models/analysis_tag.dart';
+import 'package:wanxiang_paipan/domain/services/liuyao/analysis/rules/liuyao_catalog.dart';
 import 'package:wanxiang_paipan/domain/services/liuyao/analysis/ying_qi_service.dart';
 
 import 'helpers/analysis_fixtures.dart';
@@ -23,6 +24,7 @@ void main() {
         yongShen: makeYao(position: 6, branch: '戌'),
         yongShenTags: [tagOf('旬空')],
         lunarInfo: lunar,
+        ruleSetVersion: LiuYaoRuleCatalog.v1Compat,
       );
       final branches = candidates.map((c) => c.branch).toList();
       expect(branches, contains('戌')); // 填实
@@ -37,6 +39,7 @@ void main() {
         yongShen: makeYao(position: 1, branch: '子'),
         yongShenTags: [tagOf('月破')],
         lunarInfo: lunar,
+        ruleSetVersion: LiuYaoRuleCatalog.v1Compat,
       );
       final branches = candidates.map((c) => c.branch).toList();
       expect(branches, contains('子')); // 值日实破
@@ -58,6 +61,7 @@ void main() {
         yongShen: makeYao(position: 4, branch: '午'),
         yongShenTags: [tagOf('入日墓')],
         lunarInfo: lunar,
+        ruleSetVersion: LiuYaoRuleCatalog.v1Compat,
       );
       final chongMu = candidates.firstWhere((c) => c.reason.contains('墓'));
       expect(chongMu.branch, '辰');
@@ -68,6 +72,7 @@ void main() {
         yongShen: makeYao(position: 1, branch: '子'),
         yongShenTags: [tagOf('合住')],
         lunarInfo: lunar,
+        ruleSetVersion: LiuYaoRuleCatalog.v1Compat,
       );
       expect(candidates.any((c) => c.branch == '午' && c.reason.contains('冲开')),
           isFalse);
@@ -82,6 +87,7 @@ void main() {
         yongShen: makeYao(position: 1, branch: '子'),
         yongShenTags: [tagOf('合住'), tagOf('冲开')],
         lunarInfo: lunar,
+        ruleSetVersion: LiuYaoRuleCatalog.v1Compat,
       );
 
       expect(candidates.any((candidate) => candidate.reason.contains('解合')),
@@ -94,6 +100,7 @@ void main() {
         changedYao: makeYao(position: 4, branch: '未'),
         yongShenTags: [tagOf('化合')],
         lunarInfo: lunar,
+        ruleSetVersion: LiuYaoRuleCatalog.v1Compat,
       );
 
       expect(candidates.any((candidate) => candidate.reason.contains('解合')),
@@ -105,6 +112,7 @@ void main() {
         yongShen: makeYao(position: 4, branch: '丑', moving: true),
         yongShenTags: [tagOf('日合')],
         lunarInfo: lunar,
+        ruleSetVersion: LiuYaoRuleCatalog.v1Compat,
       );
 
       expect(candidates.any((candidate) => candidate.reason.contains('解合')),
@@ -117,6 +125,7 @@ void main() {
         changedYao: makeYao(position: 4, branch: '亥'),
         yongShenTags: [tagOf('化绝')],
         lunarInfo: lunar,
+        ruleSetVersion: LiuYaoRuleCatalog.v1Compat,
       );
 
       expect(
@@ -132,6 +141,7 @@ void main() {
         changedYao: makeYao(position: 1, branch: '戌'),
         yongShenTags: [tagOf('化空'), tagOf('化破'), tagOf('化墓')],
         lunarInfo: lunar,
+        ruleSetVersion: LiuYaoRuleCatalog.v1Compat,
       );
 
       expect(
@@ -157,6 +167,7 @@ void main() {
         yongShen: makeYao(position: 2, branch: '寅'),
         yongShenTags: const [],
         lunarInfo: lunar,
+        ruleSetVersion: LiuYaoRuleCatalog.v1Compat,
       );
       final branches = candidates.map((c) => c.branch).toList();
       expect(branches, contains('寅')); // 值日
@@ -168,6 +179,7 @@ void main() {
         yongShen: makeYao(position: 4, branch: '午', moving: true),
         yongShenTags: const [],
         lunarInfo: lunar,
+        ruleSetVersion: LiuYaoRuleCatalog.v1Compat,
       );
       final branches = candidates.map((c) => c.branch).toList();
       expect(branches, contains('午')); // 值日
@@ -180,6 +192,7 @@ void main() {
         yongShen: makeYao(position: 6, branch: '戌'),
         yongShenTags: [tagOf('旬空'), tagOf('入月墓')],
         lunarInfo: lunar,
+        ruleSetVersion: LiuYaoRuleCatalog.v1Compat,
       );
       final xuCount = candidates.where((c) => c.branch == '戌').length;
       expect(xuCount, 1);
@@ -187,6 +200,98 @@ void main() {
         expect(candidates[i].priority,
             greaterThanOrEqualTo(candidates[i - 1].priority));
       }
+    });
+  });
+
+  group('YingQiService v2 条件驱动应期', () {
+    test('无裁决条件时不生成通用应期', () {
+      final candidates = YingQiService.calculate(
+        yongShen: makeYao(position: 2, branch: '寅'),
+        lunarInfo: lunar,
+      );
+
+      expect(candidates, isEmpty);
+    });
+
+    test('不可解条件不生成应期', () {
+      final candidates = YingQiService.calculate(
+        yongShen: makeYao(position: 6, branch: '戌'),
+        conditions: const <VerdictCondition>[
+          VerdictCondition(
+            label: '真空到底无用',
+            reason: 'test',
+            hasRescue: false,
+            conditionId: 'lyc-test-true-void',
+            conditionRuleId: LiuYaoRuleIds.conditionTrueVoid,
+            sourceIds: <String>[LiuYaoRuleIds.zengShanSource],
+          ),
+        ],
+        lunarInfo: lunar,
+      );
+
+      expect(candidates, isEmpty);
+    });
+
+    test('同一触发窗口合并全部条件与规则来源', () {
+      final candidates = YingQiService.calculate(
+        yongShen: makeYao(position: 6, branch: '戌'),
+        conditions: const <VerdictCondition>[
+          VerdictCondition(
+            label: '待出空',
+            reason: 'test void',
+            conditionId: 'lyc-test-void',
+            conditionRuleId: LiuYaoRuleIds.conditionVoid,
+            sourceIds: <String>[LiuYaoRuleIds.zengShanSource],
+          ),
+          VerdictCondition(
+            label: '待出月破',
+            reason: 'test month break',
+            conditionId: 'lyc-test-month-break',
+            conditionRuleId: LiuYaoRuleIds.conditionMonthBreak,
+            sourceIds: <String>[LiuYaoRuleIds.projectSource],
+          ),
+        ],
+        lunarInfo: lunar,
+      );
+      final merged = candidates.singleWhere(
+        (candidate) =>
+            candidate.branch == '戌' && candidate.scale == YingQiScale.ri,
+      );
+
+      expect(
+        merged.upstreamConditionIds,
+        orderedEquals(<String>[
+          'lyc-test-month-break',
+          'lyc-test-void',
+        ]),
+      );
+      expect(
+        merged.upstreamRuleIds,
+        containsAll(<String>[
+          LiuYaoRuleIds.conditionVoid,
+          LiuYaoRuleIds.conditionMonthBreak,
+          LiuYaoRuleIds.timingVoidFill,
+          LiuYaoRuleIds.timingMonthBreakFill,
+        ]),
+      );
+      expect(
+        merged.sourceIds,
+        containsAll(<String>[
+          LiuYaoRuleIds.zengShanSource,
+          LiuYaoRuleIds.projectSource,
+        ]),
+      );
+    });
+
+    test('拒绝标签驱动输入', () {
+      expect(
+        () => YingQiService.calculate(
+          yongShen: makeYao(position: 6, branch: '戌'),
+          yongShenTags: const <YaoAnalysisTag>[],
+          lunarInfo: lunar,
+        ),
+        throwsArgumentError,
+      );
     });
   });
 }

@@ -1,0 +1,4579 @@
+{
+  "fixtureVersion": "liuyao-classics/1.0.0",
+  "sourceCatalogVersion": "liuyao-evidence/1.0.0",
+  "ruleSetId": "liuyao-zengshan-primary",
+  "ruleSetVersion": "v2",
+  "holdout": {
+    "salt": "liuyao-holdout-v1-2026-08-01",
+    "size": 6,
+    "cohortHash": "a4b6dcec44989a2d01d83b2113f9effa6099a95be1c8c876e6cb1ce0b44491a3",
+    "members": [
+      {
+        "caseId": "liuyao.case.golden.033",
+        "selectionHash": "16c55b8cc619afeedac17274c08c15f385bbd9c6e6a1c77dc3b16eff92a727bd"
+      },
+      {
+        "caseId": "liuyao.case.golden.013",
+        "selectionHash": "29a4582c129d9b08c9fcf40c837cc911b1fd84261a610a231f42ec54b88fe40c"
+      },
+      {
+        "caseId": "liuyao.case.golden.032",
+        "selectionHash": "34a0a2479f2911a2090d0dbd332da79835f792db23a0ebba0b0d07e76e738628"
+      },
+      {
+        "caseId": "liuyao.case.golden.009",
+        "selectionHash": "35cd0147698f76fc349b99307f4f45b1de49f9196f6114ad3d038b0f198e68b5"
+      },
+      {
+        "caseId": "liuyao.case.golden.014",
+        "selectionHash": "3e62c94b37b1e65aa65739ac4d14645bcecbcd3f2fa1ecabfcb927e62368adc7"
+      },
+      {
+        "caseId": "liuyao.case.golden.029",
+        "selectionHash": "40df3ac5df94bc1f250a143289654bac0b48e6da135ba1a16472a4a88c08858e"
+      }
+    ]
+  },
+  "cases": [
+    {
+      "caseId": "liuyao.case.golden.001",
+      "caseKind": "ruleValidation",
+      "evaluationSplit": "calibration",
+      "question": "兄弟所谋能否成",
+      "pan": {
+        "numbers": [
+          7,
+          7,
+          7,
+          7,
+          7,
+          7
+        ],
+        "monthBranch": "申",
+        "dayGanZhi": "戊戌",
+        "declaredMainGuaName": "乾为天",
+        "declaredChangingGuaName": null,
+        "declaredMovingPositions": []
+      },
+      "useSpirit": {
+        "mode": "selectedVisible",
+        "position": 5,
+        "declaredActorId": "main:yao:5",
+        "declaredLiuQin": "兄弟",
+        "declaredBranch": "申",
+        "declaredWuXing": "金"
+      },
+      "reference": {
+        "chapter": "月将章、日辰章",
+        "printedPages": "27-30",
+        "referenceKind": "projectConvention",
+        "adjudication": "申金临月建、戌日生金，生扶而无伤，断可成"
+      },
+      "sourceRefs": [
+        {
+          "sourceId": "liuyao.source.zengshan.zhongguonaner-pdf",
+          "locator": "chapter:月将章、日辰章; printed-pages:27-30",
+          "evidenceLevel": "b",
+          "referenceKind": "paraphrase"
+        },
+        {
+          "sourceId": "liuyao.source.project.analysis-contract",
+          "locator": "analysis-contract:rule-validation-case",
+          "evidenceLevel": "d",
+          "referenceKind": "projectConvention"
+        }
+      ],
+      "ruleIds": [
+        "liuyao.decision.strong-clear",
+        "liuyao.rule.wangshuai.day-generates",
+        "liuyao.rule.wangshuai.month-command",
+        "liuyao.rule.wangshuai.prosperous"
+      ],
+      "unknowns": [],
+      "reviewStatus": "reviewed",
+      "coverage": [
+        "旺衰/日月生克"
+      ],
+      "legacyDescription": {
+        "nature": "章法校验例",
+        "declaredHexagram": "乾为天安静",
+        "declaredMovingLines": "无",
+        "declaredUseSpirit": "五爻兄弟申金"
+      },
+      "expected": {
+        "trend": "keCheng",
+        "nuance": null,
+        "conditionRuleIds": [],
+        "absentConditionRuleIds": [],
+        "factorRuleIds": [
+          "liuyao.decision.strong-clear",
+          "liuyao.rule.wangshuai.day-generates",
+          "liuyao.rule.wangshuai.month-command",
+          "liuyao.rule.wangshuai.prosperous"
+        ],
+        "timingBranches": [],
+        "hasUnrescuedCondition": false,
+        "decisionRowId": "liuyao.decision.strong-clear",
+        "factorIds": [
+          "lyf-0914c5632fe0242688174f9f",
+          "lyf-1438a405ce501067cf7b0a5d",
+          "lyf-0f5a2764d7aa469f656715b8",
+          "lyf-2e3926831b4b9becf08412f6"
+        ],
+        "conditionIds": [],
+        "timingIds": []
+      }
+    },
+    {
+      "caseId": "liuyao.case.golden.002",
+      "caseKind": "ruleValidation",
+      "evaluationSplit": "calibration",
+      "question": "求财能否得",
+      "pan": {
+        "numbers": [
+          8,
+          8,
+          8,
+          8,
+          8,
+          8
+        ],
+        "monthBranch": "未",
+        "dayGanZhi": "辛未",
+        "declaredMainGuaName": "坤为地",
+        "declaredChangingGuaName": null,
+        "declaredMovingPositions": []
+      },
+      "useSpirit": {
+        "mode": "selectedVisible",
+        "position": 5,
+        "declaredActorId": "main:yao:5",
+        "declaredLiuQin": "妻财",
+        "declaredBranch": "亥",
+        "declaredWuXing": "水"
+      },
+      "reference": {
+        "chapter": "旬空章",
+        "printedPages": "45-46",
+        "referenceKind": "projectConvention",
+        "adjudication": "亥水受月日土克又旬空，休囚安静为真空，断难成"
+      },
+      "sourceRefs": [
+        {
+          "sourceId": "liuyao.source.zengshan.zhongguonaner-pdf",
+          "locator": "chapter:旬空章; printed-pages:45-46",
+          "evidenceLevel": "b",
+          "referenceKind": "paraphrase"
+        },
+        {
+          "sourceId": "liuyao.source.project.analysis-contract",
+          "locator": "analysis-contract:rule-validation-case",
+          "evidenceLevel": "d",
+          "referenceKind": "projectConvention"
+        }
+      ],
+      "ruleIds": [
+        "liuyao.condition.true-void.no-release",
+        "liuyao.decision.weak-unrescuable",
+        "liuyao.rule.kongwang.true-void",
+        "liuyao.rule.kongwang.void",
+        "liuyao.rule.shengke.hidden-moving-overcomes",
+        "liuyao.rule.wangshuai.day-overcomes",
+        "liuyao.rule.wangshuai.dead",
+        "liuyao.rule.wangshuai.month-overcomes"
+      ],
+      "unknowns": [],
+      "reviewStatus": "reviewed",
+      "coverage": [
+        "旺衰/日月生克",
+        "真空假空"
+      ],
+      "legacyDescription": {
+        "nature": "章法校验例",
+        "declaredHexagram": "坤为地安静",
+        "declaredMovingLines": "无",
+        "declaredUseSpirit": "五爻妻财亥水"
+      },
+      "expected": {
+        "trend": "nanCheng",
+        "nuance": "空破墓绝，到底无救",
+        "conditionRuleIds": [
+          "liuyao.condition.true-void.no-release"
+        ],
+        "absentConditionRuleIds": [],
+        "factorRuleIds": [
+          "liuyao.decision.weak-unrescuable",
+          "liuyao.rule.kongwang.true-void",
+          "liuyao.rule.kongwang.void",
+          "liuyao.rule.shengke.hidden-moving-overcomes",
+          "liuyao.rule.wangshuai.day-overcomes",
+          "liuyao.rule.wangshuai.dead",
+          "liuyao.rule.wangshuai.month-overcomes"
+        ],
+        "timingBranches": [],
+        "hasUnrescuedCondition": true,
+        "decisionRowId": "liuyao.decision.weak-unrescuable",
+        "factorIds": [
+          "lyf-53e07794943f4fcc501f16ce",
+          "lyf-eea383864dec81cde81a2d57",
+          "lyf-bf2a6da0daf97d5bb2fa5f01",
+          "lyf-1f3cf7ce98572d1be1e3a1e8",
+          "lyf-f0d90878990ac6659ecc0f17",
+          "lyf-28ff7fe6b84cbc8d7aef33dc",
+          "lyf-66507412ebe3a5b863f33205"
+        ],
+        "conditionIds": [
+          "lyc-2f567bebf05ef9a7c9191d24"
+        ],
+        "timingIds": []
+      }
+    },
+    {
+      "caseId": "liuyao.case.golden.003",
+      "caseKind": "ruleValidation",
+      "evaluationSplit": "calibration",
+      "question": "谋官能否成",
+      "pan": {
+        "numbers": [
+          7,
+          8,
+          6,
+          7,
+          8,
+          8
+        ],
+        "monthBranch": "午",
+        "dayGanZhi": "庚辰",
+        "declaredMainGuaName": "震为雷",
+        "declaredChangingGuaName": "雷火丰",
+        "declaredMovingPositions": [
+          3
+        ]
+      },
+      "useSpirit": {
+        "mode": "selectedVisible",
+        "position": 5,
+        "declaredActorId": "main:yao:5",
+        "declaredLiuQin": "官鬼",
+        "declaredBranch": "申",
+        "declaredWuXing": "金"
+      },
+      "reference": {
+        "chapter": "元神、忌神、衰旺章；旬空章",
+        "printedPages": "22-23、45",
+        "referenceKind": "projectConvention",
+        "adjudication": "申金月克逢空，得辰日及元神辰土动生，待出空而先难后成"
+      },
+      "sourceRefs": [
+        {
+          "sourceId": "liuyao.source.zengshan.zhongguonaner-pdf",
+          "locator": "chapter:元神、忌神、衰旺章；旬空章; printed-pages:22-23、45",
+          "evidenceLevel": "b",
+          "referenceKind": "paraphrase"
+        },
+        {
+          "sourceId": "liuyao.source.project.analysis-contract",
+          "locator": "analysis-contract:rule-validation-case",
+          "evidenceLevel": "d",
+          "referenceKind": "projectConvention"
+        }
+      ],
+      "ruleIds": [
+        "liuyao.condition.void.fill-or-clash",
+        "liuyao.decision.mixed-source-continuity",
+        "liuyao.rule.kongwang.apparent-void",
+        "liuyao.rule.kongwang.void",
+        "liuyao.rule.shengke.hidden-moving-generates",
+        "liuyao.rule.shengke.moving-generates",
+        "liuyao.rule.wangshuai.day-generates",
+        "liuyao.rule.wangshuai.dead",
+        "liuyao.rule.wangshuai.month-overcomes",
+        "liuyao.timing.void.branch-clash",
+        "liuyao.timing.void.branch-fills"
+      ],
+      "unknowns": [],
+      "reviewStatus": "reviewed",
+      "coverage": [
+        "元神/忌神/仇神",
+        "应期条件联动",
+        "旺衰/日月生克",
+        "真空假空"
+      ],
+      "legacyDescription": {
+        "nature": "章法校验例",
+        "declaredHexagram": "震为雷之火雷噬嗑",
+        "declaredMovingLines": "三爻辰土独发",
+        "declaredUseSpirit": "五爻官鬼申金"
+      },
+      "expected": {
+        "trend": "daiTiaoJian",
+        "nuance": "先难后成",
+        "conditionRuleIds": [
+          "liuyao.condition.void.fill-or-clash"
+        ],
+        "absentConditionRuleIds": [],
+        "factorRuleIds": [
+          "liuyao.decision.mixed-source-continuity",
+          "liuyao.rule.kongwang.apparent-void",
+          "liuyao.rule.kongwang.void",
+          "liuyao.rule.shengke.hidden-moving-generates",
+          "liuyao.rule.shengke.moving-generates",
+          "liuyao.rule.wangshuai.day-generates",
+          "liuyao.rule.wangshuai.dead",
+          "liuyao.rule.wangshuai.month-overcomes"
+        ],
+        "timingBranches": [
+          "寅",
+          "申"
+        ],
+        "hasUnrescuedCondition": false,
+        "decisionRowId": "liuyao.decision.mixed-source-continuity",
+        "factorIds": [
+          "lyf-53e07794943f4fcc501f16ce",
+          "lyf-1438a405ce501067cf7b0a5d",
+          "lyf-bf2a6da0daf97d5bb2fa5f01",
+          "lyf-cc039b9575b8738b8e39ea99",
+          "lyf-94bfd0b6f39a2896f15b6ac9",
+          "lyf-28ff7fe6b84cbc8d7aef33dc",
+          "lyf-223bb70772d5afcd5d848b52",
+          "lyf-4aaee165b68624cc52701b4a"
+        ],
+        "conditionIds": [
+          "lyc-295f33edbb6deab0089f665f"
+        ],
+        "timingIds": [
+          "lyt-d984786ac1e37710539d6f99",
+          "lyt-521c62949c55962e316c901d"
+        ]
+      }
+    },
+    {
+      "caseId": "liuyao.case.golden.004",
+      "caseKind": "ruleValidation",
+      "evaluationSplit": "calibration",
+      "question": "求财能否得",
+      "pan": {
+        "numbers": [
+          7,
+          7,
+          7,
+          7,
+          9,
+          7
+        ],
+        "monthBranch": "子",
+        "dayGanZhi": "癸酉",
+        "declaredMainGuaName": "乾为天",
+        "declaredChangingGuaName": "火天大有",
+        "declaredMovingPositions": [
+          5
+        ]
+      },
+      "useSpirit": {
+        "mode": "selectedVisible",
+        "position": 2,
+        "declaredActorId": "main:yao:2",
+        "declaredLiuQin": "妻财",
+        "declaredBranch": "寅",
+        "declaredWuXing": "木"
+      },
+      "reference": {
+        "chapter": "元神、忌神、衰旺章；五行相克章",
+        "printedPages": "22-25",
+        "referenceKind": "projectConvention",
+        "adjudication": "财得月生但受酉日及旺动兄弟申金克，忌神独发，断难成"
+      },
+      "sourceRefs": [
+        {
+          "sourceId": "liuyao.source.zengshan.zhongguonaner-pdf",
+          "locator": "chapter:元神、忌神、衰旺章；五行相克章; printed-pages:22-25",
+          "evidenceLevel": "b",
+          "referenceKind": "paraphrase"
+        },
+        {
+          "sourceId": "liuyao.source.project.analysis-contract",
+          "locator": "analysis-contract:rule-validation-case",
+          "evidenceLevel": "d",
+          "referenceKind": "projectConvention"
+        }
+      ],
+      "ruleIds": [
+        "liuyao.decision.mixed-adverse-active",
+        "liuyao.rule.shengke.moving-overcomes",
+        "liuyao.rule.wangshuai.day-overcomes",
+        "liuyao.rule.wangshuai.month-generates",
+        "liuyao.rule.wangshuai.supported"
+      ],
+      "unknowns": [],
+      "reviewStatus": "reviewed",
+      "coverage": [
+        "元神/忌神/仇神",
+        "旺衰/日月生克"
+      ],
+      "legacyDescription": {
+        "nature": "章法校验例",
+        "declaredHexagram": "乾为天之火天大有",
+        "declaredMovingLines": "五爻申金独发",
+        "declaredUseSpirit": "二爻妻财寅木"
+      },
+      "expected": {
+        "trend": "nanCheng",
+        "nuance": "抑重于扶",
+        "conditionRuleIds": [],
+        "absentConditionRuleIds": [],
+        "factorRuleIds": [
+          "liuyao.decision.mixed-adverse-active",
+          "liuyao.rule.shengke.moving-overcomes",
+          "liuyao.rule.wangshuai.day-overcomes",
+          "liuyao.rule.wangshuai.month-generates",
+          "liuyao.rule.wangshuai.supported"
+        ],
+        "timingBranches": [],
+        "hasUnrescuedCondition": false,
+        "decisionRowId": "liuyao.decision.mixed-adverse-active",
+        "factorIds": [
+          "lyf-4af0baff5b867dc7ab4915d4",
+          "lyf-eba3b076cba59054bf53e806",
+          "lyf-6cf7731dc1f493eb651edcf5",
+          "lyf-ef61637fd206a858c7fe3585",
+          "lyf-67a6bd62f76657c076422c37"
+        ],
+        "conditionIds": [],
+        "timingIds": []
+      }
+    },
+    {
+      "caseId": "liuyao.case.golden.005",
+      "caseKind": "ruleValidation",
+      "evaluationSplit": "calibration",
+      "question": "功名能否成",
+      "pan": {
+        "numbers": [
+          7,
+          7,
+          7,
+          9,
+          7,
+          7
+        ],
+        "monthBranch": "午",
+        "dayGanZhi": "丙寅",
+        "declaredMainGuaName": "乾为天",
+        "declaredChangingGuaName": "风天小畜",
+        "declaredMovingPositions": [
+          4
+        ]
+      },
+      "useSpirit": {
+        "mode": "selectedVisible",
+        "position": 4,
+        "declaredActorId": "main:yao:4",
+        "declaredLiuQin": "官鬼",
+        "declaredBranch": "午",
+        "declaredWuXing": "火"
+      },
+      "reference": {
+        "chapter": "六合章",
+        "printedPages": "32-33",
+        "referenceKind": "projectConvention",
+        "adjudication": "午临月建得寅日生，午化未为化扶而非合绊，断可成"
+      },
+      "sourceRefs": [
+        {
+          "sourceId": "liuyao.source.zengshan.zhongguonaner-pdf",
+          "locator": "chapter:六合章; printed-pages:32-33",
+          "evidenceLevel": "b",
+          "referenceKind": "paraphrase"
+        },
+        {
+          "sourceId": "liuyao.source.project.analysis-contract",
+          "locator": "analysis-contract:rule-validation-case",
+          "evidenceLevel": "d",
+          "referenceKind": "projectConvention"
+        }
+      ],
+      "ruleIds": [
+        "liuyao.condition.binding.clash-open",
+        "liuyao.decision.strong-clear",
+        "liuyao.rule.dongbian.changed-join",
+        "liuyao.rule.dongbian.transforms-drain",
+        "liuyao.rule.wangshuai.day-generates",
+        "liuyao.rule.wangshuai.month-command",
+        "liuyao.rule.wangshuai.prosperous"
+      ],
+      "unknowns": [],
+      "reviewStatus": "reviewed",
+      "coverage": [
+        "合住/合绊/化合",
+        "旺衰/日月生克"
+      ],
+      "legacyDescription": {
+        "nature": "章法校验例",
+        "declaredHexagram": "乾为天之风天小畜",
+        "declaredMovingLines": "四爻午火独发化未土",
+        "declaredUseSpirit": "四爻官鬼午火"
+      },
+      "expected": {
+        "trend": "keCheng",
+        "nuance": null,
+        "conditionRuleIds": [],
+        "absentConditionRuleIds": [
+          "liuyao.condition.binding.clash-open"
+        ],
+        "factorRuleIds": [
+          "liuyao.decision.strong-clear",
+          "liuyao.rule.dongbian.changed-join",
+          "liuyao.rule.dongbian.transforms-drain",
+          "liuyao.rule.wangshuai.day-generates",
+          "liuyao.rule.wangshuai.month-command",
+          "liuyao.rule.wangshuai.prosperous"
+        ],
+        "timingBranches": [],
+        "hasUnrescuedCondition": false,
+        "decisionRowId": "liuyao.decision.strong-clear",
+        "factorIds": [
+          "lyf-740fa9c9adf106f347874c3c",
+          "lyf-3705ecb28420587ca1261ca6",
+          "lyf-097ded72cbca3fa150ab05a5",
+          "lyf-3973047f07e44c92b9336960",
+          "lyf-3f143c74a55c4978bbb63643",
+          "lyf-d41006d9dd1fc9d46af03b4b"
+        ],
+        "conditionIds": [],
+        "timingIds": []
+      }
+    },
+    {
+      "caseId": "liuyao.case.golden.006",
+      "caseKind": "ruleValidation",
+      "evaluationSplit": "calibration",
+      "question": "兄弟所谋能否成",
+      "pan": {
+        "numbers": [
+          9,
+          7,
+          8,
+          7,
+          7,
+          8
+        ],
+        "monthBranch": "酉",
+        "dayGanZhi": "戊辰",
+        "declaredMainGuaName": "兑为泽",
+        "declaredChangingGuaName": "泽水困",
+        "declaredMovingPositions": [
+          1
+        ]
+      },
+      "useSpirit": {
+        "mode": "selectedVisible",
+        "position": 5,
+        "declaredActorId": "main:yao:5",
+        "declaredLiuQin": "兄弟",
+        "declaredBranch": "酉",
+        "declaredWuXing": "金"
+      },
+      "reference": {
+        "chapter": "月将章；各门类应期总注章",
+        "printedPages": "28、48",
+        "referenceKind": "projectConvention",
+        "adjudication": "用神临月建得日生，虽受巳火忌神动克，仍为吉中有阻"
+      },
+      "sourceRefs": [
+        {
+          "sourceId": "liuyao.source.zengshan.zhongguonaner-pdf",
+          "locator": "chapter:月将章；各门类应期总注章; printed-pages:28、48",
+          "evidenceLevel": "b",
+          "referenceKind": "paraphrase"
+        },
+        {
+          "sourceId": "liuyao.source.project.analysis-contract",
+          "locator": "analysis-contract:rule-validation-case",
+          "evidenceLevel": "d",
+          "referenceKind": "projectConvention"
+        }
+      ],
+      "ruleIds": [
+        "liuyao.decision.strong-adverse-active",
+        "liuyao.rule.shengke.moving-overcomes",
+        "liuyao.rule.special.day-joins",
+        "liuyao.rule.wangshuai.day-generates",
+        "liuyao.rule.wangshuai.month-command",
+        "liuyao.rule.wangshuai.prosperous"
+      ],
+      "unknowns": [],
+      "reviewStatus": "reviewed",
+      "coverage": [
+        "元神/忌神/仇神",
+        "应期条件联动",
+        "旺衰/日月生克"
+      ],
+      "legacyDescription": {
+        "nature": "章法校验例",
+        "declaredHexagram": "兑为泽之水泽节",
+        "declaredMovingLines": "初爻巳火独发",
+        "declaredUseSpirit": "五爻兄弟酉金"
+      },
+      "expected": {
+        "trend": "daiTiaoJian",
+        "nuance": "吉中有阻",
+        "conditionRuleIds": [],
+        "absentConditionRuleIds": [],
+        "factorRuleIds": [
+          "liuyao.decision.strong-adverse-active",
+          "liuyao.rule.shengke.moving-overcomes",
+          "liuyao.rule.special.day-joins",
+          "liuyao.rule.wangshuai.day-generates",
+          "liuyao.rule.wangshuai.month-command",
+          "liuyao.rule.wangshuai.prosperous"
+        ],
+        "timingBranches": [],
+        "hasUnrescuedCondition": false,
+        "decisionRowId": "liuyao.decision.strong-adverse-active",
+        "factorIds": [
+          "lyf-0914c5632fe0242688174f9f",
+          "lyf-1438a405ce501067cf7b0a5d",
+          "lyf-0f5a2764d7aa469f656715b8",
+          "lyf-b42c53136f83a68a8fea1f50",
+          "lyf-7e9cb899ee2c8bc7a83278ce",
+          "lyf-c0bd5ca9a60dd72e07b904a9"
+        ],
+        "conditionIds": [],
+        "timingIds": []
+      }
+    },
+    {
+      "caseId": "liuyao.case.golden.007",
+      "caseKind": "originalBook",
+      "evaluationSplit": "calibration",
+      "question": "父何日归",
+      "pan": {
+        "numbers": [
+          7,
+          7,
+          7,
+          7,
+          7,
+          9
+        ],
+        "monthBranch": "辰",
+        "dayGanZhi": "戊子",
+        "declaredMainGuaName": "乾为天",
+        "declaredChangingGuaName": "泽天夬",
+        "declaredMovingPositions": [
+          6
+        ]
+      },
+      "useSpirit": {
+        "mode": "selectedVisible",
+        "position": 6,
+        "declaredActorId": "main:yao:6",
+        "declaredLiuQin": "父母",
+        "declaredBranch": "戌",
+        "declaredWuXing": "土"
+      },
+      "reference": {
+        "chapter": "月破章",
+        "printedPages": "50-51",
+        "referenceKind": "paraphrase",
+        "adjudication": "父母月破而动又化空，原断卯日有信、未日归，待出月及变爻填实"
+      },
+      "sourceRefs": [
+        {
+          "sourceId": "liuyao.source.zengshan.zhongguonaner-pdf",
+          "locator": "chapter:月破章; printed-pages:50-51",
+          "evidenceLevel": "b",
+          "referenceKind": "paraphrase"
+        },
+        {
+          "sourceId": "liuyao.source.project.analysis-contract",
+          "locator": "analysis-contract:versioned-verdict-and-timing",
+          "evidenceLevel": "d",
+          "referenceKind": "projectConvention"
+        }
+      ],
+      "ruleIds": [
+        "liuyao.condition.changed-void.fill-or-clash",
+        "liuyao.condition.month-break.exit-fill-or-join",
+        "liuyao.condition.tomb.clash-open",
+        "liuyao.decision.mixed-rescuable-conditions",
+        "liuyao.rule.dongbian.changed-void",
+        "liuyao.rule.dongbian.retreat",
+        "liuyao.rule.mujue.month-tomb",
+        "liuyao.rule.wangshuai.month-break",
+        "liuyao.rule.wangshuai.prosperous",
+        "liuyao.timing.changed-void.branch-clash",
+        "liuyao.timing.changed-void.branch-fills",
+        "liuyao.timing.month-break.branch-fills",
+        "liuyao.timing.month-break.branch-joins",
+        "liuyao.timing.month-break.next-month",
+        "liuyao.timing.tomb.clash-opens"
+      ],
+      "unknowns": [],
+      "reviewStatus": "reviewed",
+      "coverage": [
+        "化空破墓绝",
+        "应期条件联动",
+        "月破"
+      ],
+      "legacyDescription": {
+        "nature": "原书占例",
+        "declaredHexagram": "乾为天之泽天夬",
+        "declaredMovingLines": "上爻戌土独发化未土",
+        "declaredUseSpirit": "上爻父母戌土"
+      },
+      "expected": {
+        "trend": "daiTiaoJian",
+        "nuance": "待解除后再断",
+        "conditionRuleIds": [
+          "liuyao.condition.changed-void.fill-or-clash",
+          "liuyao.condition.month-break.exit-fill-or-join",
+          "liuyao.condition.tomb.clash-open"
+        ],
+        "absentConditionRuleIds": [],
+        "factorRuleIds": [
+          "liuyao.decision.mixed-rescuable-conditions",
+          "liuyao.rule.dongbian.changed-void",
+          "liuyao.rule.dongbian.retreat",
+          "liuyao.rule.mujue.month-tomb",
+          "liuyao.rule.wangshuai.month-break",
+          "liuyao.rule.wangshuai.prosperous"
+        ],
+        "timingBranches": [
+          "丑",
+          "卯",
+          "巳",
+          "戌",
+          "未"
+        ],
+        "hasUnrescuedCondition": false,
+        "decisionRowId": "liuyao.decision.mixed-rescuable-conditions",
+        "factorIds": [
+          "lyf-5e1802aa95ae57948e498f6b",
+          "lyf-75f3bd597fe25b464c130a49",
+          "lyf-35bb3374cf59e8ed37111cae",
+          "lyf-da41d02c76d86f5fba5c803a",
+          "lyf-aef38f6956dc27ff3e361442",
+          "lyf-90f621183cbbd6409072b241"
+        ],
+        "conditionIds": [
+          "lyc-66cb92d81ae97496441b78e0",
+          "lyc-0aeec0f9c115ddbe9c9760fc",
+          "lyc-1331c207a3d52dd13a063d1a"
+        ],
+        "timingIds": [
+          "lyt-9cb5d833785b76eba8b6d7db",
+          "lyt-2ff9a809b0d809b21f732950",
+          "lyt-caaca8aab3858b36fa064f2c",
+          "lyt-6a7d03d2eeaef3fc4ff27677",
+          "lyt-ebd99c8ee82948f383e86d8a"
+        ]
+      }
+    },
+    {
+      "caseId": "liuyao.case.golden.008",
+      "caseKind": "ruleValidation",
+      "evaluationSplit": "calibration",
+      "question": "谋官能否成",
+      "pan": {
+        "numbers": [
+          8,
+          8,
+          6,
+          8,
+          8,
+          8
+        ],
+        "monthBranch": "申",
+        "dayGanZhi": "甲戌",
+        "declaredMainGuaName": "坤为地",
+        "declaredChangingGuaName": "地山谦",
+        "declaredMovingPositions": [
+          3
+        ]
+      },
+      "useSpirit": {
+        "mode": "selectedVisible",
+        "position": 3,
+        "declaredActorId": "main:yao:3",
+        "declaredLiuQin": "官鬼",
+        "declaredBranch": "卯",
+        "declaredWuXing": "木"
+      },
+      "reference": {
+        "chapter": "动变生克冲合章；生旺墓绝章",
+        "printedPages": "26、47-48",
+        "referenceKind": "projectConvention",
+        "adjudication": "官鬼月克休囚，回头克兼化绝，无救而难成"
+      },
+      "sourceRefs": [
+        {
+          "sourceId": "liuyao.source.zengshan.zhongguonaner-pdf",
+          "locator": "chapter:动变生克冲合章；生旺墓绝章; printed-pages:26、47-48",
+          "evidenceLevel": "b",
+          "referenceKind": "paraphrase"
+        },
+        {
+          "sourceId": "liuyao.source.project.analysis-contract",
+          "locator": "analysis-contract:rule-validation-case",
+          "evidenceLevel": "d",
+          "referenceKind": "projectConvention"
+        }
+      ],
+      "ruleIds": [
+        "liuyao.condition.binding.clash-open",
+        "liuyao.condition.changed-void.fill-or-clash",
+        "liuyao.condition.terminal.changsheng-support",
+        "liuyao.decision.return-overcome-without-l1-support",
+        "liuyao.rule.dongbian.changed-terminal",
+        "liuyao.rule.dongbian.changed-void",
+        "liuyao.rule.dongbian.return-overcomes",
+        "liuyao.rule.mujue.terminal",
+        "liuyao.rule.special.day-joins",
+        "liuyao.rule.wangshuai.dead",
+        "liuyao.rule.wangshuai.month-overcomes",
+        "liuyao.timing.binding.partner-clash",
+        "liuyao.timing.binding.target-clash",
+        "liuyao.timing.changed-void.branch-clash",
+        "liuyao.timing.changed-void.branch-fills"
+      ],
+      "unknowns": [],
+      "reviewStatus": "reviewed",
+      "coverage": [
+        "化空破墓绝",
+        "回头生克",
+        "旺衰/日月生克"
+      ],
+      "legacyDescription": {
+        "nature": "章法校验例",
+        "declaredHexagram": "坤为地之地雷复",
+        "declaredMovingLines": "三爻卯木独发化申金",
+        "declaredUseSpirit": "三爻官鬼卯木"
+      },
+      "expected": {
+        "trend": "nanCheng",
+        "nuance": "克处无生",
+        "conditionRuleIds": [
+          "liuyao.condition.binding.clash-open",
+          "liuyao.condition.changed-void.fill-or-clash",
+          "liuyao.condition.terminal.changsheng-support"
+        ],
+        "absentConditionRuleIds": [],
+        "factorRuleIds": [
+          "liuyao.decision.return-overcome-without-l1-support",
+          "liuyao.rule.dongbian.changed-terminal",
+          "liuyao.rule.dongbian.changed-void",
+          "liuyao.rule.dongbian.return-overcomes",
+          "liuyao.rule.mujue.terminal",
+          "liuyao.rule.special.day-joins",
+          "liuyao.rule.wangshuai.dead",
+          "liuyao.rule.wangshuai.month-overcomes"
+        ],
+        "timingBranches": [
+          "寅",
+          "申",
+          "辰",
+          "酉"
+        ],
+        "hasUnrescuedCondition": true,
+        "decisionRowId": "liuyao.decision.return-overcome-without-l1-support",
+        "factorIds": [
+          "lyf-b3b3dccb46b83387348799fb",
+          "lyf-a7abf96c43fbc5fba6df6698",
+          "lyf-44644873e5999e6cf3ab98be",
+          "lyf-8225ed29deaabf1fccd184c9",
+          "lyf-0887b86f493d5f06581ea710",
+          "lyf-2bafe3a7fe5683929a208597",
+          "lyf-8e9468678ad4bb2fa096a7c5",
+          "lyf-b6e6b25d60cc73f66ee67388"
+        ],
+        "conditionIds": [
+          "lyc-6fcb8ae7cb9dcde44c20285b",
+          "lyc-56f6d535b02ed3495121ffcc",
+          "lyc-930ce24f9bd80f8e96ce31e4"
+        ],
+        "timingIds": [
+          "lyt-cff3771401ef4ed51b04e6e3",
+          "lyt-9395256f8fac67911b29d7ab",
+          "lyt-5b7a4fdb28e443bab88666ed",
+          "lyt-ca8625bef3f2aefa363dea02"
+        ]
+      }
+    },
+    {
+      "caseId": "liuyao.case.golden.009",
+      "caseKind": "originalBook",
+      "evaluationSplit": "holdout",
+      "question": "求财",
+      "pan": {
+        "numbers": [
+          7,
+          7,
+          7,
+          7,
+          8,
+          7
+        ],
+        "monthBranch": "寅",
+        "dayGanZhi": "庚戌",
+        "declaredMainGuaName": "火天大有",
+        "declaredChangingGuaName": null,
+        "declaredMovingPositions": []
+      },
+      "useSpirit": {
+        "mode": "selectedVisible",
+        "position": 2,
+        "declaredActorId": "main:yao:2",
+        "declaredLiuQin": "妻财",
+        "declaredBranch": "寅",
+        "declaredWuXing": "木"
+      },
+      "reference": {
+        "chapter": "月将章",
+        "printedPages": "28",
+        "referenceKind": "paraphrase",
+        "adjudication": "财临月建，旬内仍空但非落底，原断甲寅日出空得财"
+      },
+      "sourceRefs": [
+        {
+          "sourceId": "liuyao.source.zengshan.zhongguonaner-pdf",
+          "locator": "chapter:月将章; printed-pages:28",
+          "evidenceLevel": "b",
+          "referenceKind": "paraphrase"
+        },
+        {
+          "sourceId": "liuyao.source.project.analysis-contract",
+          "locator": "analysis-contract:versioned-verdict-and-timing",
+          "evidenceLevel": "d",
+          "referenceKind": "projectConvention"
+        }
+      ],
+      "ruleIds": [
+        "liuyao.condition.void.fill-or-clash",
+        "liuyao.decision.strong-with-conditions",
+        "liuyao.rule.kongwang.apparent-void",
+        "liuyao.rule.kongwang.void",
+        "liuyao.rule.wangshuai.month-command",
+        "liuyao.rule.wangshuai.prosperous",
+        "liuyao.timing.void.branch-clash",
+        "liuyao.timing.void.branch-fills"
+      ],
+      "unknowns": [],
+      "reviewStatus": "reviewed",
+      "coverage": [
+        "应期条件联动",
+        "旺衰/日月生克",
+        "真空假空"
+      ],
+      "legacyDescription": {
+        "nature": "原书占例",
+        "declaredHexagram": "火天大有安静",
+        "declaredMovingLines": "无",
+        "declaredUseSpirit": "二爻妻财寅木"
+      },
+      "expected": {
+        "trend": "daiTiaoJian",
+        "nuance": "成而有待",
+        "conditionRuleIds": [
+          "liuyao.condition.void.fill-or-clash"
+        ],
+        "absentConditionRuleIds": [],
+        "factorRuleIds": [
+          "liuyao.decision.strong-with-conditions",
+          "liuyao.rule.kongwang.apparent-void",
+          "liuyao.rule.kongwang.void",
+          "liuyao.rule.wangshuai.month-command",
+          "liuyao.rule.wangshuai.prosperous"
+        ],
+        "timingBranches": [
+          "寅",
+          "申"
+        ],
+        "hasUnrescuedCondition": false,
+        "decisionRowId": "liuyao.decision.strong-with-conditions",
+        "factorIds": [
+          "lyf-945cd63fb25d9dfb928514cf",
+          "lyf-b8c399ba3cfb19c36dbde51d",
+          "lyf-e44963cd0e1ae0acd991f74c",
+          "lyf-e23749b4ecc5121a4fa2dbb6",
+          "lyf-ec5cb6af74201ecef1b99d75"
+        ],
+        "conditionIds": [
+          "lyc-8aabe840c5a20f136b8a0f67"
+        ],
+        "timingIds": [
+          "lyt-29f6748f6546b71b56a16f54",
+          "lyt-b75c1463eca4771bfa828442"
+        ]
+      }
+    },
+    {
+      "caseId": "liuyao.case.golden.010",
+      "caseKind": "ruleValidation",
+      "evaluationSplit": "calibration",
+      "question": "求财",
+      "pan": {
+        "numbers": [
+          8,
+          7,
+          7,
+          7,
+          7,
+          7
+        ],
+        "monthBranch": "子",
+        "dayGanZhi": "甲子",
+        "declaredMainGuaName": "天风姤",
+        "declaredChangingGuaName": null,
+        "declaredMovingPositions": []
+      },
+      "useSpirit": {
+        "mode": "selectedHidden",
+        "position": 2,
+        "declaredActorId": "hidden:host-yao:2",
+        "declaredLiuQin": "妻财",
+        "declaredBranch": "寅",
+        "declaredWuXing": "木"
+      },
+      "reference": {
+        "chapter": "飞伏神章",
+        "printedPages": "52-54",
+        "referenceKind": "projectConvention",
+        "adjudication": "飞神亥水旬空，伏神已得出；伏神又得月日生，v2 不再保留待出伏条件"
+      },
+      "sourceRefs": [
+        {
+          "sourceId": "liuyao.source.zengshan.zhongguonaner-pdf",
+          "locator": "chapter:飞伏神章; printed-pages:52-54",
+          "evidenceLevel": "b",
+          "referenceKind": "paraphrase"
+        },
+        {
+          "sourceId": "liuyao.source.project.analysis-contract",
+          "locator": "analysis-contract:rule-validation-case",
+          "evidenceLevel": "d",
+          "referenceKind": "projectConvention"
+        }
+      ],
+      "ruleIds": [
+        "liuyao.condition.hidden.release",
+        "liuyao.decision.strong-clear",
+        "liuyao.rule.fushen.flight-generates-hidden",
+        "liuyao.rule.fushen.hidden-released",
+        "liuyao.rule.wangshuai.day-generates",
+        "liuyao.rule.wangshuai.month-generates",
+        "liuyao.rule.wangshuai.supported"
+      ],
+      "unknowns": [],
+      "reviewStatus": "reviewed",
+      "coverage": [
+        "应期条件联动",
+        "飞伏/出伏"
+      ],
+      "legacyDescription": {
+        "nature": "章法校验例",
+        "declaredHexagram": "天风姤安静",
+        "declaredMovingLines": "无",
+        "declaredUseSpirit": "二爻伏神妻财寅木"
+      },
+      "expected": {
+        "trend": "keCheng",
+        "nuance": null,
+        "conditionRuleIds": [],
+        "absentConditionRuleIds": [
+          "liuyao.condition.hidden.release"
+        ],
+        "factorRuleIds": [
+          "liuyao.decision.strong-clear",
+          "liuyao.rule.fushen.flight-generates-hidden",
+          "liuyao.rule.fushen.hidden-released",
+          "liuyao.rule.wangshuai.day-generates",
+          "liuyao.rule.wangshuai.month-generates",
+          "liuyao.rule.wangshuai.supported"
+        ],
+        "timingBranches": [],
+        "hasUnrescuedCondition": false,
+        "decisionRowId": "liuyao.decision.strong-clear",
+        "factorIds": [
+          "lyf-3368393b9b3f25dd069291af",
+          "lyf-8babb0859c8d041c702868ad",
+          "lyf-7feec26aef96c6217aa6876e",
+          "lyf-8de7a3c9e29cb0dbe8fc1ddb",
+          "lyf-47778edf10fe2582fe41e027",
+          "lyf-c6c6076957bb77ebc701cee6"
+        ],
+        "conditionIds": [],
+        "timingIds": []
+      }
+    },
+    {
+      "caseId": "liuyao.case.golden.011",
+      "caseKind": "originalBook",
+      "evaluationSplit": "calibration",
+      "question": "出门能否成行",
+      "pan": {
+        "numbers": [
+          9,
+          8,
+          7,
+          6,
+          8,
+          8
+        ],
+        "monthBranch": "申",
+        "dayGanZhi": "丙子",
+        "declaredMainGuaName": "地火明夷",
+        "declaredChangingGuaName": "雷山小过",
+        "declaredMovingPositions": [
+          1,
+          4
+        ]
+      },
+      "useSpirit": {
+        "mode": "selectedVisible",
+        "position": 4,
+        "declaredActorId": "main:yao:4",
+        "declaredLiuQin": "官鬼",
+        "declaredBranch": "丑",
+        "declaredWuXing": "土"
+      },
+      "reference": {
+        "chapter": "六合章",
+        "printedPages": "33",
+        "referenceKind": "paraphrase",
+        "adjudication": "世爻发动被子日合住，合住有事绊不能动身，待冲开；用神休囚而难成"
+      },
+      "sourceRefs": [
+        {
+          "sourceId": "liuyao.source.zengshan.zhongguonaner-pdf",
+          "locator": "chapter:六合章; printed-pages:33",
+          "evidenceLevel": "b",
+          "referenceKind": "paraphrase"
+        },
+        {
+          "sourceId": "liuyao.source.project.analysis-contract",
+          "locator": "analysis-contract:versioned-verdict-and-timing",
+          "evidenceLevel": "d",
+          "referenceKind": "projectConvention"
+        }
+      ],
+      "ruleIds": [
+        "liuyao.condition.binding.clash-open",
+        "liuyao.decision.mixed-adverse-active",
+        "liuyao.rule.dongbian.return-generates",
+        "liuyao.rule.shengke.moving-overcomes",
+        "liuyao.rule.special.day-joins",
+        "liuyao.rule.wangshuai.resting",
+        "liuyao.timing.binding.partner-clash",
+        "liuyao.timing.binding.target-clash"
+      ],
+      "unknowns": [],
+      "reviewStatus": "reviewed",
+      "coverage": [
+        "合住/合绊/化合",
+        "应期条件联动"
+      ],
+      "legacyDescription": {
+        "nature": "原书占例",
+        "declaredHexagram": "地火明夷之雷山小过",
+        "declaredMovingLines": "初、四爻动",
+        "declaredUseSpirit": "四爻世爻官鬼丑土"
+      },
+      "expected": {
+        "trend": "nanCheng",
+        "nuance": "抑重于扶",
+        "conditionRuleIds": [
+          "liuyao.condition.binding.clash-open"
+        ],
+        "absentConditionRuleIds": [],
+        "factorRuleIds": [
+          "liuyao.decision.mixed-adverse-active",
+          "liuyao.rule.dongbian.return-generates",
+          "liuyao.rule.shengke.moving-overcomes",
+          "liuyao.rule.special.day-joins",
+          "liuyao.rule.wangshuai.resting"
+        ],
+        "timingBranches": [
+          "午",
+          "未"
+        ],
+        "hasUnrescuedCondition": false,
+        "decisionRowId": "liuyao.decision.mixed-adverse-active",
+        "factorIds": [
+          "lyf-0bd869dfba139527037e753e",
+          "lyf-d2e93977abc33e1765218c79",
+          "lyf-bda72972c9ba88adab607cd3",
+          "lyf-10add29496b43cd3ca00ad9f",
+          "lyf-3503d94862f13badf5206695"
+        ],
+        "conditionIds": [
+          "lyc-31c4bd3d2ccc33b5624e204d"
+        ],
+        "timingIds": [
+          "lyt-ba61db9863db10a046cc3af2",
+          "lyt-b129c8ea1bfa12d371db8ce8"
+        ]
+      }
+    },
+    {
+      "caseId": "liuyao.case.golden.012",
+      "caseKind": "originalBook",
+      "evaluationSplit": "calibration",
+      "question": "弟已得重罪，兄能否救",
+      "pan": {
+        "numbers": [
+          7,
+          8,
+          8,
+          6,
+          8,
+          8
+        ],
+        "monthBranch": "卯",
+        "dayGanZhi": "己卯",
+        "declaredMainGuaName": "地雷复",
+        "declaredChangingGuaName": "震为雷",
+        "declaredMovingPositions": [
+          4
+        ]
+      },
+      "useSpirit": {
+        "mode": "selectedVisible",
+        "position": 4,
+        "declaredActorId": "main:yao:4",
+        "declaredLiuQin": "兄弟",
+        "declaredBranch": "丑",
+        "declaredWuXing": "土"
+      },
+      "reference": {
+        "chapter": "五行相生章",
+        "printedPages": "24",
+        "referenceKind": "paraphrase",
+        "adjudication": "兄爻虽受日月克，幸化午火回头生；原断速救，后蒙恩免死"
+      },
+      "sourceRefs": [
+        {
+          "sourceId": "liuyao.source.zengshan.zhongguonaner-pdf",
+          "locator": "chapter:五行相生章; printed-pages:24",
+          "evidenceLevel": "b",
+          "referenceKind": "paraphrase"
+        },
+        {
+          "sourceId": "liuyao.source.project.analysis-contract",
+          "locator": "analysis-contract:versioned-verdict-and-timing",
+          "evidenceLevel": "d",
+          "referenceKind": "projectConvention"
+        }
+      ],
+      "ruleIds": [
+        "liuyao.condition.binding.clash-open",
+        "liuyao.decision.return-generate-unblocked",
+        "liuyao.rule.dongbian.return-generates",
+        "liuyao.rule.hechong.moving-bound",
+        "liuyao.rule.wangshuai.day-overcomes",
+        "liuyao.rule.wangshuai.dead",
+        "liuyao.rule.wangshuai.month-overcomes",
+        "liuyao.timing.binding.partner-clash",
+        "liuyao.timing.binding.target-clash"
+      ],
+      "unknowns": [],
+      "reviewStatus": "reviewed",
+      "coverage": [
+        "回头生克",
+        "旺衰/日月生克"
+      ],
+      "legacyDescription": {
+        "nature": "原书占例",
+        "declaredHexagram": "地雷复之震为雷",
+        "declaredMovingLines": "四爻丑土独发化午火",
+        "declaredUseSpirit": "四爻兄弟丑土"
+      },
+      "expected": {
+        "trend": "keCheng",
+        "nuance": "先难后成",
+        "conditionRuleIds": [
+          "liuyao.condition.binding.clash-open"
+        ],
+        "absentConditionRuleIds": [],
+        "factorRuleIds": [
+          "liuyao.decision.return-generate-unblocked",
+          "liuyao.rule.dongbian.return-generates",
+          "liuyao.rule.hechong.moving-bound",
+          "liuyao.rule.wangshuai.day-overcomes",
+          "liuyao.rule.wangshuai.dead",
+          "liuyao.rule.wangshuai.month-overcomes"
+        ],
+        "timingBranches": [
+          "午",
+          "未"
+        ],
+        "hasUnrescuedCondition": false,
+        "decisionRowId": "liuyao.decision.return-generate-unblocked",
+        "factorIds": [
+          "lyf-adc5f9f057c04d5408103871",
+          "lyf-8f080bed6357cdb10fed9b59",
+          "lyf-4b00621f01a97bfafffbe7bf",
+          "lyf-d2e93977abc33e1765218c79",
+          "lyf-62e98a470cf985c8cd7edd25",
+          "lyf-a1e48fffbc24784406b291b5"
+        ],
+        "conditionIds": [
+          "lyc-36baff8fc77a9c21f2a05f78"
+        ],
+        "timingIds": [
+          "lyt-ed4c5bb996129fcb0a2df97c",
+          "lyt-812d0acf2788a317848d4c6f"
+        ]
+      }
+    },
+    {
+      "caseId": "liuyao.case.golden.013",
+      "caseKind": "originalBook",
+      "evaluationSplit": "holdout",
+      "question": "父官事已拟重罪",
+      "pan": {
+        "numbers": [
+          6,
+          8,
+          6,
+          7,
+          7,
+          6
+        ],
+        "monthBranch": "卯",
+        "dayGanZhi": "戊辰",
+        "declaredMainGuaName": "泽地萃",
+        "declaredChangingGuaName": "天火同人",
+        "declaredMovingPositions": [
+          1,
+          3,
+          6
+        ]
+      },
+      "useSpirit": {
+        "mode": "selectedVisible",
+        "position": 6,
+        "declaredActorId": "main:yao:6",
+        "declaredLiuQin": "父母",
+        "declaredBranch": "未",
+        "declaredWuXing": "土"
+      },
+      "reference": {
+        "chapter": "五行相克章",
+        "printedPages": "25",
+        "referenceKind": "paraphrase",
+        "adjudication": "父母未土受月克、日刑及亥卯未木局克，全无救助，后果重刑"
+      },
+      "sourceRefs": [
+        {
+          "sourceId": "liuyao.source.zengshan.zhongguonaner-pdf",
+          "locator": "chapter:五行相克章; printed-pages:25",
+          "evidenceLevel": "b",
+          "referenceKind": "paraphrase"
+        },
+        {
+          "sourceId": "liuyao.source.project.analysis-contract",
+          "locator": "analysis-contract:versioned-verdict-and-timing",
+          "evidenceLevel": "d",
+          "referenceKind": "projectConvention"
+        }
+      ],
+      "ruleIds": [
+        "liuyao.condition.changed-void.fill-or-clash",
+        "liuyao.condition.tomb.clash-open",
+        "liuyao.decision.mixed-adverse-active",
+        "liuyao.rule.dongbian.changed-void",
+        "liuyao.rule.dongbian.progress",
+        "liuyao.rule.mujue.day-tomb",
+        "liuyao.rule.shengke.moving-overcomes",
+        "liuyao.rule.shengke.moving-supports",
+        "liuyao.rule.wangshuai.day-supports",
+        "liuyao.rule.wangshuai.dead",
+        "liuyao.rule.wangshuai.month-overcomes",
+        "liuyao.timing.changed-void.branch-clash",
+        "liuyao.timing.changed-void.branch-fills",
+        "liuyao.timing.tomb.clash-opens"
+      ],
+      "unknowns": [],
+      "reviewStatus": "reviewed",
+      "coverage": [
+        "旺衰/日月生克"
+      ],
+      "legacyDescription": {
+        "nature": "原书占例",
+        "declaredHexagram": "泽地萃之天火同人",
+        "declaredMovingLines": "初、三、上爻动",
+        "declaredUseSpirit": "上爻父母未土"
+      },
+      "expected": {
+        "trend": "nanCheng",
+        "nuance": "抑重于扶",
+        "conditionRuleIds": [
+          "liuyao.condition.changed-void.fill-or-clash",
+          "liuyao.condition.tomb.clash-open"
+        ],
+        "absentConditionRuleIds": [],
+        "factorRuleIds": [
+          "liuyao.decision.mixed-adverse-active",
+          "liuyao.rule.dongbian.changed-void",
+          "liuyao.rule.dongbian.progress",
+          "liuyao.rule.mujue.day-tomb",
+          "liuyao.rule.shengke.moving-overcomes",
+          "liuyao.rule.shengke.moving-supports",
+          "liuyao.rule.wangshuai.day-supports",
+          "liuyao.rule.wangshuai.dead",
+          "liuyao.rule.wangshuai.month-overcomes"
+        ],
+        "timingBranches": [
+          "戌",
+          "辰"
+        ],
+        "hasUnrescuedCondition": false,
+        "decisionRowId": "liuyao.decision.mixed-adverse-active",
+        "factorIds": [
+          "lyf-8b02b2477ec0979ca526840c",
+          "lyf-7c05669cda5b1ac19389f927",
+          "lyf-d6cd3f818ecaff03a7658efa",
+          "lyf-40930684a0cd2a81c3327727",
+          "lyf-42b4b8193bafa707c978dd51",
+          "lyf-6a251eff1ef8a10c381be51b",
+          "lyf-844659653ae2d26655f2b987",
+          "lyf-aef38f6956dc27ff3e361442",
+          "lyf-0e6746a14e374d8c87dfccb8"
+        ],
+        "conditionIds": [
+          "lyc-1e2d5935bf2a190867a4c3cd",
+          "lyc-1331c207a3d52dd13a063d1a"
+        ],
+        "timingIds": [
+          "lyt-a03eb24f4d33258082c523c9",
+          "lyt-bc1f253579fb98f9c2f10dc5"
+        ]
+      }
+    },
+    {
+      "caseId": "liuyao.case.golden.014",
+      "caseKind": "originalBook",
+      "evaluationSplit": "holdout",
+      "question": "兄官事同案已拟重罪",
+      "pan": {
+        "numbers": [
+          8,
+          6,
+          8,
+          7,
+          7,
+          7
+        ],
+        "monthBranch": "卯",
+        "dayGanZhi": "戊辰",
+        "declaredMainGuaName": "天地否",
+        "declaredChangingGuaName": "天水讼",
+        "declaredMovingPositions": [
+          2
+        ]
+      },
+      "useSpirit": {
+        "mode": "selectedVisible",
+        "position": 5,
+        "declaredActorId": "main:yao:5",
+        "declaredLiuQin": "兄弟",
+        "declaredBranch": "申",
+        "declaredWuXing": "金"
+      },
+      "reference": {
+        "chapter": "五行相克章、克处逢生章",
+        "printedPages": "25-26",
+        "referenceKind": "paraphrase",
+        "adjudication": "巳火忌神克申，辰日冲戌父暗动生申，克处逢生，后援例免死"
+      },
+      "sourceRefs": [
+        {
+          "sourceId": "liuyao.source.zengshan.zhongguonaner-pdf",
+          "locator": "chapter:五行相克章、克处逢生章; printed-pages:25-26",
+          "evidenceLevel": "b",
+          "referenceKind": "paraphrase"
+        },
+        {
+          "sourceId": "liuyao.source.project.analysis-contract",
+          "locator": "analysis-contract:versioned-verdict-and-timing",
+          "evidenceLevel": "d",
+          "referenceKind": "projectConvention"
+        }
+      ],
+      "ruleIds": [
+        "liuyao.decision.mixed-l1-support",
+        "liuyao.rule.shengke.binding-suppresses-overcoming",
+        "liuyao.rule.shengke.moving-overcomes",
+        "liuyao.rule.wangshuai.confined",
+        "liuyao.rule.wangshuai.day-generates"
+      ],
+      "unknowns": [],
+      "reviewStatus": "reviewed",
+      "coverage": [
+        "元神/忌神/仇神",
+        "旺衰/日月生克"
+      ],
+      "legacyDescription": {
+        "nature": "原书占例",
+        "declaredHexagram": "天地否之天水讼",
+        "declaredMovingLines": "二爻巳火独发",
+        "declaredUseSpirit": "五爻兄弟申金"
+      },
+      "expected": {
+        "trend": "daiTiaoJian",
+        "nuance": "先难后成",
+        "conditionRuleIds": [],
+        "absentConditionRuleIds": [],
+        "factorRuleIds": [
+          "liuyao.decision.mixed-l1-support",
+          "liuyao.rule.shengke.binding-suppresses-overcoming",
+          "liuyao.rule.shengke.moving-overcomes",
+          "liuyao.rule.wangshuai.confined",
+          "liuyao.rule.wangshuai.day-generates"
+        ],
+        "timingBranches": [],
+        "hasUnrescuedCondition": false,
+        "decisionRowId": "liuyao.decision.mixed-l1-support",
+        "factorIds": [
+          "lyf-1438a405ce501067cf7b0a5d",
+          "lyf-a504c21cb3495c2a1e4e8cc7",
+          "lyf-edfc839279ff6996c715d228",
+          "lyf-3b3bad3063dff0bbdf8df433",
+          "lyf-c76dfa2b76343828334923d0"
+        ],
+        "conditionIds": [],
+        "timingIds": []
+      }
+    },
+    {
+      "caseId": "liuyao.case.golden.015",
+      "caseKind": "originalBook",
+      "evaluationSplit": "calibration",
+      "question": "新迁住宅后人口不安",
+      "pan": {
+        "numbers": [
+          7,
+          7,
+          7,
+          6,
+          7,
+          6
+        ],
+        "monthBranch": "卯",
+        "dayGanZhi": "癸亥",
+        "declaredMainGuaName": "水天需",
+        "declaredChangingGuaName": "乾为天",
+        "declaredMovingPositions": [
+          4,
+          6
+        ]
+      },
+      "useSpirit": {
+        "mode": "selectedVisible",
+        "position": 4,
+        "declaredActorId": "main:yao:4",
+        "declaredLiuQin": "子孙",
+        "declaredBranch": "申",
+        "declaredWuXing": "金"
+      },
+      "reference": {
+        "chapter": "五行相克章",
+        "printedPages": "25",
+        "referenceKind": "paraphrase",
+        "adjudication": "世爻申金化午火回头克，原断速迁；未迁而午月遭河决"
+      },
+      "sourceRefs": [
+        {
+          "sourceId": "liuyao.source.zengshan.zhongguonaner-pdf",
+          "locator": "chapter:五行相克章; printed-pages:25",
+          "evidenceLevel": "b",
+          "referenceKind": "paraphrase"
+        },
+        {
+          "sourceId": "liuyao.source.project.analysis-contract",
+          "locator": "analysis-contract:versioned-verdict-and-timing",
+          "evidenceLevel": "d",
+          "referenceKind": "projectConvention"
+        }
+      ],
+      "ruleIds": [
+        "liuyao.decision.return-overcome-without-l1-support",
+        "liuyao.rule.dongbian.return-overcomes",
+        "liuyao.rule.wangshuai.confined"
+      ],
+      "unknowns": [],
+      "reviewStatus": "reviewed",
+      "coverage": [
+        "化空破墓绝",
+        "回头生克"
+      ],
+      "legacyDescription": {
+        "nature": "原书占例",
+        "declaredHexagram": "水天需之乾为天",
+        "declaredMovingLines": "四、上爻动",
+        "declaredUseSpirit": "四爻世爻子孙申金"
+      },
+      "expected": {
+        "trend": "nanCheng",
+        "nuance": "克处无生",
+        "conditionRuleIds": [],
+        "absentConditionRuleIds": [],
+        "factorRuleIds": [
+          "liuyao.decision.return-overcome-without-l1-support",
+          "liuyao.rule.dongbian.return-overcomes",
+          "liuyao.rule.wangshuai.confined"
+        ],
+        "timingBranches": [],
+        "hasUnrescuedCondition": false,
+        "decisionRowId": "liuyao.decision.return-overcome-without-l1-support",
+        "factorIds": [
+          "lyf-17aeee160ea36325357c4356",
+          "lyf-15d5be0ee6eb1713501c4239",
+          "lyf-8ed9b838f41fde3bd18a1ad9"
+        ],
+        "conditionIds": [],
+        "timingIds": []
+      }
+    },
+    {
+      "caseId": "liuyao.case.golden.016",
+      "caseKind": "originalBook",
+      "evaluationSplit": "calibration",
+      "question": "弟痘症临危能否救",
+      "pan": {
+        "numbers": [
+          7,
+          8,
+          7,
+          6,
+          7,
+          8
+        ],
+        "monthBranch": "辰",
+        "dayGanZhi": "丙申",
+        "declaredMainGuaName": "水火既济",
+        "declaredChangingGuaName": "泽火革",
+        "declaredMovingPositions": [
+          4
+        ]
+      },
+      "useSpirit": {
+        "mode": "selectedVisible",
+        "position": 3,
+        "declaredActorId": "main:yao:3",
+        "declaredLiuQin": "兄弟",
+        "declaredBranch": "亥",
+        "declaredWuXing": "水"
+      },
+      "reference": {
+        "chapter": "克处逢生章",
+        "printedPages": "26",
+        "referenceKind": "paraphrase",
+        "adjudication": "月建辰土虽克亥水，得申日与申金动生，临危有救，后当日获医"
+      },
+      "sourceRefs": [
+        {
+          "sourceId": "liuyao.source.zengshan.zhongguonaner-pdf",
+          "locator": "chapter:克处逢生章; printed-pages:26",
+          "evidenceLevel": "b",
+          "referenceKind": "paraphrase"
+        },
+        {
+          "sourceId": "liuyao.source.project.analysis-contract",
+          "locator": "analysis-contract:versioned-verdict-and-timing",
+          "evidenceLevel": "d",
+          "referenceKind": "projectConvention"
+        },
+        {
+          "sourceId": "liuyao.source.bushi-zhengzong.distiller-2004-pdf",
+          "locator": "candidate locator: auxiliary punishment/harm evidence",
+          "evidenceLevel": "c",
+          "referenceKind": "locatorOnly"
+        }
+      ],
+      "ruleIds": [
+        "liuyao.condition.tomb.clash-open",
+        "liuyao.decision.mixed-source-continuity",
+        "liuyao.rule.fushen.flight-overcomes-hidden",
+        "liuyao.rule.mujue.month-tomb",
+        "liuyao.rule.shengke.moving-generates",
+        "liuyao.rule.wangshuai.day-generates",
+        "liuyao.rule.wangshuai.dead",
+        "liuyao.rule.wangshuai.month-overcomes",
+        "liuyao.timing.tomb.clash-opens"
+      ],
+      "unknowns": [],
+      "reviewStatus": "reviewed",
+      "coverage": [
+        "元神/忌神/仇神",
+        "旺衰/日月生克"
+      ],
+      "legacyDescription": {
+        "nature": "原书占例",
+        "declaredHexagram": "水火既济之泽火革",
+        "declaredMovingLines": "四爻申金独发",
+        "declaredUseSpirit": "三爻世爻兄弟亥水"
+      },
+      "expected": {
+        "trend": "daiTiaoJian",
+        "nuance": "先难后成",
+        "conditionRuleIds": [
+          "liuyao.condition.tomb.clash-open"
+        ],
+        "absentConditionRuleIds": [],
+        "factorRuleIds": [
+          "liuyao.decision.mixed-source-continuity",
+          "liuyao.rule.fushen.flight-overcomes-hidden",
+          "liuyao.rule.mujue.month-tomb",
+          "liuyao.rule.shengke.moving-generates",
+          "liuyao.rule.wangshuai.day-generates",
+          "liuyao.rule.wangshuai.dead",
+          "liuyao.rule.wangshuai.month-overcomes"
+        ],
+        "timingBranches": [
+          "戌"
+        ],
+        "hasUnrescuedCondition": false,
+        "decisionRowId": "liuyao.decision.mixed-source-continuity",
+        "factorIds": [
+          "lyf-b3b3dccb46b83387348799fb",
+          "lyf-3650b798c8d2fe904a978170",
+          "lyf-a7abf96c43fbc5fba6df6698",
+          "lyf-bdd67eda5c888708a1ae300a",
+          "lyf-86d0d63436fcc7f01202e43d",
+          "lyf-f552b587dcc769ac782ee555",
+          "lyf-fc7db799c6f781d44dab20d7"
+        ],
+        "conditionIds": [
+          "lyc-6abdae255bdbfa6ac6a184c7"
+        ],
+        "timingIds": [
+          "lyt-71f289391c3214b951e436fe"
+        ]
+      }
+    },
+    {
+      "caseId": "liuyao.case.golden.017",
+      "caseKind": "originalBook",
+      "evaluationSplit": "calibration",
+      "question": "远行求财能否成行",
+      "pan": {
+        "numbers": [
+          7,
+          7,
+          7,
+          8,
+          8,
+          7
+        ],
+        "monthBranch": "子",
+        "dayGanZhi": "辛亥",
+        "declaredMainGuaName": "山天大畜",
+        "declaredChangingGuaName": null,
+        "declaredMovingPositions": []
+      },
+      "useSpirit": {
+        "mode": "selectedVisible",
+        "position": 2,
+        "declaredActorId": "main:yao:2",
+        "declaredLiuQin": "官鬼",
+        "declaredBranch": "寅",
+        "declaredWuXing": "木"
+      },
+      "reference": {
+        "chapter": "旬空章",
+        "printedPages": "45-46",
+        "referenceKind": "paraphrase",
+        "adjudication": "世空但得月日财水生，大象吉，原断甲寅出空后成行且满载而归"
+      },
+      "sourceRefs": [
+        {
+          "sourceId": "liuyao.source.zengshan.zhongguonaner-pdf",
+          "locator": "chapter:旬空章; printed-pages:45-46",
+          "evidenceLevel": "b",
+          "referenceKind": "paraphrase"
+        },
+        {
+          "sourceId": "liuyao.source.project.analysis-contract",
+          "locator": "analysis-contract:versioned-verdict-and-timing",
+          "evidenceLevel": "d",
+          "referenceKind": "projectConvention"
+        }
+      ],
+      "ruleIds": [
+        "liuyao.condition.void.fill-or-clash",
+        "liuyao.decision.strong-with-conditions",
+        "liuyao.rule.fushen.flight-generates-hidden",
+        "liuyao.rule.fushen.hidden-released",
+        "liuyao.rule.kongwang.apparent-void",
+        "liuyao.rule.kongwang.void",
+        "liuyao.rule.special.day-joins",
+        "liuyao.rule.wangshuai.day-generates",
+        "liuyao.rule.wangshuai.month-generates",
+        "liuyao.rule.wangshuai.supported",
+        "liuyao.timing.void.branch-clash",
+        "liuyao.timing.void.branch-fills"
+      ],
+      "unknowns": [],
+      "reviewStatus": "reviewed",
+      "coverage": [
+        "应期条件联动",
+        "旺衰/日月生克",
+        "真空假空"
+      ],
+      "legacyDescription": {
+        "nature": "原书占例",
+        "declaredHexagram": "山天大畜安静",
+        "declaredMovingLines": "无",
+        "declaredUseSpirit": "二爻世爻官鬼寅木（以世断能否成行）"
+      },
+      "expected": {
+        "trend": "daiTiaoJian",
+        "nuance": "成而有待",
+        "conditionRuleIds": [
+          "liuyao.condition.void.fill-or-clash"
+        ],
+        "absentConditionRuleIds": [],
+        "factorRuleIds": [
+          "liuyao.decision.strong-with-conditions",
+          "liuyao.rule.fushen.flight-generates-hidden",
+          "liuyao.rule.fushen.hidden-released",
+          "liuyao.rule.kongwang.apparent-void",
+          "liuyao.rule.kongwang.void",
+          "liuyao.rule.special.day-joins",
+          "liuyao.rule.wangshuai.day-generates",
+          "liuyao.rule.wangshuai.month-generates",
+          "liuyao.rule.wangshuai.supported"
+        ],
+        "timingBranches": [
+          "寅",
+          "申"
+        ],
+        "hasUnrescuedCondition": false,
+        "decisionRowId": "liuyao.decision.strong-with-conditions",
+        "factorIds": [
+          "lyf-4af0baff5b867dc7ab4915d4",
+          "lyf-c70031ddf97caee8ad10b88c",
+          "lyf-6cf7731dc1f493eb651edcf5",
+          "lyf-e44963cd0e1ae0acd991f74c",
+          "lyf-e23749b4ecc5121a4fa2dbb6",
+          "lyf-f4c9fc0f2b09f2e8a389db23",
+          "lyf-b83872a0c066fc97fd0183e9",
+          "lyf-b1e9224c5f92cee0fd92bce5",
+          "lyf-c198d294082ea83269a74da5"
+        ],
+        "conditionIds": [
+          "lyc-8aabe840c5a20f136b8a0f67"
+        ],
+        "timingIds": [
+          "lyt-29f6748f6546b71b56a16f54",
+          "lyt-b75c1463eca4771bfa828442"
+        ]
+      }
+    },
+    {
+      "caseId": "liuyao.case.golden.018",
+      "caseKind": "originalBook",
+      "evaluationSplit": "calibration",
+      "question": "父何日回",
+      "pan": {
+        "numbers": [
+          8,
+          8,
+          8,
+          6,
+          7,
+          7
+        ],
+        "monthBranch": "寅",
+        "dayGanZhi": "辛卯",
+        "declaredMainGuaName": "风地观",
+        "declaredChangingGuaName": "天地否",
+        "declaredMovingPositions": [
+          4
+        ]
+      },
+      "useSpirit": {
+        "mode": "selectedVisible",
+        "position": 4,
+        "declaredActorId": "main:yao:4",
+        "declaredLiuQin": "父母",
+        "declaredBranch": "未",
+        "declaredWuXing": "土"
+      },
+      "reference": {
+        "chapter": "旬空章",
+        "printedPages": "46",
+        "referenceKind": "paraphrase",
+        "adjudication": "父爻虽真空且日月伤克，但动化回头生；就归期断未日出空而到"
+      },
+      "sourceRefs": [
+        {
+          "sourceId": "liuyao.source.zengshan.zhongguonaner-pdf",
+          "locator": "chapter:旬空章; printed-pages:46",
+          "evidenceLevel": "b",
+          "referenceKind": "paraphrase"
+        },
+        {
+          "sourceId": "liuyao.source.project.analysis-contract",
+          "locator": "analysis-contract:versioned-verdict-and-timing",
+          "evidenceLevel": "d",
+          "referenceKind": "projectConvention"
+        }
+      ],
+      "ruleIds": [
+        "liuyao.condition.changed-void.fill-or-clash",
+        "liuyao.condition.void.fill-or-clash",
+        "liuyao.decision.mixed-rescuable-conditions",
+        "liuyao.rule.dongbian.changed-join",
+        "liuyao.rule.dongbian.changed-void",
+        "liuyao.rule.dongbian.return-generates",
+        "liuyao.rule.kongwang.apparent-void",
+        "liuyao.rule.kongwang.void",
+        "liuyao.rule.wangshuai.day-overcomes",
+        "liuyao.rule.wangshuai.dead",
+        "liuyao.rule.wangshuai.month-overcomes",
+        "liuyao.timing.changed-void.branch-clash",
+        "liuyao.timing.changed-void.branch-fills",
+        "liuyao.timing.void.branch-fills"
+      ],
+      "unknowns": [],
+      "reviewStatus": "reviewed",
+      "coverage": [
+        "回头生克",
+        "应期条件联动",
+        "真空假空"
+      ],
+      "legacyDescription": {
+        "nature": "原书占例",
+        "declaredHexagram": "风地观之天地否",
+        "declaredMovingLines": "四爻未土独发化午火",
+        "declaredUseSpirit": "四爻父母未土"
+      },
+      "expected": {
+        "trend": "daiTiaoJian",
+        "nuance": "待解除后再断",
+        "conditionRuleIds": [
+          "liuyao.condition.changed-void.fill-or-clash",
+          "liuyao.condition.void.fill-or-clash"
+        ],
+        "absentConditionRuleIds": [],
+        "factorRuleIds": [
+          "liuyao.decision.mixed-rescuable-conditions",
+          "liuyao.rule.dongbian.changed-join",
+          "liuyao.rule.dongbian.changed-void",
+          "liuyao.rule.dongbian.return-generates",
+          "liuyao.rule.kongwang.apparent-void",
+          "liuyao.rule.kongwang.void",
+          "liuyao.rule.wangshuai.day-overcomes",
+          "liuyao.rule.wangshuai.dead",
+          "liuyao.rule.wangshuai.month-overcomes"
+        ],
+        "timingBranches": [
+          "午",
+          "子",
+          "未"
+        ],
+        "hasUnrescuedCondition": false,
+        "decisionRowId": "liuyao.decision.mixed-rescuable-conditions",
+        "factorIds": [
+          "lyf-adc5f9f057c04d5408103871",
+          "lyf-8f080bed6357cdb10fed9b59",
+          "lyf-4b00621f01a97bfafffbe7bf",
+          "lyf-d2e93977abc33e1765218c79",
+          "lyf-3973047f07e44c92b9336960",
+          "lyf-bfc0e5d1f025ad02007cc809",
+          "lyf-f156a272c19ec12df182f6bd",
+          "lyf-8619e9ea5c14d03508d36735",
+          "lyf-3926f170cbe30e536be17203"
+        ],
+        "conditionIds": [
+          "lyc-76dc1f5cb5d1f012b75f2e95",
+          "lyc-005ca35d630059df9a0dab61"
+        ],
+        "timingIds": [
+          "lyt-fb19924f8c59fec8a8d4d8ed",
+          "lyt-ea361983ca7746a9b012451e",
+          "lyt-2b95d1d3f02fc8753465b11e"
+        ]
+      }
+    },
+    {
+      "caseId": "liuyao.case.golden.019",
+      "caseKind": "originalBook",
+      "evaluationSplit": "calibration",
+      "question": "将来有官否",
+      "pan": {
+        "numbers": [
+          9,
+          7,
+          8,
+          7,
+          7,
+          6
+        ],
+        "monthBranch": "亥",
+        "dayGanZhi": "己丑",
+        "declaredMainGuaName": "兑为泽",
+        "declaredChangingGuaName": "天水讼",
+        "declaredMovingPositions": [
+          1,
+          6
+        ]
+      },
+      "useSpirit": {
+        "mode": "selectedVisible",
+        "position": 1,
+        "declaredActorId": "main:yao:1",
+        "declaredLiuQin": "官鬼",
+        "declaredBranch": "巳",
+        "declaredWuXing": "火"
+      },
+      "reference": {
+        "chapter": "月破章",
+        "printedPages": "50",
+        "referenceKind": "paraphrase",
+        "adjudication": "官鬼虽月破仍发动生世，出月实破后有用，原断实破巳年得官"
+      },
+      "sourceRefs": [
+        {
+          "sourceId": "liuyao.source.zengshan.zhongguonaner-pdf",
+          "locator": "chapter:月破章; printed-pages:50",
+          "evidenceLevel": "b",
+          "referenceKind": "paraphrase"
+        },
+        {
+          "sourceId": "liuyao.source.project.analysis-contract",
+          "locator": "analysis-contract:versioned-verdict-and-timing",
+          "evidenceLevel": "d",
+          "referenceKind": "projectConvention"
+        }
+      ],
+      "ruleIds": [
+        "liuyao.condition.month-break.exit-fill-or-join",
+        "liuyao.condition.terminal.changsheng-support",
+        "liuyao.decision.mixed-rescuable-conditions",
+        "liuyao.rule.dongbian.return-generates",
+        "liuyao.rule.mujue.terminal",
+        "liuyao.rule.wangshuai.dead",
+        "liuyao.rule.wangshuai.month-break",
+        "liuyao.rule.wangshuai.month-overcomes",
+        "liuyao.timing.month-break.branch-fills",
+        "liuyao.timing.month-break.branch-joins",
+        "liuyao.timing.month-break.next-month",
+        "liuyao.timing.terminal.changsheng-arrives"
+      ],
+      "unknowns": [],
+      "reviewStatus": "reviewed",
+      "coverage": [
+        "回头生克",
+        "应期条件联动",
+        "月破"
+      ],
+      "legacyDescription": {
+        "nature": "原书占例",
+        "declaredHexagram": "兑为泽之天水讼",
+        "declaredMovingLines": "初、上爻动",
+        "declaredUseSpirit": "初爻官鬼巳火"
+      },
+      "expected": {
+        "trend": "daiTiaoJian",
+        "nuance": "待解除后再断",
+        "conditionRuleIds": [
+          "liuyao.condition.month-break.exit-fill-or-join",
+          "liuyao.condition.terminal.changsheng-support"
+        ],
+        "absentConditionRuleIds": [],
+        "factorRuleIds": [
+          "liuyao.decision.mixed-rescuable-conditions",
+          "liuyao.rule.dongbian.return-generates",
+          "liuyao.rule.mujue.terminal",
+          "liuyao.rule.wangshuai.dead",
+          "liuyao.rule.wangshuai.month-break",
+          "liuyao.rule.wangshuai.month-overcomes"
+        ],
+        "timingBranches": [
+          "子",
+          "寅",
+          "巳",
+          "申"
+        ],
+        "hasUnrescuedCondition": false,
+        "decisionRowId": "liuyao.decision.mixed-rescuable-conditions",
+        "factorIds": [
+          "lyf-e78509e854ff31d1161242b8",
+          "lyf-414b4672bb37bc5fca75d23e",
+          "lyf-9ade2fd8b7ce1491bc3c99c5",
+          "lyf-1764026de77dd6e982a4b266",
+          "lyf-1e6e9d0178ca7e5ecd006af1",
+          "lyf-d701e0f2d800c02bfe987b0e"
+        ],
+        "conditionIds": [
+          "lyc-f39f48744012ea38b8046ecf",
+          "lyc-cd20d5f215b68279ea51d247"
+        ],
+        "timingIds": [
+          "lyt-680d231784e03bfbbe33bfc3",
+          "lyt-f1f8ab347210c7bb3f420801",
+          "lyt-303b442f35a052296a0d6102",
+          "lyt-a26ae1c3e61109240c3f2fec"
+        ]
+      }
+    },
+    {
+      "caseId": "liuyao.case.golden.020",
+      "caseKind": "originalBook",
+      "evaluationSplit": "calibration",
+      "question": "乡试能否中并联捷",
+      "pan": {
+        "numbers": [
+          8,
+          7,
+          7,
+          7,
+          6,
+          8
+        ],
+        "monthBranch": "申",
+        "dayGanZhi": "癸卯",
+        "declaredMainGuaName": "雷风恒",
+        "declaredChangingGuaName": "泽风大过",
+        "declaredMovingPositions": [
+          5
+        ]
+      },
+      "useSpirit": {
+        "mode": "selectedVisible",
+        "position": 3,
+        "declaredActorId": "main:yao:3",
+        "declaredLiuQin": "官鬼",
+        "declaredBranch": "酉",
+        "declaredWuXing": "金"
+      },
+      "reference": {
+        "chapter": "进退章",
+        "printedPages": "55-56",
+        "referenceKind": "paraphrase",
+        "adjudication": "官星持世旺相暗动，又得五爻官化进拱扶，原断今秋明春联捷"
+      },
+      "sourceRefs": [
+        {
+          "sourceId": "liuyao.source.zengshan.zhongguonaner-pdf",
+          "locator": "chapter:进退章; printed-pages:55-56",
+          "evidenceLevel": "b",
+          "referenceKind": "paraphrase"
+        },
+        {
+          "sourceId": "liuyao.source.project.analysis-contract",
+          "locator": "analysis-contract:versioned-verdict-and-timing",
+          "evidenceLevel": "d",
+          "referenceKind": "projectConvention"
+        },
+        {
+          "sourceId": "liuyao.source.bushi-zhengzong.distiller-2004-pdf",
+          "locator": "candidate locator: auxiliary punishment/harm evidence",
+          "evidenceLevel": "c",
+          "referenceKind": "locatorOnly"
+        }
+      ],
+      "ruleIds": [
+        "liuyao.decision.strong-clear",
+        "liuyao.rule.dongbian.hidden-moving",
+        "liuyao.rule.shengke.moving-supports",
+        "liuyao.rule.wangshuai.prosperous"
+      ],
+      "unknowns": [],
+      "reviewStatus": "reviewed",
+      "coverage": [
+        "化进退",
+        "旺衰/日月生克"
+      ],
+      "legacyDescription": {
+        "nature": "原书占例",
+        "declaredHexagram": "雷风恒之泽风大过",
+        "declaredMovingLines": "五爻申金独发化酉金",
+        "declaredUseSpirit": "三爻世爻官鬼酉金"
+      },
+      "expected": {
+        "trend": "keCheng",
+        "nuance": null,
+        "conditionRuleIds": [],
+        "absentConditionRuleIds": [],
+        "factorRuleIds": [
+          "liuyao.decision.strong-clear",
+          "liuyao.rule.dongbian.hidden-moving",
+          "liuyao.rule.shengke.moving-supports",
+          "liuyao.rule.wangshuai.prosperous"
+        ],
+        "timingBranches": [],
+        "hasUnrescuedCondition": false,
+        "decisionRowId": "liuyao.decision.strong-clear",
+        "factorIds": [
+          "lyf-41ee3fd5f275fcae7e75949d",
+          "lyf-b9a900cfc8371b4fe4d69ebc",
+          "lyf-5e085645dcda80a51324d605",
+          "lyf-cf5dc0c1006cf39ec741b58b"
+        ],
+        "conditionIds": [],
+        "timingIds": []
+      }
+    },
+    {
+      "caseId": "liuyao.case.golden.021",
+      "caseKind": "originalBook",
+      "evaluationSplit": "calibration",
+      "question": "何年生子",
+      "pan": {
+        "numbers": [
+          7,
+          6,
+          8,
+          8,
+          7,
+          8
+        ],
+        "monthBranch": "酉",
+        "dayGanZhi": "庚戌",
+        "declaredMainGuaName": "水雷屯",
+        "declaredChangingGuaName": "水泽节",
+        "declaredMovingPositions": [
+          2
+        ]
+      },
+      "useSpirit": {
+        "mode": "selectedVisible",
+        "position": 2,
+        "declaredActorId": "main:yao:2",
+        "declaredLiuQin": "子孙",
+        "declaredBranch": "寅",
+        "declaredWuXing": "木"
+      },
+      "reference": {
+        "chapter": "进退章",
+        "printedPages": "55-56",
+        "referenceKind": "paraphrase",
+        "adjudication": "子孙化进，动爻旬空、变爻空破，待寅卯年实空实破后连生"
+      },
+      "sourceRefs": [
+        {
+          "sourceId": "liuyao.source.zengshan.zhongguonaner-pdf",
+          "locator": "chapter:进退章; printed-pages:55-56",
+          "evidenceLevel": "b",
+          "referenceKind": "paraphrase"
+        },
+        {
+          "sourceId": "liuyao.source.project.analysis-contract",
+          "locator": "analysis-contract:versioned-verdict-and-timing",
+          "evidenceLevel": "d",
+          "referenceKind": "projectConvention"
+        }
+      ],
+      "ruleIds": [
+        "liuyao.condition.changed-break.exit-fill-or-join",
+        "liuyao.condition.changed-void.fill-or-clash",
+        "liuyao.condition.void.fill-or-clash",
+        "liuyao.decision.mixed-rescuable-conditions",
+        "liuyao.rule.dongbian.changed-break",
+        "liuyao.rule.dongbian.changed-void",
+        "liuyao.rule.dongbian.progress",
+        "liuyao.rule.kongwang.apparent-void",
+        "liuyao.rule.kongwang.void",
+        "liuyao.rule.wangshuai.dead",
+        "liuyao.rule.wangshuai.month-overcomes",
+        "liuyao.timing.changed-break.branch-fills",
+        "liuyao.timing.changed-break.branch-joins",
+        "liuyao.timing.changed-break.next-month",
+        "liuyao.timing.changed-void.branch-clash",
+        "liuyao.timing.changed-void.branch-fills",
+        "liuyao.timing.void.branch-fills"
+      ],
+      "unknowns": [],
+      "reviewStatus": "reviewed",
+      "coverage": [
+        "化空破墓绝",
+        "化进退",
+        "应期条件联动",
+        "月破",
+        "真空假空"
+      ],
+      "legacyDescription": {
+        "nature": "原书占例",
+        "declaredHexagram": "水雷屯之水泽节",
+        "declaredMovingLines": "二爻寅木独发化卯木",
+        "declaredUseSpirit": "二爻世爻子孙寅木"
+      },
+      "expected": {
+        "trend": "daiTiaoJian",
+        "nuance": "待解除后再断",
+        "conditionRuleIds": [
+          "liuyao.condition.changed-break.exit-fill-or-join",
+          "liuyao.condition.changed-void.fill-or-clash",
+          "liuyao.condition.void.fill-or-clash"
+        ],
+        "absentConditionRuleIds": [],
+        "factorRuleIds": [
+          "liuyao.decision.mixed-rescuable-conditions",
+          "liuyao.rule.dongbian.changed-break",
+          "liuyao.rule.dongbian.changed-void",
+          "liuyao.rule.dongbian.progress",
+          "liuyao.rule.kongwang.apparent-void",
+          "liuyao.rule.kongwang.void",
+          "liuyao.rule.wangshuai.dead",
+          "liuyao.rule.wangshuai.month-overcomes"
+        ],
+        "timingBranches": [
+          "卯",
+          "寅",
+          "戌",
+          "酉"
+        ],
+        "hasUnrescuedCondition": false,
+        "decisionRowId": "liuyao.decision.mixed-rescuable-conditions",
+        "factorIds": [
+          "lyf-4931aa23b60b15a81ad32bc6",
+          "lyf-bc3e2dd5cee6888a8b612c0a",
+          "lyf-805fda397eb3b459f0a70971",
+          "lyf-e44963cd0e1ae0acd991f74c",
+          "lyf-e23749b4ecc5121a4fa2dbb6",
+          "lyf-b2f0ecf92d9c9a770faed8e0",
+          "lyf-23e9aab4c4a8ab7d1f0cfec6",
+          "lyf-76a1291d0e47180866c2cb6e"
+        ],
+        "conditionIds": [
+          "lyc-8aabe840c5a20f136b8a0f67",
+          "lyc-126a0060191b8acfb39d1385",
+          "lyc-68c556ebc4135b3a239ac7dc"
+        ],
+        "timingIds": [
+          "lyt-29f6748f6546b71b56a16f54",
+          "lyt-e92b92e8ca4a509c4073081d",
+          "lyt-a3c3abec98f428902a0dd209",
+          "lyt-41485eeab4a74a85ff5f693b",
+          "lyt-00e8721c3f2b9389c1a2a40d"
+        ]
+      }
+    },
+    {
+      "caseId": "liuyao.case.golden.022",
+      "caseKind": "originalBook",
+      "evaluationSplit": "calibration",
+      "question": "求婚成否",
+      "pan": {
+        "numbers": [
+          9,
+          8,
+          8,
+          9,
+          6,
+          9
+        ],
+        "monthBranch": "卯",
+        "dayGanZhi": "乙丑",
+        "declaredMainGuaName": "火雷噬嗑",
+        "declaredChangingGuaName": "水地比",
+        "declaredMovingPositions": [
+          1,
+          4,
+          5,
+          6
+        ]
+      },
+      "useSpirit": {
+        "mode": "selectedVisible",
+        "position": 5,
+        "declaredActorId": "main:yao:5",
+        "declaredLiuQin": "妻财",
+        "declaredBranch": "未",
+        "declaredWuXing": "土"
+      },
+      "reference": {
+        "chapter": "进退章",
+        "printedPages": "56",
+        "referenceKind": "paraphrase",
+        "adjudication": "财持世化进，子孙巳火动生世，待午日冲去回头克子水后允婚"
+      },
+      "sourceRefs": [
+        {
+          "sourceId": "liuyao.source.zengshan.zhongguonaner-pdf",
+          "locator": "chapter:进退章; printed-pages:56",
+          "evidenceLevel": "b",
+          "referenceKind": "paraphrase"
+        },
+        {
+          "sourceId": "liuyao.source.project.analysis-contract",
+          "locator": "analysis-contract:versioned-verdict-and-timing",
+          "evidenceLevel": "d",
+          "referenceKind": "projectConvention"
+        },
+        {
+          "sourceId": "liuyao.source.bushi-zhengzong.distiller-2004-pdf",
+          "locator": "candidate locator: auxiliary punishment/harm evidence",
+          "evidenceLevel": "c",
+          "referenceKind": "locatorOnly"
+        }
+      ],
+      "ruleIds": [
+        "liuyao.condition.changed-void.fill-or-clash",
+        "liuyao.decision.mixed-rescuable-conditions",
+        "liuyao.rule.dongbian.changed-void",
+        "liuyao.rule.dongbian.day-clash-urges",
+        "liuyao.rule.dongbian.progress",
+        "liuyao.rule.shengke.moving-generates",
+        "liuyao.rule.wangshuai.day-supports",
+        "liuyao.rule.wangshuai.dead",
+        "liuyao.rule.wangshuai.month-overcomes",
+        "liuyao.timing.changed-void.branch-clash",
+        "liuyao.timing.changed-void.branch-fills"
+      ],
+      "unknowns": [],
+      "reviewStatus": "reviewed",
+      "coverage": [
+        "元神/忌神/仇神",
+        "化空破墓绝",
+        "化进退",
+        "应期条件联动"
+      ],
+      "legacyDescription": {
+        "nature": "原书占例",
+        "declaredHexagram": "火雷噬嗑之水地比",
+        "declaredMovingLines": "初、四、五、上爻动",
+        "declaredUseSpirit": "五爻世爻妻财未土"
+      },
+      "expected": {
+        "trend": "daiTiaoJian",
+        "nuance": "待解除后再断",
+        "conditionRuleIds": [
+          "liuyao.condition.changed-void.fill-or-clash"
+        ],
+        "absentConditionRuleIds": [],
+        "factorRuleIds": [
+          "liuyao.decision.mixed-rescuable-conditions",
+          "liuyao.rule.dongbian.changed-void",
+          "liuyao.rule.dongbian.day-clash-urges",
+          "liuyao.rule.dongbian.progress",
+          "liuyao.rule.shengke.moving-generates",
+          "liuyao.rule.wangshuai.day-supports",
+          "liuyao.rule.wangshuai.dead",
+          "liuyao.rule.wangshuai.month-overcomes"
+        ],
+        "timingBranches": [
+          "戌",
+          "辰"
+        ],
+        "hasUnrescuedCondition": false,
+        "decisionRowId": "liuyao.decision.mixed-rescuable-conditions",
+        "factorIds": [
+          "lyf-53e07794943f4fcc501f16ce",
+          "lyf-bf2a6da0daf97d5bb2fa5f01",
+          "lyf-0402e2fd18d11993370e38cf",
+          "lyf-304e10d40b2b2fa41e83be29",
+          "lyf-15f59588c9e649a9d2e7b6d6",
+          "lyf-ecb82d1b19d562b36bf49d94",
+          "lyf-0c88e988eead71587a0dafec",
+          "lyf-e441c402974325094b7ebb03"
+        ],
+        "conditionIds": [
+          "lyc-e2a80275f25ad679a9704a3c"
+        ],
+        "timingIds": [
+          "lyt-ac2061047128b359a961a7e0",
+          "lyt-bad91d0c75d2fc402adfec86"
+        ]
+      }
+    },
+    {
+      "caseId": "liuyao.case.golden.023",
+      "caseKind": "originalBook",
+      "evaluationSplit": "calibration",
+      "question": "被论后自陈能否免祸",
+      "pan": {
+        "numbers": [
+          6,
+          9,
+          6,
+          8,
+          8,
+          8
+        ],
+        "monthBranch": "酉",
+        "dayGanZhi": "甲辰",
+        "declaredMainGuaName": "地水师",
+        "declaredChangingGuaName": "地火明夷",
+        "declaredMovingPositions": [
+          1,
+          2,
+          3
+        ]
+      },
+      "useSpirit": {
+        "mode": "selectedVisible",
+        "position": 3,
+        "declaredActorId": "main:yao:3",
+        "declaredLiuQin": "妻财",
+        "declaredBranch": "午",
+        "declaredWuXing": "火"
+      },
+      "reference": {
+        "chapter": "进退章",
+        "printedPages": "56",
+        "referenceKind": "paraphrase",
+        "adjudication": "世爻化亥水回头克又化绝无扶，官退、子进亦非吉，原断大凶后革职拿问"
+      },
+      "sourceRefs": [
+        {
+          "sourceId": "liuyao.source.zengshan.zhongguonaner-pdf",
+          "locator": "chapter:进退章; printed-pages:56",
+          "evidenceLevel": "b",
+          "referenceKind": "paraphrase"
+        },
+        {
+          "sourceId": "liuyao.source.project.analysis-contract",
+          "locator": "analysis-contract:versioned-verdict-and-timing",
+          "evidenceLevel": "d",
+          "referenceKind": "projectConvention"
+        },
+        {
+          "sourceId": "liuyao.source.bushi-zhengzong.distiller-2004-pdf",
+          "locator": "candidate locator: auxiliary punishment/harm evidence",
+          "evidenceLevel": "c",
+          "referenceKind": "locatorOnly"
+        }
+      ],
+      "ruleIds": [
+        "liuyao.condition.terminal.changsheng-support",
+        "liuyao.decision.return-overcome-without-l1-support",
+        "liuyao.rule.dongbian.changed-terminal",
+        "liuyao.rule.dongbian.return-overcomes",
+        "liuyao.rule.shengke.binding-suppresses-generation",
+        "liuyao.rule.shengke.moving-generates",
+        "liuyao.rule.wangshuai.confined"
+      ],
+      "unknowns": [],
+      "reviewStatus": "reviewed",
+      "coverage": [
+        "化进退",
+        "回头生克"
+      ],
+      "legacyDescription": {
+        "nature": "原书占例",
+        "declaredHexagram": "地水师之地火明夷",
+        "declaredMovingLines": "初、二、三爻动",
+        "declaredUseSpirit": "三爻世爻妻财午火"
+      },
+      "expected": {
+        "trend": "nanCheng",
+        "nuance": "克处无生",
+        "conditionRuleIds": [
+          "liuyao.condition.terminal.changsheng-support"
+        ],
+        "absentConditionRuleIds": [],
+        "factorRuleIds": [
+          "liuyao.decision.return-overcome-without-l1-support",
+          "liuyao.rule.dongbian.changed-terminal",
+          "liuyao.rule.dongbian.return-overcomes",
+          "liuyao.rule.shengke.binding-suppresses-generation",
+          "liuyao.rule.shengke.moving-generates",
+          "liuyao.rule.wangshuai.confined"
+        ],
+        "timingBranches": [],
+        "hasUnrescuedCondition": true,
+        "decisionRowId": "liuyao.decision.return-overcome-without-l1-support",
+        "factorIds": [
+          "lyf-89cac711b31bf45e877ced23",
+          "lyf-987be371d314c5d41fd462fb",
+          "lyf-44644873e5999e6cf3ab98be",
+          "lyf-5546c2253b25e713e67e4bdf",
+          "lyf-8e9468678ad4bb2fa096a7c5",
+          "lyf-c5123a21fd9f11f56198cfce"
+        ],
+        "conditionIds": [
+          "lyc-b2c2b52cfea224755281aaa0"
+        ],
+        "timingIds": []
+      }
+    },
+    {
+      "caseId": "liuyao.case.golden.024",
+      "caseKind": "originalBook",
+      "evaluationSplit": "calibration",
+      "question": "父已起程，前往迎接能否相遇",
+      "pan": {
+        "numbers": [
+          8,
+          8,
+          7,
+          6,
+          9,
+          6
+        ],
+        "monthBranch": "丑",
+        "dayGanZhi": "丙戌",
+        "declaredMainGuaName": "水山蹇",
+        "declaredChangingGuaName": "火山旅",
+        "declaredMovingPositions": [
+          4,
+          5,
+          6
+        ]
+      },
+      "useSpirit": {
+        "mode": "selectedVisible",
+        "position": 5,
+        "declaredActorId": "main:yao:5",
+        "declaredLiuQin": "父母",
+        "declaredBranch": "戌",
+        "declaredWuXing": "土"
+      },
+      "reference": {
+        "chapter": "进退章",
+        "printedPages": "56-57",
+        "referenceKind": "paraphrase",
+        "adjudication": "父化退表示已归，变爻未土空破，待未日实空实破而相逢"
+      },
+      "sourceRefs": [
+        {
+          "sourceId": "liuyao.source.zengshan.zhongguonaner-pdf",
+          "locator": "chapter:进退章; printed-pages:56-57",
+          "evidenceLevel": "b",
+          "referenceKind": "paraphrase"
+        },
+        {
+          "sourceId": "liuyao.source.project.analysis-contract",
+          "locator": "analysis-contract:versioned-verdict-and-timing",
+          "evidenceLevel": "d",
+          "referenceKind": "projectConvention"
+        }
+      ],
+      "ruleIds": [
+        "liuyao.condition.changed-break.exit-fill-or-join",
+        "liuyao.condition.changed-void.fill-or-clash",
+        "liuyao.decision.mixed-rescuable-conditions",
+        "liuyao.rule.dongbian.changed-break",
+        "liuyao.rule.dongbian.changed-void",
+        "liuyao.rule.dongbian.retreat",
+        "liuyao.rule.wangshuai.day-command",
+        "liuyao.rule.wangshuai.prosperous",
+        "liuyao.timing.changed-break.branch-fills",
+        "liuyao.timing.changed-break.branch-joins",
+        "liuyao.timing.changed-break.next-month",
+        "liuyao.timing.changed-void.branch-clash",
+        "liuyao.timing.changed-void.branch-fills"
+      ],
+      "unknowns": [],
+      "reviewStatus": "reviewed",
+      "coverage": [
+        "化空破墓绝",
+        "化进退",
+        "应期条件联动"
+      ],
+      "legacyDescription": {
+        "nature": "原书占例",
+        "declaredHexagram": "水山蹇之火山旅",
+        "declaredMovingLines": "四、五、上爻动",
+        "declaredUseSpirit": "五爻父母戌土"
+      },
+      "expected": {
+        "trend": "daiTiaoJian",
+        "nuance": "待解除后再断",
+        "conditionRuleIds": [
+          "liuyao.condition.changed-break.exit-fill-or-join",
+          "liuyao.condition.changed-void.fill-or-clash"
+        ],
+        "absentConditionRuleIds": [],
+        "factorRuleIds": [
+          "liuyao.decision.mixed-rescuable-conditions",
+          "liuyao.rule.dongbian.changed-break",
+          "liuyao.rule.dongbian.changed-void",
+          "liuyao.rule.dongbian.retreat",
+          "liuyao.rule.wangshuai.day-command",
+          "liuyao.rule.wangshuai.prosperous"
+        ],
+        "timingBranches": [
+          "丑",
+          "午",
+          "寅",
+          "未"
+        ],
+        "hasUnrescuedCondition": false,
+        "decisionRowId": "liuyao.decision.mixed-rescuable-conditions",
+        "factorIds": [
+          "lyf-0d0391006df37b1e69311855",
+          "lyf-0f5a2764d7aa469f656715b8",
+          "lyf-2fa08f963bc0a62be2ef3479",
+          "lyf-0c88e988eead71587a0dafec",
+          "lyf-61ea4233bbf97b84c159ace4",
+          "lyf-9f14cdba6994308276878479"
+        ],
+        "conditionIds": [
+          "lyc-e2a80275f25ad679a9704a3c",
+          "lyc-9a5f27f9178f4edafd65b2c9"
+        ],
+        "timingIds": [
+          "lyt-cc527c37d671c4d877b9d993",
+          "lyt-d97a571eb640eaeecd46c3ea",
+          "lyt-3aa6660e83d68c74e542c575",
+          "lyt-153d0cf11bcc1b1a8ea16768"
+        ]
+      }
+    },
+    {
+      "caseId": "liuyao.case.golden.025",
+      "caseKind": "originalBook",
+      "evaluationSplit": "calibration",
+      "question": "冬令能否得官差",
+      "pan": {
+        "numbers": [
+          7,
+          7,
+          6,
+          8,
+          7,
+          8
+        ],
+        "monthBranch": "戌",
+        "dayGanZhi": "癸巳",
+        "declaredMainGuaName": "水泽节",
+        "declaredChangingGuaName": "水天需",
+        "declaredMovingPositions": [
+          3
+        ]
+      },
+      "useSpirit": {
+        "mode": "selectedVisible",
+        "position": 3,
+        "declaredActorId": "main:yao:3",
+        "declaredLiuQin": "官鬼",
+        "declaredBranch": "丑",
+        "declaredWuXing": "土"
+      },
+      "reference": {
+        "chapter": "进退章",
+        "printedPages": "57",
+        "referenceKind": "paraphrase",
+        "adjudication": "官鬼丑土化辰土进神，变爻辰受戌月冲破，待填实后丑月得官差"
+      },
+      "sourceRefs": [
+        {
+          "sourceId": "liuyao.source.zengshan.zhongguonaner-pdf",
+          "locator": "chapter:进退章; printed-pages:57",
+          "evidenceLevel": "b",
+          "referenceKind": "paraphrase"
+        },
+        {
+          "sourceId": "liuyao.source.project.analysis-contract",
+          "locator": "analysis-contract:versioned-verdict-and-timing",
+          "evidenceLevel": "d",
+          "referenceKind": "projectConvention"
+        }
+      ],
+      "ruleIds": [
+        "liuyao.condition.binding.clash-open",
+        "liuyao.condition.changed-break.exit-fill-or-join",
+        "liuyao.condition.changed-tomb.clash-open",
+        "liuyao.condition.terminal.changsheng-support",
+        "liuyao.decision.strong-with-conditions",
+        "liuyao.rule.dongbian.changed-break",
+        "liuyao.rule.dongbian.changed-tomb",
+        "liuyao.rule.dongbian.progress",
+        "liuyao.rule.hechong.moving-bound",
+        "liuyao.rule.mujue.terminal",
+        "liuyao.rule.wangshuai.day-generates",
+        "liuyao.rule.wangshuai.prosperous",
+        "liuyao.timing.binding.partner-clash",
+        "liuyao.timing.binding.target-clash",
+        "liuyao.timing.changed-break.branch-fills",
+        "liuyao.timing.changed-break.branch-joins",
+        "liuyao.timing.changed-break.next-month",
+        "liuyao.timing.terminal.changsheng-arrives",
+        "liuyao.timing.tomb.clash-opens"
+      ],
+      "unknowns": [],
+      "reviewStatus": "reviewed",
+      "coverage": [
+        "化空破墓绝",
+        "化进退",
+        "应期条件联动"
+      ],
+      "legacyDescription": {
+        "nature": "原书占例",
+        "declaredHexagram": "水泽节之水天需",
+        "declaredMovingLines": "三爻丑土独发化辰土",
+        "declaredUseSpirit": "三爻官鬼丑土"
+      },
+      "expected": {
+        "trend": "daiTiaoJian",
+        "nuance": "成而有待",
+        "conditionRuleIds": [
+          "liuyao.condition.binding.clash-open",
+          "liuyao.condition.changed-break.exit-fill-or-join",
+          "liuyao.condition.changed-tomb.clash-open",
+          "liuyao.condition.terminal.changsheng-support"
+        ],
+        "absentConditionRuleIds": [],
+        "factorRuleIds": [
+          "liuyao.decision.strong-with-conditions",
+          "liuyao.rule.dongbian.changed-break",
+          "liuyao.rule.dongbian.changed-tomb",
+          "liuyao.rule.dongbian.progress",
+          "liuyao.rule.hechong.moving-bound",
+          "liuyao.rule.mujue.terminal",
+          "liuyao.rule.wangshuai.day-generates",
+          "liuyao.rule.wangshuai.prosperous"
+        ],
+        "timingBranches": [
+          "亥",
+          "午",
+          "戌",
+          "未",
+          "申",
+          "辰",
+          "酉"
+        ],
+        "hasUnrescuedCondition": false,
+        "decisionRowId": "liuyao.decision.strong-with-conditions",
+        "factorIds": [
+          "lyf-3650b798c8d2fe904a978170",
+          "lyf-41ee3fd5f275fcae7e75949d",
+          "lyf-a240c308d72ad18a4a875b2c",
+          "lyf-0887b86f493d5f06581ea710",
+          "lyf-43c120b35d1297285302a581",
+          "lyf-b1678ed49099d5638b27e38c",
+          "lyf-1fcbce665ffc6f9a800ba3cc",
+          "lyf-b8b185a83790bcb406ea61b2"
+        ],
+        "conditionIds": [
+          "lyc-1217d1b0ded59635addf49d9",
+          "lyc-cf027a507670a1ce1171f1d5",
+          "lyc-451697557ea02ad7ee6b5424",
+          "lyc-2e4fcc6078aecd859732a48a"
+        ],
+        "timingIds": [
+          "lyt-1150a9635b6aca3b76595418",
+          "lyt-b2920a589ea6eb15eb689294",
+          "lyt-e8e1c37d38f6eecd10c4d9ad",
+          "lyt-720c33c0ec8b65b72249cdd0",
+          "lyt-2ee793f6de66eadb5a943f99",
+          "lyt-84d39c1d5c1fa23d3daafe88",
+          "lyt-db08287d46f91615b2ae4086"
+        ]
+      }
+    },
+    {
+      "caseId": "liuyao.case.golden.026",
+      "caseKind": "originalBook",
+      "evaluationSplit": "calibration",
+      "question": "妻病服药可愈否",
+      "pan": {
+        "numbers": [
+          7,
+          7,
+          6,
+          8,
+          8,
+          8
+        ],
+        "monthBranch": "丑",
+        "dayGanZhi": "癸卯",
+        "declaredMainGuaName": "地泽临",
+        "declaredChangingGuaName": "地天泰",
+        "declaredMovingPositions": [
+          3
+        ]
+      },
+      "useSpirit": {
+        "mode": "selectedVisible",
+        "position": 5,
+        "declaredActorId": "main:yao:5",
+        "declaredLiuQin": "妻财",
+        "declaredBranch": "亥",
+        "declaredWuXing": "水"
+      },
+      "reference": {
+        "chapter": "进退章",
+        "printedPages": "57",
+        "referenceKind": "paraphrase",
+        "adjudication": "忌神兄弟丑土临月建发动化进，克财有力，原断灵丹莫救"
+      },
+      "sourceRefs": [
+        {
+          "sourceId": "liuyao.source.zengshan.zhongguonaner-pdf",
+          "locator": "chapter:进退章; printed-pages:57",
+          "evidenceLevel": "b",
+          "referenceKind": "paraphrase"
+        },
+        {
+          "sourceId": "liuyao.source.project.analysis-contract",
+          "locator": "analysis-contract:versioned-verdict-and-timing",
+          "evidenceLevel": "d",
+          "referenceKind": "projectConvention"
+        }
+      ],
+      "ruleIds": [
+        "liuyao.decision.mixed-adverse-active",
+        "liuyao.rule.shengke.hidden-moving-generates",
+        "liuyao.rule.shengke.moving-overcomes",
+        "liuyao.rule.wangshuai.dead",
+        "liuyao.rule.wangshuai.month-overcomes"
+      ],
+      "unknowns": [],
+      "reviewStatus": "reviewed",
+      "coverage": [
+        "元神/忌神/仇神",
+        "化进退"
+      ],
+      "legacyDescription": {
+        "nature": "原书占例",
+        "declaredHexagram": "地泽临之地天泰",
+        "declaredMovingLines": "三爻丑土独发化辰土",
+        "declaredUseSpirit": "五爻妻财亥水"
+      },
+      "expected": {
+        "trend": "nanCheng",
+        "nuance": "抑重于扶",
+        "conditionRuleIds": [],
+        "absentConditionRuleIds": [],
+        "factorRuleIds": [
+          "liuyao.decision.mixed-adverse-active",
+          "liuyao.rule.shengke.hidden-moving-generates",
+          "liuyao.rule.shengke.moving-overcomes",
+          "liuyao.rule.wangshuai.dead",
+          "liuyao.rule.wangshuai.month-overcomes"
+        ],
+        "timingBranches": [],
+        "hasUnrescuedCondition": false,
+        "decisionRowId": "liuyao.decision.mixed-adverse-active",
+        "factorIds": [
+          "lyf-53e07794943f4fcc501f16ce",
+          "lyf-bf2a6da0daf97d5bb2fa5f01",
+          "lyf-d8bb593332dbe94189bd6e25",
+          "lyf-94bfd0b6f39a2896f15b6ac9",
+          "lyf-a934a836320e5a28c8b5a752"
+        ],
+        "conditionIds": [],
+        "timingIds": []
+      }
+    },
+    {
+      "caseId": "liuyao.case.golden.027",
+      "caseKind": "originalBook",
+      "evaluationSplit": "calibration",
+      "question": "流年病势（校对本异文）",
+      "pan": {
+        "numbers": [
+          8,
+          7,
+          8,
+          7,
+          9,
+          8
+        ],
+        "monthBranch": "辰",
+        "dayGanZhi": "癸丑",
+        "declaredMainGuaName": "泽水困",
+        "declaredChangingGuaName": "雷水解",
+        "declaredMovingPositions": [
+          5
+        ]
+      },
+      "useSpirit": {
+        "mode": "selectedVisible",
+        "position": 1,
+        "declaredActorId": "main:yao:1",
+        "declaredLiuQin": "妻财",
+        "declaredBranch": "寅",
+        "declaredWuXing": "木"
+      },
+      "reference": {
+        "chapter": "进退章",
+        "printedPages": "58",
+        "referenceKind": "paraphrase",
+        "adjudication": "世爻休囚安静逢空，v2 按真空到底无用归为不可解条件；原断所述出空后遭克仅作历史结果对照"
+      },
+      "sourceRefs": [
+        {
+          "sourceId": "liuyao.source.zengshan.zhongguonaner-pdf",
+          "locator": "chapter:进退章; printed-pages:58",
+          "evidenceLevel": "b",
+          "referenceKind": "paraphrase"
+        },
+        {
+          "sourceId": "liuyao.source.project.analysis-contract",
+          "locator": "analysis-contract:versioned-verdict-and-timing",
+          "evidenceLevel": "d",
+          "referenceKind": "projectConvention"
+        }
+      ],
+      "ruleIds": [
+        "liuyao.condition.true-void.no-release",
+        "liuyao.condition.void.fill-or-clash",
+        "liuyao.decision.weak-unrescuable",
+        "liuyao.rule.kongwang.true-void",
+        "liuyao.rule.kongwang.void",
+        "liuyao.rule.shengke.moving-overcomes",
+        "liuyao.rule.wangshuai.confined"
+      ],
+      "unknowns": [],
+      "reviewStatus": "reviewed",
+      "coverage": [
+        "元神/忌神/仇神",
+        "化进退",
+        "真空假空"
+      ],
+      "legacyDescription": {
+        "nature": "原书占例",
+        "declaredHexagram": "泽水困之雷水解",
+        "declaredMovingLines": "五爻酉金独发化申金",
+        "declaredUseSpirit": "初爻世爻妻财寅木"
+      },
+      "expected": {
+        "trend": "nanCheng",
+        "nuance": "空破墓绝，到底无救",
+        "conditionRuleIds": [
+          "liuyao.condition.true-void.no-release"
+        ],
+        "absentConditionRuleIds": [
+          "liuyao.condition.void.fill-or-clash"
+        ],
+        "factorRuleIds": [
+          "liuyao.decision.weak-unrescuable",
+          "liuyao.rule.kongwang.true-void",
+          "liuyao.rule.kongwang.void",
+          "liuyao.rule.shengke.moving-overcomes",
+          "liuyao.rule.wangshuai.confined"
+        ],
+        "timingBranches": [],
+        "hasUnrescuedCondition": true,
+        "decisionRowId": "liuyao.decision.weak-unrescuable",
+        "factorIds": [
+          "lyf-9a4623bf902894efbf6c37c6",
+          "lyf-029b9ef881c6e7fd7ecbf622",
+          "lyf-c1609c972ca363cf5d7fbcba",
+          "lyf-4b264f7881767d7488a48c25",
+          "lyf-6d525b9b92dad1367aee1984"
+        ],
+        "conditionIds": [
+          "lyc-aceb8c0f276a099a43051994"
+        ],
+        "timingIds": []
+      }
+    },
+    {
+      "caseId": "liuyao.case.golden.028",
+      "caseKind": "originalBook",
+      "evaluationSplit": "calibration",
+      "question": "妻母病势",
+      "pan": {
+        "numbers": [
+          9,
+          8,
+          8,
+          7,
+          7,
+          6
+        ],
+        "monthBranch": "辰",
+        "dayGanZhi": "乙丑",
+        "declaredMainGuaName": "泽雷随",
+        "declaredChangingGuaName": "天地否",
+        "declaredMovingPositions": [
+          1,
+          6
+        ]
+      },
+      "useSpirit": {
+        "mode": "selectedVisible",
+        "position": 1,
+        "declaredActorId": "main:yao:1",
+        "declaredLiuQin": "父母",
+        "declaredBranch": "子",
+        "declaredWuXing": "水"
+      },
+      "reference": {
+        "chapter": "进退章",
+        "printedPages": "58-59",
+        "referenceKind": "paraphrase",
+        "adjudication": "父母子水动化未土回头克，上爻未土又化进增克，原断戌日危"
+      },
+      "sourceRefs": [
+        {
+          "sourceId": "liuyao.source.zengshan.zhongguonaner-pdf",
+          "locator": "chapter:进退章; printed-pages:58-59",
+          "evidenceLevel": "b",
+          "referenceKind": "paraphrase"
+        },
+        {
+          "sourceId": "liuyao.source.project.analysis-contract",
+          "locator": "analysis-contract:versioned-verdict-and-timing",
+          "evidenceLevel": "d",
+          "referenceKind": "projectConvention"
+        },
+        {
+          "sourceId": "liuyao.source.bushi-zhengzong.distiller-2004-pdf",
+          "locator": "candidate locator: auxiliary punishment/harm evidence",
+          "evidenceLevel": "c",
+          "referenceKind": "locatorOnly"
+        }
+      ],
+      "ruleIds": [
+        "liuyao.condition.binding.clash-open",
+        "liuyao.condition.tomb.clash-open",
+        "liuyao.decision.return-overcome-without-l1-support",
+        "liuyao.rule.dongbian.return-overcomes",
+        "liuyao.rule.mujue.month-tomb",
+        "liuyao.rule.shengke.moving-overcomes",
+        "liuyao.rule.special.day-joins",
+        "liuyao.rule.wangshuai.day-overcomes",
+        "liuyao.rule.wangshuai.dead",
+        "liuyao.rule.wangshuai.month-overcomes",
+        "liuyao.timing.binding.partner-clash",
+        "liuyao.timing.binding.target-clash",
+        "liuyao.timing.tomb.clash-opens"
+      ],
+      "unknowns": [],
+      "reviewStatus": "reviewed",
+      "coverage": [
+        "化进退",
+        "回头生克"
+      ],
+      "legacyDescription": {
+        "nature": "原书占例",
+        "declaredHexagram": "泽雷随之天地否",
+        "declaredMovingLines": "初、上爻动",
+        "declaredUseSpirit": "初爻父母子水"
+      },
+      "expected": {
+        "trend": "nanCheng",
+        "nuance": "克处无生",
+        "conditionRuleIds": [
+          "liuyao.condition.binding.clash-open",
+          "liuyao.condition.tomb.clash-open"
+        ],
+        "absentConditionRuleIds": [],
+        "factorRuleIds": [
+          "liuyao.decision.return-overcome-without-l1-support",
+          "liuyao.rule.dongbian.return-overcomes",
+          "liuyao.rule.mujue.month-tomb",
+          "liuyao.rule.shengke.moving-overcomes",
+          "liuyao.rule.special.day-joins",
+          "liuyao.rule.wangshuai.day-overcomes",
+          "liuyao.rule.wangshuai.dead",
+          "liuyao.rule.wangshuai.month-overcomes"
+        ],
+        "timingBranches": [
+          "午",
+          "戌",
+          "未"
+        ],
+        "hasUnrescuedCondition": false,
+        "decisionRowId": "liuyao.decision.return-overcome-without-l1-support",
+        "factorIds": [
+          "lyf-e78509e854ff31d1161242b8",
+          "lyf-8c7c3e0a87eef2b5418658fa",
+          "lyf-414b4672bb37bc5fca75d23e",
+          "lyf-46a7c2afdb28da1b01ba6bcc",
+          "lyf-cc6b4d29eb08d84c3f2c1501",
+          "lyf-62bad58262a2baee41062c4a",
+          "lyf-2cf93c4703ade49b25bec3e2",
+          "lyf-b08556eaaa04687db5ed9be2"
+        ],
+        "conditionIds": [
+          "lyc-a421f9df6fa9416ecc4274b6",
+          "lyc-5b71d6b4f06f7d548c8bf664"
+        ],
+        "timingIds": [
+          "lyt-dbac72a66ab4056efa22a2bf",
+          "lyt-a2473a613e9223c77cd29b84",
+          "lyt-7d8030c0207a8b4f4e5f40f7"
+        ]
+      }
+    },
+    {
+      "caseId": "liuyao.case.golden.029",
+      "caseKind": "originalBook",
+      "evaluationSplit": "holdout",
+      "question": "出行能否顺遂",
+      "pan": {
+        "numbers": [
+          7,
+          6,
+          8,
+          8,
+          7,
+          8
+        ],
+        "monthBranch": "申",
+        "dayGanZhi": "乙卯",
+        "declaredMainGuaName": "水雷屯",
+        "declaredChangingGuaName": "水泽节",
+        "declaredMovingPositions": [
+          2
+        ]
+      },
+      "useSpirit": {
+        "mode": "selectedVisible",
+        "position": 2,
+        "declaredActorId": "main:yao:2",
+        "declaredLiuQin": "子孙",
+        "declaredBranch": "寅",
+        "declaredWuXing": "木"
+      },
+      "reference": {
+        "chapter": "进退章",
+        "printedPages": "59",
+        "referenceKind": "paraphrase",
+        "adjudication": "世化进但临月破，目下不行，待亥月破逢合后成行且往返平安"
+      },
+      "sourceRefs": [
+        {
+          "sourceId": "liuyao.source.zengshan.zhongguonaner-pdf",
+          "locator": "chapter:进退章; printed-pages:59",
+          "evidenceLevel": "b",
+          "referenceKind": "paraphrase"
+        },
+        {
+          "sourceId": "liuyao.source.project.analysis-contract",
+          "locator": "analysis-contract:versioned-verdict-and-timing",
+          "evidenceLevel": "d",
+          "referenceKind": "projectConvention"
+        }
+      ],
+      "ruleIds": [
+        "liuyao.condition.month-break.exit-fill-or-join",
+        "liuyao.condition.terminal.changsheng-support",
+        "liuyao.decision.mixed-rescuable-conditions",
+        "liuyao.rule.dongbian.progress",
+        "liuyao.rule.mujue.terminal",
+        "liuyao.rule.wangshuai.day-supports",
+        "liuyao.rule.wangshuai.dead",
+        "liuyao.rule.wangshuai.month-break",
+        "liuyao.rule.wangshuai.month-overcomes",
+        "liuyao.timing.month-break.branch-fills",
+        "liuyao.timing.month-break.branch-joins",
+        "liuyao.timing.month-break.next-month",
+        "liuyao.timing.terminal.changsheng-arrives"
+      ],
+      "unknowns": [],
+      "reviewStatus": "reviewed",
+      "coverage": [
+        "化进退",
+        "应期条件联动",
+        "月破"
+      ],
+      "legacyDescription": {
+        "nature": "原书占例",
+        "declaredHexagram": "水雷屯之水泽节",
+        "declaredMovingLines": "二爻寅木独发化卯木",
+        "declaredUseSpirit": "二爻世爻子孙寅木"
+      },
+      "expected": {
+        "trend": "daiTiaoJian",
+        "nuance": "待解除后再断",
+        "conditionRuleIds": [
+          "liuyao.condition.month-break.exit-fill-or-join",
+          "liuyao.condition.terminal.changsheng-support"
+        ],
+        "absentConditionRuleIds": [],
+        "factorRuleIds": [
+          "liuyao.decision.mixed-rescuable-conditions",
+          "liuyao.rule.dongbian.progress",
+          "liuyao.rule.mujue.terminal",
+          "liuyao.rule.wangshuai.day-supports",
+          "liuyao.rule.wangshuai.dead",
+          "liuyao.rule.wangshuai.month-break",
+          "liuyao.rule.wangshuai.month-overcomes"
+        ],
+        "timingBranches": [
+          "亥",
+          "寅",
+          "酉"
+        ],
+        "hasUnrescuedCondition": false,
+        "decisionRowId": "liuyao.decision.mixed-rescuable-conditions",
+        "factorIds": [
+          "lyf-4931aa23b60b15a81ad32bc6",
+          "lyf-bc3e2dd5cee6888a8b612c0a",
+          "lyf-05b494ff0c64b1b3550ef225",
+          "lyf-805fda397eb3b459f0a70971",
+          "lyf-1f9f670ba5c4ed4755640576",
+          "lyf-52e9264752b2cc9d57b996cf",
+          "lyf-48b4297e147b26ddd035542f"
+        ],
+        "conditionIds": [
+          "lyc-00ca535ee13d66be562de131",
+          "lyc-6b2e65e07d854f881ed9a186"
+        ],
+        "timingIds": [
+          "lyt-2a8ac60db4562c789d4f5568",
+          "lyt-d3e21b64c1e8c60be9984830",
+          "lyt-e291bdc59c9d1a526a39eeda"
+        ]
+      }
+    },
+    {
+      "caseId": "liuyao.case.golden.030",
+      "caseKind": "originalBook",
+      "evaluationSplit": "calibration",
+      "question": "兄何时归",
+      "pan": {
+        "numbers": [
+          7,
+          7,
+          8,
+          7,
+          7,
+          9
+        ],
+        "monthBranch": "辰",
+        "dayGanZhi": "己未",
+        "declaredMainGuaName": "天泽履",
+        "declaredChangingGuaName": "兑为泽",
+        "declaredMovingPositions": [
+          6
+        ]
+      },
+      "useSpirit": {
+        "mode": "selectedVisible",
+        "position": 6,
+        "declaredActorId": "main:yao:6",
+        "declaredLiuQin": "兄弟",
+        "declaredBranch": "戌",
+        "declaredWuXing": "土"
+      },
+      "reference": {
+        "chapter": "进退章",
+        "printedPages": "59",
+        "referenceKind": "paraphrase",
+        "adjudication": "兄动化退已有归志，但戌临月破，待实破戌月方归"
+      },
+      "sourceRefs": [
+        {
+          "sourceId": "liuyao.source.zengshan.zhongguonaner-pdf",
+          "locator": "chapter:进退章; printed-pages:59",
+          "evidenceLevel": "b",
+          "referenceKind": "paraphrase"
+        },
+        {
+          "sourceId": "liuyao.source.project.analysis-contract",
+          "locator": "analysis-contract:versioned-verdict-and-timing",
+          "evidenceLevel": "d",
+          "referenceKind": "projectConvention"
+        }
+      ],
+      "ruleIds": [
+        "liuyao.condition.binding.clash-open",
+        "liuyao.condition.month-break.exit-fill-or-join",
+        "liuyao.condition.tomb.clash-open",
+        "liuyao.decision.mixed-rescuable-conditions",
+        "liuyao.rule.dongbian.retreat",
+        "liuyao.rule.hechong.moving-bound",
+        "liuyao.rule.mujue.month-tomb",
+        "liuyao.rule.wangshuai.day-supports",
+        "liuyao.rule.wangshuai.month-break",
+        "liuyao.rule.wangshuai.prosperous",
+        "liuyao.timing.binding.partner-clash",
+        "liuyao.timing.binding.target-clash",
+        "liuyao.timing.month-break.branch-fills",
+        "liuyao.timing.month-break.branch-joins",
+        "liuyao.timing.month-break.next-month",
+        "liuyao.timing.tomb.clash-opens"
+      ],
+      "unknowns": [],
+      "reviewStatus": "reviewed",
+      "coverage": [
+        "化进退",
+        "应期条件联动",
+        "月破"
+      ],
+      "legacyDescription": {
+        "nature": "原书占例",
+        "declaredHexagram": "天泽履之兑为泽",
+        "declaredMovingLines": "上爻戌土独发化未土",
+        "declaredUseSpirit": "上爻兄弟戌土"
+      },
+      "expected": {
+        "trend": "daiTiaoJian",
+        "nuance": "待解除后再断",
+        "conditionRuleIds": [
+          "liuyao.condition.binding.clash-open",
+          "liuyao.condition.month-break.exit-fill-or-join",
+          "liuyao.condition.tomb.clash-open"
+        ],
+        "absentConditionRuleIds": [],
+        "factorRuleIds": [
+          "liuyao.decision.mixed-rescuable-conditions",
+          "liuyao.rule.dongbian.retreat",
+          "liuyao.rule.hechong.moving-bound",
+          "liuyao.rule.mujue.month-tomb",
+          "liuyao.rule.wangshuai.day-supports",
+          "liuyao.rule.wangshuai.month-break",
+          "liuyao.rule.wangshuai.prosperous"
+        ],
+        "timingBranches": [
+          "卯",
+          "巳",
+          "戌",
+          "辰",
+          "酉"
+        ],
+        "hasUnrescuedCondition": false,
+        "decisionRowId": "liuyao.decision.mixed-rescuable-conditions",
+        "factorIds": [
+          "lyf-5e1802aa95ae57948e498f6b",
+          "lyf-d6cd3f818ecaff03a7658efa",
+          "lyf-75f3bd597fe25b464c130a49",
+          "lyf-35bb3374cf59e8ed37111cae",
+          "lyf-da41d02c76d86f5fba5c803a",
+          "lyf-b29bb9e4aef41e9cecf13b0a",
+          "lyf-183aacc4c06d55ceb9640e73"
+        ],
+        "conditionIds": [
+          "lyc-66cb92d81ae97496441b78e0",
+          "lyc-0aeec0f9c115ddbe9c9760fc",
+          "lyc-1db1542ae94c2f1b67426574"
+        ],
+        "timingIds": [
+          "lyt-9cb5d833785b76eba8b6d7db",
+          "lyt-2ff9a809b0d809b21f732950",
+          "lyt-ebd99c8ee82948f383e86d8a",
+          "lyt-57ecec31fae876eac3be20c1",
+          "lyt-f21729789009f74679f30542"
+        ]
+      }
+    },
+    {
+      "caseId": "liuyao.case.golden.031",
+      "caseKind": "originalBook",
+      "evaluationSplit": "calibration",
+      "question": "官府可升否",
+      "pan": {
+        "numbers": [
+          8,
+          8,
+          7,
+          7,
+          6,
+          8
+        ],
+        "monthBranch": "卯",
+        "dayGanZhi": "丙申",
+        "declaredMainGuaName": "雷山小过",
+        "declaredChangingGuaName": "泽山咸",
+        "declaredMovingPositions": [
+          5
+        ]
+      },
+      "useSpirit": {
+        "mode": "selectedVisible",
+        "position": 5,
+        "declaredActorId": "main:yao:5",
+        "declaredLiuQin": "兄弟",
+        "declaredBranch": "申",
+        "declaredWuXing": "金"
+      },
+      "reference": {
+        "chapter": "进退章",
+        "printedPages": "59",
+        "referenceKind": "paraphrase",
+        "adjudication": "官临日建发动化进，原断秋令必迁，后巳月因动逢合而升"
+      },
+      "sourceRefs": [
+        {
+          "sourceId": "liuyao.source.zengshan.zhongguonaner-pdf",
+          "locator": "chapter:进退章; printed-pages:59",
+          "evidenceLevel": "b",
+          "referenceKind": "paraphrase"
+        },
+        {
+          "sourceId": "liuyao.source.project.analysis-contract",
+          "locator": "analysis-contract:versioned-verdict-and-timing",
+          "evidenceLevel": "d",
+          "referenceKind": "projectConvention"
+        }
+      ],
+      "ruleIds": [
+        "liuyao.condition.changed-break.exit-fill-or-join",
+        "liuyao.decision.mixed-rescuable-conditions",
+        "liuyao.rule.dongbian.changed-break",
+        "liuyao.rule.dongbian.progress",
+        "liuyao.rule.wangshuai.confined",
+        "liuyao.rule.wangshuai.day-command",
+        "liuyao.timing.changed-break.branch-fills",
+        "liuyao.timing.changed-break.branch-joins",
+        "liuyao.timing.changed-break.next-month"
+      ],
+      "unknowns": [],
+      "reviewStatus": "reviewed",
+      "coverage": [
+        "化进退",
+        "应期条件联动",
+        "旺衰/日月生克"
+      ],
+      "legacyDescription": {
+        "nature": "原书占例",
+        "declaredHexagram": "雷水解之泽水困",
+        "declaredMovingLines": "五爻申金独发化酉金",
+        "declaredUseSpirit": "五爻官鬼申金"
+      },
+      "expected": {
+        "trend": "daiTiaoJian",
+        "nuance": "待解除后再断",
+        "conditionRuleIds": [
+          "liuyao.condition.changed-break.exit-fill-or-join"
+        ],
+        "absentConditionRuleIds": [],
+        "factorRuleIds": [
+          "liuyao.decision.mixed-rescuable-conditions",
+          "liuyao.rule.dongbian.changed-break",
+          "liuyao.rule.dongbian.progress",
+          "liuyao.rule.wangshuai.confined",
+          "liuyao.rule.wangshuai.day-command"
+        ],
+        "timingBranches": [
+          "辰",
+          "酉"
+        ],
+        "hasUnrescuedCondition": false,
+        "decisionRowId": "liuyao.decision.mixed-rescuable-conditions",
+        "factorIds": [
+          "lyf-0d0391006df37b1e69311855",
+          "lyf-a504c21cb3495c2a1e4e8cc7",
+          "lyf-15f59588c9e649a9d2e7b6d6",
+          "lyf-61ea4233bbf97b84c159ace4",
+          "lyf-84cad22147f27f80e3c5b096"
+        ],
+        "conditionIds": [
+          "lyc-9a5f27f9178f4edafd65b2c9"
+        ],
+        "timingIds": [
+          "lyt-d1cb8a784667736413199866",
+          "lyt-e8d84383e00855bef03c069b",
+          "lyt-21f26ad2eb8fc53d67dbfbf0"
+        ]
+      }
+    },
+    {
+      "caseId": "liuyao.case.golden.032",
+      "caseKind": "originalBook",
+      "evaluationSplit": "holdout",
+      "question": "开金银器皿铺能否兴盛",
+      "pan": {
+        "numbers": [
+          7,
+          8,
+          8,
+          9,
+          6,
+          9
+        ],
+        "monthBranch": "未",
+        "dayGanZhi": "辛未",
+        "declaredMainGuaName": "火雷噬嗑",
+        "declaredChangingGuaName": "水雷屯",
+        "declaredMovingPositions": [
+          4,
+          5,
+          6
+        ]
+      },
+      "useSpirit": {
+        "mode": "selectedVisible",
+        "position": 5,
+        "declaredActorId": "main:yao:5",
+        "declaredLiuQin": "妻财",
+        "declaredBranch": "未",
+        "declaredWuXing": "土"
+      },
+      "reference": {
+        "chapter": "进退章",
+        "printedPages": "60",
+        "referenceKind": "paraphrase",
+        "adjudication": "财临日月持世化进，变爻戌空，待甲戌填实开张后长久兴盛"
+      },
+      "sourceRefs": [
+        {
+          "sourceId": "liuyao.source.zengshan.zhongguonaner-pdf",
+          "locator": "chapter:进退章; printed-pages:60",
+          "evidenceLevel": "b",
+          "referenceKind": "paraphrase"
+        },
+        {
+          "sourceId": "liuyao.source.project.analysis-contract",
+          "locator": "analysis-contract:versioned-verdict-and-timing",
+          "evidenceLevel": "d",
+          "referenceKind": "projectConvention"
+        },
+        {
+          "sourceId": "liuyao.source.bushi-zhengzong.distiller-2004-pdf",
+          "locator": "candidate locator: auxiliary punishment/harm evidence",
+          "evidenceLevel": "c",
+          "referenceKind": "locatorOnly"
+        }
+      ],
+      "ruleIds": [
+        "liuyao.condition.changed-void.fill-or-clash",
+        "liuyao.decision.strong-with-conditions",
+        "liuyao.rule.dongbian.changed-void",
+        "liuyao.rule.dongbian.progress",
+        "liuyao.rule.shengke.moving-generates",
+        "liuyao.rule.wangshuai.day-command",
+        "liuyao.rule.wangshuai.month-command",
+        "liuyao.rule.wangshuai.prosperous",
+        "liuyao.timing.changed-void.branch-clash",
+        "liuyao.timing.changed-void.branch-fills"
+      ],
+      "unknowns": [],
+      "reviewStatus": "reviewed",
+      "coverage": [
+        "化空破墓绝",
+        "化进退",
+        "应期条件联动",
+        "旺衰/日月生克"
+      ],
+      "legacyDescription": {
+        "nature": "原书占例",
+        "declaredHexagram": "火雷噬嗑之水雷屯",
+        "declaredMovingLines": "四、五、上爻动",
+        "declaredUseSpirit": "五爻世爻妻财未土"
+      },
+      "expected": {
+        "trend": "daiTiaoJian",
+        "nuance": "成而有待",
+        "conditionRuleIds": [
+          "liuyao.condition.changed-void.fill-or-clash"
+        ],
+        "absentConditionRuleIds": [],
+        "factorRuleIds": [
+          "liuyao.decision.strong-with-conditions",
+          "liuyao.rule.dongbian.changed-void",
+          "liuyao.rule.dongbian.progress",
+          "liuyao.rule.shengke.moving-generates",
+          "liuyao.rule.wangshuai.day-command",
+          "liuyao.rule.wangshuai.month-command",
+          "liuyao.rule.wangshuai.prosperous"
+        ],
+        "timingBranches": [
+          "戌",
+          "辰"
+        ],
+        "hasUnrescuedCondition": false,
+        "decisionRowId": "liuyao.decision.strong-with-conditions",
+        "factorIds": [
+          "lyf-0914c5632fe0242688174f9f",
+          "lyf-0d0391006df37b1e69311855",
+          "lyf-0f5a2764d7aa469f656715b8",
+          "lyf-304e10d40b2b2fa41e83be29",
+          "lyf-15f59588c9e649a9d2e7b6d6",
+          "lyf-0c88e988eead71587a0dafec",
+          "lyf-1d3783296d0ecc57578d1a03"
+        ],
+        "conditionIds": [
+          "lyc-e2a80275f25ad679a9704a3c"
+        ],
+        "timingIds": [
+          "lyt-ac2061047128b359a961a7e0",
+          "lyt-bad91d0c75d2fc402adfec86"
+        ]
+      }
+    },
+    {
+      "caseId": "liuyao.case.golden.033",
+      "caseKind": "originalBook",
+      "evaluationSplit": "holdout",
+      "question": "夫病能否愈",
+      "pan": {
+        "numbers": [
+          7,
+          8,
+          7,
+          7,
+          9,
+          7
+        ],
+        "monthBranch": "申",
+        "dayGanZhi": "戊辰",
+        "declaredMainGuaName": "天火同人",
+        "declaredChangingGuaName": "离为火",
+        "declaredMovingPositions": [
+          5
+        ]
+      },
+      "useSpirit": {
+        "mode": "selectedVisible",
+        "position": 3,
+        "declaredActorId": "main:yao:3",
+        "declaredLiuQin": "官鬼",
+        "declaredBranch": "亥",
+        "declaredWuXing": "水"
+      },
+      "reference": {
+        "chapter": "随鬼入墓章",
+        "printedPages": "61-62",
+        "referenceKind": "paraphrase",
+        "adjudication": "亥水入辰日墓又旬空，但得申月及申金动生，原断次日冲起即愈"
+      },
+      "sourceRefs": [
+        {
+          "sourceId": "liuyao.source.zengshan.zhongguonaner-pdf",
+          "locator": "chapter:随鬼入墓章; printed-pages:61-62",
+          "evidenceLevel": "b",
+          "referenceKind": "paraphrase"
+        },
+        {
+          "sourceId": "liuyao.source.project.analysis-contract",
+          "locator": "analysis-contract:versioned-verdict-and-timing",
+          "evidenceLevel": "d",
+          "referenceKind": "projectConvention"
+        },
+        {
+          "sourceId": "liuyao.source.bushi-zhengzong.distiller-2004-pdf",
+          "locator": "candidate locator: auxiliary punishment/harm evidence",
+          "evidenceLevel": "c",
+          "referenceKind": "locatorOnly"
+        }
+      ],
+      "ruleIds": [
+        "liuyao.condition.tomb.clash-open",
+        "liuyao.condition.void.fill-or-clash",
+        "liuyao.decision.mixed-source-continuity",
+        "liuyao.rule.kongwang.apparent-void",
+        "liuyao.rule.kongwang.void",
+        "liuyao.rule.mujue.day-tomb",
+        "liuyao.rule.shengke.moving-generates",
+        "liuyao.rule.wangshuai.day-overcomes",
+        "liuyao.rule.wangshuai.month-generates",
+        "liuyao.rule.wangshuai.supported",
+        "liuyao.timing.tomb.clash-opens",
+        "liuyao.timing.void.branch-clash",
+        "liuyao.timing.void.branch-fills"
+      ],
+      "unknowns": [],
+      "reviewStatus": "reviewed",
+      "coverage": [
+        "元神/忌神/仇神",
+        "入墓/出墓",
+        "应期条件联动",
+        "真空假空"
+      ],
+      "legacyDescription": {
+        "nature": "原书占例",
+        "declaredHexagram": "天火同人之离为火",
+        "declaredMovingLines": "五爻申金独发",
+        "declaredUseSpirit": "三爻世爻官鬼亥水"
+      },
+      "expected": {
+        "trend": "daiTiaoJian",
+        "nuance": "先难后成",
+        "conditionRuleIds": [
+          "liuyao.condition.tomb.clash-open",
+          "liuyao.condition.void.fill-or-clash"
+        ],
+        "absentConditionRuleIds": [],
+        "factorRuleIds": [
+          "liuyao.decision.mixed-source-continuity",
+          "liuyao.rule.kongwang.apparent-void",
+          "liuyao.rule.kongwang.void",
+          "liuyao.rule.mujue.day-tomb",
+          "liuyao.rule.shengke.moving-generates",
+          "liuyao.rule.wangshuai.day-overcomes",
+          "liuyao.rule.wangshuai.month-generates",
+          "liuyao.rule.wangshuai.supported"
+        ],
+        "timingBranches": [
+          "亥",
+          "巳",
+          "戌"
+        ],
+        "hasUnrescuedCondition": false,
+        "decisionRowId": "liuyao.decision.mixed-source-continuity",
+        "factorIds": [
+          "lyf-6c35d382a6a9d83afa59f02b",
+          "lyf-a4de843382242b28089e9a98",
+          "lyf-364ca869f4afae15030c212f",
+          "lyf-6001fcbf9f56958dbdd36c33",
+          "lyf-683703bdd99b3d01a8fc3e95",
+          "lyf-582e631ff0dd33a805b3f99a",
+          "lyf-181f03be157a8679db34df67",
+          "lyf-49e257774c7cc8675a858a94"
+        ],
+        "conditionIds": [
+          "lyc-94f94b00bbf8dc1ddf5f1bb1",
+          "lyc-692f8bc9e4b33a2c4612a50a"
+        ],
+        "timingIds": [
+          "lyt-79c6efaf4e1590c5be1294a9",
+          "lyt-8b957b155379254adc933228",
+          "lyt-b55336b85041336909800be7"
+        ]
+      }
+    },
+    {
+      "caseId": "liuyao.case.golden.034",
+      "caseKind": "originalBook",
+      "evaluationSplit": "calibration",
+      "question": "会试能否联捷",
+      "pan": {
+        "numbers": [
+          8,
+          8,
+          7,
+          9,
+          8,
+          6
+        ],
+        "monthBranch": "戌",
+        "dayGanZhi": "甲寅",
+        "declaredMainGuaName": "雷山小过",
+        "declaredChangingGuaName": "艮为山",
+        "declaredMovingPositions": [
+          4,
+          6
+        ]
+      },
+      "useSpirit": {
+        "mode": "selectedVisible",
+        "position": 4,
+        "declaredActorId": "main:yao:4",
+        "declaredLiuQin": "官鬼",
+        "declaredBranch": "午",
+        "declaredWuXing": "火"
+      },
+      "reference": {
+        "chapter": "随鬼入墓章",
+        "printedPages": "61-62",
+        "referenceKind": "paraphrase",
+        "adjudication": "官旺得寅日生，虽入月墓且化墓，待辰年辰月冲开三墓后联捷"
+      },
+      "sourceRefs": [
+        {
+          "sourceId": "liuyao.source.zengshan.zhongguonaner-pdf",
+          "locator": "chapter:随鬼入墓章; printed-pages:61-62",
+          "evidenceLevel": "b",
+          "referenceKind": "paraphrase"
+        },
+        {
+          "sourceId": "liuyao.source.project.analysis-contract",
+          "locator": "analysis-contract:versioned-verdict-and-timing",
+          "evidenceLevel": "d",
+          "referenceKind": "projectConvention"
+        },
+        {
+          "sourceId": "liuyao.source.bushi-zhengzong.distiller-2004-pdf",
+          "locator": "candidate locator: auxiliary punishment/harm evidence",
+          "evidenceLevel": "c",
+          "referenceKind": "locatorOnly"
+        }
+      ],
+      "ruleIds": [
+        "liuyao.condition.changed-tomb.clash-open",
+        "liuyao.condition.tomb.clash-open",
+        "liuyao.decision.strong-with-conditions",
+        "liuyao.rule.dongbian.changed-tomb",
+        "liuyao.rule.dongbian.transforms-drain",
+        "liuyao.rule.fushen.hidden-overcomes-flight",
+        "liuyao.rule.mujue.month-tomb",
+        "liuyao.rule.mujue.moving-tomb",
+        "liuyao.rule.wangshuai.day-generates",
+        "liuyao.rule.wangshuai.resting",
+        "liuyao.timing.tomb.clash-opens"
+      ],
+      "unknowns": [],
+      "reviewStatus": "reviewed",
+      "coverage": [
+        "入墓/出墓",
+        "化空破墓绝",
+        "应期条件联动"
+      ],
+      "legacyDescription": {
+        "nature": "原书占例",
+        "declaredHexagram": "雷山小过之艮为山",
+        "declaredMovingLines": "四、上爻动",
+        "declaredUseSpirit": "四爻世爻官鬼午火"
+      },
+      "expected": {
+        "trend": "daiTiaoJian",
+        "nuance": "成而有待",
+        "conditionRuleIds": [
+          "liuyao.condition.changed-tomb.clash-open",
+          "liuyao.condition.tomb.clash-open"
+        ],
+        "absentConditionRuleIds": [],
+        "factorRuleIds": [
+          "liuyao.decision.strong-with-conditions",
+          "liuyao.rule.dongbian.changed-tomb",
+          "liuyao.rule.dongbian.transforms-drain",
+          "liuyao.rule.fushen.hidden-overcomes-flight",
+          "liuyao.rule.mujue.month-tomb",
+          "liuyao.rule.mujue.moving-tomb",
+          "liuyao.rule.wangshuai.day-generates",
+          "liuyao.rule.wangshuai.resting"
+        ],
+        "timingBranches": [
+          "辰"
+        ],
+        "hasUnrescuedCondition": false,
+        "decisionRowId": "liuyao.decision.strong-with-conditions",
+        "factorIds": [
+          "lyf-3705ecb28420587ca1261ca6",
+          "lyf-3f143c74a55c4978bbb63643",
+          "lyf-73c30a176dcc43c427cb5800",
+          "lyf-6035924c95f5f5e9dd28c455",
+          "lyf-6d8731fd3f3c991d6bd40b5c",
+          "lyf-acac5073326621b02f793a5c",
+          "lyf-10add29496b43cd3ca00ad9f",
+          "lyf-734f4236e5377823701bb29c"
+        ],
+        "conditionIds": [
+          "lyc-5047dee5d73cdcbf3ee04914",
+          "lyc-8695bc014f940aad1f9f3210"
+        ],
+        "timingIds": [
+          "lyt-d71ca699083b76c0a2b07dab"
+        ]
+      }
+    },
+    {
+      "caseId": "liuyao.case.golden.035",
+      "caseKind": "ruleValidation",
+      "evaluationSplit": "calibration",
+      "question": "功名墓库已逢冲能否成",
+      "pan": {
+        "numbers": [
+          7,
+          7,
+          7,
+          7,
+          7,
+          9
+        ],
+        "monthBranch": "寅",
+        "dayGanZhi": "甲辰",
+        "declaredMainGuaName": "乾为天",
+        "declaredChangingGuaName": "泽天夬",
+        "declaredMovingPositions": [
+          6
+        ]
+      },
+      "useSpirit": {
+        "mode": "selectedVisible",
+        "position": 4,
+        "declaredActorId": "main:yao:4",
+        "declaredLiuQin": "官鬼",
+        "declaredBranch": "午",
+        "declaredWuXing": "火"
+      },
+      "reference": {
+        "chapter": "生旺墓绝章；各门类应期总注章",
+        "printedPages": "47-48",
+        "referenceKind": "projectConvention",
+        "adjudication": "午火得寅月生，虽入戌动墓但辰日已冲开，出墓后不再悬置"
+      },
+      "sourceRefs": [
+        {
+          "sourceId": "liuyao.source.zengshan.zhongguonaner-pdf",
+          "locator": "chapter:生旺墓绝章；各门类应期总注章; printed-pages:47-48",
+          "evidenceLevel": "b",
+          "referenceKind": "paraphrase"
+        },
+        {
+          "sourceId": "liuyao.source.project.analysis-contract",
+          "locator": "analysis-contract:rule-validation-case",
+          "evidenceLevel": "d",
+          "referenceKind": "projectConvention"
+        }
+      ],
+      "ruleIds": [
+        "liuyao.condition.tomb.clash-open",
+        "liuyao.decision.strong-clear",
+        "liuyao.rule.mujue.moving-tomb",
+        "liuyao.rule.wangshuai.month-generates",
+        "liuyao.rule.wangshuai.supported"
+      ],
+      "unknowns": [],
+      "reviewStatus": "reviewed",
+      "coverage": [
+        "入墓/出墓",
+        "应期条件联动"
+      ],
+      "legacyDescription": {
+        "nature": "章法校验例",
+        "declaredHexagram": "乾为天之泽天夬",
+        "declaredMovingLines": "上爻戌土独发；四爻午火入动墓而辰日冲墓",
+        "declaredUseSpirit": "四爻官鬼午火"
+      },
+      "expected": {
+        "trend": "keCheng",
+        "nuance": null,
+        "conditionRuleIds": [],
+        "absentConditionRuleIds": [
+          "liuyao.condition.tomb.clash-open"
+        ],
+        "factorRuleIds": [
+          "liuyao.decision.strong-clear",
+          "liuyao.rule.mujue.moving-tomb",
+          "liuyao.rule.wangshuai.month-generates",
+          "liuyao.rule.wangshuai.supported"
+        ],
+        "timingBranches": [],
+        "hasUnrescuedCondition": false,
+        "decisionRowId": "liuyao.decision.strong-clear",
+        "factorIds": [
+          "lyf-8b7febc99df9edb314819365",
+          "lyf-e9694cceb935880650cd8199",
+          "lyf-6035924c95f5f5e9dd28c455",
+          "lyf-9308b2eec85bdadb5f3a85a1"
+        ],
+        "conditionIds": [],
+        "timingIds": []
+      }
+    },
+    {
+      "caseId": "liuyao.case.golden.036",
+      "caseKind": "ruleValidation",
+      "evaluationSplit": "calibration",
+      "question": "合作之事能否立即推进",
+      "pan": {
+        "numbers": [
+          9,
+          7,
+          7,
+          6,
+          8,
+          8
+        ],
+        "monthBranch": "子",
+        "dayGanZhi": "乙卯",
+        "declaredMainGuaName": "地天泰",
+        "declaredChangingGuaName": "雷风恒",
+        "declaredMovingPositions": [
+          1,
+          4
+        ]
+      },
+      "useSpirit": {
+        "mode": "selectedVisible",
+        "position": 1,
+        "declaredActorId": "main:yao:1",
+        "declaredLiuQin": "妻财",
+        "declaredBranch": "子",
+        "declaredWuXing": "水"
+      },
+      "reference": {
+        "chapter": "六合章；各门类应期总注章",
+        "printedPages": "32-33、48",
+        "referenceKind": "projectConvention",
+        "adjudication": "用神临月建但两动相合为合绊，须待午冲子解绊后再推进"
+      },
+      "sourceRefs": [
+        {
+          "sourceId": "liuyao.source.zengshan.zhongguonaner-pdf",
+          "locator": "chapter:六合章；各门类应期总注章; printed-pages:32-33、48",
+          "evidenceLevel": "b",
+          "referenceKind": "paraphrase"
+        },
+        {
+          "sourceId": "liuyao.source.project.analysis-contract",
+          "locator": "analysis-contract:rule-validation-case",
+          "evidenceLevel": "d",
+          "referenceKind": "projectConvention"
+        }
+      ],
+      "ruleIds": [
+        "liuyao.condition.binding.clash-open",
+        "liuyao.condition.changed-void.fill-or-clash",
+        "liuyao.condition.void.fill-or-clash",
+        "liuyao.decision.mixed-rescuable-conditions",
+        "liuyao.rule.dongbian.changed-join",
+        "liuyao.rule.dongbian.changed-void",
+        "liuyao.rule.dongbian.return-overcomes",
+        "liuyao.rule.hechong.mutual-binding",
+        "liuyao.rule.kongwang.apparent-void",
+        "liuyao.rule.kongwang.void",
+        "liuyao.rule.shengke.binding-suppresses-overcoming",
+        "liuyao.rule.shengke.moving-overcomes",
+        "liuyao.rule.wangshuai.month-command",
+        "liuyao.rule.wangshuai.prosperous",
+        "liuyao.timing.binding.partner-clash",
+        "liuyao.timing.binding.target-clash",
+        "liuyao.timing.changed-void.branch-clash",
+        "liuyao.timing.changed-void.branch-fills",
+        "liuyao.timing.void.branch-fills"
+      ],
+      "unknowns": [],
+      "reviewStatus": "reviewed",
+      "coverage": [
+        "合住/合绊/化合",
+        "应期条件联动"
+      ],
+      "legacyDescription": {
+        "nature": "章法校验例",
+        "declaredHexagram": "地天泰之水风井",
+        "declaredMovingLines": "初爻子水、四爻丑土同动相合",
+        "declaredUseSpirit": "初爻妻财子水"
+      },
+      "expected": {
+        "trend": "daiTiaoJian",
+        "nuance": "待解除后再断",
+        "conditionRuleIds": [
+          "liuyao.condition.binding.clash-open",
+          "liuyao.condition.changed-void.fill-or-clash",
+          "liuyao.condition.void.fill-or-clash"
+        ],
+        "absentConditionRuleIds": [],
+        "factorRuleIds": [
+          "liuyao.decision.mixed-rescuable-conditions",
+          "liuyao.rule.dongbian.changed-join",
+          "liuyao.rule.dongbian.changed-void",
+          "liuyao.rule.dongbian.return-overcomes",
+          "liuyao.rule.hechong.mutual-binding",
+          "liuyao.rule.kongwang.apparent-void",
+          "liuyao.rule.kongwang.void",
+          "liuyao.rule.shengke.binding-suppresses-overcoming",
+          "liuyao.rule.shengke.moving-overcomes",
+          "liuyao.rule.wangshuai.month-command",
+          "liuyao.rule.wangshuai.prosperous"
+        ],
+        "timingBranches": [
+          "丑",
+          "午",
+          "子",
+          "未"
+        ],
+        "hasUnrescuedCondition": false,
+        "decisionRowId": "liuyao.decision.mixed-rescuable-conditions",
+        "factorIds": [
+          "lyf-b0c2ce429bd083cb6028764d",
+          "lyf-6991945559f7b687230b366e",
+          "lyf-20fdcd7e3ee413b5a2b2a61b",
+          "lyf-cc6b4d29eb08d84c3f2c1501",
+          "lyf-9a81baa0702b734e514e9758",
+          "lyf-4b264f7881767d7488a48c25",
+          "lyf-5c36854cfd3ef6b2f7cb50e7",
+          "lyf-caac5b9e9400e68d20834c31",
+          "lyf-d086b7631a9f8bbc0d7a1ce5",
+          "lyf-dc71cd9913831ecda5b456b1",
+          "lyf-ffbcc8122c3d93dc64ee96ea"
+        ],
+        "conditionIds": [
+          "lyc-eacdea87a7b1ac7e6cee3963",
+          "lyc-75563c46e6ba5f59c23414bf",
+          "lyc-a1f4f6d42ed120e58944464f"
+        ],
+        "timingIds": [
+          "lyt-08858254cf2ac3f511e4c1a6",
+          "lyt-f2b4f6985e1e76e83ab9f7be",
+          "lyt-86dc2d8f986a17ec026757c7",
+          "lyt-c688df2a58256884e7205a8a"
+        ]
+      }
+    },
+    {
+      "caseId": "liuyao.case.golden.037",
+      "caseKind": "ruleValidation",
+      "evaluationSplit": "calibration",
+      "question": "伏神受飞神压制能否得用",
+      "pan": {
+        "numbers": [
+          8,
+          8,
+          7,
+          7,
+          7,
+          7
+        ],
+        "monthBranch": "午",
+        "dayGanZhi": "甲辰",
+        "declaredMainGuaName": "天山遯",
+        "declaredChangingGuaName": null,
+        "declaredMovingPositions": []
+      },
+      "useSpirit": {
+        "mode": "selectedHidden",
+        "position": 1,
+        "declaredActorId": "hidden:host-yao:1",
+        "declaredLiuQin": "子孙",
+        "declaredBranch": "子",
+        "declaredWuXing": "水"
+      },
+      "reference": {
+        "chapter": "飞伏神章",
+        "printedPages": "52-54",
+        "referenceKind": "projectConvention",
+        "adjudication": "飞神辰土克伏神子水，伏藏而受制，出伏无解，断难成"
+      },
+      "sourceRefs": [
+        {
+          "sourceId": "liuyao.source.zengshan.zhongguonaner-pdf",
+          "locator": "chapter:飞伏神章; printed-pages:52-54",
+          "evidenceLevel": "b",
+          "referenceKind": "paraphrase"
+        },
+        {
+          "sourceId": "liuyao.source.project.analysis-contract",
+          "locator": "analysis-contract:rule-validation-case",
+          "evidenceLevel": "d",
+          "referenceKind": "projectConvention"
+        }
+      ],
+      "ruleIds": [
+        "liuyao.condition.hidden.no-release-while-suppressed",
+        "liuyao.condition.hidden.release",
+        "liuyao.condition.month-break.exit-fill-or-join",
+        "liuyao.condition.tomb.clash-open",
+        "liuyao.decision.weak-unrescuable",
+        "liuyao.rule.fushen.flight-overcomes-hidden",
+        "liuyao.rule.fushen.hidden-suppressed",
+        "liuyao.rule.mujue.day-tomb",
+        "liuyao.rule.wangshuai.confined",
+        "liuyao.rule.wangshuai.day-overcomes",
+        "liuyao.rule.wangshuai.month-break",
+        "liuyao.timing.tomb.clash-opens"
+      ],
+      "unknowns": [],
+      "reviewStatus": "reviewed",
+      "coverage": [
+        "飞伏/出伏"
+      ],
+      "legacyDescription": {
+        "nature": "章法校验例",
+        "declaredHexagram": "天山遁安静",
+        "declaredMovingLines": "无",
+        "declaredUseSpirit": "初爻伏神子孙子水"
+      },
+      "expected": {
+        "trend": "nanCheng",
+        "nuance": "空破墓绝，到底无救",
+        "conditionRuleIds": [
+          "liuyao.condition.hidden.no-release-while-suppressed",
+          "liuyao.condition.month-break.exit-fill-or-join",
+          "liuyao.condition.tomb.clash-open"
+        ],
+        "absentConditionRuleIds": [
+          "liuyao.condition.hidden.release"
+        ],
+        "factorRuleIds": [
+          "liuyao.decision.weak-unrescuable",
+          "liuyao.rule.fushen.flight-overcomes-hidden",
+          "liuyao.rule.fushen.hidden-suppressed",
+          "liuyao.rule.mujue.day-tomb",
+          "liuyao.rule.wangshuai.confined",
+          "liuyao.rule.wangshuai.day-overcomes",
+          "liuyao.rule.wangshuai.month-break"
+        ],
+        "timingBranches": [
+          "戌"
+        ],
+        "hasUnrescuedCondition": true,
+        "decisionRowId": "liuyao.decision.weak-unrescuable",
+        "factorIds": [
+          "lyf-b46330126d74a88495f42889",
+          "lyf-af5e8e50217b3e757f80216a",
+          "lyf-d30d1fc22f3687b90bf6bc79",
+          "lyf-5db9715f561c013109b708dd",
+          "lyf-df7a99e4f13af9432a3be7ab",
+          "lyf-2dfb4a2c841c14625d237572",
+          "lyf-a8eefd5443afac8c241d1d13"
+        ],
+        "conditionIds": [
+          "lyc-3ed031ab7877cf6077bcdfe7",
+          "lyc-d0997a11443a416178fd5486",
+          "lyc-98b6c4c17f8ed8184234faf9"
+        ],
+        "timingIds": [
+          "lyt-5bd3054ef3aea1a143d0c2e1"
+        ]
+      }
+    },
+    {
+      "caseId": "liuyao.case.golden.038",
+      "caseKind": "ruleValidation",
+      "evaluationSplit": "calibration",
+      "question": "飞神被日冲后伏神能否出",
+      "pan": {
+        "numbers": [
+          8,
+          8,
+          7,
+          7,
+          7,
+          7
+        ],
+        "monthBranch": "申",
+        "dayGanZhi": "甲戌",
+        "declaredMainGuaName": "天山遯",
+        "declaredChangingGuaName": null,
+        "declaredMovingPositions": []
+      },
+      "useSpirit": {
+        "mode": "selectedHidden",
+        "position": 1,
+        "declaredActorId": "hidden:host-yao:1",
+        "declaredLiuQin": "子孙",
+        "declaredBranch": "子",
+        "declaredWuXing": "水"
+      },
+      "reference": {
+        "chapter": "飞伏神章",
+        "printedPages": "52-54",
+        "referenceKind": "projectConvention",
+        "adjudication": "日冲飞神而伏神已得出，v2 不再生成待出伏或冲飞引伏候选"
+      },
+      "sourceRefs": [
+        {
+          "sourceId": "liuyao.source.zengshan.zhongguonaner-pdf",
+          "locator": "chapter:飞伏神章; printed-pages:52-54",
+          "evidenceLevel": "b",
+          "referenceKind": "paraphrase"
+        },
+        {
+          "sourceId": "liuyao.source.project.analysis-contract",
+          "locator": "analysis-contract:rule-validation-case",
+          "evidenceLevel": "d",
+          "referenceKind": "projectConvention"
+        }
+      ],
+      "ruleIds": [
+        "liuyao.condition.hidden.release",
+        "liuyao.decision.mixed-l1-support",
+        "liuyao.rule.fushen.flight-overcomes-hidden",
+        "liuyao.rule.fushen.hidden-released",
+        "liuyao.rule.fushen.hidden-suppressed",
+        "liuyao.rule.wangshuai.day-overcomes",
+        "liuyao.rule.wangshuai.month-generates",
+        "liuyao.rule.wangshuai.supported"
+      ],
+      "unknowns": [],
+      "reviewStatus": "reviewed",
+      "coverage": [
+        "应期条件联动",
+        "飞伏/出伏"
+      ],
+      "legacyDescription": {
+        "nature": "章法校验例",
+        "declaredHexagram": "天山遁安静",
+        "declaredMovingLines": "无；戌日冲初爻飞神辰土",
+        "declaredUseSpirit": "初爻伏神子孙子水"
+      },
+      "expected": {
+        "trend": "daiTiaoJian",
+        "nuance": "先难后成",
+        "conditionRuleIds": [],
+        "absentConditionRuleIds": [
+          "liuyao.condition.hidden.release"
+        ],
+        "factorRuleIds": [
+          "liuyao.decision.mixed-l1-support",
+          "liuyao.rule.fushen.flight-overcomes-hidden",
+          "liuyao.rule.fushen.hidden-released",
+          "liuyao.rule.fushen.hidden-suppressed",
+          "liuyao.rule.wangshuai.day-overcomes",
+          "liuyao.rule.wangshuai.month-generates",
+          "liuyao.rule.wangshuai.supported"
+        ],
+        "timingBranches": [],
+        "hasUnrescuedCondition": false,
+        "decisionRowId": "liuyao.decision.mixed-l1-support",
+        "factorIds": [
+          "lyf-3d0abc22bd2655d15c500a30",
+          "lyf-b46330126d74a88495f42889",
+          "lyf-8494d30ed4c6bbc195014a89",
+          "lyf-67e911545ef529a2da0363ba",
+          "lyf-df7a99e4f13af9432a3be7ab",
+          "lyf-2dfb4a2c841c14625d237572",
+          "lyf-910c100b91669df6a09e56b1"
+        ],
+        "conditionIds": [],
+        "timingIds": []
+      }
+    },
+    {
+      "caseId": "liuyao.case.golden.039",
+      "caseKind": "ruleValidation",
+      "evaluationSplit": "calibration",
+      "question": "仇神生忌、忌神接续克用时能否成",
+      "pan": {
+        "numbers": [
+          7,
+          9,
+          7,
+          9,
+          7,
+          7
+        ],
+        "monthBranch": "卯",
+        "dayGanZhi": "乙卯",
+        "declaredMainGuaName": "乾为天",
+        "declaredChangingGuaName": "风火家人",
+        "declaredMovingPositions": [
+          2,
+          4
+        ]
+      },
+      "useSpirit": {
+        "mode": "selectedVisible",
+        "position": 5,
+        "declaredActorId": "main:yao:5",
+        "declaredLiuQin": "兄弟",
+        "declaredBranch": "申",
+        "declaredWuXing": "金"
+      },
+      "reference": {
+        "chapter": "用神、元神、忌神、仇神章；元神、忌神、衰旺章",
+        "printedPages": "21-23",
+        "referenceKind": "projectConvention",
+        "adjudication": "寅木仇神生午火忌神，午火动克申金，用神无日月强扶，断难成"
+      },
+      "sourceRefs": [
+        {
+          "sourceId": "liuyao.source.zengshan.zhongguonaner-pdf",
+          "locator": "chapter:用神、元神、忌神、仇神章；元神、忌神、衰旺章; printed-pages:21-23",
+          "evidenceLevel": "b",
+          "referenceKind": "paraphrase"
+        },
+        {
+          "sourceId": "liuyao.source.project.analysis-contract",
+          "locator": "analysis-contract:rule-validation-case",
+          "evidenceLevel": "d",
+          "referenceKind": "projectConvention"
+        }
+      ],
+      "ruleIds": [
+        "liuyao.decision.weak-adverse-active",
+        "liuyao.rule.shengke.moving-overcomes",
+        "liuyao.rule.wangshuai.confined"
+      ],
+      "unknowns": [],
+      "reviewStatus": "reviewed",
+      "coverage": [
+        "元神/忌神/仇神"
+      ],
+      "legacyDescription": {
+        "nature": "章法校验例",
+        "declaredHexagram": "乾为天之山泽损",
+        "declaredMovingLines": "二爻寅木仇神、四爻午火忌神同动",
+        "declaredUseSpirit": "五爻兄弟申金"
+      },
+      "expected": {
+        "trend": "nanCheng",
+        "nuance": "克处无生",
+        "conditionRuleIds": [],
+        "absentConditionRuleIds": [],
+        "factorRuleIds": [
+          "liuyao.decision.weak-adverse-active",
+          "liuyao.rule.shengke.moving-overcomes",
+          "liuyao.rule.wangshuai.confined"
+        ],
+        "timingBranches": [],
+        "hasUnrescuedCondition": false,
+        "decisionRowId": "liuyao.decision.weak-adverse-active",
+        "factorIds": [
+          "lyf-a504c21cb3495c2a1e4e8cc7",
+          "lyf-09c90ebca104fe9a309c7b30",
+          "lyf-0bc5e02e3bed08e98d1ae8c1"
+        ],
+        "conditionIds": [],
+        "timingIds": []
+      }
+    },
+    {
+      "caseId": "liuyao.case.golden.040",
+      "caseKind": "ruleValidation",
+      "evaluationSplit": "calibration",
+      "question": "只有飞神生伏而无日月扶助时能否立即得用",
+      "pan": {
+        "numbers": [
+          8,
+          7,
+          7,
+          7,
+          7,
+          7
+        ],
+        "monthBranch": "午",
+        "dayGanZhi": "丙辰",
+        "declaredMainGuaName": "天风姤",
+        "declaredChangingGuaName": null,
+        "declaredMovingPositions": []
+      },
+      "useSpirit": {
+        "mode": "selectedHidden",
+        "position": 2,
+        "declaredActorId": "hidden:host-yao:2",
+        "declaredLiuQin": "妻财",
+        "declaredBranch": "寅",
+        "declaredWuXing": "木"
+      },
+      "reference": {
+        "chapter": "飞伏神章",
+        "printedPages": "52-54",
+        "referenceKind": "projectConvention",
+        "adjudication": "飞神亥水生伏但无日月生扶，只能证明出伏有源，仍须等待伏神引出"
+      },
+      "sourceRefs": [
+        {
+          "sourceId": "liuyao.source.zengshan.zhongguonaner-pdf",
+          "locator": "chapter:飞伏神章; printed-pages:52-54",
+          "evidenceLevel": "b",
+          "referenceKind": "paraphrase"
+        },
+        {
+          "sourceId": "liuyao.source.project.analysis-contract",
+          "locator": "analysis-contract:rule-validation-case",
+          "evidenceLevel": "d",
+          "referenceKind": "projectConvention"
+        }
+      ],
+      "ruleIds": [
+        "liuyao.condition.hidden.release",
+        "liuyao.decision.mixed-rescuable-conditions",
+        "liuyao.rule.fushen.flight-generates-hidden",
+        "liuyao.rule.wangshuai.resting",
+        "liuyao.timing.hidden.branch-fills",
+        "liuyao.timing.hidden.flight-clash"
+      ],
+      "unknowns": [],
+      "reviewStatus": "reviewed",
+      "coverage": [
+        "应期条件联动",
+        "飞伏/出伏"
+      ],
+      "legacyDescription": {
+        "nature": "章法校验例",
+        "declaredHexagram": "天风姤安静",
+        "declaredMovingLines": "无",
+        "declaredUseSpirit": "二爻伏神妻财寅木"
+      },
+      "expected": {
+        "trend": "daiTiaoJian",
+        "nuance": "待解除后再断",
+        "conditionRuleIds": [
+          "liuyao.condition.hidden.release"
+        ],
+        "absentConditionRuleIds": [],
+        "factorRuleIds": [
+          "liuyao.decision.mixed-rescuable-conditions",
+          "liuyao.rule.fushen.flight-generates-hidden",
+          "liuyao.rule.wangshuai.resting"
+        ],
+        "timingBranches": [
+          "寅",
+          "巳"
+        ],
+        "hasUnrescuedCondition": false,
+        "decisionRowId": "liuyao.decision.mixed-rescuable-conditions",
+        "factorIds": [
+          "lyf-47778edf10fe2582fe41e027",
+          "lyf-dc0f341683a7adb86ca11f5f",
+          "lyf-0e64adf6242dbbf9ac5b273a"
+        ],
+        "conditionIds": [
+          "lyc-e4541266307f6efce6861c7f"
+        ],
+        "timingIds": [
+          "lyt-c352bc2f922623338561f9a5",
+          "lyt-179fb6594b2742c44d3fdc05"
+        ]
+      }
+    }
+  ]
+}

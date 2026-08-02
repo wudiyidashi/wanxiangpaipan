@@ -1,4 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
+import 'package:wanxiang_paipan/divination_systems/liuyao/models/yao.dart';
 import 'package:wanxiang_paipan/domain/services/liuyao/analysis/liuyao_analyzer.dart';
 
 import 'helpers/analysis_fixtures.dart';
@@ -33,7 +34,7 @@ void main() {
   });
 
   group('LiuYaoAnalyzer 指定用神', () {
-    test('乾卦用神妻财寅木：完整推理链与应期', () {
+    test('乾卦用神妻财寅木：无可解条件时不生成通用应期', () {
       final qian = buildGua([7, 7, 7, 7, 7, 7]);
       final lunar = buildLunar(yueJian: '午', riGanZhi: '甲子');
       final report =
@@ -45,7 +46,7 @@ void main() {
       expect(report.yaoTags[2]!.map((t) => t.term), contains('用神'));
       expect(report.yaoTags[1]!.map((t) => t.term), contains('元神'));
       expect(report.yaoTags[5]!.map((t) => t.term), contains('忌神'));
-      expect(report.yingQi, isNotEmpty);
+      expect(report.yingQi, isEmpty);
       expect(report.verdictSummary, contains('妻财'));
       expect(report.verdictSummary, contains('条件触发窗口'));
       expect(report.verdictSummary, isNot(contains('总体偏')));
@@ -59,7 +60,7 @@ void main() {
       expect(report.yaoTags[6]!.map((t) => t.term), contains('用神两现'));
     });
 
-    test('天山遁伏神取用：用神(伏)标签与链', () {
+    test('天山遁伏神取用：已出伏时不生成待出伏应期', () {
       final dun = buildGua([8, 8, 7, 7, 7, 7]);
       final lunar = buildLunar(yueJian: '午', riGanZhi: '甲子');
       final report = LiuYaoAnalyzer.analyze(dun, null, lunar,
@@ -69,10 +70,7 @@ void main() {
       expect(report.verdictSummary, contains('妻财'));
       expect(report.yongShenTags.map((tag) => tag.term), contains('休'));
       expect(report.yongShenTags.map((tag) => tag.term), isNot(contains('旺')));
-      expect(
-          report.yingQi!.map((candidate) => candidate.branch), contains('寅'));
-      expect(report.yingQi!.map((candidate) => candidate.branch),
-          isNot(contains('午')));
+      expect(report.yingQi, isEmpty);
     });
   });
 
@@ -89,7 +87,7 @@ void main() {
       expect(report.guaTags.map((t) => t.term), contains('六合卦'));
     });
 
-    test('用神发动化进神时应期含变爻当值', () {
+    test('用神发动但无可解条件时不生成通用应期', () {
       // 构造动爻化进神：需真实卦例——雷地豫四爻午动化酉？
       // 简化：用乾四爻午动，变爻为未（天风姤外卦不变……实际为火天大有？）
       // 取实际变卦结果做存在性检查即可
@@ -98,10 +96,71 @@ void main() {
       final lunar = buildLunar(yueJian: '午', riGanZhi: '甲寅');
       final report =
           LiuYaoAnalyzer.analyze(qian, changing, lunar, yongShenPosition: 4);
-      expect(report.yingQi, isNotEmpty);
-      // 动爻用神：值日与合日在候选中
-      final branches = report.yingQi!.map((c) => c.branch).toList();
-      expect(branches, contains('午'));
+      expect(report.yingQi, isEmpty);
+    });
+  });
+
+  group('LiuYaoAnalyzer 输入合同', () {
+    final moving = buildGua([9, 7, 7, 7, 7, 7]);
+    final expectedChanging = buildChangingGua(moving)!;
+    final lunar = buildLunar(yueJian: '寅', riGanZhi: '甲寅');
+
+    test('有动爻但缺少变卦时返回 invalid', () {
+      final report = LiuYaoAnalyzer.analyze(moving, null, lunar);
+
+      expect(report.status.name, 'invalid');
+      expect(report.diagnostics, orderedEquals(<String>['missingChangingGua']));
+    });
+
+    test('全静卦意外携带变卦时返回 invalid', () {
+      final still = buildGua([7, 7, 7, 7, 7, 7]);
+      final report = LiuYaoAnalyzer.analyze(still, expectedChanging, lunar);
+
+      expect(report.status.name, 'invalid');
+      expect(
+        report.diagnostics,
+        orderedEquals(<String>['unexpectedChangingGua']),
+      );
+    });
+
+    test('变卦缺爻或顺序错误时返回精确诊断', () {
+      final shortChanging = expectedChanging.copyWith(
+        yaos: expectedChanging.yaos.sublist(0, 5),
+      );
+      final misorderedChanging = expectedChanging.copyWith(
+        yaos: <Yao>[
+          expectedChanging.yaos[1],
+          expectedChanging.yaos[0],
+          ...expectedChanging.yaos.skip(2),
+        ],
+      );
+
+      expect(
+        LiuYaoAnalyzer.analyze(moving, shortChanging, lunar).diagnostics,
+        orderedEquals(<String>['invalidChangingGuaYaoCount']),
+      );
+      expect(
+        LiuYaoAnalyzer.analyze(moving, misorderedChanging, lunar).diagnostics,
+        orderedEquals(<String>['invalidChangingGuaYaoOrder']),
+      );
+    });
+
+    test('变爻与本卦不对应时返回 invalid', () {
+      final wrongChanging = expectedChanging.copyWith(
+        yaos: <Yao>[
+          expectedChanging.yaos.first.copyWith(
+            number: moving.yaos.first.number,
+          ),
+          ...expectedChanging.yaos.skip(1),
+        ],
+      );
+      final report = LiuYaoAnalyzer.analyze(moving, wrongChanging, lunar);
+
+      expect(report.status.name, 'invalid');
+      expect(
+        report.diagnostics,
+        orderedEquals(<String>['changingGuaDoesNotCorrespond']),
+      );
     });
   });
 }

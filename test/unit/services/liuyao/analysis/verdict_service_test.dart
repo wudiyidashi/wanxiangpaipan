@@ -1,8 +1,11 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:wanxiang_paipan/divination_systems/liuyao/models/yao.dart';
+import 'package:wanxiang_paipan/domain/services/liuyao/analysis/actor_availability_service.dart';
 import 'package:wanxiang_paipan/domain/services/liuyao/analysis/liuyao_analyzer.dart';
 import 'package:wanxiang_paipan/domain/services/liuyao/analysis/models/analysis_report.dart';
 import 'package:wanxiang_paipan/domain/services/liuyao/analysis/models/analysis_tag.dart';
+import 'package:wanxiang_paipan/domain/services/liuyao/analysis/models/analysis_trace.dart';
+import 'package:wanxiang_paipan/domain/services/liuyao/analysis/rules/liuyao_catalog.dart';
 import 'package:wanxiang_paipan/domain/services/liuyao/analysis/verdict_service.dart';
 
 import 'helpers/analysis_fixtures.dart';
@@ -89,7 +92,10 @@ void main() {
           yueJian: '子', riGanZhi: '己巳', position: 2, withChanging: true);
       expect(j.trend, VerdictTrend.keCheng);
       expect(j.factors.map((f) => f.rule), contains('贪合忘克'));
-      expect(j.factors.map((f) => f.rule), isNot(contains('动爻克')));
+      final suppressedAttack =
+          j.factors.firstWhere((factor) => factor.rule == '动爻克');
+      expect(suppressedAttack.active, isFalse);
+      expect(suppressedAttack.upstreamOccurrenceIds, isNotEmpty);
     });
   });
 
@@ -99,7 +105,9 @@ void main() {
           judge([8, 8, 8, 8, 8, 8], yueJian: '未', riGanZhi: '辛未', position: 5);
       expect(j.trend, VerdictTrend.nanCheng);
       expect(j.nuance, contains('无救'));
-      final kong = j.conditions.firstWhere((c) => c.label == '待出空');
+      final kong = j.conditions.firstWhere((condition) =>
+          condition.conditionRuleId == LiuYaoRuleIds.conditionTrueVoid);
+      expect(kong.label, '真空到底无用');
       expect(kong.hasRescue, isFalse);
     });
 
@@ -183,12 +191,310 @@ void main() {
       expect(he.branch, '未'); // 丑之冲支
       expect(he.hasRescue, isTrue);
     });
+
+    test('动爻逢月合但已被日冲开时不再生成合绊条件或应期', () {
+      final gua = buildGua([9, 8, 7, 6, 8, 8]);
+      final report = LiuYaoAnalyzer.analyze(
+        gua,
+        buildChangingGua(gua),
+        buildLunar(yueJian: '子', riGanZhi: '丁未'),
+        yongShenPosition: 4,
+      );
+
+      expect(
+        report.actorAvailability
+            .singleWhere((item) => item.actor.actorId == 'main:yao:4')
+            .reasonRuleIds,
+        contains(LiuYaoRuleIds.actorBindingOpened),
+      );
+      expect(
+        report.judgment!.conditions.map((item) => item.conditionRuleId),
+        isNot(contains(LiuYaoRuleIds.conditionBinding)),
+      );
+      final timingRuleIds =
+          report.yingQi!.map((item) => item.timingRuleId).toList();
+      expect(
+        timingRuleIds,
+        isNot(contains(LiuYaoRuleIds.timingBindingTargetClash)),
+      );
+      expect(
+        timingRuleIds,
+        isNot(contains(LiuYaoRuleIds.timingBindingPartnerClash)),
+      );
+    });
+  });
+
+  group('v2 有向链进入裁决', () {
+    DirectedEffectOccurrence activeChain({
+      required String occurrenceId,
+      required String ruleId,
+      required DirectedEffectKind effect,
+      required List<LiuYaoActorRef> actors,
+    }) {
+      return DirectedEffectOccurrence(
+        occurrenceId: occurrenceId,
+        ruleId: ruleId,
+        fromActor: actors.first,
+        toActor: actors.last,
+        effect: effect,
+        status: DirectedEffectStatus.active,
+        pathActorIds: actors.map((actor) => actor.actorId).toList(),
+        pathStep: 2,
+        sourceIds: LiuYaoRuleCatalog.ruleById[ruleId]!.sourceIds,
+      );
+    }
+
+    VerdictJudgment judgeDirectedChain({
+      required Yao yongShen,
+      required LiuYaoActorRef yongActor,
+      required List<DirectedEffectOccurrence> effects,
+      required LiuYaoRoleOccurrence transmitterRole,
+    }) {
+      return VerdictService.judge(
+        yongShen: yongShen,
+        isFuShen: false,
+        yongShenTags: const <YaoAnalysisTag>[],
+        yaoTags: const <int, List<YaoAnalysisTag>>{},
+        mainGua: buildGua([7, 7, 7, 7, 7, 7]),
+        lunarInfo: buildLunar(),
+        directedEffects: effects,
+        roles: <LiuYaoRoleOccurrence>[transmitterRole],
+        targetActorId: yongActor.actorId,
+      );
+    }
+
+    test('连续相生只在用神为终点时作为 active 扶助因素', () {
+      final sourceActor = ActorAvailabilityService.mainActor(
+        makeYao(position: 1, branch: '寅', moving: true),
+      );
+      final transmitterActor = ActorAvailabilityService.mainActor(
+        makeYao(position: 2, branch: '午', moving: true),
+      );
+      final yongShen = makeYao(position: 4, branch: '辰', moving: true);
+      final yongActor = ActorAvailabilityService.mainActor(yongShen);
+      final outboundMiddle = ActorAvailabilityService.mainActor(
+        makeYao(position: 5, branch: '申', moving: true),
+      );
+      final outboundEnd = ActorAvailabilityService.mainActor(
+        makeYao(position: 6, branch: '子', moving: true),
+      );
+      final ruleId = LiuYaoRuleCatalog.tagRuleSpecs['连续相生']!.ruleId;
+      final judgment = judgeDirectedChain(
+        yongShen: yongShen,
+        yongActor: yongActor,
+        effects: <DirectedEffectOccurrence>[
+          activeChain(
+            occurrenceId: 'lyo-chain-sheng-to-yong',
+            ruleId: ruleId,
+            effect: DirectedEffectKind.sheng,
+            actors: <LiuYaoActorRef>[
+              sourceActor,
+              transmitterActor,
+              yongActor,
+            ],
+          ),
+          activeChain(
+            occurrenceId: 'lyo-chain-sheng-away-from-yong',
+            ruleId: ruleId,
+            effect: DirectedEffectKind.sheng,
+            actors: <LiuYaoActorRef>[
+              yongActor,
+              outboundMiddle,
+              outboundEnd,
+            ],
+          ),
+        ],
+        transmitterRole: LiuYaoRoleOccurrence(
+          actor: transmitterActor,
+          role: LiuYaoRole.yuanShen,
+          roleRuleId: LiuYaoRuleCatalog.tagRuleSpecs['元神']!.ruleId,
+          reason: '生用神者为元神',
+        ),
+      );
+      final factor = judgment.factors.singleWhere(
+        (item) => item.ruleId == ruleId,
+      );
+
+      expect(factor.active, isTrue);
+      expect(factor.effect, VerdictEffect.fu);
+      expect(
+        factor.upstreamOccurrenceIds,
+        orderedEquals(<String>['lyo-chain-sheng-to-yong']),
+      );
+      expect(
+        judgment.matchedDecisionRowId,
+        LiuYaoRuleIds.decisionMixedSourceContinuity,
+      );
+    });
+
+    test('连续相克只在用神为终点时作为 active 克制因素', () {
+      final sourceActor = ActorAvailabilityService.mainActor(
+        makeYao(position: 1, branch: '寅', moving: true),
+      );
+      final transmitterActor = ActorAvailabilityService.mainActor(
+        makeYao(position: 4, branch: '辰', moving: true),
+      );
+      final yongShen = makeYao(position: 5, branch: '子', moving: true);
+      final yongActor = ActorAvailabilityService.mainActor(yongShen);
+      final outboundMiddle = ActorAvailabilityService.mainActor(
+        makeYao(position: 2, branch: '午', moving: true),
+      );
+      final outboundEnd = ActorAvailabilityService.mainActor(
+        makeYao(position: 3, branch: '申', moving: true),
+      );
+      final ruleId = LiuYaoRuleCatalog.tagRuleSpecs['连续相克']!.ruleId;
+      final judgment = judgeDirectedChain(
+        yongShen: yongShen,
+        yongActor: yongActor,
+        effects: <DirectedEffectOccurrence>[
+          activeChain(
+            occurrenceId: 'lyo-chain-ke-to-yong',
+            ruleId: ruleId,
+            effect: DirectedEffectKind.ke,
+            actors: <LiuYaoActorRef>[
+              sourceActor,
+              transmitterActor,
+              yongActor,
+            ],
+          ),
+          activeChain(
+            occurrenceId: 'lyo-chain-ke-away-from-yong',
+            ruleId: ruleId,
+            effect: DirectedEffectKind.ke,
+            actors: <LiuYaoActorRef>[
+              yongActor,
+              outboundMiddle,
+              outboundEnd,
+            ],
+          ),
+        ],
+        transmitterRole: LiuYaoRoleOccurrence(
+          actor: transmitterActor,
+          role: LiuYaoRole.jiShen,
+          roleRuleId: LiuYaoRuleCatalog.tagRuleSpecs['忌神']!.ruleId,
+          reason: '克用神者为忌神',
+        ),
+      );
+      final factor = judgment.factors.singleWhere(
+        (item) => item.ruleId == ruleId,
+      );
+
+      expect(factor.active, isTrue);
+      expect(factor.effect, VerdictEffect.yi);
+      expect(
+        factor.upstreamOccurrenceIds,
+        orderedEquals(<String>['lyo-chain-ke-to-yong']),
+      );
+      expect(
+        judgment.matchedDecisionRowId,
+        LiuYaoRuleIds.decisionMixedAdverseActive,
+      );
+    });
+
+    test('元神角色的作用被压制时不触发元神优先裁决', () {
+      final sourceYao = makeYao(position: 2, branch: '寅', moving: true);
+      final yongShen = makeYao(position: 4, branch: '午', moving: true);
+      final sourceActor = ActorAvailabilityService.mainActor(sourceYao);
+      final yongActor = ActorAvailabilityService.mainActor(yongShen);
+      final ruleId = LiuYaoRuleCatalog.tagRuleSpecs['连续相生']!.ruleId;
+      final judgment = VerdictService.judge(
+        yongShen: yongShen,
+        isFuShen: false,
+        yongShenTags: const <YaoAnalysisTag>[],
+        yaoTags: const <int, List<YaoAnalysisTag>>{},
+        mainGua: buildGua([7, 9, 7, 9, 7, 7]),
+        lunarInfo: buildLunar(yueJian: '辰', riGanZhi: '甲辰'),
+        directedEffects: <DirectedEffectOccurrence>[
+          DirectedEffectOccurrence(
+            occurrenceId: 'lyo-suppressed-yuan',
+            ruleId: ruleId,
+            fromActor: sourceActor,
+            toActor: yongActor,
+            effect: DirectedEffectKind.sheng,
+            status: DirectedEffectStatus.suppressed,
+            pathActorIds: <String>[
+              sourceActor.actorId,
+              yongActor.actorId,
+            ],
+            pathStep: 1,
+            suppressedByRuleIds: const <String>[
+              LiuYaoRuleIds.actorRetreat,
+            ],
+            suppressedByOccurrenceIds: const <String>['lyo-retreat'],
+            sourceIds: LiuYaoRuleCatalog.ruleById[ruleId]!.sourceIds,
+          ),
+        ],
+        roles: <LiuYaoRoleOccurrence>[
+          LiuYaoRoleOccurrence(
+            actor: sourceActor,
+            role: LiuYaoRole.yuanShen,
+            roleRuleId: LiuYaoRuleCatalog.tagRuleSpecs['元神']!.ruleId,
+            reason: '生用神者为元神',
+          ),
+        ],
+        targetActorId: yongActor.actorId,
+      );
+      final suppressedFactor = judgment.factors.singleWhere(
+        (item) => item.ruleId == ruleId,
+      );
+
+      expect(suppressedFactor.active, isFalse);
+      expect(
+        judgment.matchedDecisionRowId,
+        isNot(LiuYaoRuleIds.decisionMixedSourceContinuity),
+      );
+    });
+  });
+
+  test('旧作用路径按 ruleId 定位改名后的动爻攻击者', () {
+    final attackRule =
+        LiuYaoRuleCatalog.ruleById[LiuYaoRuleIds.ruleMovingOvercomes]!;
+    final retreatRule = LiuYaoRuleCatalog.ruleById[LiuYaoRuleIds.ruleRetreat]!;
+    final attack = YaoAnalysisTag(
+      term: '发动相制（展示名）',
+      category: TagCategory.shengKe,
+      polarity: Polarity.xiong,
+      priority: 1,
+      reason: 'renamed moving attack',
+      relatedYao: const <int>[2],
+      ruleId: attackRule.ruleId,
+      occurrenceId: 'lyo-renamed-attack',
+      sourceIds: attackRule.sourceIds,
+    );
+    final retreat = YaoAnalysisTag(
+      term: '退失作用（展示名）',
+      category: TagCategory.dongBian,
+      polarity: Polarity.xiong,
+      priority: 1,
+      reason: 'renamed retreat blocker',
+      ruleId: retreatRule.ruleId,
+      occurrenceId: 'lyo-renamed-retreat',
+      sourceIds: retreatRule.sourceIds,
+    );
+    final yongShen = makeYao(position: 1, branch: '午', moving: true);
+
+    final judgment = VerdictService.judge(
+      yongShen: yongShen,
+      isFuShen: false,
+      yongShenTags: <YaoAnalysisTag>[attack],
+      yaoTags: <int, List<YaoAnalysisTag>>{
+        1: <YaoAnalysisTag>[attack],
+        2: <YaoAnalysisTag>[retreat],
+      },
+      mainGua: buildGua([7, 7, 7, 7, 7, 7]),
+      lunarInfo: buildLunar(),
+    );
+
+    expect(
+      judgment.factors.map((factor) => factor.ruleId),
+      contains(LiuYaoRuleIds.attackerSuppressed),
+    );
   });
 
   group('伏神取用', () {
-    test('天山遁伏神寅木：出伏条件 + 飞伏关系因素，基于伏神自身裁决', () {
+    test('天山遁伏神寅木：未得出时保留出伏条件', () {
       final j = judge([8, 8, 7, 7, 7, 7],
-          yueJian: '午', riGanZhi: '甲子', position: 2, isFuShen: true);
+          yueJian: '午', riGanZhi: '乙丑', position: 2, isFuShen: true);
       expect(j.conditions.map((c) => c.label), contains('待出伏'));
       expect(j.factors.map((f) => f.rule), contains('伏生飞'));
       // 日子水生寅木，伏神有气：非难成
@@ -200,13 +506,15 @@ void main() {
           yueJian: '申', riGanZhi: '甲寅', position: 1, isFuShen: true);
       expect(j.factors.map((f) => f.rule), contains('飞克伏'));
       expect(j.factors.map((f) => f.rule), isNot(contains('伏神受制')));
-      final condition = j.conditions.firstWhere((c) => c.label == '待出伏');
+      final condition = j.conditions.firstWhere((condition) =>
+          condition.conditionRuleId == LiuYaoRuleIds.conditionHiddenSuppressed);
+      expect(condition.label, '伏神受制无解');
       expect(condition.hasRescue, isFalse);
     });
 
     test('只有飞生伏而无日月生扶时仍为 mixed，不提升为 strong', () {
       final j = judge([8, 7, 7, 7, 7, 7],
-          yueJian: '午', riGanZhi: '乙丑', position: 2, isFuShen: true);
+          yueJian: '午', riGanZhi: '丙辰', position: 2, isFuShen: true);
       expect(j.factors.map((f) => f.rule), contains('飞生伏'));
       expect(j.nuance, '待解除后再断');
     });
@@ -231,11 +539,12 @@ void main() {
       expect(j.factors.last.rule, '裁决·克处逢生');
     });
 
-    test('师之明夷：用神自身回头克优先于同卦连续相生', () {
+    test('师之明夷：用神不在生链终点时不消费连续相生', () {
       final j = judge([6, 9, 6, 8, 8, 8],
           yueJian: '酉', riGanZhi: '甲辰', position: 3, withChanging: true);
 
-      expect(j.factors.map((f) => f.rule), containsAll(['回头克', '连续相生']));
+      expect(j.factors.map((f) => f.rule), contains('回头克'));
+      expect(j.factors.map((f) => f.rule), isNot(contains('连续相生')));
       expect(j.trend, VerdictTrend.nanCheng);
       expect(j.factors.last.rule, '裁决·用神回头受克');
     });
@@ -254,8 +563,10 @@ void main() {
           yueJian: '申', riGanZhi: '甲戌', position: 1, isFuShen: true);
 
       expect(j.factors.map((f) => f.rule), contains('伏神得出'));
-      final condition = j.conditions.firstWhere((c) => c.label == '待出伏');
-      expect(condition.hasRescue, isTrue);
+      expect(
+        j.conditions.map((condition) => condition.conditionRuleId),
+        isNot(contains(LiuYaoRuleIds.conditionHiddenRelease)),
+      );
       expect(j.trend, VerdictTrend.daiTiaoJian);
     });
   });
@@ -294,7 +605,7 @@ void main() {
       expect(yuanJi.trend, VerdictTrend.nanCheng);
     });
 
-    test('伏神得出可解覆盖飞克伏无解也不依赖具体卦例', () {
+    test('伏神得出后不再保留待出伏条件', () {
       final j = judgeTags(
         [
           tag('飞克伏', TagCategory.fuShen),
@@ -304,26 +615,37 @@ void main() {
         isFuShen: true,
       );
 
-      final condition = j.conditions.singleWhere((c) => c.label == '待出伏');
-      expect(condition.hasRescue, isTrue);
-      expect(j.trend, VerdictTrend.daiTiaoJian);
+      expect(
+        j.conditions.map((condition) => condition.conditionRuleId),
+        isNot(contains(LiuYaoRuleIds.conditionHiddenRelease)),
+      );
     });
   });
 
   group('推理链与兼容', () {
     test('三合局只记录成局事实，不在缺少作用方向时自动算作扶助', () {
-      final j =
-          judge([9, 7, 9, 7, 7, 7], yueJian: '午', riGanZhi: '乙丑', position: 5);
+      final j = judge(
+        [9, 7, 9, 7, 7, 7],
+        yueJian: '午',
+        riGanZhi: '乙丑',
+        position: 5,
+        withChanging: true,
+      );
       expect(j.factors.map((f) => f.rule), isNot(contains('三合局')));
     });
 
-    test('推理链末条为决策表命中记录，因素均有经文出处', () {
+    test('推理链末条为项目决策行，前置谓词保留独立来源', () {
       final j =
           judge([7, 7, 7, 7, 7, 7], yueJian: '申', riGanZhi: '戊戌', position: 5);
       expect(j.factors.last.rule, startsWith('裁决·'));
-      for (final f in j.factors) {
-        expect(f.source, contains('《增删卜易》'));
-      }
+      expect(j.factors.last.source, contains('项目约定'));
+      expect(j.factors.last.sourceIds, contains(LiuYaoRuleIds.projectSource));
+      expect(
+        j.factors.where((factor) => factor != j.factors.last),
+        everyElement(
+          predicate<VerdictFactor>((factor) => factor.sourceIds.isNotEmpty),
+        ),
+      );
     });
 
     test('未选用神时 judgment 为 null（旧行为兼容）', () {
@@ -346,6 +668,46 @@ void main() {
       expect(report.verdictSummary, report.judgment!.summary);
       expect(report.verdictSummary, contains('条件触发窗口'));
       expect(report.verdictSummary, contains('断曰'));
+    });
+  });
+
+  group('v1-compat 显式回归', () {
+    test('真空仍使用旧待出空条件和通用应期', () {
+      final gua = buildGua([8, 8, 8, 8, 8, 8]);
+      final report = LiuYaoAnalyzer.analyze(
+        gua,
+        null,
+        buildLunar(yueJian: '未', riGanZhi: '辛未'),
+        yongShenPosition: 5,
+        ruleSetVersion: LiuYaoRuleCatalog.v1Compat,
+      );
+
+      expect(report.ruleSetVersion, LiuYaoRuleCatalog.v1Compat);
+      expect(report.judgment!.conditions.single.label, '待出空');
+      expect(report.yingQi, isNotEmpty);
+      expect(
+        report.trace
+            .expand((step) => step.occurrenceIds)
+            .where((occurrenceId) => occurrenceId.isEmpty),
+        isEmpty,
+      );
+    });
+
+    test('伏神已得出仍保留旧待出伏投影', () {
+      final gua = buildGua([8, 8, 7, 7, 7, 7]);
+      final report = LiuYaoAnalyzer.analyze(
+        gua,
+        null,
+        buildLunar(yueJian: '申', riGanZhi: '甲戌'),
+        yongShenPosition: 1,
+        yongShenIsFuShen: true,
+        ruleSetVersion: LiuYaoRuleCatalog.v1Compat,
+      );
+
+      expect(
+        report.judgment!.conditions.map((condition) => condition.label),
+        contains('待出伏'),
+      );
     });
   });
 }

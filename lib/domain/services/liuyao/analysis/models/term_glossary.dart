@@ -1,3 +1,6 @@
+import '../rules/liuyao_catalog.dart';
+import 'liuyao_rule_models.dart';
+
 /// 术语词条
 class TermEntry {
   const TermEntry({
@@ -16,6 +19,55 @@ class TermEntry {
   final String implication;
 }
 
+/// 术语词典中一条可展示、已做证据边界收敛的来源。
+class TermGlossaryReference {
+  const TermGlossaryReference({
+    required this.sourceType,
+    required this.sourceTitle,
+    required this.locator,
+    required this.evidenceLevel,
+    required this.referenceKind,
+    required this.boundary,
+    this.quote,
+  });
+
+  final String sourceType;
+  final String sourceTitle;
+  final String locator;
+  final String evidenceLevel;
+  final LiuYaoReferenceKind referenceKind;
+  final String boundary;
+  final String? quote;
+
+  String get referenceLabel => switch (referenceKind) {
+        LiuYaoReferenceKind.exactQuote => '页级核验短引',
+        LiuYaoReferenceKind.paraphrase => '采用释义',
+        LiuYaoReferenceKind.projectConvention => '项目约定',
+        LiuYaoReferenceKind.locatorOnly => '仅定位',
+      };
+}
+
+/// 词条、稳定规则身份和来源目录的只读 UI 投影。
+class TermGlossaryDetail {
+  const TermGlossaryDetail({
+    required this.displayTerm,
+    required this.primaryTerm,
+    required this.isAlias,
+    required this.entry,
+    required this.references,
+    required this.adoptionBoundary,
+    required this.hasCatalogRule,
+  });
+
+  final String displayTerm;
+  final String primaryTerm;
+  final bool isAlias;
+  final TermEntry? entry;
+  final List<TermGlossaryReference> references;
+  final String adoptionBoundary;
+  final bool hasCatalogRule;
+}
+
 /// 六爻断卦术语词典（约 80 条）。
 ///
 /// 规则口径以《增删卜易》为主干，三刑、相害等按《卜筮正宗》补充。
@@ -23,7 +75,87 @@ class TermEntry {
 class TermGlossary {
   TermGlossary._();
 
-  static TermEntry? lookup(String term) => entries[term];
+  static TermEntry? lookup(String term) {
+    final direct = entries[term];
+    if (direct != null) return direct;
+    final rule = LiuYaoRuleCatalog.ruleForTerm(term);
+    return rule == null ? null : entries[rule.primaryTerm];
+  }
+
+  /// 优先按稳定规则身份查询；[fallbackTerm] 仅供旧报告兼容和显示。
+  static TermGlossaryDetail lookupByRuleId(
+    String ruleId, {
+    required String fallbackTerm,
+  }) {
+    final normalizedRuleId = ruleId.trim();
+    final displayTerm = fallbackTerm.trim();
+    final rule = normalizedRuleId.isEmpty
+        ? LiuYaoRuleCatalog.ruleForTerm(displayTerm)
+        : LiuYaoRuleCatalog.ruleById[normalizedRuleId];
+    if (rule == null) {
+      return TermGlossaryDetail(
+        displayTerm: displayTerm,
+        primaryTerm: displayTerm,
+        isAlias: false,
+        entry: entries[displayTerm],
+        references: const <TermGlossaryReference>[],
+        adoptionBoundary: entries.containsKey(displayTerm)
+            ? '旧版释义尚未关联到当前规则来源，仅供术语理解。'
+            : '暂无该术语的规则释义与可核来源。',
+        hasCatalogRule: false,
+      );
+    }
+
+    final primaryTerm =
+        rule.primaryTerm.isEmpty ? displayTerm : rule.primaryTerm;
+    final references = <TermGlossaryReference>[];
+    for (final evidence in rule.evidenceRefs) {
+      final source = LiuYaoRuleCatalog.sourceById[evidence.sourceId];
+      if (source == null || _looksLikeAbsolutePath(evidence.locator)) {
+        continue;
+      }
+      references.add(TermGlossaryReference(
+        sourceType: switch (source.kind) {
+          LiuYaoSourceKind.classicalWitness => '古籍见证',
+          LiuYaoSourceKind.projectContract => '项目约定',
+        },
+        sourceTitle: source.kind == LiuYaoSourceKind.projectContract
+            ? '六爻分析规则契约'
+            : source.title,
+        locator: evidence.locator,
+        evidenceLevel: evidence.evidenceLevel.name.toUpperCase(),
+        referenceKind: evidence.referenceKind,
+        boundary: _referenceBoundary(evidence.referenceKind),
+        quote: evidence.referenceKind == LiuYaoReferenceKind.exactQuote
+            ? evidence.quote
+            : null,
+      ));
+    }
+
+    return TermGlossaryDetail(
+      displayTerm: displayTerm.isEmpty ? primaryTerm : displayTerm,
+      primaryTerm: primaryTerm,
+      isAlias: displayTerm.isNotEmpty && displayTerm != primaryTerm,
+      entry: entries[primaryTerm] ?? entries[displayTerm],
+      references: List<TermGlossaryReference>.unmodifiable(references),
+      adoptionBoundary: rule.decisionCapable
+          ? '按当前规则集参与程序裁决；只在其程序条件成立时适用。'
+          : '仅作辅助证据或来源说明，不单独改变用神中心的程序裁决。',
+      hasCatalogRule: true,
+    );
+  }
+
+  static String _referenceBoundary(LiuYaoReferenceKind kind) => switch (kind) {
+        LiuYaoReferenceKind.exactQuote => '已完成页级文本与渲染复核；逐字内容仅限所列短引。',
+        LiuYaoReferenceKind.paraphrase => '采用经复核释义，不作为古籍逐字原文展示。',
+        LiuYaoReferenceKind.projectConvention => '软件为统一分析流程采用的项目约定，不冒充古籍原文。',
+        LiuYaoReferenceKind.locatorOnly => '仅保留候选定位，未完成可靠页级复核，只作低优先级参考。',
+      };
+
+  static bool _looksLikeAbsolutePath(String value) =>
+      RegExp(r'^[A-Za-z]:[\\/]').hasMatch(value) ||
+      value.startsWith('/') ||
+      value.startsWith(r'\\');
 
   static const Map<String, TermEntry> entries = {
     // ── 日月旺衰 ──

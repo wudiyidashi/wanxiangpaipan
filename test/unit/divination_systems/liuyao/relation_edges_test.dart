@@ -22,7 +22,11 @@ void main() {
   group('buildRelationEdges 爻间生克', () {
     test('乾初爻子水动：「子水生寅木」有向、「子水克午火」', () {
       final qian = GuaCalculator.calculateGua([9, 7, 7, 7, 7, 7]);
-      final report = LiuYaoAnalyzer.analyze(qian, null, lunar());
+      final report = LiuYaoAnalyzer.analyze(
+        qian,
+        GuaCalculator.generateChangingGua(qian),
+        lunar(),
+      );
       final edges = buildRelationEdges(report, mainGua: qian);
 
       final sheng = edges.firstWhere((e) => e.term == '子水生寅木');
@@ -49,7 +53,11 @@ void main() {
   group('buildRelationEdges 合冲标签与去重', () {
     test('泰初爻子动合四爻丑：归一为一条「子丑合化土」', () {
       final tai = GuaCalculator.calculateGua([9, 7, 7, 8, 8, 8]);
-      final report = LiuYaoAnalyzer.analyze(tai, null, lunar());
+      final report = LiuYaoAnalyzer.analyze(
+        tai,
+        GuaCalculator.generateChangingGua(tai),
+        lunar(),
+      );
       final edges = buildRelationEdges(report, mainGua: tai);
       final heEdges = edges.where((e) => e.term == '子丑合化土').toList();
       expect(heEdges, hasLength(1));
@@ -60,7 +68,11 @@ void main() {
     test('三合局标注「申子辰水局」且三角去重为三条', () {
       // 乾子(1)辰(3)动申(5)静：申子辰水局
       final qian = GuaCalculator.calculateGua([9, 7, 9, 7, 7, 7]);
-      final report = LiuYaoAnalyzer.analyze(qian, null, lunar());
+      final report = LiuYaoAnalyzer.analyze(
+        qian,
+        GuaCalculator.generateChangingGua(qian),
+        lunar(),
+      );
       final edges = buildRelationEdges(report, mainGua: qian);
       final sanHe = edges.where((e) => e.term == '申子辰水局').toList();
       expect(sanHe, hasLength(3));
@@ -68,7 +80,11 @@ void main() {
 
     test('爻间寅申只显示冲，不显示脱离三刑全局的寅申刑', () {
       final qian = GuaCalculator.calculateGua([7, 9, 7, 7, 9, 7]);
-      final report = LiuYaoAnalyzer.analyze(qian, null, lunar());
+      final report = LiuYaoAnalyzer.analyze(
+        qian,
+        GuaCalculator.generateChangingGua(qian),
+        lunar(),
+      );
       final edges = buildRelationEdges(report, mainGua: qian);
       expect(edges.any((e) => e.term == '寅申冲'), isTrue);
       expect(edges.any((e) => e.term == '寅申刑'), isFalse);
@@ -94,7 +110,11 @@ void main() {
 
     test('贪合忘生克不再产生连线', () {
       final tai = GuaCalculator.calculateGua([9, 7, 7, 8, 8, 8]);
-      final report = LiuYaoAnalyzer.analyze(tai, null, lunar());
+      final report = LiuYaoAnalyzer.analyze(
+        tai,
+        GuaCalculator.generateChangingGua(tai),
+        lunar(),
+      );
       final edges = buildRelationEdges(report, mainGua: tai);
       expect(edges.where((e) => e.term.contains('贪')), isEmpty);
     });

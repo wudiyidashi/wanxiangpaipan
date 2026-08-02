@@ -12,6 +12,14 @@ enum YingQiScale {
   final String name;
 }
 
+extension YingQiScaleCode on YingQiScale {
+  String get code => switch (this) {
+        YingQiScale.ri => 'ri',
+        YingQiScale.yue => 'yue',
+        YingQiScale.nian => 'nian',
+      };
+}
+
 /// 裁决趋势（四值，不做吉凶打分）
 enum VerdictTrend {
   keCheng('可成'),
@@ -21,6 +29,15 @@ enum VerdictTrend {
 
   const VerdictTrend(this.name);
   final String name;
+}
+
+extension VerdictTrendCode on VerdictTrend {
+  String get code => switch (this) {
+        VerdictTrend.keCheng => 'keCheng',
+        VerdictTrend.nanCheng => 'nanCheng',
+        VerdictTrend.daiTiaoJian => 'daiTiaoJian',
+        VerdictTrend.buMing => 'buMing',
+      };
 }
 
 /// 裁决因素作用方向
@@ -47,6 +64,14 @@ class VerdictFactor with _$VerdictFactor {
 
     /// 经文依据，如 "《增删卜易》生克章"
     required String source,
+    @Default('') String factorId,
+    @Default('') String ruleId,
+    @Default('') String decisionRowId,
+    @Default(<String>[]) List<String> sourceIds,
+    @Default(<String>[]) List<String> upstreamOccurrenceIds,
+    @Default(true) bool active,
+    @Default(0) int arbitrationTier,
+    @Default(0) int arbitrationOrder,
   }) = _VerdictFactor;
 }
 
@@ -63,6 +88,11 @@ class VerdictCondition with _$VerdictCondition {
 
     /// 是否存在解救路径；false 即"真空到底""伏而受制"类
     @Default(true) bool hasRescue,
+    @Default('') String conditionId,
+    @Default('') String conditionRuleId,
+    @Default(<String>[]) List<String> sourceIds,
+    @Default(<String>[]) List<String> upstreamOccurrenceIds,
+    @Default('unresolved') String status,
   }) = _VerdictCondition;
 }
 
@@ -83,6 +113,7 @@ class VerdictJudgment with _$VerdictJudgment {
 
     /// 生成的总览文案（填充 AnalysisReport.verdictSummary）
     required String summary,
+    @Default('') String matchedDecisionRowId,
   }) = _VerdictJudgment;
 }
 
@@ -98,5 +129,13 @@ class YingQiCandidate with _$YingQiCandidate {
     required YingQiScale scale,
     required String reason,
     required int priority,
+    @Default('') String timingId,
+    @Default('') String timingRuleId,
+    @Default(<String>[]) List<String> upstreamConditionIds,
+    @Default(<String>[]) List<String> upstreamRuleIds,
+    @Default(<String>[]) List<String> sourceIds,
+    @Default('branch') String triggerKind,
+    @Default('') String triggerValue,
+    @Default('') String targetActorId,
   }) = _YingQiCandidate;
 }

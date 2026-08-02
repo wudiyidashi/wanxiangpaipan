@@ -1,5 +1,7 @@
 import 'package:flutter_test/flutter_test.dart';
+import 'package:wanxiang_paipan/domain/services/fushen_service.dart';
 import 'package:wanxiang_paipan/domain/services/liuyao/analysis/liu_qin_deduce_service.dart';
+import 'package:wanxiang_paipan/domain/services/liuyao/analysis/models/analysis_trace.dart';
 import 'package:wanxiang_paipan/domain/services/shared/liuqin_service.dart';
 
 import 'helpers/analysis_fixtures.dart';
@@ -59,6 +61,34 @@ void main() {
       expect(
         () => LiuQinDeduceService.deduce(qian, 2, isFuShen: true),
         throwsArgumentError,
+      );
+    });
+
+    test('角色清单包含全部可见爻与伏神 occurrence', () {
+      final dun = buildGua([8, 8, 7, 7, 7, 7]);
+      final hiddenByPosition = FuShenService.calculateFuShen(dun);
+      final roles = LiuQinDeduceService.deduceRoleOccurrences(
+        dun,
+        2,
+        isFuShen: true,
+      );
+      final hiddenRoles = roles
+          .where((role) => role.actor.kind == LiuYaoActorKind.hiddenYao)
+          .toList();
+
+      expect(roles, hasLength(6 + hiddenByPosition.length));
+      expect(hiddenRoles, hasLength(hiddenByPosition.length));
+      expect(
+        hiddenRoles.map((role) => role.actor.position).toSet(),
+        hiddenByPosition.keys.toSet(),
+      );
+      expect(
+        hiddenRoles.singleWhere((role) => role.actor.position == 2).role,
+        LiuYaoRole.yongShen,
+      );
+      expect(
+        hiddenRoles.singleWhere((role) => role.actor.position == 1).role,
+        LiuYaoRole.yuanShen,
       );
     });
   });

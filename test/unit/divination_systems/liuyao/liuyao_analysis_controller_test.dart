@@ -55,12 +55,12 @@ void main() {
       expect(controller.report.yaoTags, isNotEmpty);
     });
 
-    test('已保存用神的记录重开时恢复推理链', () {
+    test('已保存用神的记录重开时恢复推理链且不伪造应期', () {
       final controller = LiuYaoAnalysisController(
           result: buildResult(yongShenPosition: 2), repository: repository);
       expect(controller.hasYongShen, isTrue);
       expect(controller.report.yongShen!.position, 2);
-      expect(controller.report.yingQi, isNotEmpty);
+      expect(controller.report.yingQi, isEmpty);
     });
   });
 

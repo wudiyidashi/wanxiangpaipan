@@ -1,6 +1,8 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
 
 import '../../../shared/analysis/models/verdict_models.dart';
+import '../rules/liuyao_catalog.dart';
+import 'analysis_trace.dart';
 import 'analysis_tag.dart';
 
 export '../../../shared/analysis/models/verdict_models.dart';
@@ -42,6 +44,15 @@ class AnalysisReport with _$AnalysisReport {
   const AnalysisReport._();
 
   const factory AnalysisReport({
+    @Default(LiuYaoRuleCatalog.analysisSchemaVersion) int analysisSchemaVersion,
+    @Default(LiuYaoRuleCatalog.ruleSetId) String ruleSetId,
+    @Default(LiuYaoRuleCatalog.current) String ruleSetVersion,
+    @Default(LiuYaoRuleCatalog.sourceCatalogVersion)
+    String sourceCatalogVersion,
+    @Default(LiuYaoAnalysisStatus.success) LiuYaoAnalysisStatus status,
+    @Default(<String>[]) List<String> diagnostics,
+    @Default(LiuYaoAnalysisStages.ordered) List<String> analysisStages,
+
     /// 各爻标签，key 为爻位 1-6（变爻产生的化X标签挂在对应动爻上）
     required Map<int, List<YaoAnalysisTag>> yaoTags,
 
@@ -62,6 +73,14 @@ class AnalysisReport with _$AnalysisReport {
 
     /// 结构化裁决（趋势/条件集/推理链）；依赖用神，未选时为 null
     VerdictJudgment? judgment,
+
+    /// Complete role and force inventory used by the v2 verdict.
+    @Default(<LiuYaoRoleOccurrence>[]) List<LiuYaoRoleOccurrence> roles,
+    @Default(<ActorAvailability>[]) List<ActorAvailability> actorAvailability,
+    @Default(<DirectedEffectOccurrence>[])
+    List<DirectedEffectOccurrence> directedEffects,
+    @Default(<LiuYaoAnalysisTraceStep>[]) List<LiuYaoAnalysisTraceStep> trace,
+    @Default(<String>[]) List<String> usedSourceIds,
   }) = _AnalysisReport;
 
   /// 某爻按优先级排序后的前 [count] 个标签（用于爻行内联徽标）

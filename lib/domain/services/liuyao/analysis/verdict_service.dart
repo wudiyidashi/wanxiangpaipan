@@ -1,64 +1,101 @@
 import '../../../../divination_systems/liuyao/models/gua.dart';
 import '../../../../divination_systems/liuyao/models/yao.dart';
 import '../../../../models/lunar_info.dart';
-import '../../shared/wuxing_service.dart';
+import 'actor_availability_service.dart';
 import 'models/analysis_report.dart';
 import 'models/analysis_tag.dart';
+import 'models/analysis_trace.dart';
+import 'rule_identity_service.dart';
+import 'rules/liuyao_catalog.dart';
+import 'rules/liuyao_trace_id_factory.dart';
 import 'tables/chang_sheng_table.dart';
 import 'tables/dizhi_relations.dart';
 
-/// 用神净强弱三分类（分类裁决，非加权打分）
 enum _Strength { strong, weak, mixed }
 
-/// 裁决层：从既有标签求值用神受力，经决策表输出趋势 + 条件集 + 推理链。
-///
-/// 规则依据《增删卜易》：作用力层级为日月 > 动爻 > 暗动 > 变爻（仅回头作用本位），
-/// 静爻不作用；空破墓合伏等悬置状态不直接判凶，转为待解除条件；
-/// 元神动须先于忌神判（贪生忘克）。决策表按行序首行命中，保证结果唯一。
-/// 消费既有标签结论（含贪合忘生克等遮蔽结果），不重算事实层。
+/// First-match four-value verdict, with typed identities and provenance.
 class VerdictService {
   VerdictService._();
 
-  static const _l1FuTerms = {'临月建', '临日建', '日扶', '月生', '日生', '旺', '相'};
-  static const _l1YiTerms = {'月克', '日克', '囚', '死', '日破', '冲散'};
-  static const _l2FuTerms = {'动爻生', '动爻扶', '连续相生'};
-  static const _l2YiTerms = {'动爻克', '连续相克'};
-  static const _l4FuTerms = {'回头生', '化进神', '化合'};
-  static const _l4YiHeavyTerms = {'回头克', '化退神'};
-  static const _l4YiLightTerms = {'化泄', '化冲'};
-  static const _fuShenFuTerms = {'飞生伏', '伏克飞', '伏神得出'};
-  static const _fuShenYiTerms = {'飞克伏', '伏生飞', '伏神受制'};
-  static const _neutralTerms = {'休', '贪合忘生', '贪合忘克', '贪生忘克', '克出', '日冲', '暗动'};
-
-  /// 悬置状态：不判凶，转条件（日合/月合仅动爻悬置，静爻为合起论扶）
-  static const _suspendTerms = {
-    '旬空',
-    '真空',
-    '假空',
-    '月破',
-    '入日墓',
-    '入月墓',
-    '入动墓',
-    '化墓',
-    '合住',
-    '合绊',
-    '化空',
-    '化破',
-    '临绝',
-    '化绝',
+  static const Set<String> _l1FuRuleIds = <String>{
+    LiuYaoRuleIds.ruleMonthCommand,
+    LiuYaoRuleIds.ruleDayCommand,
+    LiuYaoRuleIds.ruleDaySupports,
+    LiuYaoRuleIds.ruleMonthGenerates,
+    LiuYaoRuleIds.ruleDayGenerates,
+    LiuYaoRuleIds.ruleProsperous,
+    LiuYaoRuleIds.ruleSupported,
   };
-
-  static const Map<TagCategory, String> _sources = {
-    TagCategory.wangShuai: '《增删卜易》月将章/日辰章',
-    TagCategory.kongWang: '《增删卜易》旬空章',
-    TagCategory.muJue: '《增删卜易》生旺墓绝章',
-    TagCategory.heChong: '《增删卜易》合冲章',
-    TagCategory.dongBian: '《增删卜易》动变章',
-    TagCategory.shengKe: '《增删卜易》动静生克章',
-    TagCategory.liuQin: '《增删卜易》用神元神忌神仇神章',
-    TagCategory.fuShen: '《增删卜易》用神伏藏章',
-    TagCategory.special: '《增删卜易》日辰章',
-    TagCategory.guaChange: '《增删卜易》卦变章',
+  static const Set<String> _l1YiRuleIds = <String>{
+    LiuYaoRuleIds.ruleMonthOvercomes,
+    LiuYaoRuleIds.ruleDayOvercomes,
+    LiuYaoRuleIds.ruleConfined,
+    LiuYaoRuleIds.ruleDead,
+    LiuYaoRuleIds.ruleDayBreak,
+    LiuYaoRuleIds.ruleScattered,
+  };
+  static const Set<String> _l2FuRuleIds = <String>{
+    LiuYaoRuleIds.ruleMovingGenerates,
+    LiuYaoRuleIds.ruleMovingSupports,
+    LiuYaoRuleIds.ruleContinuousGeneration,
+  };
+  static const Set<String> _l2YiRuleIds = <String>{
+    LiuYaoRuleIds.ruleMovingOvercomes,
+    LiuYaoRuleIds.ruleContinuousOvercoming,
+  };
+  static const Set<String> _l4FuRuleIds = <String>{
+    LiuYaoRuleIds.ruleReturnGenerates,
+    LiuYaoRuleIds.ruleProgress,
+    LiuYaoRuleIds.ruleChangedJoin,
+  };
+  static const Set<String> _l4YiHeavyRuleIds = <String>{
+    LiuYaoRuleIds.ruleReturnOvercomes,
+    LiuYaoRuleIds.ruleRetreat,
+  };
+  static const Set<String> _l4YiLightRuleIds = <String>{
+    LiuYaoRuleIds.ruleTransformsDrain,
+    LiuYaoRuleIds.ruleChangedClash,
+  };
+  static const Set<String> _fuShenFuRuleIds = <String>{
+    LiuYaoRuleIds.ruleFlightGeneratesHidden,
+    LiuYaoRuleIds.ruleHiddenOvercomesFlight,
+    LiuYaoRuleIds.ruleHiddenReleased,
+  };
+  static const Set<String> _fuShenYiRuleIds = <String>{
+    LiuYaoRuleIds.ruleFlightOvercomesHidden,
+    LiuYaoRuleIds.ruleHiddenGeneratesFlight,
+    LiuYaoRuleIds.ruleHiddenSuppressed,
+  };
+  static const Set<String> _neutralRuleIds = <String>{
+    LiuYaoRuleIds.ruleResting,
+    LiuYaoRuleIds.ruleBindingSuppressesGeneration,
+    LiuYaoRuleIds.ruleBindingSuppressesOvercoming,
+    LiuYaoRuleIds.ruleGenerationSuppressesOvercoming,
+    LiuYaoRuleIds.ruleOvercomesOutward,
+    LiuYaoRuleIds.ruleDayClashUrges,
+    LiuYaoRuleIds.ruleHiddenMoving,
+  };
+  static const Set<String> _suspendRuleIds = <String>{
+    LiuYaoRuleIds.ruleVoid,
+    LiuYaoRuleIds.ruleTrueVoid,
+    LiuYaoRuleIds.ruleApparentVoid,
+    LiuYaoRuleIds.ruleMonthBreak,
+    LiuYaoRuleIds.ruleDayTomb,
+    LiuYaoRuleIds.ruleMonthTomb,
+    LiuYaoRuleIds.ruleMovingTomb,
+    LiuYaoRuleIds.ruleChangedTomb,
+    LiuYaoRuleIds.ruleMovingBound,
+    LiuYaoRuleIds.ruleMutualBinding,
+    LiuYaoRuleIds.ruleChangedVoid,
+    LiuYaoRuleIds.ruleChangedBreak,
+    LiuYaoRuleIds.ruleTerminal,
+    LiuYaoRuleIds.ruleChangedTerminal,
+  };
+  static final Set<String> _directEffectRuleIds = <String>{
+    ..._l2FuRuleIds,
+    ..._l2YiRuleIds,
+    LiuYaoRuleIds.hiddenMovingGenerates,
+    LiuYaoRuleIds.hiddenMovingOvercomes,
   };
 
   static VerdictJudgment judge({
@@ -69,57 +106,130 @@ class VerdictService {
     required Gua mainGua,
     Yao? changedYao,
     required LunarInfo lunarInfo,
-    required List<YingQiCandidate> yingQi,
+    List<YingQiCandidate> yingQi = const <YingQiCandidate>[],
+    String ruleSetVersion = LiuYaoRuleCatalog.current,
+    List<DirectedEffectOccurrence> directedEffects =
+        const <DirectedEffectOccurrence>[],
+    List<LiuYaoRoleOccurrence> roles = const <LiuYaoRoleOccurrence>[],
+    LiuYaoTraceIdFactory? traceIdFactory,
+    String? targetActorId,
   }) {
-    final terms = yongShenTags.map((t) => t.term).toSet();
+    final resolvedVersion = LiuYaoRuleCatalog.resolve(ruleSetVersion).version;
+    final ids = traceIdFactory ?? LiuYaoTraceIdFactory();
+    final focusActorId = targetActorId ??
+        (isFuShen
+            ? 'hidden:host-yao:${yongShen.position}'
+            : 'main:yao:${yongShen.position}');
+    final tagRuleIds = <String>{
+      for (final tag in yongShenTags)
+        if (RuleIdentityService.resolveRuleId(tag) case final String ruleId)
+          ruleId,
+    };
     final factors = <VerdictFactor>[];
+    var factorOrder = 0;
 
-    // ── Step 1 受力归集（日月 > 动爻 > 暗动 > 变爻）──
-    for (final tag in yongShenTags) {
-      final effect = _effectOf(tag.term, yongShen);
-      if (effect == null) continue;
+    void addFactor({
+      required String displayRule,
+      required String ruleId,
+      required VerdictEffect effect,
+      required String reason,
+      required Iterable<String> occurrenceIds,
+      required bool active,
+      int? tier,
+      String decisionRowId = '',
+    }) {
+      final upstream =
+          occurrenceIds.where((id) => id.isNotEmpty).toSet().toList()..sort();
+      final arbitrationTier = tier ?? _tierOf(ruleId);
+      final record = LiuYaoRuleCatalog.ruleById[ruleId];
       factors.add(VerdictFactor(
-        rule: tag.term,
+        rule: displayRule,
         effect: effect,
-        reason: tag.reason,
-        source: _sources[tag.category] ?? '《增删卜易》',
+        reason: reason,
+        source: _sourceLabel(ruleId),
+        factorId: ids.factor(
+          factorRuleId: ruleId,
+          occurrenceIds: upstream,
+          arbitrationTier: arbitrationTier,
+        ),
+        ruleId: ruleId,
+        decisionRowId: decisionRowId,
+        sourceIds: record?.sourceIds ?? const <String>[],
+        upstreamOccurrenceIds: upstream,
+        active: active,
+        arbitrationTier: arbitrationTier,
+        arbitrationOrder: factorOrder++,
       ));
     }
 
-    // L3 暗动：暗动爻以爻间生克论，但力次于明动
-    var anDongSheng = false;
-    var anDongKe = false;
-    yaoTags.forEach((position, tags) {
-      if (position == yongShen.position) return;
-      if (!tags.any((t) => t.term == '暗动')) return;
-      final other = mainGua.yaos[position - 1];
-      if (WuXingService.isSheng(other.wuXing, yongShen.wuXing)) {
-        anDongSheng = true;
-        factors.add(VerdictFactor(
-          rule: '暗动生',
-          effect: VerdictEffect.fu,
-          reason: '$position爻${other.branch}暗动生用神',
-          source: '《增删卜易》暗动章',
-        ));
-      } else if (WuXingService.isKe(other.wuXing, yongShen.wuXing)) {
-        anDongKe = true;
-        factors.add(VerdictFactor(
-          rule: '暗动克',
-          effect: VerdictEffect.yi,
-          reason: '$position爻${other.branch}暗动克用神',
-          source: '《增删卜易》暗动章',
-        ));
+    for (final tag in yongShenTags) {
+      final ruleId = RuleIdentityService.resolveRuleId(tag);
+      if (ruleId == null) continue;
+      if (resolvedVersion == LiuYaoRuleCatalog.v2 &&
+          directedEffects.isNotEmpty &&
+          _directEffectRuleIds.contains(ruleId)) {
+        continue;
       }
-    });
+      final effect = _effectOfRule(ruleId, yongShen);
+      if (effect == null) continue;
+      addFactor(
+        displayRule: tag.term,
+        ruleId: ruleId,
+        effect: effect,
+        reason: tag.reason,
+        occurrenceIds: <String>[tag.occurrenceId],
+        active: tag.active,
+      );
+    }
 
-    // 净强弱：动爻克不入重抑集（即忌神动，由 jiActive 修正处理，避免双重计数）
-    final hasFu = factors.any((f) => f.effect == VerdictEffect.fu);
-    final l1Fu = terms.intersection(_l1FuTerms).isNotEmpty;
-    final heavyYi = terms.intersection({
-      ..._l1YiTerms,
-      ..._l4YiHeavyTerms,
-      '飞克伏',
-      '伏神受制',
+    if (resolvedVersion == LiuYaoRuleCatalog.v2) {
+      final relevantEffects = directedEffects
+          .where((effect) =>
+              effect.toActor.actorId == focusActorId &&
+              _directEffectRuleIds.contains(effect.ruleId))
+          .toList()
+        ..sort((left, right) {
+          final tier = _tierOf(left.ruleId).compareTo(_tierOf(right.ruleId));
+          return tier != 0
+              ? tier
+              : left.occurrenceId.compareTo(right.occurrenceId);
+        });
+      for (final occurrence in relevantEffects) {
+        final displayRule =
+            LiuYaoRuleCatalog.ruleById[occurrence.ruleId]?.primaryTerm ??
+                occurrence.ruleId;
+        addFactor(
+          displayRule: displayRule,
+          ruleId: occurrence.ruleId,
+          effect: switch (occurrence.effect) {
+            DirectedEffectKind.sheng ||
+            DirectedEffectKind.fu =>
+              VerdictEffect.fu,
+            DirectedEffectKind.ke => VerdictEffect.yi,
+            _ => VerdictEffect.neutral,
+          },
+          reason: occurrence.isActive
+              ? '${occurrence.fromActor.actorId}作用于${occurrence.toActor.actorId}'
+              : '${occurrence.fromActor.actorId}受制，未向${occurrence.toActor.actorId}传力',
+          occurrenceIds: <String>[occurrence.occurrenceId],
+          active: occurrence.isActive,
+          tier: occurrence.ruleId == LiuYaoRuleIds.hiddenMovingGenerates ||
+                  occurrence.ruleId == LiuYaoRuleIds.hiddenMovingOvercomes
+              ? 3
+              : 2,
+        );
+      }
+    }
+
+    final activeFactors = factors.where((factor) => factor.active).toList();
+    final hasFu =
+        activeFactors.any((factor) => factor.effect == VerdictEffect.fu);
+    final l1Fu = tagRuleIds.intersection(_l1FuRuleIds).isNotEmpty;
+    final heavyYi = tagRuleIds.intersection(<String>{
+      ..._l1YiRuleIds,
+      ..._l4YiHeavyRuleIds,
+      LiuYaoRuleIds.ruleFlightOvercomesHidden,
+      LiuYaoRuleIds.ruleHiddenSuppressed,
     });
     final _Strength strength;
     if (l1Fu && heavyYi.isEmpty) {
@@ -130,115 +240,223 @@ class VerdictService {
       strength = _Strength.mixed;
     }
 
-    // ── Step 3 元/忌神活跃性（标签驱动，遮蔽结论已由事实层吸收）──
-    final yuanActive =
-        terms.contains('动爻生') || terms.contains('连续相生') || anDongSheng;
-    var jiActive = terms.contains('动爻克') || terms.contains('连续相克') || anDongKe;
-    if (jiActive && terms.contains('动爻克') && !anDongKe) {
-      final attackers = yongShenTags
-          .where((t) => t.term == '动爻克')
-          .expand((t) => t.relatedYao)
-          .toSet();
-      final allRestrained = attackers.isNotEmpty &&
-          attackers.every((position) {
-            final attackerTerms =
-                (yaoTags[position] ?? const <YaoAnalysisTag>[])
-                    .map((t) => t.term)
-                    .toSet();
-            return attackerTerms.contains('回头克') ||
-                attackerTerms.contains('化退神') ||
-                attackerTerms.contains('冲散');
-          });
-      if (allRestrained && !terms.contains('连续相克')) {
-        jiActive = false;
-        factors.add(const VerdictFactor(
-          rule: '忌神受制',
-          effect: VerdictEffect.neutral,
-          reason: '克用神之动爻自身逢回头克/化退/冲散，受制难施克',
-          source: '《增删卜易》忌神章',
-        ));
+    var yuanActive = false;
+    var jiActive = false;
+    if (resolvedVersion == LiuYaoRuleCatalog.v2 && directedEffects.isNotEmpty) {
+      final roleByActor = <String, LiuYaoRole>{
+        for (final role in roles) role.actor.actorId: role.role,
+      };
+      final hasRoleInventory = roleByActor.isNotEmpty;
+      for (final effect in directedEffects.where(
+        (effect) => effect.isActive && effect.toActor.actorId == focusActorId,
+      )) {
+        // For a -> b -> focus paths, b is the actor that actually transmits
+        // the terminal force. Changed-line return effects are intentionally not
+        // inferred as yuan/ji actors when a complete role inventory exists.
+        final transmitterActorId = effect.pathActorIds.length >= 2
+            ? effect.pathActorIds[effect.pathActorIds.length - 2]
+            : effect.fromActor.actorId;
+        final role = roleByActor[transmitterActorId];
+        final acceptsUnclassifiedActor = !hasRoleInventory && role == null;
+        if ((effect.effect == DirectedEffectKind.sheng ||
+                effect.effect == DirectedEffectKind.fu) &&
+            (role == LiuYaoRole.yuanShen || acceptsUnclassifiedActor)) {
+          yuanActive = true;
+        }
+        if (effect.effect == DirectedEffectKind.ke &&
+            (role == LiuYaoRole.jiShen || acceptsUnclassifiedActor)) {
+          jiActive = true;
+        }
+      }
+    } else {
+      yuanActive = tagRuleIds.intersection(_l2FuRuleIds).isNotEmpty;
+      jiActive = tagRuleIds.intersection(_l2YiRuleIds).isNotEmpty;
+      if (jiActive &&
+          tagRuleIds.contains(
+            LiuYaoRuleIds.ruleMovingOvercomes,
+          )) {
+        final attackers = yongShenTags
+            .where((tag) =>
+                RuleIdentityService.resolveRuleId(tag) ==
+                LiuYaoRuleIds.ruleMovingOvercomes)
+            .expand((tag) => tag.relatedYao)
+            .toSet();
+        final allRestrained = attackers.isNotEmpty &&
+            attackers.every((position) {
+              final attackerRuleIds =
+                  (yaoTags[position] ?? const <YaoAnalysisTag>[])
+                      .map(RuleIdentityService.resolveRuleId)
+                      .whereType<String>()
+                      .toSet();
+              return attackerRuleIds.contains(
+                    LiuYaoRuleIds.ruleReturnOvercomes,
+                  ) ||
+                  attackerRuleIds.contains(
+                    LiuYaoRuleIds.ruleRetreat,
+                  ) ||
+                  attackerRuleIds.contains(
+                    LiuYaoRuleIds.ruleScattered,
+                  );
+            });
+        if (allRestrained &&
+            !tagRuleIds.contains(
+              LiuYaoRuleIds.ruleContinuousOvercoming,
+            )) {
+          jiActive = false;
+          addFactor(
+            displayRule: '忌神受制',
+            ruleId: LiuYaoRuleIds.attackerSuppressed,
+            effect: VerdictEffect.neutral,
+            reason: '克用神之作用者自身受制，不能施克',
+            occurrenceIds: const <String>[],
+            active: true,
+            tier: 5,
+          );
+        }
       }
     }
 
-    // ── Step 2 悬置状态 → 未决条件集 ──
     final conditions = _buildConditions(
       yongShen: yongShen,
       isFuShen: isFuShen,
-      terms: terms,
+      tags: yongShenTags,
+      tagRuleIds: tagRuleIds,
       strength: strength,
       hasFu: hasFu,
       yuanActive: yuanActive,
       changedYao: changedYao,
+      ruleSetVersion: resolvedVersion,
+      focusActorId: focusActorId,
+      traceIdFactory: ids,
+      lunarInfo: lunarInfo,
     );
 
-    // ── Step 4 裁决决策表（首行命中）──
-    final hasNoRescue = conditions.any((c) => !c.hasRescue);
+    final hasNoRescue = conditions.any((condition) => !condition.hasRescue);
     final allRescuable = conditions.isNotEmpty && !hasNoRescue;
     final hasOnlyJoinCondition = conditions.isNotEmpty &&
-        conditions.every((condition) => condition.label == '待冲开');
+        conditions.every((condition) =>
+            condition.conditionRuleId == LiuYaoRuleIds.conditionBinding);
+    final hasActiveContinuousGeneration = activeFactors.any(
+        (factor) => factor.ruleId == LiuYaoRuleIds.ruleContinuousGeneration);
     final yuanTakesPriority = yuanActive &&
-        (!jiActive || terms.contains('连续相生') || terms.contains('贪生忘克'));
-    VerdictTrend trend;
-    String? nuance;
-    String rule;
-    if (terms.contains('回头克') && !l1Fu) {
-      // 《五行相克章》《进退章》均以用神自身回头克为直接败象；
-      // 不得被同卦其他爻形成的连续相生标签反向覆盖。
-      (trend, nuance, rule) = (VerdictTrend.nanCheng, '克处无生', '用神回头受克');
-    } else if (terms.contains('回头生') &&
+        (!jiActive ||
+            hasActiveContinuousGeneration ||
+            tagRuleIds.contains(
+              LiuYaoRuleIds.ruleGenerationSuppressesOvercoming,
+            ));
+
+    final VerdictTrend trend;
+    final String? nuance;
+    final String decisionRowId;
+    final String decisionTerm;
+    if (tagRuleIds.contains(
+          LiuYaoRuleIds.ruleReturnOvercomes,
+        ) &&
+        !l1Fu) {
+      trend = VerdictTrend.nanCheng;
+      nuance = '克处无生';
+      decisionRowId = LiuYaoRuleIds.decisionReturnOvercomeWithoutL1Support;
+      decisionTerm = '用神回头受克';
+    } else if (tagRuleIds.contains(
+          LiuYaoRuleIds.ruleReturnGenerates,
+        ) &&
         !jiActive &&
         (conditions.isEmpty || hasOnlyJoinCondition)) {
-      // 《五行相生章》复之震例：用神虽受日月克，化回头生仍断相生为吉。
-      (trend, nuance, rule) = (VerdictTrend.keCheng, '先难后成', '用神回头得生');
+      trend = VerdictTrend.keCheng;
+      nuance = '先难后成';
+      decisionRowId = LiuYaoRuleIds.decisionReturnGenerateUnblocked;
+      decisionTerm = '用神回头得生';
     } else {
       switch (strength) {
         case _Strength.weak:
           if (hasNoRescue) {
-            (trend, nuance, rule) =
-                (VerdictTrend.nanCheng, '空破墓绝，到底无救', '衰而无救');
+            trend = VerdictTrend.nanCheng;
+            nuance = '空破墓绝，到底无救';
+            decisionRowId = LiuYaoRuleIds.decisionWeakUnrescuable;
+            decisionTerm = '衰而无救';
           } else if (jiActive) {
-            (trend, nuance, rule) = (VerdictTrend.nanCheng, '克处无生', '忌神乘衰攻用');
+            trend = VerdictTrend.nanCheng;
+            nuance = '克处无生';
+            decisionRowId = LiuYaoRuleIds.decisionWeakAdverseActive;
+            decisionTerm = '忌神乘衰攻用';
           } else {
-            (trend, nuance, rule) = (VerdictTrend.nanCheng, '衰而无助', '休囚无生扶');
+            trend = VerdictTrend.nanCheng;
+            nuance = '衰而无助';
+            decisionRowId = LiuYaoRuleIds.decisionWeakUnsupported;
+            decisionTerm = '休囚无生扶';
           }
         case _Strength.strong:
           if (conditions.isEmpty && !jiActive) {
-            (trend, nuance, rule) = (VerdictTrend.keCheng, null, '日月生扶而无阻');
+            trend = VerdictTrend.keCheng;
+            nuance = null;
+            decisionRowId = LiuYaoRuleIds.decisionStrongClear;
+            decisionTerm = '日月生扶而无阻';
           } else if (conditions.isNotEmpty) {
-            (trend, nuance, rule) = (VerdictTrend.daiTiaoJian, '成而有待', '旺而有待');
+            trend = VerdictTrend.daiTiaoJian;
+            nuance = '成而有待';
+            decisionRowId = LiuYaoRuleIds.decisionStrongWithConditions;
+            decisionTerm = '旺而有待';
           } else {
-            (trend, nuance, rule) = (VerdictTrend.daiTiaoJian, '吉中有阻', '旺而忌动');
+            trend = VerdictTrend.daiTiaoJian;
+            nuance = '吉中有阻';
+            decisionRowId = LiuYaoRuleIds.decisionStrongAdverseActive;
+            decisionTerm = '旺而忌动';
           }
         case _Strength.mixed:
           if (yuanTakesPriority) {
-            (trend, nuance, rule) =
-                (VerdictTrend.daiTiaoJian, '先难后成', '元神动而生用');
+            trend = VerdictTrend.daiTiaoJian;
+            nuance = '先难后成';
+            decisionRowId = LiuYaoRuleIds.decisionMixedSourceContinuity;
+            decisionTerm = '元神动而生用';
           } else if (jiActive) {
-            (trend, nuance, rule) = (VerdictTrend.nanCheng, '抑重于扶', '忌神动而克用');
+            trend = VerdictTrend.nanCheng;
+            nuance = '抑重于扶';
+            decisionRowId = LiuYaoRuleIds.decisionMixedAdverseActive;
+            decisionTerm = '忌神动而克用';
           } else if (allRescuable) {
-            (trend, nuance, rule) =
-                (VerdictTrend.daiTiaoJian, '待解除后再断', '悬而未决');
+            trend = VerdictTrend.daiTiaoJian;
+            nuance = '待解除后再断';
+            decisionRowId = LiuYaoRuleIds.decisionMixedRescuableConditions;
+            decisionTerm = '悬而未决';
           } else if (l1Fu) {
-            // 《克处逢生章》：休囚受制而仍得日月生扶，不作趋势不明，
-            // 保留为先难后成的条件性判断。
-            (trend, nuance, rule) = (VerdictTrend.daiTiaoJian, '先难后成', '克处逢生');
+            trend = VerdictTrend.daiTiaoJian;
+            nuance = '先难后成';
+            decisionRowId = LiuYaoRuleIds.decisionMixedL1Support;
+            decisionTerm = '克处逢生';
           } else {
-            (trend, nuance, rule) = (VerdictTrend.buMing, '扶抑并见，须参断者裁', '扶抑并见');
+            trend = VerdictTrend.buMing;
+            nuance = '扶抑并见，须参断者裁';
+            decisionRowId = LiuYaoRuleIds.decisionMixedUnresolved;
+            decisionTerm = '扶抑并见';
           }
       }
     }
-    factors.add(VerdictFactor(
-      rule: '裁决·$rule',
+
+    factors.sort((left, right) {
+      final tier = left.arbitrationTier.compareTo(right.arbitrationTier);
+      if (tier != 0) return tier;
+      final order = left.arbitrationOrder.compareTo(right.arbitrationOrder);
+      return order != 0 ? order : left.factorId.compareTo(right.factorId);
+    });
+    addFactor(
+      displayRule: '裁决·$decisionTerm',
+      ruleId: decisionRowId,
       effect: VerdictEffect.neutral,
       reason: '决策表命中：${trend.name}${nuance == null ? '' : '（$nuance）'}',
-      source: '《增删卜易》断法总论',
-    ));
+      occurrenceIds: factors.expand(
+        (factor) => factor.upstreamOccurrenceIds,
+      ),
+      active: true,
+      tier: 9,
+      decisionRowId: decisionRowId,
+    );
 
     return VerdictJudgment(
       trend: trend,
       nuance: nuance,
       conditions: conditions,
       factors: factors,
+      matchedDecisionRowId: decisionRowId,
       summary: _buildSummary(
         yongShen: yongShen,
         isFuShen: isFuShen,
@@ -250,37 +468,27 @@ class VerdictService {
     );
   }
 
-  /// term → 受力方向；悬置与未知术语返回 null（悬置由条件集表达）
-  static VerdictEffect? _effectOf(String term, Yao yongShen) {
-    if (_suspendTerms.contains(term)) return VerdictEffect.suspend;
-    if (_l1FuTerms.contains(term) ||
-        _l2FuTerms.contains(term) ||
-        _l4FuTerms.contains(term) ||
-        _fuShenFuTerms.contains(term)) {
-      return VerdictEffect.fu;
-    }
-    // 日月合静爻为合起论扶，合动爻为合绊（悬置，条件集处理）
-    if (term == '日合' || term == '月合') {
-      return yongShen.isMoving ? VerdictEffect.suspend : VerdictEffect.fu;
-    }
-    if (_l1YiTerms.contains(term) ||
-        _l2YiTerms.contains(term) ||
-        _l4YiHeavyTerms.contains(term) ||
-        _l4YiLightTerms.contains(term) ||
-        _fuShenYiTerms.contains(term)) {
-      return VerdictEffect.yi;
-    }
-    if (_neutralTerms.contains(term)) return VerdictEffect.neutral;
-    return null;
+  static VerdictJudgment attachTimingSummary(
+    VerdictJudgment judgment,
+    List<YingQiCandidate> yingQi,
+  ) {
+    if (yingQi.isEmpty) return judgment;
+    final hint = yingQi.take(2).map((candidate) => candidate.label).join('，');
+    return judgment.copyWith(summary: '${judgment.summary}；优先观察：$hint');
   }
 
   static List<VerdictCondition> _buildConditions({
     required Yao yongShen,
     required bool isFuShen,
-    required Set<String> terms,
+    required List<YaoAnalysisTag> tags,
+    required Set<String> tagRuleIds,
     required _Strength strength,
     required bool hasFu,
     required bool yuanActive,
+    required String ruleSetVersion,
+    required String focusActorId,
+    required LiuYaoTraceIdFactory traceIdFactory,
+    required LunarInfo lunarInfo,
     Yao? changedYao,
   }) {
     final conditions = <VerdictCondition>[];
@@ -289,86 +497,277 @@ class VerdictService {
     final muBranch = ChangShengTable.getMuBranch(yongShen.wuXing);
     final notWeak = strength != _Strength.weak;
 
-    if (terms.contains('真空')) {
+    bool has(String ruleId) => tagRuleIds.contains(ruleId);
+
+    List<YaoAnalysisTag> triggering(Iterable<String> ruleIds) {
+      final wanted = ruleIds.toSet();
+      return tags
+          .where(
+              (tag) => wanted.contains(RuleIdentityService.resolveRuleId(tag)))
+          .toList();
+    }
+
+    void add({
+      required String conditionRuleId,
+      required String label,
+      required String reason,
+      required Iterable<String> triggeringRuleIds,
+      String? branch,
+      bool hasRescue = true,
+    }) {
+      final upstreamTags = triggering(triggeringRuleIds);
+      final upstreamOccurrenceIds = upstreamTags
+          .map((tag) => tag.occurrenceId)
+          .where((id) => id.isNotEmpty)
+          .toSet()
+          .toList()
+        ..sort();
+      final sourceIds = <String>{
+        ...LiuYaoRuleCatalog.ruleById[conditionRuleId]!.sourceIds,
+        ...upstreamTags.expand((tag) => tag.sourceIds),
+      }.toList()
+        ..sort();
       conditions.add(VerdictCondition(
-        label: '待出空',
-        branch: zhi,
-        reason: '休囚安静逢空为真空，出空值日方有转机',
-        hasRescue: notWeak,
-      ));
-    } else if (terms.contains('旬空')) {
-      conditions.add(VerdictCondition(
-        label: '待出空',
-        branch: zhi,
-        reason: terms.contains('冲空') ? '旬空而日辰冲空，冲空则起，出空填实可用' : '旬空待出空填实',
+        label: label,
+        branch: branch,
+        reason: reason,
+        hasRescue: hasRescue,
+        conditionId: traceIdFactory.condition(
+          conditionRuleId: conditionRuleId,
+          focusActorId: focusActorId,
+          upstreamOccurrenceIds: upstreamOccurrenceIds,
+        ),
+        conditionRuleId: conditionRuleId,
+        sourceIds: sourceIds,
+        upstreamOccurrenceIds: upstreamOccurrenceIds,
       ));
     }
-    if (terms.contains('月破')) {
-      conditions.add(VerdictCondition(
+
+    if (has(LiuYaoRuleIds.ruleTrueVoid)) {
+      if (ruleSetVersion == LiuYaoRuleCatalog.v1Compat) {
+        add(
+          conditionRuleId: LiuYaoRuleIds.conditionVoid,
+          label: '待出空',
+          branch: zhi,
+          reason: '旬空待出空填实',
+          hasRescue: notWeak,
+          triggeringRuleIds: const <String>[
+            LiuYaoRuleIds.ruleTrueVoid,
+            LiuYaoRuleIds.ruleVoid,
+          ],
+        );
+      } else {
+        add(
+          conditionRuleId: LiuYaoRuleIds.conditionTrueVoid,
+          label: '真空到底无用',
+          branch: zhi,
+          reason: '休囚安静逢空为真空，到底无用',
+          hasRescue: false,
+          triggeringRuleIds: const <String>[
+            LiuYaoRuleIds.ruleTrueVoid,
+            LiuYaoRuleIds.ruleVoid,
+          ],
+        );
+      }
+    } else if (has(LiuYaoRuleIds.ruleVoid)) {
+      add(
+        conditionRuleId: LiuYaoRuleIds.conditionVoid,
+        label: '待出空',
+        branch: zhi,
+        reason:
+            has(LiuYaoRuleIds.ruleVoidClashed) ? '旬空已逢冲空，仍待出空填实' : '旬空待出空填实',
+        triggeringRuleIds: const <String>[
+          LiuYaoRuleIds.ruleVoid,
+          LiuYaoRuleIds.ruleVoidClashed,
+        ],
+      );
+    }
+    if (has(LiuYaoRuleIds.ruleMonthBreak)) {
+      add(
+        conditionRuleId: LiuYaoRuleIds.conditionMonthBreak,
         label: '待出月',
+        branch: zhi,
         reason: '月破待出月、填实或逢合解破',
         hasRescue: notWeak,
-      ));
+        triggeringRuleIds: const <String>[LiuYaoRuleIds.ruleMonthBreak],
+      );
     }
-    final inMu =
-        terms.contains('入日墓') || terms.contains('入月墓') || terms.contains('入动墓');
-    if (inMu && !terms.contains('出墓')) {
-      conditions.add(VerdictCondition(
+    final inMu = has(LiuYaoRuleIds.ruleDayTomb) ||
+        has(LiuYaoRuleIds.ruleMonthTomb) ||
+        has(LiuYaoRuleIds.ruleMovingTomb);
+    if (inMu && !has(LiuYaoRuleIds.ruleTombOpened)) {
+      add(
+        conditionRuleId: LiuYaoRuleIds.conditionTomb,
         label: '待冲开墓库',
         branch: DiZhiRelations.getLiuChong(muBranch),
         reason: '入墓待冲开墓库$muBranch之日',
-      ));
+        triggeringRuleIds: const <String>[
+          LiuYaoRuleIds.ruleDayTomb,
+          LiuYaoRuleIds.ruleMonthTomb,
+          LiuYaoRuleIds.ruleMovingTomb,
+        ],
+      );
     }
-    if (terms.contains('化墓')) {
-      conditions.add(VerdictCondition(
+    if (has(LiuYaoRuleIds.ruleChangedTomb)) {
+      add(
+        conditionRuleId: LiuYaoRuleIds.conditionChangedTomb,
         label: '待冲开化墓',
         branch: DiZhiRelations.getLiuChong(muBranch),
         reason: '动而化墓，待冲开墓库$muBranch',
-      ));
+        triggeringRuleIds: const <String>[LiuYaoRuleIds.ruleChangedTomb],
+      );
     }
-    final heZhu = terms.contains('合住') ||
-        terms.contains('合绊') ||
-        (yongShen.isMoving && (terms.contains('日合') || terms.contains('月合')));
-    if (heZhu && !terms.contains('冲开')) {
-      conditions.add(VerdictCondition(
+    final held = has(LiuYaoRuleIds.ruleMovingBound) ||
+        has(LiuYaoRuleIds.ruleMutualBinding) ||
+        (yongShen.isMoving &&
+            (has(LiuYaoRuleIds.ruleDayJoins) ||
+                has(LiuYaoRuleIds.ruleMonthJoins)));
+    final bindingStillClosed = ruleSetVersion == LiuYaoRuleCatalog.v1Compat
+        ? held && !has(LiuYaoRuleIds.ruleBindingOpened)
+        : ActorAvailabilityService.isBindingClosed(
+            actor: isFuShen
+                ? ActorAvailabilityService.hiddenActor(yongShen)
+                : ActorAvailabilityService.mainActor(yongShen),
+            tags: tags,
+            lunarInfo: lunarInfo,
+          );
+    if (bindingStillClosed) {
+      add(
+        conditionRuleId: LiuYaoRuleIds.conditionBinding,
         label: '待冲开',
         branch: chongZhi,
         reason: '合住则绊，待冲开之日用神方能施为',
-      ));
+        triggeringRuleIds: const <String>[
+          LiuYaoRuleIds.ruleMovingBound,
+          LiuYaoRuleIds.ruleMutualBinding,
+          LiuYaoRuleIds.ruleDayJoins,
+          LiuYaoRuleIds.ruleMonthJoins,
+        ],
+      );
     }
-    if (terms.contains('化空') && changedYao != null) {
-      conditions.add(VerdictCondition(
+    if (has(LiuYaoRuleIds.ruleChangedVoid) && changedYao != null) {
+      add(
+        conditionRuleId: LiuYaoRuleIds.conditionChangedVoid,
         label: '待变爻填实',
         branch: changedYao.branch,
         reason: '动而化空，变爻${changedYao.branch}出空填实之日应之',
-      ));
+        triggeringRuleIds: const <String>[LiuYaoRuleIds.ruleChangedVoid],
+      );
     }
-    if (terms.contains('化破') && changedYao != null) {
-      conditions.add(VerdictCondition(
+    if (has(LiuYaoRuleIds.ruleChangedBreak) && changedYao != null) {
+      add(
+        conditionRuleId: LiuYaoRuleIds.conditionChangedBreak,
         label: '待变爻出月填实',
         branch: changedYao.branch,
         reason: '动而化破，变爻${changedYao.branch}出月或填实应之',
-      ));
+        triggeringRuleIds: const <String>[LiuYaoRuleIds.ruleChangedBreak],
+      );
     }
-    if (terms.contains('临绝') || terms.contains('化绝')) {
-      conditions.add(VerdictCondition(
+    if (has(LiuYaoRuleIds.ruleTerminal) ||
+        has(LiuYaoRuleIds.ruleChangedTerminal)) {
+      add(
+        conditionRuleId: LiuYaoRuleIds.conditionTerminal,
         label: '待长生扶起',
         branch: ChangShengTable.getChangShengBranch(yongShen.wuXing),
         reason: '临绝待长生之日，绝处逢生',
         hasRescue: hasFu || yuanActive,
-      ));
+        triggeringRuleIds: const <String>[
+          LiuYaoRuleIds.ruleTerminal,
+          LiuYaoRuleIds.ruleChangedTerminal,
+        ],
+      );
     }
     if (isFuShen) {
-      final alreadyReleased = terms.contains('伏神得出');
-      conditions.add(VerdictCondition(
-        label: '待出伏',
-        branch: zhi,
-        reason: '用神不现，待伏神值日或冲飞之日引出',
-        hasRescue: alreadyReleased ||
-            (!terms.contains('飞克伏') && !terms.contains('伏神受制')),
-      ));
+      final released = has(LiuYaoRuleIds.ruleHiddenReleased);
+      final suppressed = (has(LiuYaoRuleIds.ruleFlightOvercomesHidden) ||
+              has(LiuYaoRuleIds.ruleHiddenSuppressed)) &&
+          !released;
+      if (ruleSetVersion == LiuYaoRuleCatalog.v1Compat) {
+        add(
+          conditionRuleId: LiuYaoRuleIds.conditionHiddenRelease,
+          label: '待出伏',
+          branch: zhi,
+          reason: released ? '伏神已有得出之象，仍待值日引出' : '用神不现，待伏神值日或冲飞之日引出',
+          hasRescue: !suppressed,
+          triggeringRuleIds: const <String>[
+            LiuYaoRuleIds.ruleSelectedHiddenUseSpirit,
+            LiuYaoRuleIds.ruleFlightOvercomesHidden,
+            LiuYaoRuleIds.ruleHiddenSuppressed,
+            LiuYaoRuleIds.ruleHiddenReleased,
+          ],
+        );
+      } else if (!released) {
+        add(
+          conditionRuleId: suppressed
+              ? LiuYaoRuleIds.conditionHiddenSuppressed
+              : LiuYaoRuleIds.conditionHiddenRelease,
+          label: suppressed ? '伏神受制无解' : '待出伏',
+          branch: zhi,
+          reason: suppressed ? '伏神受飞神及日月压制，当前无可执行的释放路径' : '用神不现，待伏神值日或冲飞之日引出',
+          hasRescue: !suppressed,
+          triggeringRuleIds: const <String>[
+            LiuYaoRuleIds.ruleSelectedHiddenUseSpirit,
+            LiuYaoRuleIds.ruleFlightOvercomesHidden,
+            LiuYaoRuleIds.ruleHiddenSuppressed,
+          ],
+        );
+      }
     }
     return conditions;
+  }
+
+  static VerdictEffect? _effectOfRule(String ruleId, Yao yongShen) {
+    if (_suspendRuleIds.contains(ruleId)) return VerdictEffect.suspend;
+    if (_l1FuRuleIds.contains(ruleId) ||
+        _l2FuRuleIds.contains(ruleId) ||
+        _l4FuRuleIds.contains(ruleId) ||
+        _fuShenFuRuleIds.contains(ruleId)) {
+      return VerdictEffect.fu;
+    }
+    if (ruleId == LiuYaoRuleIds.ruleDayJoins ||
+        ruleId == LiuYaoRuleIds.ruleMonthJoins) {
+      return yongShen.isMoving ? VerdictEffect.suspend : VerdictEffect.fu;
+    }
+    if (_l1YiRuleIds.contains(ruleId) ||
+        _l2YiRuleIds.contains(ruleId) ||
+        _l4YiHeavyRuleIds.contains(ruleId) ||
+        _l4YiLightRuleIds.contains(ruleId) ||
+        _fuShenYiRuleIds.contains(ruleId)) {
+      return VerdictEffect.yi;
+    }
+    if (_neutralRuleIds.contains(ruleId)) return VerdictEffect.neutral;
+    return null;
+  }
+
+  static int _tierOf(String ruleId) {
+    if (_l1FuRuleIds.contains(ruleId) || _l1YiRuleIds.contains(ruleId)) {
+      return 1;
+    }
+    if (_l2FuRuleIds.contains(ruleId) || _l2YiRuleIds.contains(ruleId)) {
+      return 2;
+    }
+    if (ruleId == LiuYaoRuleIds.hiddenMovingGenerates ||
+        ruleId == LiuYaoRuleIds.hiddenMovingOvercomes) {
+      return 3;
+    }
+    if (_l4FuRuleIds.contains(ruleId) ||
+        _l4YiHeavyRuleIds.contains(ruleId) ||
+        _l4YiLightRuleIds.contains(ruleId)) {
+      return 4;
+    }
+    return 5;
+  }
+
+  static String _sourceLabel(String ruleId) {
+    final sources =
+        LiuYaoRuleCatalog.ruleById[ruleId]?.sourceIds ?? const <String>[];
+    if (sources.contains(LiuYaoRuleIds.projectSource)) {
+      return '项目约定·六爻分析合同';
+    }
+    if (sources.contains(LiuYaoRuleIds.buShiSource)) {
+      return '《卜筮正宗》候选定位';
+    }
+    return '《增删卜易》';
   }
 
   static String _buildSummary({
@@ -379,14 +778,15 @@ class VerdictService {
     required List<VerdictCondition> conditions,
     required List<YingQiCandidate> yingQi,
   }) {
-    final desc = '${yongShen.liuQin.name}${yongShen.branch}'
+    final description = '${yongShen.liuQin.name}${yongShen.branch}'
         '${yongShen.wuXing.name}${isFuShen ? '（伏）' : ''}';
-    final condText = conditions.take(2).map((c) => c.label).join('、');
-    final yingQiHint = yingQi.isEmpty
+    final conditionText =
+        conditions.take(2).map((condition) => condition.label).join('、');
+    final timingHint = yingQi.isEmpty
         ? ''
-        : '；优先观察：${yingQi.take(2).map((c) => c.label).join('，')}';
-    return '用神$desc，断曰：${trend.name}${nuance == null ? '' : '（$nuance）'}。'
-        '${condText.isEmpty ? '' : '未决条件：$condText。'}'
-        '应期候选仅表示条件触发窗口，不单独决定事情成败$yingQiHint';
+        : '；优先观察：${yingQi.take(2).map((candidate) => candidate.label).join('，')}';
+    return '用神$description，断曰：${trend.name}${nuance == null ? '' : '（$nuance）'}。'
+        '${conditionText.isEmpty ? '' : '未决条件：$conditionText。'}'
+        '应期候选仅表示条件触发窗口，不单独决定事情成败$timingHint';
   }
 }
