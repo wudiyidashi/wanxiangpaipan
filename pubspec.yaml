@@ -1,7 +1,7 @@
 name: wanxiang_paipan
 description: "万象排盘 Flutter 应用 - 专业的排盘工具"
 publish_to: 'none'
-version: 1.5.0+1
+version: 1.6.0+1
 
 environment:
   sdk: '>=3.5.0 <4.0.0'
