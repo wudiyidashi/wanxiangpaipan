@@ -36,6 +36,12 @@ class StructuredDivinationOutput with _$StructuredDivinationOutput {
 
     /// 摘要信息
     String? summary,
+
+    /// 由各系统 formatter 提供的分析契约版本。
+    ///
+    /// 不从 [coreData] 反向解析，避免 assembler、快照和 UI
+    /// 分别维护一套字段路径。
+    AnalysisContractMetadata? analysisContract,
   }) = _StructuredDivinationOutput;
 
   factory StructuredDivinationOutput.fromJson(Map<String, dynamic> json) =>
@@ -52,6 +58,21 @@ class StructuredDivinationOutput with _$StructuredDivinationOutput {
   bool hasSection(String key) {
     return sections.any((s) => s.key == key);
   }
+}
+
+/// 跨 formatter、prompt 与对话快照的类型化分析版本契约。
+@freezed
+class AnalysisContractMetadata with _$AnalysisContractMetadata {
+  const factory AnalysisContractMetadata({
+    @Default('legacyUnknown') String analysisSchemaVersion,
+    @Default('legacyUnknown') String projectionSchemaVersion,
+    @Default('legacyUnknown') String ruleSetId,
+    @Default('legacyUnknown') String ruleSetVersion,
+    @Default('legacyUnknown') String sourceCatalogVersion,
+  }) = _AnalysisContractMetadata;
+
+  factory AnalysisContractMetadata.fromJson(Map<String, dynamic> json) =>
+      _$AnalysisContractMetadataFromJson(json);
 }
 
 /// 时间信息

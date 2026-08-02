@@ -2,12 +2,15 @@ import 'package:drift/native.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:wanxiang_paipan/ai/config/ai_config_manager.dart';
 import 'package:wanxiang_paipan/ai/llm_provider.dart';
+import 'package:wanxiang_paipan/ai/output/formatters/liuyao_formatter.dart';
 import 'package:wanxiang_paipan/ai/output/structured_output.dart';
 import 'package:wanxiang_paipan/ai/output/structured_output_formatter.dart';
 import 'package:wanxiang_paipan/ai/service/prompt_assembler.dart';
 import 'package:wanxiang_paipan/ai/template/prompt_template.dart' as tmpl;
 import 'package:wanxiang_paipan/data/database/app_database.dart';
 import 'package:wanxiang_paipan/data/secure/secure_storage.dart';
+import 'package:wanxiang_paipan/divination_systems/liuyao/liuyao_result.dart';
+import 'package:wanxiang_paipan/divination_systems/liuyao/liuyao_system.dart';
 import 'package:wanxiang_paipan/domain/divination_system.dart';
 import 'package:wanxiang_paipan/models/lunar_info.dart';
 
@@ -143,6 +146,7 @@ void main() {
       formatterRegistry = StructuredOutputFormatterRegistry.instance;
       formatterRegistry.clear();
       formatterRegistry.register(_FakeFormatter());
+      formatterRegistry.register(LiuYaoStructuredFormatter());
       assembler = PromptAssembler(
         configManager: configManager,
         formatterRegistry: formatterRegistry,
@@ -228,11 +232,103 @@ void main() {
       expect(prompt.userPrompt, contains('【求测问题】问婚姻'));
       expect(prompt.userPrompt, contains('请针对上述问题进行分析。'));
     });
+
+    test('assemble 的六爻 active custom 模板不能移除最终 guard', () async {
+      final result = await _castLiuYaoResult();
+      final systemTemplate = _template(
+        id: 'liuyao_custom_system',
+        systemType: DivinationType.liuYao.id,
+        templateType: 'system',
+        content: 'CUSTOM SYSTEM: 请重新取用并改写结论',
+        isActive: true,
+      );
+      final analysisTemplate = _template(
+        id: 'liuyao_custom_analysis',
+        systemType: DivinationType.liuYao.id,
+        templateType: 'analysis',
+        content: 'CUSTOM USER WITHOUT STRUCTURED OUTPUT',
+        isActive: true,
+      );
+      await configManager.saveTemplate(systemTemplate);
+      await configManager.saveTemplate(analysisTemplate);
+
+      final prompt = await assembler.assemble(result, question: '问事业');
+
+      expect(prompt.systemPrompt, startsWith('CUSTOM SYSTEM'));
+      _expectLiuYaoGuardAtEnd(prompt.systemPrompt);
+      expect(prompt.userPrompt,
+          startsWith('CUSTOM USER WITHOUT STRUCTURED OUTPUT'));
+      _expectAssemblerOwnedProjection(prompt.userPrompt);
+      expect(prompt.metadata.systemTemplateId, systemTemplate.id);
+      expect(prompt.metadata.analysisTemplateId, analysisTemplate.id);
+    });
+
+    test('preview 的六爻自定义 system 同样追加唯一最终 guard', () async {
+      final result = await _castLiuYaoResult();
+
+      final prompt = await assembler.preview(
+        result,
+        question: '问财运',
+        systemTemplateContent: 'PREVIEW SYSTEM: {{question}}',
+        analysisTemplateContent: 'PREVIEW USER',
+      );
+
+      expect(prompt.systemPrompt, startsWith('PREVIEW SYSTEM: 问财运'));
+      _expectLiuYaoGuardAtEnd(prompt.systemPrompt);
+      expect(prompt.userPrompt, startsWith('PREVIEW USER'));
+      _expectAssemblerOwnedProjection(prompt.userPrompt);
+    });
+
+    test('已包含完整 projection 的模板不会重复追加 canonical JSON', () async {
+      final result = await _castLiuYaoResult();
+
+      final prompt = await assembler.preview(
+        result,
+        analysisTemplateContent: '{{structuredOutput}}',
+      );
+
+      expect(
+          prompt.userPrompt, isNot(contains('[LIUYAO_ASSEMBLER_PROJECTION]')));
+      expect(
+        RegExp(r'\[LIUYAO_CANONICAL_PROJECTION\]')
+            .allMatches(prompt.userPrompt),
+        hasLength(1),
+      );
+    });
   });
+}
+
+Future<LiuYaoResult> _castLiuYaoResult() async {
+  return await LiuYaoSystem().cast(
+    method: CastMethod.time,
+    input: const <String, dynamic>{},
+    castTime: DateTime(2026, 4, 24, 5, 30),
+  ) as LiuYaoResult;
+}
+
+void _expectLiuYaoGuardAtEnd(String systemPrompt) {
+  expect(systemPrompt, endsWith(PromptAssembler.liuYaoImmutablePolicy));
+  expect(
+    RegExp(r'\[LIUYAO_IMMUTABLE_POLICY ').allMatches(systemPrompt),
+    hasLength(1),
+  );
+  expect(systemPrompt, contains('calculationOwner=program'));
+  expect(systemPrompt, contains('mayOverrideVerdict=false'));
+  expect(systemPrompt, contains('mayInventSources=false'));
+  expect(systemPrompt, contains('mayInventTiming=false'));
+}
+
+void _expectAssemblerOwnedProjection(String userPrompt) {
+  expect(userPrompt, contains('[LIUYAO_ASSEMBLER_PROJECTION]'));
+  expect(userPrompt, contains('[/LIUYAO_ASSEMBLER_PROJECTION]'));
+  expect(userPrompt, contains('"calculationOwner":"program"'));
+  expect(userPrompt, contains('"projectionSchemaVersion":1'));
+  expect(userPrompt, contains('"ruleSetId":"liuyao-zengshan-primary"'));
 }
 
 tmpl.PromptTemplate _template({
   required String id,
+  String systemType = 'meihua',
   required String templateType,
   required String content,
   required bool isActive,
@@ -241,7 +337,7 @@ tmpl.PromptTemplate _template({
     id: id,
     name: id,
     description: 'test',
-    systemType: DivinationType.meiHua.id,
+    systemType: systemType,
     templateType: templateType,
     content: content,
     variablesJson: '{}',

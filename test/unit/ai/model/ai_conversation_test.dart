@@ -48,6 +48,28 @@ void main() {
       expect(restored, equals(conv));
     });
 
+    test('旧快照 JSON 缺少版本字段时保留为 legacyUnknown', () {
+      final json = _literalConversationJson('liuyao')
+        ..['castSnapshot'] = <String, dynamic>{
+          'systemPrompt': 'legacy system',
+          'castUserPrompt': 'legacy user',
+          'model': 'legacy-model',
+          'assembledAt': '2026-04-23T00:00:00.000Z',
+        };
+
+      final snapshot = AIConversation.fromJson(json).castSnapshot!;
+
+      expect(snapshot.systemPrompt, 'legacy system');
+      expect(snapshot.analysisSchemaVersion, 'legacyUnknown');
+      expect(snapshot.projectionSchemaVersion, 'legacyUnknown');
+      expect(snapshot.ruleSetId, 'legacyUnknown');
+      expect(snapshot.ruleSetVersion, 'legacyUnknown');
+      expect(snapshot.sourceCatalogVersion, 'legacyUnknown');
+      expect(snapshot.promptPolicyVersion, 'legacyUnknown');
+      expect(snapshot.systemTemplateId, 'legacyUnknown');
+      expect(snapshot.analysisTemplateId, 'legacyUnknown');
+    });
+
     test('round-trip preserves multi-message ordering', () {
       final conv = AIConversation(
         version: 1,

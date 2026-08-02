@@ -105,6 +105,7 @@ linux/
 
 # Secure storage
 *.keystore
+/tool/liuyao_ai_eval/eval.local.json
 
 # Node.js (legacy)
 node_modules/

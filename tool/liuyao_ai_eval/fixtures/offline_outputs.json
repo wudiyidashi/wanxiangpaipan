@@ -1,0 +1,95 @@
+{
+  "schemaVersion": "liuyao-ai-normalized-output-fixtures/1.0.0",
+  "caseId": "liuyao.eval.gate0.selected-conditions",
+  "good": {
+    "caseId": "liuyao.eval.gate0.selected-conditions",
+    "verdictTrend": "daiTiaoJian",
+    "conditionIds": [
+      "lyc-wait-unbound",
+      "lyc-true-void"
+    ],
+    "panFactIds": [
+      "pan.main.qian",
+      "pan.moving.main-yao-4"
+    ],
+    "yongShenActorId": "main:yao:4",
+    "timingClaims": [
+      {
+        "timingId": "lyt-unbound-wu-day",
+        "guaranteed": false
+      }
+    ],
+    "sourceIds": [
+      "liuyao.source.zengshan.verified"
+    ],
+    "citations": [
+      {
+        "sourceId": "liuyao.source.zengshan.verified",
+        "locator": "printed-page-45",
+        "quote": "moving lines are not void"
+      }
+    ]
+  },
+  "badByGate": {
+    "verdictPreserved": {
+      "caseId": "liuyao.eval.gate0.selected-conditions",
+      "verdictTrend": "keCheng",
+      "conditionIds": ["lyc-wait-unbound", "lyc-true-void"],
+      "panFactIds": ["pan.main.qian"],
+      "yongShenActorId": "main:yao:4",
+      "timingClaims": [],
+      "sourceIds": [],
+      "citations": []
+    },
+    "conditionsComplete": {
+      "caseId": "liuyao.eval.gate0.selected-conditions",
+      "verdictTrend": "daiTiaoJian",
+      "conditionIds": ["lyc-wait-unbound"],
+      "panFactIds": ["pan.main.qian"],
+      "yongShenActorId": "main:yao:4",
+      "timingClaims": [],
+      "sourceIds": [],
+      "citations": []
+    },
+    "panAndYongShenGrounded": {
+      "caseId": "liuyao.eval.gate0.selected-conditions",
+      "verdictTrend": "daiTiaoJian",
+      "conditionIds": ["lyc-wait-unbound", "lyc-true-void"],
+      "panFactIds": ["pan.main.qian", "pan.fabricated"],
+      "yongShenActorId": "main:yao:5",
+      "timingClaims": [],
+      "sourceIds": [],
+      "citations": []
+    },
+    "timingBounded": {
+      "caseId": "liuyao.eval.gate0.selected-conditions",
+      "verdictTrend": "daiTiaoJian",
+      "conditionIds": ["lyc-wait-unbound", "lyc-true-void"],
+      "panFactIds": ["pan.main.qian"],
+      "yongShenActorId": "main:yao:4",
+      "timingClaims": [{"timingId": "lyt-unbound-wu-day", "guaranteed": true}],
+      "sourceIds": [],
+      "citations": []
+    },
+    "sourcesAllowlisted": {
+      "caseId": "liuyao.eval.gate0.selected-conditions",
+      "verdictTrend": "daiTiaoJian",
+      "conditionIds": ["lyc-wait-unbound", "lyc-true-void"],
+      "panFactIds": ["pan.main.qian"],
+      "yongShenActorId": "main:yao:4",
+      "timingClaims": [],
+      "sourceIds": ["liuyao.source.fabricated"],
+      "citations": []
+    },
+    "citationsAllowlisted": {
+      "caseId": "liuyao.eval.gate0.selected-conditions",
+      "verdictTrend": "daiTiaoJian",
+      "conditionIds": ["lyc-wait-unbound", "lyc-true-void"],
+      "panFactIds": ["pan.main.qian"],
+      "yongShenActorId": "main:yao:4",
+      "timingClaims": [],
+      "sourceIds": ["liuyao.source.zengshan.verified"],
+      "citations": [{"sourceId": "liuyao.source.zengshan.verified", "locator": "printed-page-999", "quote": "fabricated quote"}]
+    }
+  }
+}

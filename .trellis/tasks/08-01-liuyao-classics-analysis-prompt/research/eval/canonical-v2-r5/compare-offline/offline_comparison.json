@@ -1,0 +1,44 @@
+{
+  "adapterHash": "6a15a33d92ed54a576b8f2f7242e746d36887e6bca26ff900f91d37cb9de13c1",
+  "baselineRequestSetHash": "9112c2853a2a602302158614f6ebbedadd0677672948e280f1c3c64375603e61",
+  "candidateHash": "6cea01d796e401c493ea5c5693c22af44ba00be80b5cf86ba7c4554286652959",
+  "candidateRequestSetHash": "45a7713e9dfcb02d58879d3a1fde02840c29f772f69ec33ebc2410b75eb03a62",
+  "caseInputSetHash": "20155548f6b49fae6b090ae4c0fb7caa9883a8f744e17a5d8f610eafbecdf821",
+  "fixtureHash": "24299a942e5ed77c808a58bc5657ac55a695ef8db6fdd352949c93aa41ae040a",
+  "holdout": {
+    "cohortHash": "a4b6dcec44989a2d01d83b2113f9effa6099a95be1c8c876e6cb1ce0b44491a3",
+    "members": [
+      {
+        "caseId": "liuyao.case.golden.033",
+        "selectionHash": "16c55b8cc619afeedac17274c08c15f385bbd9c6e6a1c77dc3b16eff92a727bd"
+      },
+      {
+        "caseId": "liuyao.case.golden.013",
+        "selectionHash": "29a4582c129d9b08c9fcf40c837cc911b1fd84261a610a231f42ec54b88fe40c"
+      },
+      {
+        "caseId": "liuyao.case.golden.032",
+        "selectionHash": "34a0a2479f2911a2090d0dbd332da79835f792db23a0ebba0b0d07e76e738628"
+      },
+      {
+        "caseId": "liuyao.case.golden.009",
+        "selectionHash": "35cd0147698f76fc349b99307f4f45b1de49f9196f6114ad3d038b0f198e68b5"
+      },
+      {
+        "caseId": "liuyao.case.golden.014",
+        "selectionHash": "3e62c94b37b1e65aa65739ac4d14645bcecbcd3f2fa1ecabfcb927e62368adc7"
+      },
+      {
+        "caseId": "liuyao.case.golden.029",
+        "selectionHash": "40df3ac5df94bc1f250a143289654bac0b48e6da135ba1a16472a4a88c08858e"
+      }
+    ],
+    "selectionSalt": "liuyao-holdout-v1-2026-08-01"
+  },
+  "projectionSetHash": "31d467efe8913b685a0fc46fb5faf8cdb8275fadfbcd4927e4d41dd279a4f331",
+  "requestParametersHash": "d4b9208123c73439de2071f89b29783504f5fd520dd1dc07bdd56a749b321e9a",
+  "rubricHash": "b4478a167d083ef4743d2d6aa125f56de21eb5b30f5764e8e92ef6161bcad60c",
+  "runId": "canonical-v2-r5",
+  "schemaVersion": "liuyao-ai-offline-comparison/1.0.0",
+  "status": "ready"
+}

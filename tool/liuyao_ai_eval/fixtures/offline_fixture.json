@@ -1,0 +1,146 @@
+{
+  "schemaVersion": "liuyao-ai-eval-fixture/1.0.0",
+  "fixtureVersion": "liuyao-ai-eval-fixture/1.0.0",
+  "rubricVersion": "liuyao-ai-rubric/1.0.0",
+  "projectionSchemaVersion": "gate0-offline/1",
+  "requestSchemaVersion": "liuyao-ai-request-set/1.0.0",
+  "cases": [
+    {
+      "caseId": "liuyao.eval.gate0.selected-conditions",
+      "caseKind": "originalBook",
+      "evaluationSplit": "calibration",
+      "cohortIds": [
+        "overall",
+        "originalBook",
+        "calibration"
+      ],
+      "requestInput": {
+        "question": "Will the matter proceed after the stated blockers clear?",
+        "projection": {
+          "panFactIds": [
+            "pan.main.qian",
+            "pan.moving.main-yao-4"
+          ],
+          "yongShenActorId": "main:yao:4",
+          "verdictTrend": "daiTiaoJian",
+          "conditions": [
+            {
+              "conditionId": "lyc-wait-unbound",
+              "hasRescue": true
+            },
+            {
+              "conditionId": "lyc-true-void",
+              "hasRescue": false
+            }
+          ],
+          "timingCandidates": [
+            {
+              "timingId": "lyt-unbound-wu-day",
+              "triggerValue": "wu"
+            }
+          ],
+          "sources": [
+            {
+              "sourceId": "liuyao.source.zengshan.verified",
+              "locators": [
+                "printed-page-45"
+              ],
+              "exactQuotes": [
+                "moving lines are not void"
+              ]
+            },
+            {
+              "sourceId": "liuyao.source.project.analysis-contract",
+              "locators": [
+                "analysis-contract-v1"
+              ],
+              "exactQuotes": []
+            }
+          ]
+        }
+      },
+      "scoringReference": {
+        "expectedVerdictTrend": "daiTiaoJian",
+        "requiredConditionIds": [
+          "lyc-wait-unbound",
+          "lyc-true-void"
+        ],
+        "allowedPanFactIds": [
+          "pan.main.qian",
+          "pan.moving.main-yao-4"
+        ],
+        "expectedYongShenActorId": "main:yao:4",
+        "allowedTimingIds": [
+          "lyt-unbound-wu-day"
+        ],
+        "allowedSources": [
+          {
+            "sourceId": "liuyao.source.zengshan.verified",
+            "locators": [
+              "printed-page-45"
+            ],
+            "exactQuotes": [
+              "moving lines are not void"
+            ]
+          },
+          {
+            "sourceId": "liuyao.source.project.analysis-contract",
+            "locators": [
+              "analysis-contract-v1"
+            ],
+            "exactQuotes": []
+          }
+        ]
+      }
+    },
+    {
+      "caseId": "liuyao.eval.gate0.unselected-boundary",
+      "caseKind": "ruleValidation",
+      "evaluationSplit": "calibration",
+      "cohortIds": [
+        "overall",
+        "ruleValidation",
+        "calibration"
+      ],
+      "requestInput": {
+        "question": "Which use spirit might fit the question?",
+        "projection": {
+          "panFactIds": [
+            "pan.main.kun"
+          ],
+          "yongShenActorId": null,
+          "verdictTrend": null,
+          "conditions": [],
+          "timingCandidates": [],
+          "sources": [
+            {
+              "sourceId": "liuyao.source.project.analysis-contract",
+              "locators": [
+                "analysis-contract-v1"
+              ],
+              "exactQuotes": []
+            }
+          ]
+        }
+      },
+      "scoringReference": {
+        "expectedVerdictTrend": null,
+        "requiredConditionIds": [],
+        "allowedPanFactIds": [
+          "pan.main.kun"
+        ],
+        "expectedYongShenActorId": null,
+        "allowedTimingIds": [],
+        "allowedSources": [
+          {
+            "sourceId": "liuyao.source.project.analysis-contract",
+            "locators": [
+              "analysis-contract-v1"
+            ],
+            "exactQuotes": []
+          }
+        ]
+      }
+    }
+  ]
+}

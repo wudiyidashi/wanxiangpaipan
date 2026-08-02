@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:convert';
 
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
@@ -82,6 +83,7 @@ class _FakeResult implements DivinationResult {
 AssembledPrompt _fakePrompt({
   String systemPrompt = 'SYS',
   String userPrompt = 'CAST',
+  AssembledPromptMetadata? metadata,
 }) {
   return AssembledPrompt(
     systemPrompt: systemPrompt,
@@ -98,10 +100,11 @@ AssembledPrompt _fakePrompt({
       coreData: const {},
       sections: const [],
     ),
-    metadata: AssembledPromptMetadata(
-      timestamp: DateTime.utc(2026, 4, 23),
-      systemType: 'liuyao',
-    ),
+    metadata: metadata ??
+        AssembledPromptMetadata(
+          timestamp: DateTime.utc(2026, 4, 23),
+          systemType: 'liuyao',
+        ),
   );
 }
 
@@ -199,6 +202,51 @@ void main() {
       final conv = service.conversationOf('r2');
       expect(conv!.messages[0].status, ChatMessageStatus.failed);
       expect(service.errorOf('r2'), contains('API down'));
+    });
+
+    test('新对话快照冻结组装时的分析与提示策略版本', () async {
+      when(() => assembler.assemble(
+            any(),
+            question: any(named: 'question'),
+            analysisType: any(named: 'analysisType'),
+            customVariables: any(named: 'customVariables'),
+          )).thenAnswer(
+        (_) async => _fakePrompt(
+          metadata: AssembledPromptMetadata(
+            systemTemplateId: 'builtin_liuyao_system',
+            analysisTemplateId: 'builtin_liuyao_analysis',
+            timestamp: DateTime.utc(2026, 8, 1),
+            systemType: 'liuyao',
+            analysisSchemaVersion: '1',
+            projectionSchemaVersion: '1',
+            ruleSetId: 'liuyao-zengshan-primary',
+            ruleSetVersion: 'v2',
+            sourceCatalogVersion: 'liuyao-evidence/1.0.0',
+            promptPolicyVersion: 'liuyao-ai-policy/1.0.0',
+          ),
+        ),
+      );
+      when(() => provider.chatStream(any()))
+          .thenAnswer((_) => Stream.fromIterable(['ok']));
+      final service = _makeService(
+        provider: provider,
+        repo: repo,
+        assembler: assembler,
+        config: config,
+      );
+
+      await service.startConversation(_FakeResult('versioned'));
+
+      final snapshot = service.conversationOf('versioned')!.castSnapshot!;
+      expect(snapshot.analysisSchemaVersion, '1');
+      expect(snapshot.projectionSchemaVersion, '1');
+      expect(snapshot.ruleSetId, 'liuyao-zengshan-primary');
+      expect(snapshot.ruleSetVersion, 'v2');
+      expect(snapshot.sourceCatalogVersion, 'liuyao-evidence/1.0.0');
+      expect(snapshot.promptPolicyVersion, 'liuyao-ai-policy/1.0.0');
+      expect(snapshot.systemTemplateId, 'builtin_liuyao_system');
+      expect(snapshot.analysisTemplateId, 'builtin_liuyao_analysis');
+      expect(snapshot.assembledAt, DateTime.utc(2026, 8, 1));
     });
 
     test('未配置 provider：抛错误状态', () async {
@@ -309,6 +357,109 @@ void main() {
       final conv = service.conversationOf('r1');
       expect(conv!.castSnapshot, isNotNull);
       expect(conv.messages, hasLength(3));
+    });
+
+    test('持久化旧快照逐字重放，重新分析后切换到 current prompt', () async {
+      const legacySystemPrompt = 'LEGACY SYSTEM PROMPT';
+      const legacyUserPrompt = 'LEGACY CAST USER PROMPT';
+      await storage.write(
+        'conversation_r1',
+        jsonEncode({
+          'version': 1,
+          'resultId': 'r1',
+          'systemType': DivinationType.liuYao.id,
+          'castSnapshot': {
+            'systemPrompt': legacySystemPrompt,
+            'castUserPrompt': legacyUserPrompt,
+            'model': 'legacy-model',
+            'assembledAt': '2025-01-01T00:00:00.000Z',
+          },
+          'messages': [
+            {
+              'id': 'legacy-answer',
+              'role': 'assistant',
+              'content': '旧版初始分析',
+              'timestamp': '2025-01-01T00:00:01.000Z',
+              'status': 'sent',
+            },
+          ],
+          'updatedAt': '2025-01-01T00:00:01.000Z',
+        }),
+      );
+
+      final requests = <ChatRequest>[];
+      when(() => provider.chatStream(any())).thenAnswer((invocation) {
+        requests.add(invocation.positionalArguments.single as ChatRequest);
+        return Stream<String>.value('ok');
+      });
+      when(() => assembler.assemble(
+            any(),
+            question: any(named: 'question'),
+            analysisType: any(named: 'analysisType'),
+            customVariables: any(named: 'customVariables'),
+          )).thenAnswer(
+        (_) async => _fakePrompt(
+          systemPrompt: 'CURRENT SYSTEM PROMPT',
+          userPrompt: 'CURRENT CAST USER PROMPT',
+          metadata: AssembledPromptMetadata(
+            systemTemplateId: 'builtin_liuyao_system',
+            analysisTemplateId: 'builtin_liuyao_analysis',
+            timestamp: DateTime.utc(2026, 8, 2),
+            systemType: 'liuyao',
+            analysisSchemaVersion: '1',
+            projectionSchemaVersion: '1',
+            ruleSetId: 'liuyao-zengshan-primary',
+            ruleSetVersion: 'v2',
+            sourceCatalogVersion: 'liuyao-evidence/1.0.0',
+            promptPolicyVersion: 'liuyao-ai-policy/1.0.0',
+          ),
+        ),
+      );
+
+      final service = _makeService(
+        provider: provider,
+        repo: repo,
+        assembler: assembler,
+        config: config,
+      );
+      final restored = await service.loadIfNeeded(
+        'r1',
+        legacySystemType: DivinationType.liuYao,
+      );
+
+      expect(restored!.castSnapshot!.systemPrompt, legacySystemPrompt);
+      expect(restored.castSnapshot!.castUserPrompt, legacyUserPrompt);
+      expect(restored.castSnapshot!.ruleSetVersion, 'legacyUnknown');
+
+      await service.sendFollowUp('r1', '沿用旧盘追问');
+
+      expect(requests, hasLength(1));
+      expect(requests.single.messages[0].content, legacySystemPrompt);
+      expect(requests.single.messages[1].content, legacyUserPrompt);
+      verifyNever(() => assembler.assemble(
+            any(),
+            question: any(named: 'question'),
+            analysisType: any(named: 'analysisType'),
+            customVariables: any(named: 'customVariables'),
+          ));
+
+      // UI 的“重新分析”路径会先删除旧对话，再创建 current 快照。
+      await service.delete('r1');
+      await service.startConversation(_FakeResult('r1'));
+
+      expect(requests, hasLength(2));
+      expect(requests.last.messages[0].content, 'CURRENT SYSTEM PROMPT');
+      expect(requests.last.messages[1].content, 'CURRENT CAST USER PROMPT');
+      final current = service.conversationOf('r1')!.castSnapshot!;
+      expect(current.ruleSetVersion, 'v2');
+      expect(current.promptPolicyVersion, 'liuyao-ai-policy/1.0.0');
+      expect(current.systemTemplateId, 'builtin_liuyao_system');
+      verify(() => assembler.assemble(
+            any(),
+            question: any(named: 'question'),
+            analysisType: any(named: 'analysisType'),
+            customVariables: any(named: 'customVariables'),
+          )).called(1);
     });
 
     test('并发 sendFollowUp: 第二次调用会取消第一次的流', () async {

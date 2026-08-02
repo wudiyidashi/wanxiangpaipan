@@ -95,12 +95,7 @@ class AIConversationService extends ChangeNotifier {
     }
 
     final modelName = (provider.getConfigInfo()?['model'] as String?) ?? '';
-    final snapshot = CastSnapshot(
-      systemPrompt: prompt.systemPrompt,
-      castUserPrompt: prompt.userPrompt,
-      model: modelName,
-      assembledAt: DateTime.now(),
-    );
+    final snapshot = _buildSnapshot(prompt, modelName);
 
     // 初始化 assistant 占位消息
     final placeholder = AIChatMessage(
@@ -223,14 +218,7 @@ class AIConversationService extends ChangeNotifier {
                 .getAvailableProvider()
                 ?.getConfigInfo()?['model'] as String?) ??
             '';
-        conv = conv.copyWith(
-          castSnapshot: CastSnapshot(
-            systemPrompt: prompt.systemPrompt,
-            castUserPrompt: prompt.userPrompt,
-            model: modelName,
-            assembledAt: DateTime.now(),
-          ),
-        );
+        conv = conv.copyWith(castSnapshot: _buildSnapshot(prompt, modelName));
       } catch (e) {
         _errors[resultId] = '组装 prompt 失败: $e';
         notifyListeners();
@@ -413,6 +401,24 @@ class AIConversationService extends ChangeNotifier {
   }
 
   // ==================== 辅助 ====================
+
+  CastSnapshot _buildSnapshot(AssembledPrompt prompt, String modelName) {
+    final metadata = prompt.metadata;
+    return CastSnapshot(
+      systemPrompt: prompt.systemPrompt,
+      castUserPrompt: prompt.userPrompt,
+      model: modelName,
+      assembledAt: metadata.timestamp,
+      analysisSchemaVersion: metadata.analysisSchemaVersion,
+      projectionSchemaVersion: metadata.projectionSchemaVersion,
+      ruleSetId: metadata.ruleSetId,
+      ruleSetVersion: metadata.ruleSetVersion,
+      sourceCatalogVersion: metadata.sourceCatalogVersion,
+      promptPolicyVersion: metadata.promptPolicyVersion,
+      systemTemplateId: metadata.systemTemplateId ?? 'default',
+      analysisTemplateId: metadata.analysisTemplateId ?? 'default',
+    );
+  }
 
   AIConversation _updateMessage(
     AIConversation conv,

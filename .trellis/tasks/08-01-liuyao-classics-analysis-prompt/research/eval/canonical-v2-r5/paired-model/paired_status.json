@@ -1,0 +1,12 @@
+{
+  "baselineRequestSetHash": "9112c2853a2a602302158614f6ebbedadd0677672948e280f1c3c64375603e61",
+  "candidateHash": "6cea01d796e401c493ea5c5693c22af44ba00be80b5cf86ba7c4554286652959",
+  "candidateRequestSetHash": "45a7713e9dfcb02d58879d3a1fde02840c29f772f69ec33ebc2410b75eb03a62",
+  "caseId": null,
+  "errorKind": "missingCredentials",
+  "evaluationStatus": "blocked",
+  "realModelStatus": "blockedMissingCredentials",
+  "repetition": null,
+  "runId": "canonical-v2-r5",
+  "schemaVersion": "liuyao-ai-paired-run/1.0.0"
+}

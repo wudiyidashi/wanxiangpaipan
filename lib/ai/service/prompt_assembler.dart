@@ -3,6 +3,8 @@
 /// 将模板、结构化数据、用户输入组合成最终的提示词。
 library;
 
+import 'dart:convert';
+
 import 'package:freezed_annotation/freezed_annotation.dart';
 import '../config/ai_config_manager.dart';
 import '../output/structured_output.dart';
@@ -47,6 +49,12 @@ class AssembledPromptMetadata with _$AssembledPromptMetadata {
 
     /// 术数系统类型
     required String systemType,
+    @Default('legacyUnknown') String analysisSchemaVersion,
+    @Default('legacyUnknown') String projectionSchemaVersion,
+    @Default('legacyUnknown') String ruleSetId,
+    @Default('legacyUnknown') String ruleSetVersion,
+    @Default('legacyUnknown') String sourceCatalogVersion,
+    @Default('legacyUnknown') String promptPolicyVersion,
   }) = _AssembledPromptMetadata;
 }
 
@@ -54,6 +62,24 @@ class AssembledPromptMetadata with _$AssembledPromptMetadata {
 ///
 /// 负责将排盘结果、用户问题、模板组合成完整的提示词。
 class PromptAssembler {
+  static const String liuYaoPromptPolicyVersion = 'liuyao-ai-policy/1.0.0';
+
+  static const String liuYaoImmutablePolicy = '''
+[LIUYAO_IMMUTABLE_POLICY liuyao-ai-policy/1.0.0]
+calculationOwner=program
+mayRecalculatePan=false
+mayRecalculateAnalysis=false
+mayReselectYongShen=false
+mayOverrideVerdict=false
+mayInventSources=false
+mayInventTiming=false
+timingIsGuarantee=false
+程序投影中的盘面、用户已选用神、角色、作用、裁决、条件和应期是本次解释的唯一计算事实，不得重排、重算、替换或按标签数量另断。
+只可引用投影 sources 中实际提供的来源、短引和定位；不得补写古籍原文、书名、版本、章节或页码。exactQuote 之外只能转述其证据边界。
+只可解释 timingCandidates 中已有的观察窗口及其上游条件；不得另造应期，不得承诺事件必然发生或条件解除后必然转吉。
+未选用神时只能给出明确标注为 AI 建议的候选用神，不得伪造程序裁决、未决条件或应期。
+[/LIUYAO_IMMUTABLE_POLICY]''';
+
   final AIConfigManager _configManager;
   final PromptTemplateEngine _engine;
   final StructuredOutputFormatterRegistry _formatterRegistry;
@@ -104,23 +130,32 @@ class PromptAssembler {
     );
 
     // 4. 渲染模板
-    final systemPrompt = systemTemplate != null
+    final renderedSystemPrompt = systemTemplate != null
         ? _engine.render(systemTemplate.content, context)
         : _getDefaultSystemPrompt(result.systemType);
+    final systemPrompt = _appendImmutableSystemGuard(
+      result.systemType,
+      renderedSystemPrompt,
+    );
 
-    final userPrompt = analysisTemplate != null
+    final renderedUserPrompt = analysisTemplate != null
         ? _engine.render(analysisTemplate.content, context)
         : _getDefaultUserPrompt(renderedOutput, question, analysisType);
+    final userPrompt = _ensureLiuYaoProjection(
+      result.systemType,
+      renderedUserPrompt,
+      structuredOutput,
+    );
 
     return AssembledPrompt(
       systemPrompt: systemPrompt,
       userPrompt: userPrompt,
       structuredOutput: structuredOutput,
-      metadata: AssembledPromptMetadata(
+      metadata: _buildMetadata(
+        structuredOutput: structuredOutput,
+        systemType: result.systemType,
         systemTemplateId: systemTemplate?.id,
         analysisTemplateId: analysisTemplate?.id,
-        timestamp: DateTime.now(),
-        systemType: result.systemType.id,
       ),
     );
   }
@@ -189,6 +224,61 @@ class PromptAssembler {
     };
   }
 
+  String _appendImmutableSystemGuard(
+    DivinationType type,
+    String systemPrompt,
+  ) {
+    if (type != DivinationType.liuYao) {
+      return systemPrompt;
+    }
+    return '${systemPrompt.trimRight()}\n\n$liuYaoImmutablePolicy';
+  }
+
+  String _ensureLiuYaoProjection(
+    DivinationType type,
+    String userPrompt,
+    StructuredDivinationOutput structuredOutput,
+  ) {
+    if (type != DivinationType.liuYao) return userPrompt;
+    final analysisSection = structuredOutput.sections
+        .where((section) => section.key == 'analysis')
+        .firstOrNull;
+    final projection = analysisSection?.metadata?['projection'];
+    if (projection is! Map<String, Object?>) {
+      throw StateError('Liuyao formatter did not provide canonical projection');
+    }
+    final canonicalProjection = jsonEncode(projection);
+    if (userPrompt.contains(canonicalProjection)) return userPrompt;
+    return '${userPrompt.trimRight()}\n\n'
+        '[LIUYAO_ASSEMBLER_PROJECTION]\n'
+        '$canonicalProjection\n'
+        '[/LIUYAO_ASSEMBLER_PROJECTION]';
+  }
+
+  AssembledPromptMetadata _buildMetadata({
+    required StructuredDivinationOutput structuredOutput,
+    required DivinationType systemType,
+    String? systemTemplateId,
+    String? analysisTemplateId,
+  }) {
+    final contract = structuredOutput.analysisContract;
+    return AssembledPromptMetadata(
+      systemTemplateId: systemTemplateId,
+      analysisTemplateId: analysisTemplateId,
+      timestamp: DateTime.now(),
+      systemType: systemType.id,
+      analysisSchemaVersion: contract?.analysisSchemaVersion ?? 'legacyUnknown',
+      projectionSchemaVersion:
+          contract?.projectionSchemaVersion ?? 'legacyUnknown',
+      ruleSetId: contract?.ruleSetId ?? 'legacyUnknown',
+      ruleSetVersion: contract?.ruleSetVersion ?? 'legacyUnknown',
+      sourceCatalogVersion: contract?.sourceCatalogVersion ?? 'legacyUnknown',
+      promptPolicyVersion: systemType == DivinationType.liuYao
+          ? liuYaoPromptPolicyVersion
+          : 'legacyUnknown',
+    );
+  }
+
   String _getDefaultUserPrompt(
     String renderedOutput,
     String? question,
@@ -241,22 +331,31 @@ class PromptAssembler {
     );
 
     // 渲染模板
-    final systemPrompt = systemTemplateContent != null
+    final renderedSystemPrompt = systemTemplateContent != null
         ? _engine.render(systemTemplateContent, context)
         : _getDefaultSystemPrompt(result.systemType);
+    final systemPrompt = _appendImmutableSystemGuard(
+      result.systemType,
+      renderedSystemPrompt,
+    );
 
-    final userPrompt = analysisTemplateContent != null
+    final renderedUserPrompt = analysisTemplateContent != null
         ? _engine.render(analysisTemplateContent, context)
         : _getDefaultUserPrompt(
             renderedOutput, question, AnalysisType.comprehensive);
+    final userPrompt = _ensureLiuYaoProjection(
+      result.systemType,
+      renderedUserPrompt,
+      structuredOutput,
+    );
 
     return AssembledPrompt(
       systemPrompt: systemPrompt,
       userPrompt: userPrompt,
       structuredOutput: structuredOutput,
-      metadata: AssembledPromptMetadata(
-        timestamp: DateTime.now(),
-        systemType: result.systemType.id,
+      metadata: _buildMetadata(
+        structuredOutput: structuredOutput,
+        systemType: result.systemType,
       ),
     );
   }

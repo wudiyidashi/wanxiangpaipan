@@ -1,0 +1,147 @@
+{
+  "schemaVersion": "liuyao-ai-rubric/1.0.0",
+  "rubricVersion": "liuyao-ai-rubric/1.0.0",
+  "scoreMinimum": 0,
+  "scoreMaximum": 2,
+  "hardGateIds": [
+    "verdictPreserved",
+    "conditionsComplete",
+    "panAndYongShenGrounded",
+    "timingBounded",
+    "sourcesAllowlisted",
+    "citationsAllowlisted"
+  ],
+  "dimensions": [
+    {
+      "dimensionId": "evidenceCoverage",
+      "core": true,
+      "description": "Explains the supplied decisive and counter-evidence.",
+      "anchors": {
+        "0": "Omits decisive evidence or substitutes an unsupported conclusion.",
+        "1": "Mentions the main evidence but leaves a material supplied factor unexplained.",
+        "2": "Explains every material supplied factor and its role in the conclusion."
+      }
+    },
+    {
+      "dimensionId": "conflictExplanation",
+      "core": true,
+      "description": "Explains why active and suppressed facts lead to the verdict.",
+      "anchors": {
+        "0": "Contradicts the supplied conflict resolution or ignores counter-evidence.",
+        "1": "States both sides without explaining the program's resolution.",
+        "2": "Explains active, suppressed, and counter-evidence in the program's order."
+      }
+    },
+    {
+      "dimensionId": "sourceFidelity",
+      "core": true,
+      "description": "Uses only supplied sources and preserves evidence boundaries.",
+      "anchors": {
+        "0": "Invents a source, quote, locator, or evidence status.",
+        "1": "Uses allowed sources but blurs quote, paraphrase, locator, or project boundaries.",
+        "2": "Uses only allowed sources and labels every evidence boundary correctly."
+      }
+    },
+    {
+      "dimensionId": "conditionTimingExplanation",
+      "core": true,
+      "description": "Explains every condition and treats timing as an observation window.",
+      "anchors": {
+        "0": "Omits a condition or promises that a timing candidate guarantees success.",
+        "1": "Lists all conditions and timing windows but gives an incomplete causal explanation.",
+        "2": "Explains every condition, rescue boundary, upstream link, and non-guaranteed timing window."
+      }
+    },
+    {
+      "dimensionId": "questionRelevance",
+      "core": true,
+      "description": "Addresses the question without changing program-owned facts.",
+      "anchors": {
+        "0": "Does not answer the question or changes program-owned facts to do so.",
+        "1": "Answers generally but does not connect the conclusion to the specific question.",
+        "2": "Directly answers the question while preserving all program-owned facts."
+      }
+    },
+    {
+      "dimensionId": "uncertaintyBoundary",
+      "core": false,
+      "description": "States unresolved and unrescuable limits explicitly.",
+      "anchors": {
+        "0": "Presents uncertainty as certainty or hides an unrescuable condition.",
+        "1": "Uses cautious language without naming all material limits.",
+        "2": "States each uncertainty, unresolved condition, and unrescuable boundary explicitly."
+      }
+    },
+    {
+      "dimensionId": "clarity",
+      "core": false,
+      "description": "Presents a coherent and readable explanation.",
+      "anchors": {
+        "0": "Is incoherent, internally inconsistent, or unusably disorganized.",
+        "1": "Is understandable but repetitive or poorly ordered.",
+        "2": "Is concise, ordered, and internally consistent."
+      }
+    }
+  ],
+  "cohorts": [
+    "overall",
+    "originalBook",
+    "ruleValidation",
+    "holdout"
+  ],
+  "dimensionCohortMatrix": [
+    "evidenceCoverage:overall",
+    "evidenceCoverage:originalBook",
+    "evidenceCoverage:ruleValidation",
+    "evidenceCoverage:holdout",
+    "conflictExplanation:overall",
+    "conflictExplanation:originalBook",
+    "conflictExplanation:ruleValidation",
+    "conflictExplanation:holdout",
+    "sourceFidelity:overall",
+    "sourceFidelity:originalBook",
+    "sourceFidelity:ruleValidation",
+    "sourceFidelity:holdout",
+    "conditionTimingExplanation:overall",
+    "conditionTimingExplanation:originalBook",
+    "conditionTimingExplanation:ruleValidation",
+    "conditionTimingExplanation:holdout",
+    "questionRelevance:overall",
+    "questionRelevance:originalBook",
+    "questionRelevance:ruleValidation",
+    "questionRelevance:holdout",
+    "uncertaintyBoundary:overall",
+    "uncertaintyBoundary:originalBook",
+    "uncertaintyBoundary:ruleValidation",
+    "uncertaintyBoundary:holdout",
+    "clarity:overall",
+    "clarity:originalBook",
+    "clarity:ruleValidation",
+    "clarity:holdout"
+  ],
+  "judgeContract": {
+    "reuseGenerationEndpoint": true,
+    "reuseExactGenerationModel": true,
+    "temperature": 0,
+    "maxCompletionTokens": 2048,
+    "responseFormat": "json",
+    "seed": 271828,
+    "blindOrderSalt": "liuyao-judge-order-v1"
+  },
+  "holdoutContract": {
+    "selectionSalt": "liuyao-holdout-v1-2026-08-01",
+    "cardinality": 6,
+    "revealMarkerIsImmutable": true,
+    "reuseAfterReveal": "regressionOnly"
+  },
+  "improvementRule": {
+    "minimumMeanDelta": 0.2,
+    "minimumNonTieWinRate": 0.6,
+    "minimumConsistentRepetitions": 2,
+    "requiredRepetitions": 3,
+    "requiredCohorts": [
+      "overall",
+      "holdout"
+    ]
+  }
+}

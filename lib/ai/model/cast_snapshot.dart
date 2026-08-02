@@ -11,6 +11,14 @@ class CastSnapshot with _$CastSnapshot {
     required String castUserPrompt,
     required String model,
     required DateTime assembledAt,
+    @Default('legacyUnknown') String analysisSchemaVersion,
+    @Default('legacyUnknown') String projectionSchemaVersion,
+    @Default('legacyUnknown') String ruleSetId,
+    @Default('legacyUnknown') String ruleSetVersion,
+    @Default('legacyUnknown') String sourceCatalogVersion,
+    @Default('legacyUnknown') String promptPolicyVersion,
+    @Default('legacyUnknown') String systemTemplateId,
+    @Default('legacyUnknown') String analysisTemplateId,
   }) = _CastSnapshot;
 
   const CastSnapshot._();
