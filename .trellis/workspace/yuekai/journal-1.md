@@ -417,3 +417,39 @@
 ### Next Steps
 
 - None - task complete
+
+
+## Session 13: 六爻古籍分析体系与 v1.6.0 发布
+
+**Date**: 2026-08-02
+**Task**: 六爻古籍分析体系与 v1.6.0 发布
+**Branch**: `main`
+
+### Summary
+
+建立六爻古籍规则目录、稳定规则身份、有向作用、用神裁决与条件驱动应期；统一 AI 投影和不可移除提示词边界，冻结 canonical-v2-r5 并如实保留 AC9 凭据阻塞；完成来源 UI、日历联动、全量 1335 测试、v1.6.0 标签及 MuMu 1.6.0 冒烟。
+
+### Main Changes
+
+- Detailed change bullets were not supplied; see the summary above.
+
+### Git Commits
+
+| Hash | Message |
+|------|---------|
+| `dea7978` | (see git log) |
+| `b45409d` | (see git log) |
+| `dea890d` | (see git log) |
+| `e97d94b` | (see git log) |
+
+### Testing
+
+- Validation was not recorded for this session.
+
+### Status
+
+[OK] **Completed**
+
+### Next Steps
+
+- None - task complete
