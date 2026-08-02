@@ -453,3 +453,36 @@
 ### Next Steps
 
 - None - task complete
+
+
+## Session 14: 六爻提示词本地评测与凭据隔离
+
+**Date**: 2026-08-02
+**Task**: 六爻提示词本地评测与凭据隔离
+**Branch**: `main`
+
+### Summary
+
+使用忽略的本地 calibration 探针复用 canonical-v2-r6 冻结请求，完成 3 个案例、5 组成对盲评：候选 21 项提升、14 项持平、0 回退，候选硬门禁 5/5 通过；确认正式评测器 90 秒阈值和 judge schema 歧义不适配当前模型。提交并推送 key.txt 与固定评测输出路径的精确忽略规则，凭据与本地工件未进入 Git。
+
+### Main Changes
+
+- Detailed change bullets were not supplied; see the summary above.
+
+### Git Commits
+
+| Hash | Message |
+|------|---------|
+| `f81461a` | (see git log) |
+
+### Testing
+
+- Validation was not recorded for this session.
+
+### Status
+
+[OK] **Completed**
+
+### Next Steps
+
+- None - task complete
