@@ -105,7 +105,11 @@ linux/
 
 # Secure storage
 *.keystore
+/key.txt
 /tool/liuyao_ai_eval/eval.local.json
+
+# Local AI evaluation artifacts
+/.trellis/tasks/08-01-liuyao-classics-analysis-prompt/research/eval/
 
 # Node.js (legacy)
 node_modules/
