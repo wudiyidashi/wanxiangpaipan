@@ -8,8 +8,8 @@
 
 <!-- @@@auto:current-status -->
 - **Active File**: `journal-1.md`
-- **Total Sessions**: 14
-- **Last Active**: 2026-08-02
+- **Total Sessions**: 15
+- **Last Active**: 2026-08-03
 <!-- @@@/auto:current-status -->
 
 ---
@@ -19,7 +19,7 @@
 <!-- @@@auto:active-documents -->
 | File | Lines | Status |
 |------|-------|--------|
-| `journal-1.md` | ~488 | Active |
+| `journal-1.md` | ~524 | Active |
 <!-- @@@/auto:active-documents -->
 
 ---
@@ -29,6 +29,7 @@
 <!-- @@@auto:session-history -->
 | # | Date | Title | Commits | Branch |
 |---|------|-------|---------|--------|
+| 15 | 2026-08-03 | 六爻真实案例提示词校准与 v1.6.1 发布 | `0cf21b7`, `62014bd`, `557f159`, `59c3af3` | `main` |
 | 14 | 2026-08-02 | 六爻提示词本地评测与凭据隔离 | `f81461a` | `main` |
 | 13 | 2026-08-02 | 六爻古籍分析体系与 v1.6.0 发布 | `dea7978`, `b45409d`, `dea890d`, `e97d94b` | `main` |
 | 12 | 2026-07-29 | 大六壬神将坐标重构落盘 + 奇门卡片背景简化 | `0aa92df`, `1d50068`, `3f72060`, `dcdd3f0` | `main` |

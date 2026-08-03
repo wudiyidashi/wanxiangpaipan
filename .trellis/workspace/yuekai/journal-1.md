@@ -486,3 +486,39 @@
 ### Next Steps
 
 - None - task complete
+
+
+## Session 15: 六爻真实案例提示词校准与 v1.6.1 发布
+
+**Date**: 2026-08-03
+**Task**: 六爻真实案例提示词校准与 v1.6.1 发布
+**Branch**: `main`
+
+### Summary
+
+完成六爻历法来源、v3 阶段裁决、生产提示词 1.1.20、本地真实模型校准及 v1.6.1 发布
+
+### Main Changes
+
+- Detailed change bullets were not supplied; see the summary above.
+
+### Git Commits
+
+| Hash | Message |
+|------|---------|
+| `0cf21b7` | (see git log) |
+| `62014bd` | (see git log) |
+| `557f159` | (see git log) |
+| `59c3af3` | (see git log) |
+
+### Testing
+
+- Validation was not recorded for this session.
+
+### Status
+
+[OK] **Completed**
+
+### Next Steps
+
+- None - task complete
