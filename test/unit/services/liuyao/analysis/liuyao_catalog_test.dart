@@ -1,5 +1,6 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:wanxiang_paipan/domain/services/liuyao/analysis/models/analysis_tag.dart';
+import 'package:wanxiang_paipan/domain/services/liuyao/analysis/models/analysis_trace.dart';
 import 'package:wanxiang_paipan/domain/services/liuyao/analysis/models/liuyao_rule_models.dart';
 import 'package:wanxiang_paipan/domain/services/liuyao/analysis/rule_identity_service.dart';
 import 'package:wanxiang_paipan/domain/services/liuyao/analysis/rules/liuyao_catalog.dart';
@@ -7,7 +8,11 @@ import 'package:wanxiang_paipan/domain/services/liuyao/analysis/rules/liuyao_cat
 void main() {
   test('catalog 自校验通过且版本解析受控', () {
     expect(LiuYaoRuleCatalog.validate(), isEmpty);
-    expect(LiuYaoRuleCatalog.resolve('current').version, LiuYaoRuleCatalog.v2);
+    expect(LiuYaoRuleCatalog.resolve('current').version, LiuYaoRuleCatalog.v3);
+    expect(
+      LiuYaoRuleCatalog.resolve(LiuYaoRuleCatalog.v2).sourceCatalogVersion,
+      LiuYaoRuleCatalog.v2SourceCatalogVersion,
+    );
     expect(
       LiuYaoRuleCatalog.resolve(LiuYaoRuleCatalog.v1Compat).version,
       LiuYaoRuleCatalog.v1Compat,
@@ -61,6 +66,7 @@ void main() {
       LiuYaoRuleIds.decisionStrongClear,
       LiuYaoRuleIds.decisionStrongWithConditions,
       LiuYaoRuleIds.decisionStrongAdverseActive,
+      LiuYaoRuleIds.decisionMixedUnrescuable,
       LiuYaoRuleIds.decisionMixedSourceContinuity,
       LiuYaoRuleIds.decisionMixedAdverseActive,
       LiuYaoRuleIds.decisionMixedRescuableConditions,
@@ -80,6 +86,12 @@ void main() {
       LiuYaoRuleIds.conditionHiddenRelease,
       LiuYaoRuleIds.conditionHiddenSuppressed,
     };
+
+    expect(
+      LiuYaoRuleCatalog
+          .ruleById[LiuYaoRuleIds.decisionMixedUnrescuable]!.ruleSetVersions,
+      <String>[LiuYaoRuleCatalog.v3],
+    );
     const timing = <String>{
       LiuYaoRuleIds.timingVoidFill,
       LiuYaoRuleIds.timingVoidClash,
@@ -144,6 +156,43 @@ void main() {
           expect(rule.decisionCapable, isFalse, reason: rule.ruleId);
         }
       }
+    }
+  });
+
+  test('v3 transformation tags expose later or final lifecycle authority', () {
+    const expected =
+        <String, ({DirectedEffectPhase phase, DirectedEffectHorizon horizon})>{
+      LiuYaoRuleIds.ruleReturnOvercomes: (
+        phase: DirectedEffectPhase.laterProcess,
+        horizon: DirectedEffectHorizon.subsequent,
+      ),
+      LiuYaoRuleIds.ruleRetreat: (
+        phase: DirectedEffectPhase.laterProcess,
+        horizon: DirectedEffectHorizon.subsequent,
+      ),
+      LiuYaoRuleIds.ruleChangedTerminal: (
+        phase: DirectedEffectPhase.finalState,
+        horizon: DirectedEffectHorizon.terminal,
+      ),
+    };
+
+    for (final entry in expected.entries) {
+      final rule = LiuYaoRuleCatalog.ruleById[entry.key]!;
+      expect(rule.phase, entry.value.phase, reason: entry.key);
+      expect(rule.horizon, entry.value.horizon, reason: entry.key);
+      expect(
+        rule.decisionScopes,
+        const <LiuYaoDecisionScope>[
+          LiuYaoDecisionScope.continuity,
+          LiuYaoDecisionScope.persistence,
+        ],
+        reason: entry.key,
+      );
+      expect(
+        rule.decisionScopes,
+        isNot(contains(LiuYaoDecisionScope.quality)),
+        reason: entry.key,
+      );
     }
   });
 }

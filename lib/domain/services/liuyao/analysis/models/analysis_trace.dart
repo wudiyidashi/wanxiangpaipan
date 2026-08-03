@@ -38,11 +38,26 @@ enum DirectedEffectKind {
   hao,
   he,
   chong,
+  restrict,
 }
 
 enum DirectedEffectStatus {
   active,
   suppressed,
+}
+
+enum DirectedEffectPhase {
+  formation,
+  earlyProcess,
+  laterProcess,
+  finalState,
+}
+
+enum DirectedEffectHorizon {
+  immediate,
+  shortTerm,
+  subsequent,
+  terminal,
 }
 
 class LiuYaoActorRef {
@@ -90,6 +105,7 @@ class ActorAvailability {
     required this.reasonRuleIds,
     this.releaseConditionRuleIds = const <String>[],
     this.suppressedByOccurrenceIds = const <String>[],
+    this.blockedPhases = const <DirectedEffectPhase>[],
   });
 
   final LiuYaoActorRef actor;
@@ -97,8 +113,12 @@ class ActorAvailability {
   final List<String> reasonRuleIds;
   final List<String> releaseConditionRuleIds;
   final List<String> suppressedByOccurrenceIds;
+  final List<DirectedEffectPhase> blockedPhases;
 
   bool get canTransmit => state == ActorAvailabilityState.active;
+
+  bool canTransmitAt(DirectedEffectPhase phase) =>
+      canTransmit && !blockedPhases.contains(phase);
 }
 
 class DirectedEffectOccurrence {
@@ -112,6 +132,8 @@ class DirectedEffectOccurrence {
     required this.pathActorIds,
     required this.pathStep,
     required this.sourceIds,
+    this.phase = DirectedEffectPhase.formation,
+    this.horizon = DirectedEffectHorizon.immediate,
     this.suppressedByRuleIds = const <String>[],
     this.suppressedByOccurrenceIds = const <String>[],
     this.inputRefs = const <String>[],
@@ -129,6 +151,8 @@ class DirectedEffectOccurrence {
   final List<String> suppressedByOccurrenceIds;
   final List<String> sourceIds;
   final List<String> inputRefs;
+  final DirectedEffectPhase phase;
+  final DirectedEffectHorizon horizon;
 
   bool get isActive => status == DirectedEffectStatus.active;
 }

@@ -59,7 +59,7 @@ class LiuYaoClassicsValidator {
       errors.add('Unexpected fixtureVersion: ${fixture.fixtureVersion}');
     }
     if (fixture.sourceCatalogVersion !=
-        LiuYaoRuleCatalog.sourceCatalogVersion) {
+        LiuYaoRuleCatalog.v2SourceCatalogVersion) {
       errors.add('Fixture source catalog version mismatch.');
     }
     if (fixture.ruleSetId != LiuYaoRuleCatalog.ruleSetId ||

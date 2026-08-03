@@ -45,6 +45,7 @@ void main() {
     required int position,
     bool isFuShen = false,
     bool withChanging = false,
+    String ruleSetVersion = LiuYaoRuleCatalog.current,
   }) {
     final gua = buildGua(numbers);
     final changing = withChanging ? buildChangingGua(gua) : null;
@@ -54,6 +55,7 @@ void main() {
       buildLunar(yueJian: yueJian, riGanZhi: riGanZhi),
       yongShenPosition: position,
       yongShenIsFuShen: isFuShen,
+      ruleSetVersion: ruleSetVersion,
     );
     return report.judgment!;
   }
@@ -510,6 +512,25 @@ void main() {
           condition.conditionRuleId == LiuYaoRuleIds.conditionHiddenSuppressed);
       expect(condition.label, '伏神受制无解');
       expect(condition.hasRescue, isFalse);
+      expect(j.trend, VerdictTrend.nanCheng);
+      expect(
+        j.matchedDecisionRowId,
+        LiuYaoRuleIds.decisionMixedUnrescuable,
+      );
+      expect(j.factors.last.rule, '裁决·扶抑并见而无救');
+
+      final v2 = judge(
+        [8, 8, 7, 7, 7, 7],
+        yueJian: '申',
+        riGanZhi: '甲寅',
+        position: 1,
+        isFuShen: true,
+        ruleSetVersion: LiuYaoRuleCatalog.v2,
+      );
+      expect(
+        v2.matchedDecisionRowId,
+        isNot(LiuYaoRuleIds.decisionMixedUnrescuable),
+      );
     });
 
     test('只有飞生伏而无日月生扶时仍为 mixed，不提升为 strong', () {
@@ -536,6 +557,11 @@ void main() {
 
       expect(j.trend, VerdictTrend.daiTiaoJian);
       expect(j.nuance, '先难后成');
+      expect(
+        j.matchedDecisionRowId,
+        LiuYaoRuleIds.decisionMixedL1Support,
+      );
+      expect(j.conditions.every((condition) => condition.hasRescue), isTrue);
       expect(j.factors.last.rule, '裁决·克处逢生');
     });
 

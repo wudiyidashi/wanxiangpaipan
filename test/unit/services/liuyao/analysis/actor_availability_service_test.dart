@@ -122,6 +122,58 @@ void main() {
     expect(first.reasonRuleIds, contains(LiuYaoRuleIds.actorReturnOvercome));
   });
 
+  test('v3 回头克与化退只限制后段，不抹除前段作用', () {
+    final cases = <(String, String)>[
+      ('回头克', LiuYaoRuleIds.actorReturnOvercome),
+      ('化退神', LiuYaoRuleIds.actorRetreat),
+    ];
+
+    for (final item in cases) {
+      final availability = evaluate(
+        makeYao(position: 3, branch: '辰', moving: true),
+        <YaoAnalysisTag>[tag(item.$1, 'lyo-v3-${item.$2}')],
+        version: LiuYaoRuleCatalog.v3,
+      );
+
+      expect(availability.state, ActorAvailabilityState.active);
+      expect(availability.reasonRuleIds, contains(item.$2));
+      expect(
+        availability.blockedPhases,
+        orderedEquals(const <DirectedEffectPhase>[
+          DirectedEffectPhase.laterProcess,
+          DirectedEffectPhase.finalState,
+        ]),
+      );
+      expect(
+        availability.canTransmitAt(DirectedEffectPhase.earlyProcess),
+        isTrue,
+      );
+      expect(
+        availability.canTransmitAt(DirectedEffectPhase.laterProcess),
+        isFalse,
+      );
+    }
+  });
+
+  test('v3 当下冲散仍全阶段压制，不误放行前段作用', () {
+    final availability = evaluate(
+      makeYao(position: 3, branch: '辰', moving: true),
+      <YaoAnalysisTag>[tag('冲散', 'lyo-v3-scattered')],
+      version: LiuYaoRuleCatalog.v3,
+    );
+
+    expect(availability.state, ActorAvailabilityState.suppressed);
+    expect(availability.blockedPhases, isEmpty);
+    expect(
+      availability.canTransmitAt(DirectedEffectPhase.earlyProcess),
+      isFalse,
+    );
+    expect(
+      availability.canTransmitAt(DirectedEffectPhase.finalState),
+      isFalse,
+    );
+  });
+
   test('旬空与月破悬置并暴露对应释放条件', () {
     final voidAvailability = evaluate(
       makeYao(position: 1, branch: '子'),

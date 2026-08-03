@@ -165,7 +165,7 @@ class VerdictService {
     for (final tag in yongShenTags) {
       final ruleId = RuleIdentityService.resolveRuleId(tag);
       if (ruleId == null) continue;
-      if (resolvedVersion == LiuYaoRuleCatalog.v2 &&
+      if (resolvedVersion != LiuYaoRuleCatalog.v1Compat &&
           directedEffects.isNotEmpty &&
           _directEffectRuleIds.contains(ruleId)) {
         continue;
@@ -182,7 +182,7 @@ class VerdictService {
       );
     }
 
-    if (resolvedVersion == LiuYaoRuleCatalog.v2) {
+    if (resolvedVersion != LiuYaoRuleCatalog.v1Compat) {
       final relevantEffects = directedEffects
           .where((effect) =>
               effect.toActor.actorId == focusActorId &&
@@ -242,7 +242,8 @@ class VerdictService {
 
     var yuanActive = false;
     var jiActive = false;
-    if (resolvedVersion == LiuYaoRuleCatalog.v2 && directedEffects.isNotEmpty) {
+    if (resolvedVersion != LiuYaoRuleCatalog.v1Compat &&
+        directedEffects.isNotEmpty) {
       final roleByActor = <String, LiuYaoRole>{
         for (final role in roles) role.actor.actorId: role.role,
       };
@@ -403,7 +404,12 @@ class VerdictService {
             decisionTerm = '旺而忌动';
           }
         case _Strength.mixed:
-          if (yuanTakesPriority) {
+          if (resolvedVersion == LiuYaoRuleCatalog.v3 && hasNoRescue) {
+            trend = VerdictTrend.nanCheng;
+            nuance = '空破墓绝，到底无救';
+            decisionRowId = LiuYaoRuleIds.decisionMixedUnrescuable;
+            decisionTerm = '扶抑并见而无救';
+          } else if (yuanTakesPriority) {
             trend = VerdictTrend.daiTiaoJian;
             nuance = '先难后成';
             decisionRowId = LiuYaoRuleIds.decisionMixedSourceContinuity;
@@ -514,6 +520,8 @@ class VerdictService {
       required Iterable<String> triggeringRuleIds,
       String? branch,
       bool hasRescue = true,
+      String scope = 'selectedUseSpirit',
+      String dimension = 'selectedUseSpirit',
     }) {
       final upstreamTags = triggering(triggeringRuleIds);
       final upstreamOccurrenceIds = upstreamTags
@@ -540,6 +548,8 @@ class VerdictService {
         conditionRuleId: conditionRuleId,
         sourceIds: sourceIds,
         upstreamOccurrenceIds: upstreamOccurrenceIds,
+        scope: scope,
+        dimension: dimension,
       ));
     }
 
@@ -679,9 +689,10 @@ class VerdictService {
     }
     if (isFuShen) {
       final released = has(LiuYaoRuleIds.ruleHiddenReleased);
-      final suppressed = (has(LiuYaoRuleIds.ruleFlightOvercomesHidden) ||
-              has(LiuYaoRuleIds.ruleHiddenSuppressed)) &&
-          !released;
+      final hiddenSuppressed = has(LiuYaoRuleIds.ruleHiddenSuppressed);
+      final suppressed =
+          (has(LiuYaoRuleIds.ruleFlightOvercomesHidden) || hiddenSuppressed) &&
+              !released;
       if (ruleSetVersion == LiuYaoRuleCatalog.v1Compat) {
         add(
           conditionRuleId: LiuYaoRuleIds.conditionHiddenRelease,
@@ -689,6 +700,8 @@ class VerdictService {
           branch: zhi,
           reason: released ? '伏神已有得出之象，仍待值日引出' : '用神不现，待伏神值日或冲飞之日引出',
           hasRescue: !suppressed,
+          scope: 'questionFocus',
+          dimension: 'contractOwnership',
           triggeringRuleIds: const <String>[
             LiuYaoRuleIds.ruleSelectedHiddenUseSpirit,
             LiuYaoRuleIds.ruleFlightOvercomesHidden,
@@ -703,8 +716,14 @@ class VerdictService {
               : LiuYaoRuleIds.conditionHiddenRelease,
           label: suppressed ? '伏神受制无解' : '待出伏',
           branch: zhi,
-          reason: suppressed ? '伏神受飞神及日月压制，当前无可执行的释放路径' : '用神不现，待伏神值日或冲飞之日引出',
+          reason: suppressed
+              ? hiddenSuppressed
+                  ? '伏神受飞神所克且再遭日月克，当前无可执行的释放路径'
+                  : '伏神受飞神所克，当前无可执行的释放路径'
+              : '用神不现，待伏神值日或冲飞之日引出',
           hasRescue: !suppressed,
+          scope: 'questionFocus',
+          dimension: 'contractOwnership',
           triggeringRuleIds: const <String>[
             LiuYaoRuleIds.ruleSelectedHiddenUseSpirit,
             LiuYaoRuleIds.ruleFlightOvercomesHidden,

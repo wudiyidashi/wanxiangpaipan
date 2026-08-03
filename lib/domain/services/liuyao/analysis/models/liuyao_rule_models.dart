@@ -1,3 +1,5 @@
+import 'analysis_trace.dart';
+
 /// Evidence grade for a single source reference.
 enum LiuYaoEvidenceLevel {
   a,
@@ -54,6 +56,14 @@ enum LiuYaoRuleFamily {
   decision,
   condition,
   timing,
+}
+
+enum LiuYaoDecisionScope {
+  selectedUseSpirit,
+  formation,
+  quality,
+  continuity,
+  persistence,
 }
 
 class LiuYaoSourceRecord {
@@ -123,6 +133,9 @@ class LiuYaoRuleRecord {
     this.positiveFixtureIds = const <String>[],
     this.negativeFixtureIds = const <String>[],
     this.coverageExemption,
+    this.decisionScopes = const <LiuYaoDecisionScope>[],
+    this.phase = DirectedEffectPhase.formation,
+    this.horizon = DirectedEffectHorizon.immediate,
   });
 
   final String ruleId;
@@ -140,6 +153,9 @@ class LiuYaoRuleRecord {
   final List<String> positiveFixtureIds;
   final List<String> negativeFixtureIds;
   final String? coverageExemption;
+  final List<LiuYaoDecisionScope> decisionScopes;
+  final DirectedEffectPhase phase;
+  final DirectedEffectHorizon horizon;
 
   List<String> get sourceIds =>
       evidenceRefs.map((reference) => reference.sourceId).toSet().toList()

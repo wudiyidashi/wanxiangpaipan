@@ -46,7 +46,10 @@ class LiuYaoAnalyzer {
     );
     if (inputDiagnostic != null) {
       return AnalysisReport(
+        analysisSchemaVersion: ruleSet.version == LiuYaoRuleCatalog.v3 ? 2 : 1,
+        ruleSetId: ruleSet.ruleSetId,
         ruleSetVersion: ruleSet.version,
+        sourceCatalogVersion: ruleSet.sourceCatalogVersion,
         status: LiuYaoAnalysisStatus.invalid,
         diagnostics: <String>[inputDiagnostic],
         yaoTags: const <int, List<YaoAnalysisTag>>{},
@@ -98,13 +101,29 @@ class LiuYaoAnalyzer {
     }
 
     _bindPositionTags(yaoTags, traceIds);
-    var actorAvailability = ActorAvailabilityService.evaluateGua(
-      mainGua: mainGua,
-      changingGua: changingGua,
-      lunarInfo: lunarInfo,
-      yaoTags: yaoTags,
-      ruleSetVersion: ruleSet.version,
-    );
+    final actorTags = ruleSet.version == LiuYaoRuleCatalog.v3
+        ? _buildV3ActorTags(
+            mainGua: mainGua,
+            changingGua: changingGua,
+            lunarInfo: lunarInfo,
+            yaoTags: yaoTags,
+            traceIdFactory: traceIds,
+          )
+        : const <String, List<YaoAnalysisTag>>{};
+    var actorAvailability = ruleSet.version == LiuYaoRuleCatalog.v3
+        ? _evaluateV3ActorAvailability(
+            mainGua: mainGua,
+            changingGua: changingGua,
+            lunarInfo: lunarInfo,
+            actorTags: actorTags,
+          )
+        : ActorAvailabilityService.evaluateGua(
+            mainGua: mainGua,
+            changingGua: changingGua,
+            lunarInfo: lunarInfo,
+            yaoTags: yaoTags,
+            ruleSetVersion: ruleSet.version,
+          );
 
     final directedEffects = <DirectedEffectOccurrence>[];
     if (ruleSet.version == LiuYaoRuleCatalog.v1Compat) {
@@ -118,6 +137,7 @@ class LiuYaoAnalyzer {
         baseTags: yaoTags,
         actorAvailability: actorAvailability,
         traceIdFactory: traceIds,
+        ruleSetVersion: ruleSet.version,
       );
       _merge(yaoTags, shengKe.tags);
       directedEffects.addAll(shengKe.effects);
@@ -126,6 +146,7 @@ class LiuYaoAnalyzer {
         changingGua: changingGua,
         yaoTags: yaoTags,
         traceIdFactory: traceIds,
+        ruleSetVersion: ruleSet.version,
       ));
       actorAvailability = _linkAvailabilitySuppressors(
         actorAvailability,
@@ -134,7 +155,11 @@ class LiuYaoAnalyzer {
       );
     }
 
-    final guaTags = GuaChangeService.analyzeGua(mainGua, changingGua)
+    final guaTags = GuaChangeService.analyzeGua(
+      mainGua,
+      changingGua,
+      ruleSetVersion: ruleSet.version,
+    )
         .map((tag) => RuleIdentityService.bindTag(
               tag: tag,
               stageId: _stageIdFor(tag),
@@ -245,6 +270,7 @@ class LiuYaoAnalyzer {
     _validateProvenanceClosure(
       ruleSetVersion: ruleSet.version,
       yaoTags: yaoTags,
+      actorTags: actorTags,
       guaTags: guaTags,
       yongShenTags: selectedYongShenTags,
       actorAvailability: actorAvailability,
@@ -255,6 +281,7 @@ class LiuYaoAnalyzer {
 
     final trace = _buildTrace(
       yaoTags: yaoTags,
+      actorTags: actorTags,
       guaTags: guaTags,
       yongShenTags: selectedYongShenTags,
       directedEffects: directedEffects,
@@ -263,6 +290,7 @@ class LiuYaoAnalyzer {
     );
     final usedSourceIds = <String>{
       ...yaoTags.values.expand((tags) => tags).expand((tag) => tag.sourceIds),
+      ...actorTags.values.expand((tags) => tags).expand((tag) => tag.sourceIds),
       ...guaTags.expand((tag) => tag.sourceIds),
       ...directedEffects.expand((effect) => effect.sourceIds),
       ...?judgment?.factors.expand((factor) => factor.sourceIds),
@@ -272,7 +300,10 @@ class LiuYaoAnalyzer {
       ..sort();
 
     return AnalysisReport(
+      analysisSchemaVersion: ruleSet.version == LiuYaoRuleCatalog.v3 ? 2 : 1,
+      ruleSetId: ruleSet.ruleSetId,
       ruleSetVersion: ruleSet.version,
+      sourceCatalogVersion: ruleSet.sourceCatalogVersion,
       yaoTags: yaoTags,
       guaTags: guaTags,
       yongShen: chain,
@@ -281,6 +312,7 @@ class LiuYaoAnalyzer {
       verdictSummary: judgment?.summary,
       judgment: judgment,
       roles: roles,
+      actorTags: actorTags,
       actorAvailability: actorAvailability,
       directedEffects: directedEffects,
       trace: trace,
@@ -364,11 +396,138 @@ class LiuYaoAnalyzer {
         .toList();
   }
 
+  static Map<String, List<YaoAnalysisTag>> _buildV3ActorTags({
+    required Gua mainGua,
+    required Gua? changingGua,
+    required LunarInfo lunarInfo,
+    required Map<int, List<YaoAnalysisTag>> yaoTags,
+    required LiuYaoTraceIdFactory traceIdFactory,
+  }) {
+    List<YaoAnalysisTag> bindActorTags(
+      Iterable<YaoAnalysisTag> rawTags,
+      String actorId,
+    ) {
+      final tags = rawTags
+          .map((tag) => RuleIdentityService.bindTag(
+                tag: tag.copyWith(occurrenceId: ''),
+                stageId: _stageIdFor(tag),
+                subjectRef: actorId,
+                traceIdFactory: traceIdFactory,
+              ))
+          .toList()
+        ..sort(_compareTags);
+      return List<YaoAnalysisTag>.unmodifiable(tags);
+    }
+
+    List<YaoAnalysisTag> intrinsicTags(Yao yao) => <YaoAnalysisTag>[
+          ...WangShuaiService.analyzeYao(yao, lunarInfo),
+          ...KongWangService.analyzeYao(yao, mainGua, lunarInfo),
+          ...MuJueService.analyzeYao(yao, mainGua, lunarInfo),
+          ...SpecialService.analyzeYao(yao, lunarInfo),
+        ];
+
+    final result = <String, List<YaoAnalysisTag>>{};
+    for (final yao in mainGua.yaos) {
+      final actor = ActorAvailabilityService.mainActor(yao);
+      result[actor.actorId] = List<YaoAnalysisTag>.unmodifiable(
+        (yaoTags[yao.position] ?? const <YaoAnalysisTag>[])
+            .where((tag) => tag.category != TagCategory.fuShen),
+      );
+    }
+
+    if (changingGua != null) {
+      for (final original in mainGua.movingYaos) {
+        final changed = changingGua.yaos[original.position - 1];
+        final actor = ActorAvailabilityService.changedActor(changed);
+        // A changed branch is produced by a moving line. Preserve that motion
+        // for void and day/month binding classification without changing its
+        // branch, stem, relation, or polarity in the projected actor.
+        final changedStateYao = changed.copyWith(number: original.number);
+        result[actor.actorId] = bindActorTags(
+          <YaoAnalysisTag>[
+            ...intrinsicTags(changedStateYao),
+            ...(yaoTags[original.position] ?? const <YaoAnalysisTag>[])
+                .where((tag) => tag.category == TagCategory.dongBian),
+          ],
+          actor.actorId,
+        );
+      }
+    }
+
+    final hidden = FuShenService.calculateFuShen(mainGua).entries.toList()
+      ..sort((left, right) => left.key.compareTo(right.key));
+    for (final entry in hidden) {
+      final hiddenYao = entry.value.yao;
+      final actor = ActorAvailabilityService.hiddenActor(hiddenYao);
+      result[actor.actorId] = bindActorTags(
+        <YaoAnalysisTag>[
+          ...intrinsicTags(hiddenYao),
+          ...(yaoTags[entry.key] ?? const <YaoAnalysisTag>[])
+              .where((tag) => tag.category == TagCategory.fuShen),
+        ],
+        actor.actorId,
+      );
+    }
+    return Map<String, List<YaoAnalysisTag>>.unmodifiable(result);
+  }
+
+  static List<ActorAvailability> _evaluateV3ActorAvailability({
+    required Gua mainGua,
+    required Gua? changingGua,
+    required LunarInfo lunarInfo,
+    required Map<String, List<YaoAnalysisTag>> actorTags,
+  }) {
+    ActorAvailability evaluate(LiuYaoActorRef actor) =>
+        ActorAvailabilityService.evaluateActor(
+          actor: actor,
+          tags: actorTags[actor.actorId] ?? const <YaoAnalysisTag>[],
+          lunarInfo: lunarInfo,
+          ruleSetVersion: LiuYaoRuleCatalog.v3,
+        );
+
+    final result = <ActorAvailability>[
+      for (final yao in mainGua.yaos)
+        evaluate(ActorAvailabilityService.mainActor(yao)),
+    ];
+    if (changingGua != null) {
+      for (final original in mainGua.movingYaos) {
+        result.add(evaluate(ActorAvailabilityService.changedActor(
+          changingGua.yaos[original.position - 1],
+        )));
+      }
+    }
+    final hidden = FuShenService.calculateFuShen(mainGua).entries.toList()
+      ..sort((left, right) => left.key.compareTo(right.key));
+    for (final entry in hidden) {
+      result
+          .add(evaluate(ActorAvailabilityService.hiddenActor(entry.value.yao)));
+    }
+    result
+      ..add(ActorAvailability(
+        actor: ActorAvailabilityService.calendarActor(
+          kind: LiuYaoActorKind.calendarDay,
+          branch: lunarInfo.riZhi,
+        ),
+        state: ActorAvailabilityState.active,
+        reasonRuleIds: const <String>[],
+      ))
+      ..add(ActorAvailability(
+        actor: ActorAvailabilityService.calendarActor(
+          kind: LiuYaoActorKind.calendarMonth,
+          branch: lunarInfo.yueJian,
+        ),
+        state: ActorAvailabilityState.active,
+        reasonRuleIds: const <String>[],
+      ));
+    return List<ActorAvailability>.unmodifiable(result);
+  }
+
   static List<DirectedEffectOccurrence> _buildTransformationEffects({
     required Gua mainGua,
     required Gua? changingGua,
     required Map<int, List<YaoAnalysisTag>> yaoTags,
     required LiuYaoTraceIdFactory traceIdFactory,
+    required String ruleSetVersion,
   }) {
     if (changingGua == null) return const <DirectedEffectOccurrence>[];
     final effects = <DirectedEffectOccurrence>[];
@@ -386,13 +545,21 @@ class LiuYaoAnalyzer {
           LiuYaoRuleIds.ruleOvercomesOutward => DirectedEffectKind.hao,
           LiuYaoRuleIds.ruleChangedJoin => DirectedEffectKind.he,
           LiuYaoRuleIds.ruleChangedClash => DirectedEffectKind.chong,
+          LiuYaoRuleIds.ruleRetreat ||
+          LiuYaoRuleIds.ruleChangedVoid ||
+          LiuYaoRuleIds.ruleChangedBreak ||
+          LiuYaoRuleIds.ruleChangedTomb ||
+          LiuYaoRuleIds.ruleChangedTerminal
+              when ruleSetVersion == LiuYaoRuleCatalog.v3 =>
+            DirectedEffectKind.restrict,
           _ => null,
         };
         if (effect == null) continue;
         final returns = ruleId == LiuYaoRuleIds.ruleReturnGenerates ||
             ruleId == LiuYaoRuleIds.ruleReturnOvercomes ||
             ruleId == LiuYaoRuleIds.ruleChangedJoin ||
-            ruleId == LiuYaoRuleIds.ruleChangedClash;
+            ruleId == LiuYaoRuleIds.ruleChangedClash ||
+            effect == DirectedEffectKind.restrict;
         final fromActor = returns ? changedActor : mainActor;
         final toActor = returns ? mainActor : changedActor;
         effects.add(DirectedEffectOccurrence(
@@ -412,6 +579,16 @@ class LiuYaoAnalyzer {
           pathActorIds: <String>[fromActor.actorId, toActor.actorId],
           pathStep: 0,
           sourceIds: tag.sourceIds,
+          phase: ruleSetVersion == LiuYaoRuleCatalog.v3
+              ? ruleId == LiuYaoRuleIds.ruleChangedTerminal
+                  ? DirectedEffectPhase.finalState
+                  : DirectedEffectPhase.laterProcess
+              : DirectedEffectPhase.formation,
+          horizon: ruleSetVersion == LiuYaoRuleCatalog.v3
+              ? ruleId == LiuYaoRuleIds.ruleChangedTerminal
+                  ? DirectedEffectHorizon.terminal
+                  : DirectedEffectHorizon.subsequent
+              : DirectedEffectHorizon.immediate,
           inputRefs: <String>[
             'mainGua.yaos[${original.position}]',
             'changingGua.yaos[${changed.position}]',
@@ -496,6 +673,7 @@ class LiuYaoAnalyzer {
 
   static List<LiuYaoAnalysisTraceStep> _buildTrace({
     required Map<int, List<YaoAnalysisTag>> yaoTags,
+    required Map<String, List<YaoAnalysisTag>> actorTags,
     required List<YaoAnalysisTag> guaTags,
     required List<YaoAnalysisTag> yongShenTags,
     required List<DirectedEffectOccurrence> directedEffects,
@@ -510,6 +688,7 @@ class LiuYaoAnalyzer {
     };
     for (final tag in <YaoAnalysisTag>[
       ...yaoTags.values.expand((tags) => tags),
+      ...actorTags.values.expand((tags) => tags),
       ...guaTags,
       ...yongShenTags,
     ]) {
@@ -561,6 +740,7 @@ class LiuYaoAnalyzer {
   static void _validateProvenanceClosure({
     required String ruleSetVersion,
     required Map<int, List<YaoAnalysisTag>> yaoTags,
+    required Map<String, List<YaoAnalysisTag>> actorTags,
     required List<YaoAnalysisTag> guaTags,
     required List<YaoAnalysisTag> yongShenTags,
     required List<ActorAvailability> actorAvailability,
@@ -570,6 +750,7 @@ class LiuYaoAnalyzer {
   }) {
     final tags = <YaoAnalysisTag>[
       ...yaoTags.values.expand((value) => value),
+      ...actorTags.values.expand((value) => value),
       ...guaTags,
       ...yongShenTags,
     ];
@@ -619,7 +800,7 @@ class LiuYaoAnalyzer {
           'Condition ${condition.conditionId}',
           condition.upstreamOccurrenceIds,
         );
-        if (ruleSetVersion == LiuYaoRuleCatalog.v2 &&
+        if (ruleSetVersion != LiuYaoRuleCatalog.v1Compat &&
             condition.upstreamOccurrenceIds.isEmpty) {
           throw StateError(
             'Condition ${condition.conditionId} has no upstream occurrence.',
@@ -643,7 +824,7 @@ class LiuYaoAnalyzer {
           '$orphanConditions',
         );
       }
-      if (ruleSetVersion == LiuYaoRuleCatalog.v2 &&
+      if (ruleSetVersion != LiuYaoRuleCatalog.v1Compat &&
           (candidate.timingId.isEmpty ||
               candidate.timingRuleId.isEmpty ||
               candidate.upstreamConditionIds.isEmpty)) {

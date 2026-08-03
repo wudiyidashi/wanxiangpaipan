@@ -76,6 +76,14 @@ class AnalysisReport with _$AnalysisReport {
 
     /// Complete role and force inventory used by the v2 verdict.
     @Default(<LiuYaoRoleOccurrence>[]) List<LiuYaoRoleOccurrence> roles,
+
+    /// Actor-keyed mechanical facts used by schema 2 projections.
+    ///
+    /// The legacy [yaoTags] map remains position-keyed for UI and v1/v2
+    /// compatibility. This map keeps main, changed, and hidden actors separate
+    /// so host-position relations cannot be mistaken for a main-line state.
+    @Default(<String, List<YaoAnalysisTag>>{})
+    Map<String, List<YaoAnalysisTag>> actorTags,
     @Default(<ActorAvailability>[]) List<ActorAvailability> actorAvailability,
     @Default(<DirectedEffectOccurrence>[])
     List<DirectedEffectOccurrence> directedEffects,

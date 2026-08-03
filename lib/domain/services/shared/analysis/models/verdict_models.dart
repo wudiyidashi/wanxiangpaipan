@@ -93,6 +93,8 @@ class VerdictCondition with _$VerdictCondition {
     @Default(<String>[]) List<String> sourceIds,
     @Default(<String>[]) List<String> upstreamOccurrenceIds,
     @Default('unresolved') String status,
+    @Default('selectedUseSpirit') String scope,
+    @Default('selectedUseSpirit') String dimension,
   }) = _VerdictCondition;
 }
 

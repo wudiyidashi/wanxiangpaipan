@@ -4,6 +4,7 @@ import 'package:wanxiang_paipan/domain/divination_system.dart';
 import 'package:wanxiang_paipan/domain/services/liuyao/analysis/liuyao_analyzer.dart';
 import 'package:wanxiang_paipan/domain/services/liuyao/analysis/models/analysis_trace.dart';
 import 'package:wanxiang_paipan/domain/services/liuyao/analysis/models/liuyao_analysis_projection.dart';
+import 'package:wanxiang_paipan/domain/services/liuyao/analysis/rules/liuyao_catalog.dart';
 
 import 'helpers/analysis_fixtures.dart';
 
@@ -22,6 +23,44 @@ LiuYaoResult _buildSelectedResult() {
 }
 
 void main() {
+  test('projection rejects analysis schema mismatched with its rule set', () {
+    final result = _buildSelectedResult();
+    final currentReport = LiuYaoAnalyzer.analyze(
+      result.mainGua,
+      result.changingGua,
+      result.lunarInfo,
+      yongShenPosition: result.yongShenPosition,
+    );
+    final compatibilityReport = LiuYaoAnalyzer.analyze(
+      result.mainGua,
+      result.changingGua,
+      result.lunarInfo,
+      yongShenPosition: result.yongShenPosition,
+      ruleSetVersion: LiuYaoRuleCatalog.v2,
+    );
+
+    expect(currentReport.analysisSchemaVersion, 2);
+    expect(compatibilityReport.analysisSchemaVersion, 1);
+    for (final corrupted in [
+      currentReport.copyWith(analysisSchemaVersion: 1),
+      compatibilityReport.copyWith(analysisSchemaVersion: 2),
+    ]) {
+      expect(
+        () => LiuYaoAnalysisProjection.fromReport(
+          result: result,
+          report: corrupted,
+        ),
+        throwsA(
+          isA<FormatException>().having(
+            (error) => error.message,
+            'message',
+            contains('version mismatch'),
+          ),
+        ),
+      );
+    }
+  });
+
   test('projection rejects a factor with an orphan upstream occurrence', () {
     final result = _buildSelectedResult();
     final report = LiuYaoAnalyzer.analyze(

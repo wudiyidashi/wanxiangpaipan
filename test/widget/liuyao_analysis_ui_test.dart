@@ -97,7 +97,7 @@ void main() {
       )));
       expect(find.text('选用神'), findsOneWidget);
       expect(find.text('取消用神'), findsNothing);
-      expect(find.text('当前分析 v2 · 契约 1'), findsOneWidget);
+      expect(find.text('当前分析 v3 · 契约 2'), findsOneWidget);
     });
 
     testWidgets('选定用神后显示推理链与结论', (tester) async {

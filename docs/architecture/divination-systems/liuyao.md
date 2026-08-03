@@ -168,7 +168,8 @@
 11. `liuyao.stage.11.build-projection`：建立版本化 AI projection 和来源投影。
 
 `LiuYaoAnalyzer.analyze()` 是唯一分析入口。current 规则身份为
-`liuyao-zengshan-primary/v2`；`v1-compat` 仅用于显式兼容验证，未知版本失败关闭。
+`liuyao-zengshan-primary/v3`，analysis schema 为 2；`v1-compat` 与 `v2` 仅用于显式
+兼容验证，其中 v2 继续生成冻结的 schema-1 suppression 语义，未知版本失败关闭。
 
 这意味着：
 
@@ -189,6 +190,9 @@
 分析引擎还必须遵守以下作用边界：
 
 - 变爻只与本位动爻论回头生克、化合化冲等关系，不跨位作用本卦其他爻。
+- v3 将本卦动爻的 `formation/earlyProcess` 外向作用与本位变爻的
+  `laterProcess/finalState` 后果分别记录；回头克、化退、化绝不得追溯删除已成立的
+  前段 occurrence。v2 保留旧的全局 suppression，仅供显式兼容。
 - 寅申两支优先论相冲及申金克寅木；寅巳申三支齐全且形成有效作用时才标三刑。
 - 应期是空破合墓等状态被解除或触发的候选窗口，不代表事情必然成功。
 - 填实、出空、出月是不同条件，不得合并成同一个日支标签。
@@ -210,6 +214,7 @@
 | `mainGua` | `Gua` | 是 | 本卦 |
 | `changingGua` | `Gua?` | 否 | 变卦 |
 | `liuShen` | `List<String>` | 是 | 六神 |
+| `calendarInputMode` | `LiuYaoCalendarInputMode` | 是 | 日历来源；旧 JSON 缺键恢复为 `legacyUnknown` |
 | `questionId` | `String` | 是 | 加密问事引用 |
 | `detailId` | `String` | 是 | 加密详情引用 |
 | `interpretationId` | `String` | 是 | 加密解读引用 |
@@ -221,6 +226,11 @@
 - `toJson()` / `fromJson()` 必须可逆
 - `systemType` 通过 getter 固定为 `liuYao`
 - `getSummary()` 必须在有变卦时输出 `本卦 → 变卦`
+- `providedSolar` 必须由 `LiuYaoSystem` 校验 `castTime` 与存储四柱一致；
+  `providedGanZhi` / `userOverride` / `legacyUnknown` 的 `castTime` 只表示记录时间，分析和
+  AI 不得用它重算并覆盖存储四柱。
+- fresh 卦名卦只接受 `providedSolar` 或 `providedGanZhi`；普通起卦使用
+  `derivedFromCastTime`，结果页改四柱后写 `userOverride`。
 
 ---
 
@@ -245,7 +255,7 @@
 
 #### 扩展信息
 
-- 阳历起卦时间
+- 权威阳历起卦时间；若来源为直接四柱、人工覆盖或旧记录，则明确显示为记录时间
 - 农历月日
 - 年月日时干支
 - 空亡
@@ -283,9 +293,16 @@
 
 #### AI 分析
 
-- formatter 从一次真实 `AnalysisReport` 生成 schema `1` 的 canonical projection；AI 只解释该投影，不重算盘面、重选用神或覆盖四值
-- comprehensive 与 brief 都按问题/取用、盘面/世应、日月状态、动变作用、裁决反证、条件、应期、来源、建议九段输出
-- system prompt 最后固定追加 `liuyao-ai-policy/1.0.0` guard；自定义模板不能移除，省略结构化变量时 assembler 会补回 canonical projection
+- formatter 从一次真实 `AnalysisReport` 生成 current schema `2` canonical projection；显式 v2 仍生成 schema 1。AI 只解释投影，不重算盘面、重选用神或覆盖程序裁决
+- schema 2 稳定输出 calendar authority、六个本卦爻/对应变爻/伏神的 `actorFacts`、所选与另一现的 `useSpiritOccurrences`、世应关系、阶段作用、question focus、生命周期裁决和 D 级 interpretive evidence
+- 完整 schema 2 projection 留在 section metadata 供程序、UI 与门禁使用；实际模型请求使用 AI compact schema 1，把重复 availability、两现 tags/phase contributions、effect actor 与 source reference 改为稳定 ID 引用；selected-use facts 保留完整 occurrence ID 集合，只内嵌其他分支中缺失的事实记录。canonical JSON 前只保留取用模式和生命周期摘要，不再重复展开角色、作用、因素和条件。本案例 selected 请求由约 `109 KiB` 降至 `69.55 KiB`，unselected 为 `57.36 KiB`，且保留上述裁决证据
+- 未选用神固定 `verdictMode=abstain`，正文只列候选用神和待核验维度后立即结束；选定但无生命周期裁决固定 `explainSelectedVerdict`，两者都不得输出总体成败。只有 `explainLifecycle` 可按 formation → quality → continuity → persistence 解释程序结论，且形成不等于全程顺利
+- comprehensive 与 brief 都按日历/问题边界、取用/权限、生命周期、两现、全爻阶段证据、世应/合同/费用/持续性、辅助证据、条件/应期、来源和核验建议输出；条件与应期均空时省略对应段落和缺省说明
+- system prompt 最后固定追加 `liuyao-ai-policy/1.1.20` guard；自定义模板不能移除，省略结构化变量时 assembler 会补回 canonical AI projection。模型回复必须从 assembler 给定的 `[LIUYAO_DECISION]` byte 0 开始，user prompt 末行重复该唯一首行并要求无声校验。阶段作用由投影生成必须逐字输出的阶段锚点，同时锁定前段已经发生和后段回头限制；租房风险只用 projection 已有抽象类别，不举例或猜输入外身份、违约方式、时间、周期与金额。abstain 两组列表后直接结束，不携带 selected 模式的释放条件例外；其他无条件/无应期场景必须省略全部已解除/已冲开/已释放状态文字，不再要求固定句，并禁用“日冲已解除合绊”、`合绊=true`、`冲开=true` 及其他无投影释放/时间词。同一边界下不得以确定性结果措辞扩展程序未授权的推演、状态或观察，但仍须保留 `explainLifecycle` 已授权的四阶段原值。精确应期观察锚点在无 `timingCandidates` 时不进入任何 candidate prompt；有候选时只由 assembler 在最终 user output contract 内注入一次，system 与 canonical projection 不重复携带
+- AI compact `sources.references` 仅携带取用、两现、阶段作用、裁决、条件/应期与辅助证据等可引用解释链所需的规则参考；全 actor 事实仍保留，背景标签不重复携带古籍定位，全量目录留在 full schema 2 metadata
+- 无条件且无应期时，full metadata 保留 active `binding-opened` 及同 actor、同 `relatedYao` 配对的 active `mutual-binding` 供程序门禁和审计，AI compact view 则闭包省略两者对应 actor tag、occurrence 引用和 source reference；模型对该 resolved-release 状态保持沉默
+- 同一无条件/无应期边界下，full metadata 继续保留裁决摘要和 availability 释放规则供审计；AI compact 删除 `verdict.summary`、清空 actor/use-spirit 的 `releaseConditionRuleIds`，formatter 可读摘要也不得从 full projection 把这些内容重新带回 prompt。active 假空只由 selected user output contract 注入一次当前状态锚点，说明当前仍参与分析，不延伸为等待或择时
+- 六合在 v3 为 context-dependent，只能参与 formation/persistence，不能单独决定 quality 或 overall outcome；六神和卦名为 D 级项目象意，不得伪造古籍引文
 - 古籍引用严格区分页级短引、采用释义、项目约定和仅定位；仅 `exactQuote` 可显示引号原文
 - 新对话冻结 analysis/projection/rule/source/prompt policy 和模板 ID；已有对话继续逐字使用原 prompt，旧快照显示为旧版
 - AI 区块不是替代结构化排盘的主展示层
@@ -338,7 +355,8 @@
 
 ## 9. 证据与版本边界
 
-- source catalog：`liuyao-evidence/1.0.0`。
+- current source catalog：`liuyao-evidence/1.1.0`；显式 v2 兼容仍使用
+  `liuyao-evidence/1.0.0`。
 - 《增删卜易（校对：中国男儿）》固定 SHA-256
   `DE5C6C0CB5A73C47960A4D6C5EB87337CD677A59B768E15E42CFCB24C932FD68`；
   已核验回头生、克处逢生、旺静日冲、旺/动不为空四组页级见证。
@@ -362,6 +380,17 @@
 - `paired-model` 的每次尝试写入独立目录。holdout 揭示后，只有同一
   `runId + candidateHash + cohortHash` 的冻结候选可以在新序号目录恢复；不同候选
   只能把该 cohort 当作 regression set。`compare` 只接受唯一带 `_SUCCESS` 的尝试。
+- paired run schema `1.2.0` 与 real-world run schema `1.3.0` 会锁定 model、endpoint hash、
+  30..600 秒 timeout、transport retry policy、generation 参数及 judge system prompt/参数/
+  schema hash；同一 run 的后续尝试发生任何漂移都以 `retryIdentityMismatch` 在发送请求前
+  失败关闭。工件只保存非敏感 hash 和安全 model metadata。
+- transport policy `liuyao-ai-transport-retry/1.2.0` 对 generation 与 judge 固定发送
+  `reasoning_effort=none`，评测只消费用户可见的最终 `message.content`，不得把
+  `reasoning_content` 当成最终答复。策略对 `429`、`5xx` 和 HTTP 2xx 空正文最多追加两次
+  同请求重试；空正文覆盖 HTTP 响应体为空、`message.content=null` 和空/纯空白字符串。
+  连续空正文耗尽后以 `emptyModelResponse` 失败关闭，非空畸形响应仍立即按
+  `malformedResponse` 拒绝；策略版本参与 run/request/manifest/status identity，策略变化会产生
+  新的运行 hash。
 - 联网前按 UTF-8 预检输入：generation 上限 `128 KiB`，judge 上限 `256 KiB`；
   超限在发送请求前失败关闭。
 - 2026-08-02 冻结运行 `canonical-v2-r5` 的 fixture、adapter、candidate、projection、

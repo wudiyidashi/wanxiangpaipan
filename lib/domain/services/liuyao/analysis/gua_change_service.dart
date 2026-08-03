@@ -1,5 +1,6 @@
 import '../../../../divination_systems/liuyao/models/gua.dart';
 import 'models/analysis_tag.dart';
+import 'rules/liuyao_catalog.dart';
 import 'tables/dizhi_relations.dart';
 
 /// 卦象整体变化分析（卦级标签）。
@@ -10,14 +11,26 @@ import 'tables/dizhi_relations.dart';
 class GuaChangeService {
   GuaChangeService._();
 
-  static List<YaoAnalysisTag> analyzeGua(Gua mainGua, Gua? changingGua) {
+  static List<YaoAnalysisTag> analyzeGua(
+    Gua mainGua,
+    Gua? changingGua, {
+    String ruleSetVersion = LiuYaoRuleCatalog.v2,
+  }) {
+    final resolvedVersion = LiuYaoRuleCatalog.resolve(ruleSetVersion).version;
     final tags = <YaoAnalysisTag>[];
 
     switch (mainGua.specialType) {
       case GuaSpecialType.liuChong:
         tags.add(_guaTag('六冲卦', Polarity.neutral, 9, '本卦六爻逐位相冲，主散、主快'));
       case GuaSpecialType.liuHe:
-        tags.add(_guaTag('六合卦', Polarity.ji, 9, '本卦六爻逐位相合，主成、主缓'));
+        tags.add(resolvedVersion == LiuYaoRuleCatalog.v3
+            ? _guaTag(
+                '六合卦',
+                Polarity.neutral,
+                9,
+                '本卦关系黏合、合住、牵绊或迟滞；仅参与形成与持续性，吉凶随主证据',
+              )
+            : _guaTag('六合卦', Polarity.ji, 9, '本卦六爻逐位相合，主成、主缓'));
       case GuaSpecialType.youHun:
         tags.add(_guaTag('游魂卦', Polarity.neutral, 29, '游魂主心神不定、行走他乡'));
       case GuaSpecialType.guiHun:
@@ -30,7 +43,14 @@ class GuaChangeService {
 
     switch (changingGua.specialType) {
       case GuaSpecialType.liuHe:
-        tags.add(_guaTag('卦变六合', Polarity.ji, 12, '变卦六合，事渐入佳境而成'));
+        tags.add(resolvedVersion == LiuYaoRuleCatalog.v3
+            ? _guaTag(
+                '卦变六合',
+                Polarity.neutral,
+                12,
+                '变卦关系继续黏合或牵绊；仅参与形成与持续性，不单独决定质量',
+              )
+            : _guaTag('卦变六合', Polarity.ji, 12, '变卦六合，事渐入佳境而成'));
       case GuaSpecialType.liuChong:
         tags.add(_guaTag('卦变六冲', Polarity.xiong, 12, '变卦六冲，事将散乱不终'));
       default:

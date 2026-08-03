@@ -36,7 +36,9 @@ class ShengKeService {
     required Map<int, List<YaoAnalysisTag>> baseTags,
     required List<ActorAvailability> actorAvailability,
     required LiuYaoTraceIdFactory traceIdFactory,
+    String ruleSetVersion = LiuYaoRuleCatalog.v2,
   }) {
+    final resolvedVersion = LiuYaoRuleCatalog.resolve(ruleSetVersion).version;
     final tags = <int, List<YaoAnalysisTag>>{};
     final effects = <DirectedEffectOccurrence>[];
     final availabilityByActorId = <String, ActorAvailability>{
@@ -109,12 +111,14 @@ class ShengKeService {
           continue;
         }
 
+        final canTransmit = resolvedVersion == LiuYaoRuleCatalog.v3
+            ? availability.canTransmitAt(DirectedEffectPhase.earlyProcess)
+            : availability.canTransmit;
         final suppressedByRuleIds = <String>{
-          if (!availability.canTransmit) ...availability.reasonRuleIds,
+          if (!canTransmit) ...availability.reasonRuleIds,
         };
         final suppressedByOccurrenceIds = <String>{
-          if (!availability.canTransmit)
-            ...availability.suppressedByOccurrenceIds,
+          if (!canTransmit) ...availability.suppressedByOccurrenceIds,
         };
         if (effect == DirectedEffectKind.ke && greedyTargets.isNotEmpty) {
           suppressedByRuleIds.add(
@@ -148,6 +152,12 @@ class ShengKeService {
           suppressedByRuleIds: suppressedByRuleIds.toList()..sort(),
           suppressedByOccurrenceIds: suppressedByOccurrenceIds.toList()..sort(),
           sourceIds: sourceIds,
+          phase: resolvedVersion == LiuYaoRuleCatalog.v3
+              ? DirectedEffectPhase.earlyProcess
+              : DirectedEffectPhase.formation,
+          horizon: resolvedVersion == LiuYaoRuleCatalog.v3
+              ? DirectedEffectHorizon.shortTerm
+              : DirectedEffectHorizon.immediate,
           inputRefs: <String>[
             'mainGua.yaos[${sourceYao.position}]',
             'mainGua.yaos[${targetYao.position}]',
@@ -288,6 +298,12 @@ class ShengKeService {
             suppressedByRuleIds: suppressedByRuleIds,
             suppressedByOccurrenceIds: suppressedByOccurrenceIds,
             sourceIds: sourceIds,
+            phase: resolvedVersion == LiuYaoRuleCatalog.v3
+                ? DirectedEffectPhase.earlyProcess
+                : DirectedEffectPhase.formation,
+            horizon: resolvedVersion == LiuYaoRuleCatalog.v3
+                ? DirectedEffectHorizon.shortTerm
+                : DirectedEffectHorizon.immediate,
             inputRefs: <String>[
               'mainGua.yaos[${first.position}]',
               'mainGua.yaos[${middle.position}]',

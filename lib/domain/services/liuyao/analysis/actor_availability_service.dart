@@ -89,6 +89,7 @@ class ActorAvailabilityService {
       String policyRuleId,
       Iterable<String> blockerRuleIds, {
       List<String> releaseConditionRuleIds = const <String>[],
+      List<DirectedEffectPhase> blockedPhases = const <DirectedEffectPhase>[],
     }) {
       final matchingTags = blockerTags(blockerRuleIds);
       final reasons = <String>{
@@ -109,6 +110,33 @@ class ActorAvailabilityService {
             .toSet()
             .toList()
           ..sort(),
+        blockedPhases: blockedPhases,
+      );
+    }
+
+    ActorAvailability phaseLimited(
+      String policyRuleId,
+      Iterable<String> blockerRuleIds,
+    ) {
+      final matchingTags = blockerTags(blockerRuleIds);
+      return ActorAvailability(
+        actor: actor,
+        state: ActorAvailabilityState.active,
+        reasonRuleIds: <String>{
+          policyRuleId,
+          ...matchingTags.map((tag) => tag.ruleId),
+        }.toList()
+          ..sort(),
+        suppressedByOccurrenceIds: matchingTags
+            .map((tag) => tag.occurrenceId)
+            .where((id) => id.isNotEmpty)
+            .toSet()
+            .toList()
+          ..sort(),
+        blockedPhases: const <DirectedEffectPhase>[
+          DirectedEffectPhase.laterProcess,
+          DirectedEffectPhase.finalState,
+        ],
       );
     }
 
@@ -133,6 +161,12 @@ class ActorAvailabilityService {
       );
     }
     if (ruleIds.contains(LiuYaoRuleIds.ruleReturnOvercomes)) {
+      if (resolved == LiuYaoRuleCatalog.v3) {
+        return phaseLimited(
+          LiuYaoRuleIds.actorReturnOvercome,
+          const <String>[LiuYaoRuleIds.ruleReturnOvercomes],
+        );
+      }
       return blocked(
         ActorAvailabilityState.suppressed,
         LiuYaoRuleIds.actorReturnOvercome,
@@ -140,6 +174,12 @@ class ActorAvailabilityService {
       );
     }
     if (ruleIds.contains(LiuYaoRuleIds.ruleRetreat)) {
+      if (resolved == LiuYaoRuleCatalog.v3) {
+        return phaseLimited(
+          LiuYaoRuleIds.actorRetreat,
+          const <String>[LiuYaoRuleIds.ruleRetreat],
+        );
+      }
       return blocked(
         ActorAvailabilityState.suppressed,
         LiuYaoRuleIds.actorRetreat,

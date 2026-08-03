@@ -1,3 +1,4 @@
+import '../models/analysis_trace.dart';
 import '../models/liuyao_rule_models.dart';
 
 typedef LiuYaoTagRuleSpec = ({
@@ -105,6 +106,9 @@ class LiuYaoRuleIds {
       'liuyao.rule.fushen.hidden-suppressed';
   static const String ruleDayJoins = 'liuyao.rule.special.day-joins';
   static const String ruleMonthJoins = 'liuyao.rule.special.month-joins';
+  static const String ruleGuaSixHarmony = 'liuyao.rule.guachange.six-harmony';
+  static const String ruleChangesToSixHarmony =
+      'liuyao.rule.guachange.changes-to-six-harmony';
 
   static const String actorReturnOvercome =
       'liuyao.project.availability.return-overcome-blocks';
@@ -157,6 +161,8 @@ class LiuYaoRuleIds {
       'liuyao.decision.strong-adverse-active';
   static const String decisionMixedSourceContinuity =
       'liuyao.decision.mixed-source-continuity';
+  static const String decisionMixedUnrescuable =
+      'liuyao.decision.mixed-unrescuable';
   static const String decisionMixedAdverseActive =
       'liuyao.decision.mixed-adverse-active';
   static const String decisionMixedRescuableConditions =
@@ -219,12 +225,31 @@ class LiuYaoRuleIds {
 class LiuYaoRuleCatalog {
   LiuYaoRuleCatalog._();
 
-  static const int analysisSchemaVersion = 1;
+  static const int analysisSchemaVersion = 2;
   static const String ruleSetId = 'liuyao-zengshan-primary';
   static const String v1Compat = 'v1-compat';
   static const String v2 = 'v2';
-  static const String current = v2;
-  static const String sourceCatalogVersion = 'liuyao-evidence/1.0.0';
+  static const String v3 = 'v3';
+  static const String current = v3;
+  static const String v2SourceCatalogVersion = 'liuyao-evidence/1.0.0';
+  static const String sourceCatalogVersion = 'liuyao-evidence/1.1.0';
+
+  static const Set<String> _laterTransformationRuleIds = <String>{
+    LiuYaoRuleIds.ruleProgress,
+    LiuYaoRuleIds.ruleRetreat,
+    LiuYaoRuleIds.ruleReturnGenerates,
+    LiuYaoRuleIds.ruleReturnOvercomes,
+    LiuYaoRuleIds.ruleTransformsDrain,
+    LiuYaoRuleIds.ruleOvercomesOutward,
+    LiuYaoRuleIds.ruleChangedJoin,
+    LiuYaoRuleIds.ruleChangedClash,
+  };
+  static const Set<String> _finalTransformationRuleIds = <String>{
+    LiuYaoRuleIds.ruleChangedVoid,
+    LiuYaoRuleIds.ruleChangedBreak,
+    LiuYaoRuleIds.ruleChangedTomb,
+    LiuYaoRuleIds.ruleChangedTerminal,
+  };
 
   static const List<LiuYaoSourceRecord> sources = <LiuYaoSourceRecord>[
     LiuYaoSourceRecord(
@@ -263,7 +288,7 @@ class LiuYaoRuleCatalog {
       kind: LiuYaoSourceKind.projectContract,
       title: 'Liuyao analysis contract',
       edition: sourceCatalogVersion,
-      revisionOrFingerprint: 'rule-set:$ruleSetId@$v2',
+      revisionOrFingerprint: 'rule-set:$ruleSetId@$v3',
       publicLocator: '.trellis/spec/domain/liuyao-analysis-engine.md',
       pageSystem: 'stable section locator',
       adoptionStatus: LiuYaoAdoptionStatus.adopted,
@@ -657,7 +682,7 @@ class LiuYaoRuleCatalog {
       stage: LiuYaoRuleStage.auxiliary
     ),
     '六合卦': (
-      ruleId: 'liuyao.rule.guachange.six-harmony',
+      ruleId: LiuYaoRuleIds.ruleGuaSixHarmony,
       family: LiuYaoRuleFamily.guaChange,
       stage: LiuYaoRuleStage.auxiliary
     ),
@@ -672,7 +697,7 @@ class LiuYaoRuleCatalog {
       stage: LiuYaoRuleStage.auxiliary
     ),
     '卦变六合': (
-      ruleId: 'liuyao.rule.guachange.changes-to-six-harmony',
+      ruleId: LiuYaoRuleIds.ruleChangesToSixHarmony,
       family: LiuYaoRuleFamily.guaChange,
       stage: LiuYaoRuleStage.auxiliary
     ),
@@ -714,7 +739,7 @@ class LiuYaoRuleCatalog {
 
   static LiuYaoRuleSet resolve(String requestedVersion) {
     final version = requestedVersion == 'current' ? current : requestedVersion;
-    if (version != v1Compat && version != v2) {
+    if (version != v1Compat && version != v2 && version != v3) {
       throw ArgumentError.value(
         requestedVersion,
         'ruleSetVersion',
@@ -724,7 +749,8 @@ class LiuYaoRuleCatalog {
     return LiuYaoRuleSet(
       ruleSetId: ruleSetId,
       version: version,
-      sourceCatalogVersion: sourceCatalogVersion,
+      sourceCatalogVersion:
+          version == v3 ? sourceCatalogVersion : v2SourceCatalogVersion,
     );
   }
 
@@ -796,9 +822,10 @@ class LiuYaoRuleCatalog {
   static LiuYaoRuleRecord _tagRule(String term, LiuYaoTagRuleSpec spec) {
     final locatorOnly = term == '三刑' || term == '相刑' || term == '相害';
     final auxiliary = spec.stage == LiuYaoRuleStage.auxiliary;
+    final phase = _phaseForTag(spec);
     return LiuYaoRuleRecord(
       ruleId: spec.ruleId,
-      ruleSetVersions: const <String>[v1Compat, v2],
+      ruleSetVersions: const <String>[v1Compat, v2, v3],
       family: spec.family,
       stage: spec.stage,
       primaryTerm: term,
@@ -827,6 +854,76 @@ class LiuYaoRuleCatalog {
           'Actor availability and directed-effect status determine decision eligibility.',
       coverageExemption:
           'Producer and boundary coverage is maintained in the dedicated service tests.',
+      decisionScopes: _decisionScopesForTag(term, spec),
+      phase: phase.phase,
+      horizon: phase.horizon,
+    );
+  }
+
+  static List<LiuYaoDecisionScope> _decisionScopesForTag(
+    String term,
+    LiuYaoTagRuleSpec spec,
+  ) {
+    if (_laterTransformationRuleIds.contains(spec.ruleId) ||
+        _finalTransformationRuleIds.contains(spec.ruleId)) {
+      return const <LiuYaoDecisionScope>[
+        LiuYaoDecisionScope.continuity,
+        LiuYaoDecisionScope.persistence,
+      ];
+    }
+    if (term == '六合卦' || term == '卦变六合') {
+      return const <LiuYaoDecisionScope>[
+        LiuYaoDecisionScope.formation,
+        LiuYaoDecisionScope.persistence,
+      ];
+    }
+    return switch (spec.family) {
+      LiuYaoRuleFamily.wangShuai ||
+      LiuYaoRuleFamily.kongWang ||
+      LiuYaoRuleFamily.dongBian =>
+        const <LiuYaoDecisionScope>[
+          LiuYaoDecisionScope.quality,
+          LiuYaoDecisionScope.continuity,
+        ],
+      LiuYaoRuleFamily.muJue ||
+      LiuYaoRuleFamily.fuShen =>
+        const <LiuYaoDecisionScope>[LiuYaoDecisionScope.continuity],
+      LiuYaoRuleFamily.shengKe => const <LiuYaoDecisionScope>[
+          LiuYaoDecisionScope.formation,
+          LiuYaoDecisionScope.quality,
+        ],
+      LiuYaoRuleFamily.liuQin => const <LiuYaoDecisionScope>[
+          LiuYaoDecisionScope.selectedUseSpirit
+        ],
+      _ => const <LiuYaoDecisionScope>[],
+    };
+  }
+
+  static ({
+    DirectedEffectPhase phase,
+    DirectedEffectHorizon horizon,
+  }) _phaseForTag(LiuYaoTagRuleSpec spec) {
+    if (_finalTransformationRuleIds.contains(spec.ruleId)) {
+      return (
+        phase: DirectedEffectPhase.finalState,
+        horizon: DirectedEffectHorizon.terminal,
+      );
+    }
+    if (_laterTransformationRuleIds.contains(spec.ruleId)) {
+      return (
+        phase: DirectedEffectPhase.laterProcess,
+        horizon: DirectedEffectHorizon.subsequent,
+      );
+    }
+    if (spec.family == LiuYaoRuleFamily.shengKe) {
+      return (
+        phase: DirectedEffectPhase.earlyProcess,
+        horizon: DirectedEffectHorizon.shortTerm,
+      );
+    }
+    return (
+      phase: DirectedEffectPhase.formation,
+      horizon: DirectedEffectHorizon.immediate,
     );
   }
 
@@ -1008,6 +1105,12 @@ class LiuYaoRuleCatalog {
       (
         LiuYaoRuleIds.decisionStrongAdverseActive,
         '旺而忌动',
+        LiuYaoRuleFamily.decision,
+        LiuYaoRuleStage.verdict
+      ),
+      (
+        LiuYaoRuleIds.decisionMixedUnrescuable,
+        '扶抑并见而无救',
         LiuYaoRuleFamily.decision,
         LiuYaoRuleStage.verdict
       ),
@@ -1207,7 +1310,7 @@ class LiuYaoRuleCatalog {
       _projectRule(spec.$1, spec.$2, spec.$3, spec.$4),
     LiuYaoRuleRecord(
       ruleId: LiuYaoRuleIds.overcomeMeetsGeneration,
-      ruleSetVersions: const <String>[v1Compat, v2],
+      ruleSetVersions: const <String>[v1Compat, v2, v3],
       family: LiuYaoRuleFamily.decision,
       stage: LiuYaoRuleStage.verdict,
       primaryTerm: '克处逢生（古籍谓词）',
@@ -1238,7 +1341,9 @@ class LiuYaoRuleCatalog {
   ) {
     return LiuYaoRuleRecord(
       ruleId: ruleId,
-      ruleSetVersions: const <String>[v1Compat, v2],
+      ruleSetVersions: ruleId == LiuYaoRuleIds.decisionMixedUnrescuable
+          ? const <String>[v3]
+          : const <String>[v1Compat, v2, v3],
       family: family,
       stage: stage,
       primaryTerm: term,
