@@ -123,6 +123,7 @@ jobs:
       - name: Download all artifacts
         uses: actions/download-artifact@v8
         with:
+          name: android
           path: dist
 
       - name: List downloaded artifacts
@@ -134,9 +135,10 @@ jobs:
           generate_release_notes: true
           draft: false
           prerelease: ${{ contains(github.ref_name, '-') }}
+          fail_on_unmatched_files: true
           files: |
-            dist/android/*.apk
-            dist/android/*.aab
+            dist/*.apk
+            dist/*.aab
           body: |
             ## 万象排盘 ${{ github.ref_name }}
 
