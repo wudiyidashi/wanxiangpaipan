@@ -287,14 +287,20 @@ class JudgeEvaluation {
         .map((RubricDimension dimension) => dimension.dimensionId)
         .toSet();
     requireExactKeys(scores, dimensionIds);
+    final normalizedByLabel = <String, NormalizedModelOutput>{
+      for (final String label in <String>['A', 'B'])
+        label: NormalizedModelOutput.fromJson(
+          (normalized[label]! as Map).cast<String, Object?>(),
+        ),
+    };
+    if (normalizedByLabel.values.any((output) => output.caseId != caseId)) {
+      throw const FormatException(
+        'Judge normalized output identity mismatch.',
+      );
+    }
     return JudgeEvaluation(
       normalizedByLabel: Map<String, NormalizedModelOutput>.unmodifiable(
-        <String, NormalizedModelOutput>{
-          for (final String label in <String>['A', 'B'])
-            label: NormalizedModelOutput.fromJson(
-              (normalized[label]! as Map).cast<String, Object?>(),
-            ),
-        },
+        normalizedByLabel,
       ),
       scoresByDimension: Map<String, BlindDimensionScore>.unmodifiable(
         <String, BlindDimensionScore>{
@@ -385,13 +391,65 @@ Map<String, Object?> buildJudgeRequest({
     },
     'blindOutputs': blindOutputs,
     'requiredResponseSchema': <String, Object?>{
+      'exactTopLevelKeys': <String>[
+        'schemaVersion',
+        'caseId',
+        'repetition',
+        'normalizedOutputs',
+        'scores',
+      ],
       'schemaVersion': evalJudgeResponseSchemaVersion,
       'caseId': evalCase.caseId,
       'repetition': repetition,
-      'normalizedOutputLabels': <String>['A', 'B'],
-      'scoreDimensions': rubric.dimensions
-          .map((RubricDimension dimension) => dimension.dimensionId)
-          .toList(growable: false),
+      'normalizedOutputs': <String, Object?>{
+        for (final String label in <String>['A', 'B'])
+          label: <String, Object?>{
+            'exactKeys': <String>[
+              'caseId',
+              'verdictTrend',
+              'conditionIds',
+              'panFactIds',
+              'yongShenActorId',
+              'timingClaims',
+              'sourceIds',
+              'citations',
+            ],
+            'caseId': evalCase.caseId,
+            'verdictTrend': 'string|null',
+            'conditionIds': 'string[]',
+            'panFactIds': 'string[]',
+            'yongShenActorId': 'string|null',
+            'timingClaims': <String, Object?>{
+              'type': 'array',
+              'itemExactKeys': <String>['timingId', 'guaranteed'],
+              'itemTypes': <String, String>{
+                'timingId': 'string',
+                'guaranteed': 'boolean',
+              },
+            },
+            'sourceIds': 'string[]',
+            'citations': <String, Object?>{
+              'type': 'array',
+              'itemExactKeys': <String>['sourceId', 'locator', 'quote'],
+              'itemTypes': <String, String>{
+                'sourceId': 'string',
+                'locator': 'string|null',
+                'quote': 'string|null',
+              },
+            },
+          },
+      },
+      'scores': <String, Object?>{
+        for (final RubricDimension dimension in rubric.dimensions)
+          dimension.dimensionId: <String, Object?>{
+            'exactKeys': <String>['A', 'B', 'reason'],
+            'types': <String, String>{
+              'A': 'number 0..2',
+              'B': 'number 0..2',
+              'reason': 'non-empty string',
+            },
+          },
+      },
     },
   };
 }
@@ -401,6 +459,17 @@ String get judgeSystemPrompt =>
     'requiredResponseSchema. Normalize factual claims for both labels using '
     'only caseInput and scoringReference, score every frozen rubric dimension '
     'from 0 to 2, and never infer which label is baseline or candidate.';
+
+String get judgeRequestContractHash => sha256Json(<String, Object?>{
+      'systemPrompt': judgeSystemPrompt,
+      'temperature': 0,
+      'maxTokens': judgeMaxTokens,
+      'responseFormat': 'json',
+      'seed': judgeSeed,
+      'inputUtf8ByteLimit': judgeInputUtf8ByteLimit,
+      'requestSchemaVersion': evalJudgeRequestSchemaVersion,
+      'responseSchemaVersion': evalJudgeResponseSchemaVersion,
+    });
 
 Map<String, Object?> generationArtifactJson({
   required ModelCallResult result,
@@ -427,6 +496,7 @@ class PairedRunArtifact {
     required this.candidateHash,
     required this.model,
     required this.providerLabel,
+    required this.timeoutSeconds,
     required this.identity,
     required this.pairs,
   });
@@ -435,6 +505,7 @@ class PairedRunArtifact {
   final String candidateHash;
   final String model;
   final String? providerLabel;
+  final int timeoutSeconds;
   final ComparisonIdentity identity;
   final List<PairedEvaluation> pairs;
 
@@ -459,12 +530,23 @@ class PairedRunArtifact {
       },
     );
     final Map<String, Object?> metadata = requireObject(json, 'modelMetadata');
-    requireExactKeys(metadata, <String>{'providerLabel', 'model'});
+    requireExactKeys(
+      metadata,
+      <String>{'providerLabel', 'model', 'timeoutSeconds'},
+    );
     final Object? providerLabel = metadata['providerLabel'];
     if (providerLabel != null && providerLabel is! String) {
       throw const FormatException('Invalid provider label artifact.');
     }
     final String model = requireString(metadata, 'model');
+    final int timeoutSeconds = requireInt(
+      metadata,
+      'timeoutSeconds',
+      minimum: minimumTransportTimeoutSeconds,
+    );
+    if (timeoutSeconds > maximumTransportTimeoutSeconds) {
+      throw const FormatException('Transport timeout exceeds maximum.');
+    }
     final ComparisonIdentity identity = ComparisonIdentity.fromJson(
       requireObject(json, 'identity'),
     );
@@ -486,6 +568,9 @@ class PairedRunArtifact {
         identity.candidateRequestSetHash != contract.candidate.requestSetHash ||
         identity.modelHash != sha256Text(model) ||
         identity.judgeModelHash != sha256Text(model) ||
+        identity.judgeRequestContractHash != judgeRequestContractHash ||
+        identity.transportTimeoutSeconds != timeoutSeconds ||
+        identity.transportRetryPolicyVersion != transportRetryPolicyVersion ||
         identity.runHash != comparisonRunHash(identity)) {
       throw const FormatException('Paired run artifact identity mismatch.');
     }
@@ -568,6 +653,7 @@ class PairedRunArtifact {
       candidateHash: contract.candidateHash,
       model: model,
       providerLabel: providerLabel as String?,
+      timeoutSeconds: timeoutSeconds,
       identity: identity,
       pairs: List<PairedEvaluation>.unmodifiable(pairs),
     );
@@ -583,6 +669,7 @@ class PairedRunArtifact {
         'modelMetadata': <String, Object?>{
           'providerLabel': providerLabel,
           'model': model,
+          'timeoutSeconds': timeoutSeconds,
         },
         'identity': identity.toJson(),
         'pairs': pairs

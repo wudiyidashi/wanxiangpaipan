@@ -75,9 +75,13 @@ class GitInspector {
 }
 
 class OutputPathGuard {
-  OutputPathGuard({required this.repositoryRoot});
+  OutputPathGuard({
+    required this.repositoryRoot,
+    GitInspector? gitInspector,
+  }) : gitInspector = gitInspector ?? const GitInspector();
 
   final String repositoryRoot;
+  final GitInspector gitInspector;
 
   Directory validateAndCreateRoot(String suppliedPath) {
     final String expected = p.normalize(
@@ -92,6 +96,18 @@ class OutputPathGuard {
     );
     if (!p.equals(expected, candidate)) {
       throw const EvalFailure('outputPathOutsideTaskEvalRoot');
+    }
+    if (!gitInspector.isIgnored(
+      repositoryRoot,
+      evalOutputRootRelativePath,
+    )) {
+      throw const EvalFailure('outputPathNotIgnored');
+    }
+    if (gitInspector.isTracked(
+      repositoryRoot,
+      evalOutputRootRelativePath,
+    )) {
+      throw const EvalFailure('outputPathTracked');
     }
     _rejectLinksBetween(repositoryRoot, candidate);
     _rejectResolvedExistingComponents(repositoryRoot, candidate);
@@ -240,6 +256,79 @@ class RunWorkspace {
     return createSequencedCommandDirectory(command);
   }
 
+  void bindRetryIdentity({
+    required String command,
+    required String identityHash,
+    required Map<String, Object?> identity,
+  }) {
+    _validateArtifactScope(command);
+    if (!RegExp(r'^[0-9a-f]{64}$').hasMatch(identityHash)) {
+      throw const EvalFailure('retryIdentityInvalid');
+    }
+    final Object? normalizedIdentity;
+    try {
+      normalizedIdentity = normalizeJson(identity);
+    } on Object {
+      throw const EvalFailure('retryIdentityInvalid');
+    }
+    final Object? embeddedRunHash = normalizedIdentity is Map<String, Object?>
+        ? normalizedIdentity['runHash']
+        : null;
+    if (normalizedIdentity is! Map<String, Object?> ||
+        normalizedIdentity.isEmpty ||
+        (embeddedRunHash != null &&
+            (embeddedRunHash is! String || embeddedRunHash != identityHash))) {
+      throw const EvalFailure('retryIdentityInvalid');
+    }
+    final File identityFile =
+        File(p.join(directory.path, '$command.identity.json'));
+    final FileSystemEntityType type = FileSystemEntity.typeSync(
+      identityFile.path,
+      followLinks: false,
+    );
+    if (type != FileSystemEntityType.notFound &&
+        type != FileSystemEntityType.file) {
+      throw const EvalFailure('retryIdentityInvalid');
+    }
+    final Map<String, Object?> expected = <String, Object?>{
+      'schemaVersion': evalArtifactSchemaVersion,
+      'command': command,
+      'identityHash': identityHash,
+      'identity': normalizedIdentity,
+    };
+    if (type == FileSystemEntityType.file) {
+      try {
+        final Map<String, Object?> existing =
+            decodeObject(identityFile.readAsStringSync());
+        requireExactKeys(
+          existing,
+          <String>{'schemaVersion', 'command', 'identityHash', 'identity'},
+        );
+        final String existingHash = requireString(existing, 'identityHash');
+        final Map<String, Object?> existingIdentity =
+            requireObject(existing, 'identity');
+        if (!RegExp(r'^[0-9a-f]{64}$').hasMatch(existingHash)) {
+          throw const FormatException('Invalid retry identity hash.');
+        }
+        if (requireString(existing, 'schemaVersion') !=
+                evalArtifactSchemaVersion ||
+            requireString(existing, 'command') != command ||
+            existingHash != identityHash ||
+            canonicalJson(existingIdentity) !=
+                canonicalJson(normalizedIdentity)) {
+          throw const EvalFailure('retryIdentityMismatch');
+        }
+      } on FormatException {
+        throw const EvalFailure('retryIdentityInvalid');
+      }
+      return;
+    }
+    identityFile.writeAsStringSync(
+      '${const JsonEncoder.withIndent('  ').convert(expected)}\n',
+      flush: true,
+    );
+  }
+
   Directory requireSuccessfulCommandDirectory(String command) {
     _validateArtifactScope(command);
     final List<Directory> successful = _commandDirectories(command)
@@ -285,18 +374,21 @@ class EvalCredentials {
     required this.baseUrl,
     required this.model,
     required this.providerLabel,
+    this.timeoutSeconds = defaultTransportTimeoutSeconds,
   });
 
   final String apiKey;
   final String baseUrl;
   final String model;
   final String? providerLabel;
+  final int timeoutSeconds;
 
   Set<String> get sensitiveValues => <String>{apiKey, baseUrl};
 
   Map<String, Object?> safeMetadata() => <String, Object?>{
         'providerLabel': providerLabel,
         'model': model,
+        'timeoutSeconds': timeoutSeconds,
       };
 
   @override
@@ -340,13 +432,16 @@ class EvalConfigLoader {
         requireExactKeys(
           local,
           <String>{'apiKey', 'baseUrl', 'model'},
-          optional: <String>{'providerLabel'},
+          optional: <String>{'providerLabel', 'timeoutSeconds'},
         );
         requireString(local, 'apiKey');
         requireString(local, 'baseUrl');
         requireString(local, 'model');
         if (local.containsKey('providerLabel')) {
           requireString(local, 'providerLabel');
+        }
+        if (local.containsKey('timeoutSeconds')) {
+          requireInt(local, 'timeoutSeconds');
         }
       }
 
@@ -355,6 +450,7 @@ class EvalConfigLoader {
         'LIUYAO_AI_EVAL_BASE_URL',
         'LIUYAO_AI_EVAL_MODEL',
         'LIUYAO_AI_EVAL_PROVIDER_LABEL',
+        'LIUYAO_AI_EVAL_TIMEOUT_SECONDS',
       }.any(environment.containsKey);
       if (local.isEmpty && !anyEnvironmentField) {
         return const ConfigLoadResult(
@@ -375,6 +471,17 @@ class EvalConfigLoader {
       final String? model = field('LIUYAO_AI_EVAL_MODEL', 'model');
       final String? providerLabel =
           field('LIUYAO_AI_EVAL_PROVIDER_LABEL', 'providerLabel');
+      final Object? timeoutRaw = environment.containsKey(
+        'LIUYAO_AI_EVAL_TIMEOUT_SECONDS',
+      )
+          ? environment['LIUYAO_AI_EVAL_TIMEOUT_SECONDS']
+          : local['timeoutSeconds'];
+      final int? timeoutSeconds = switch (timeoutRaw) {
+        null => defaultTransportTimeoutSeconds,
+        int value => value,
+        String value => int.tryParse(value),
+        _ => null,
+      };
       if (apiKey == null || baseUrl == null || model == null) {
         return const ConfigLoadResult(
           realModelStatus: 'blockedInvalidConfiguration',
@@ -387,6 +494,11 @@ class EvalConfigLoader {
       if (providerLabel != null) {
         _validateProviderLabel(providerLabel);
       }
+      if (timeoutSeconds == null ||
+          timeoutSeconds < minimumTransportTimeoutSeconds ||
+          timeoutSeconds > maximumTransportTimeoutSeconds) {
+        throw const EvalFailure('invalidTimeoutSeconds');
+      }
       return ConfigLoadResult(
         realModelStatus: 'ready',
         credentials: EvalCredentials(
@@ -394,6 +506,7 @@ class EvalConfigLoader {
           baseUrl: baseUrl,
           model: model,
           providerLabel: providerLabel,
+          timeoutSeconds: timeoutSeconds,
         ),
       );
     } on EvalFailure catch (error) {
@@ -620,7 +733,8 @@ class SafeArtifactWriter {
       throw const EvalFailure('artifactRedactionFailed');
     }
     final File temporary = File('$targetPath.tmp');
-    if (temporary.existsSync()) {
+    if (FileSystemEntity.typeSync(temporary.path, followLinks: false) !=
+        FileSystemEntityType.notFound) {
       throw const EvalFailure('artifactTemporaryFileExists');
     }
     temporary.writeAsStringSync(redacted, flush: true);
@@ -665,15 +779,21 @@ class SafeArtifactReader {
   final Directory root;
 
   Map<String, Object?> readJson(String relativePath) {
+    try {
+      return decodeObject(readText(relativePath));
+    } on FormatException {
+      throw const EvalFailure('requiredArtifactMalformed');
+    }
+  }
+
+  String readText(String relativePath) {
     final String targetPath = _target(relativePath);
     if (FileSystemEntity.typeSync(targetPath, followLinks: false) !=
         FileSystemEntityType.file) {
       throw const EvalFailure('requiredArtifactMissingOrInvalid');
     }
     try {
-      return decodeObject(File(targetPath).readAsStringSync());
-    } on FormatException {
-      throw const EvalFailure('requiredArtifactMalformed');
+      return File(targetPath).readAsStringSync();
     } on FileSystemException {
       throw const EvalFailure('requiredArtifactReadFailed');
     }

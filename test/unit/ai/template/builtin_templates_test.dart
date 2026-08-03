@@ -18,7 +18,45 @@ void main() {
       expect(content, contains('用户已选用神时必须沿用'));
       expect(content, contains('页级短引'));
       expect(content, contains('没有 exactQuote 时一律转述'));
-      expect(content, contains('应期只解释为条件解除或状态成熟的观察窗口'));
+      expect(
+        content,
+        contains('只解释 timingCandidates 已有窗口'),
+      );
+      expect(content, contains('policy.verdictMode'));
+      expect(content, contains('verdictMode=abstain'));
+      expect(content, contains('verdictMode=explainLifecycle'));
+      expect(content, contains('verdictMode=explainSelectedVerdict'));
+      expect(content, contains('生命周期维度不可用'));
+      expect(content, contains('所选用神强弱、扶抑与条件的单轴'));
+      expect(content, contains('不得据此判断整件事'));
+      expect(content, contains('timingCandidates 为空时'));
+      expect(content, contains('conditions 与 timingCandidates 均为空时省略该段'));
+      expect(content, contains('formation'));
+      expect(content, contains('完整租期持续性'));
+      expect(content, contains('仅在 verdictMode=explainLifecycle'));
+      expect(content, contains('只把它们列作核验维度'));
+    });
+
+    test('六爻生产模板的全应期边界不枚举确定性禁词', () {
+      const boundary = '不得把程序未授权的推演、状态或观察写成无条件成立的事项结果，也不得以确定性结果措辞扩展程序裁决';
+      final forbiddenDeterminism = RegExp(r'必然|必定|保证|一定');
+
+      for (final content in <String>[
+        BuiltInTemplates.liuYaoSystemPrompt.content,
+        BuiltInTemplates.liuYaoAnalysisPrompt.content,
+        BuiltInTemplates.liuYaoBriefPrompt.content,
+      ]) {
+        expect(content, contains(boundary));
+        expect(content, contains('无论 timingCandidates 是否为空'));
+        expect(content, contains('output contract 给出的应期锚点'));
+        expect(forbiddenDeterminism.hasMatch(content), isFalse);
+      }
+      expect(
+        BuiltInTemplates.liuYaoSystemPrompt.content,
+        contains(
+          'explainLifecycle 仍须原值输出已授权的 lifecycleVerdict',
+        ),
+      );
     });
 
     test('大六壬 system 模板含排盘数据使用约定三层意思', () {
@@ -51,19 +89,20 @@ void main() {
   });
 
   group('BuiltInTemplates analysis 模板结构调整', () {
-    test('六爻 analysis 模板按固定九段证据链输出', () {
+    test('六爻 analysis 模板按授权段落组织生命周期证据链', () {
       final content = BuiltInTemplates.liuYaoAnalysisPrompt.content;
 
       const headings = [
-        '### 1. 问题与取用边界',
-        '### 2. 盘面与世应',
-        '### 3. 日月与用神状态',
-        '### 4. 动变与作用链',
-        '### 5. 程序裁决与反证',
-        '### 6. 未决条件',
-        '### 7. 应期观察窗',
-        '### 8. 古籍与项目依据',
-        '### 9. 有边界的建议',
+        '### 1. 日历与问题边界',
+        '### 2. 取用与结论模式',
+        '### 3. 生命周期阶段裁决',
+        '### 4. 所选用神与另一现',
+        '### 5. 全爻主证、反证与阶段作用',
+        '### 6. 世应、合同、费用与持续履约',
+        '### 7. 六合、六神与卦名权限',
+        '### 8. 未决条件与应期观察窗',
+        '### 9. 古籍与项目依据',
+        '### 10. 核验建议与不确定性',
       ];
       var previousIndex = -1;
       for (final heading in headings) {
@@ -72,10 +111,21 @@ void main() {
         previousIndex = index;
       }
       expect(content, contains('from → to'));
-      expect(content, contains('matched decision row'));
-      expect(content, contains('conditions、hasRescue'));
+      expect(content, contains('decision row'));
+      expect(content, contains('conditions 的 scope、dimension、hasRescue'));
       expect(content, contains('exactQuote、paraphrase、projectConvention'));
       expect(content, contains('locatorOnly'));
+      expect(content, contains('formation'));
+      expect(content, contains('quality'));
+      expect(content, contains('continuity'));
+      expect(content, contains('persistence'));
+      expect(content, contains('出租权与合同主体'));
+      expect(content, contains('收费是否完整合理'));
+      expect(content, contains('selectedUseSpiritAxis'));
+      expect(content, contains('必须跳过第 8 段'));
+      expect(content, contains('不写标题或缺省说明'));
+      expect(content, contains('verdictMode=abstain 时不执行下列十段顺序'));
+      expect(content, contains('两组列表并立即结束'));
     });
 
     test('大六壬 analysis 模板首节解释已判定课体、综合判断锚定裁决摘要、含应期提示节', () {
@@ -93,15 +143,16 @@ void main() {
       final content = BuiltInTemplates.liuYaoBriefPrompt.content;
 
       const headings = [
-        '### 1. 问题与取用边界',
-        '### 2. 盘面与世应',
-        '### 3. 日月与用神状态',
-        '### 4. 动变与作用链',
-        '### 5. 程序裁决与反证',
-        '### 6. 全部未决条件',
-        '### 7. 已给应期观察窗',
-        '### 8. 实际古籍与项目来源',
-        '### 9. 有边界的建议',
+        '### 1. 日历与问题边界',
+        '### 2. 取用与结论模式',
+        '### 3. 生命周期阶段裁决',
+        '### 4. 所选用神与另一现',
+        '### 5. 全爻主证、反证与阶段作用',
+        '### 6. 世应、合同、费用与持续履约',
+        '### 7. 六合、六神与卦名权限',
+        '### 8. 全部未决条件与已给应期观察窗',
+        '### 9. 实际古籍与项目来源',
+        '### 10. 核验建议与不确定性',
       ];
       var previousIndex = -1;
       for (final heading in headings) {
@@ -113,6 +164,16 @@ void main() {
       expect(content, contains('已给应期观察窗'));
       expect(content, contains('实际古籍与项目来源'));
       expect(content, contains('不得重算、重选、覆盖裁决'));
+      expect(content, contains('verdictMode=abstain'));
+      expect(content, contains('verdictMode=explainSelectedVerdict'));
+      expect(content, contains('verdict.trend'));
+      expect(content, contains('selectedUseSpiritAxis'));
+      expect(content, contains('必须跳过第 8 段'));
+      expect(content, contains('不写标题或缺省说明'));
+      expect(content, contains('verdictMode=abstain 时不执行下列十段顺序'));
+      expect(content, contains('两组列表并立即结束'));
+      expect(
+          content, contains('formation → quality → continuity → persistence'));
       expect(BuiltInTemplates.daLiuRenBriefPrompt.content,
           isNot(contains('应期提示')));
     });

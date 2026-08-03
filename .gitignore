@@ -109,7 +109,7 @@ linux/
 /tool/liuyao_ai_eval/eval.local.json
 
 # Local AI evaluation artifacts
-/.trellis/tasks/08-01-liuyao-classics-analysis-prompt/research/eval/
+/.trellis/tasks/**/research/eval/
 
 # Node.js (legacy)
 node_modules/

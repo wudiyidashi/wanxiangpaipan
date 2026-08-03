@@ -1,0 +1,4479 @@
+{
+  "baselineSourceCommit": "e97d94b54b7ac02edcca00b6ab08b8835fad8090",
+  "cases": [
+    {
+      "caseId": "liuyao.case.golden.001",
+      "caseKind": "ruleValidation",
+      "cohortIds": [
+        "overall",
+        "ruleValidation",
+        "calibration"
+      ],
+      "evaluationSplit": "calibration",
+      "requestInput": {
+        "projection": {
+          "actorAvailability": [
+            {
+              "actor": {
+                "actorId": "main:yao:1",
+                "branch": "子",
+                "isMoving": false,
+                "kind": "mainYao",
+                "liuQin": "ziSun",
+                "position": 1,
+                "wuXing": "shui"
+              },
+              "reasonRuleIds": [],
+              "releaseConditionRuleIds": [],
+              "state": "active",
+              "suppressedByOccurrenceIds": []
+            },
+            {
+              "actor": {
+                "actorId": "main:yao:2",
+                "branch": "寅",
+                "isMoving": false,
+                "kind": "mainYao",
+                "liuQin": "qiCai",
+                "position": 2,
+                "wuXing": "mu"
+              },
+              "reasonRuleIds": [
+                "liuyao.project.availability.month-break-suspends",
+                "liuyao.rule.wangshuai.month-break"
+              ],
+              "releaseConditionRuleIds": [
+                "liuyao.condition.month-break.exit-fill-or-join"
+              ],
+              "state": "suspended",
+              "suppressedByOccurrenceIds": [
+                "lyo-239fd473808858aa5af6d2c7"
+              ]
+            },
+            {
+              "actor": {
+                "actorId": "main:yao:3",
+                "branch": "辰",
+                "isMoving": false,
+                "kind": "mainYao",
+                "liuQin": "fuMu",
+                "position": 3,
+                "wuXing": "tu"
+              },
+              "reasonRuleIds": [],
+              "releaseConditionRuleIds": [],
+              "state": "active",
+              "suppressedByOccurrenceIds": []
+            },
+            {
+              "actor": {
+                "actorId": "main:yao:4",
+                "branch": "午",
+                "isMoving": false,
+                "kind": "mainYao",
+                "liuQin": "guanGui",
+                "position": 4,
+                "wuXing": "huo"
+              },
+              "reasonRuleIds": [],
+              "releaseConditionRuleIds": [],
+              "state": "active",
+              "suppressedByOccurrenceIds": []
+            },
+            {
+              "actor": {
+                "actorId": "main:yao:5",
+                "branch": "申",
+                "isMoving": false,
+                "kind": "mainYao",
+                "liuQin": "xiongDi",
+                "position": 5,
+                "wuXing": "jin"
+              },
+              "reasonRuleIds": [],
+              "releaseConditionRuleIds": [],
+              "state": "active",
+              "suppressedByOccurrenceIds": []
+            },
+            {
+              "actor": {
+                "actorId": "main:yao:6",
+                "branch": "戌",
+                "isMoving": false,
+                "kind": "mainYao",
+                "liuQin": "fuMu",
+                "position": 6,
+                "wuXing": "tu"
+              },
+              "reasonRuleIds": [],
+              "releaseConditionRuleIds": [],
+              "state": "active",
+              "suppressedByOccurrenceIds": []
+            },
+            {
+              "actor": {
+                "actorId": "calendar:day",
+                "branch": "戌",
+                "isMoving": false,
+                "kind": "calendarDay",
+                "liuQin": null,
+                "position": null,
+                "wuXing": "tu"
+              },
+              "reasonRuleIds": [],
+              "releaseConditionRuleIds": [],
+              "state": "active",
+              "suppressedByOccurrenceIds": []
+            },
+            {
+              "actor": {
+                "actorId": "calendar:month",
+                "branch": "申",
+                "isMoving": false,
+                "kind": "calendarMonth",
+                "liuQin": null,
+                "position": null,
+                "wuXing": "jin"
+              },
+              "reasonRuleIds": [],
+              "releaseConditionRuleIds": [],
+              "state": "active",
+              "suppressedByOccurrenceIds": []
+            }
+          ],
+          "analysisSchemaVersion": 1,
+          "analysisStages": [
+            "liuyao.stage.01.validate-input",
+            "liuyao.stage.02.freeze-facts",
+            "liuyao.stage.03.build-roles",
+            "liuyao.stage.04.calculate-state",
+            "liuyao.stage.05.calculate-availability",
+            "liuyao.stage.06.calculate-directed-effects",
+            "liuyao.stage.07.auxiliary-evidence",
+            "liuyao.stage.08.arbitrate-conflicts",
+            "liuyao.stage.09.judge-verdict",
+            "liuyao.stage.10.calculate-timing",
+            "liuyao.stage.11.build-projection"
+          ],
+          "auxiliaryEvidence": [
+            {
+              "active": true,
+              "category": "guaChange",
+              "occurrenceId": "lyo-ced1a4cf916ebac0264d8309",
+              "polarity": "neutral",
+              "priority": 9,
+              "reason": "本卦六爻逐位相冲，主散、主快",
+              "relatedYao": [],
+              "ruleId": "liuyao.rule.guachange.six-clash",
+              "sourceIds": [
+                "liuyao.source.zengshan.zhongguonaner-pdf"
+              ],
+              "suppressedByOccurrenceIds": [],
+              "suppressedByRuleIds": [],
+              "term": "六冲卦"
+            }
+          ],
+          "conditions": [],
+          "conflicts": [],
+          "diagnostics": [],
+          "directedEffects": [],
+          "factors": [
+            {
+              "active": true,
+              "arbitrationOrder": 0,
+              "arbitrationTier": 1,
+              "decisionRowId": "",
+              "effect": "fu",
+              "factorId": "lyf-0914c5632fe0242688174f9f",
+              "reason": "爻支申即月建",
+              "rule": "临月建",
+              "ruleId": "liuyao.rule.wangshuai.month-command",
+              "source": "《增删卜易》",
+              "sourceIds": [
+                "liuyao.source.zengshan.zhongguonaner-pdf"
+              ],
+              "upstreamOccurrenceIds": [
+                "lyo-0fd7ea92cc7e1a63e8db33b2"
+              ]
+            },
+            {
+              "active": true,
+              "arbitrationOrder": 1,
+              "arbitrationTier": 1,
+              "decisionRowId": "",
+              "effect": "fu",
+              "factorId": "lyf-1438a405ce501067cf7b0a5d",
+              "reason": "日辰土生金",
+              "rule": "日生",
+              "ruleId": "liuyao.rule.wangshuai.day-generates",
+              "source": "《增删卜易》",
+              "sourceIds": [
+                "liuyao.source.zengshan.zhongguonaner-pdf"
+              ],
+              "upstreamOccurrenceIds": [
+                "lyo-397435ef7084cd3bc3d5d5d7"
+              ]
+            },
+            {
+              "active": true,
+              "arbitrationOrder": 2,
+              "arbitrationTier": 1,
+              "decisionRowId": "",
+              "effect": "fu",
+              "factorId": "lyf-0f5a2764d7aa469f656715b8",
+              "reason": "金于申月为旺",
+              "rule": "旺",
+              "ruleId": "liuyao.rule.wangshuai.prosperous",
+              "source": "《增删卜易》",
+              "sourceIds": [
+                "liuyao.source.zengshan.zhongguonaner-pdf"
+              ],
+              "upstreamOccurrenceIds": [
+                "lyo-6f244b602ddad821640845ad"
+              ]
+            },
+            {
+              "active": true,
+              "arbitrationOrder": 3,
+              "arbitrationTier": 9,
+              "decisionRowId": "liuyao.decision.strong-clear",
+              "effect": "neutral",
+              "factorId": "lyf-2e3926831b4b9becf08412f6",
+              "reason": "决策表命中：可成",
+              "rule": "裁决·日月生扶而无阻",
+              "ruleId": "liuyao.decision.strong-clear",
+              "source": "项目约定·六爻分析合同",
+              "sourceIds": [
+                "liuyao.source.project.analysis-contract"
+              ],
+              "upstreamOccurrenceIds": [
+                "lyo-0fd7ea92cc7e1a63e8db33b2",
+                "lyo-397435ef7084cd3bc3d5d5d7",
+                "lyo-6f244b602ddad821640845ad"
+              ]
+            }
+          ],
+          "pan": {
+            "calendar": {
+              "dayGanZhi": "戊戌",
+              "hourGanZhi": "戊午",
+              "kongWang": [
+                "辰",
+                "巳"
+              ],
+              "monthGanZhi": "庚申",
+              "yearGanZhi": "癸卯",
+              "yueJian": "申"
+            },
+            "castMethod": "manual",
+            "changingGua": null,
+            "hasChangingGua": false,
+            "liuShen": [
+              "勾陈",
+              "腾蛇",
+              "白虎",
+              "玄武",
+              "青龙",
+              "朱雀"
+            ],
+            "mainGua": {
+              "id": "111111",
+              "name": "乾为天",
+              "palace": "qian",
+              "shiPosition": 6,
+              "specialType": "liuChong",
+              "yaos": [
+                {
+                  "branch": "子",
+                  "isMoving": false,
+                  "isShi": false,
+                  "isYang": true,
+                  "isYing": false,
+                  "liuQin": "ziSun",
+                  "number": 7,
+                  "position": 1,
+                  "stem": "甲",
+                  "wuXing": "shui"
+                },
+                {
+                  "branch": "寅",
+                  "isMoving": false,
+                  "isShi": false,
+                  "isYang": true,
+                  "isYing": false,
+                  "liuQin": "qiCai",
+                  "number": 7,
+                  "position": 2,
+                  "stem": "甲",
+                  "wuXing": "mu"
+                },
+                {
+                  "branch": "辰",
+                  "isMoving": false,
+                  "isShi": false,
+                  "isYang": true,
+                  "isYing": true,
+                  "liuQin": "fuMu",
+                  "number": 7,
+                  "position": 3,
+                  "stem": "甲",
+                  "wuXing": "tu"
+                },
+                {
+                  "branch": "午",
+                  "isMoving": false,
+                  "isShi": false,
+                  "isYang": true,
+                  "isYing": false,
+                  "liuQin": "guanGui",
+                  "number": 7,
+                  "position": 4,
+                  "stem": "壬",
+                  "wuXing": "huo"
+                },
+                {
+                  "branch": "申",
+                  "isMoving": false,
+                  "isShi": false,
+                  "isYang": true,
+                  "isYing": false,
+                  "liuQin": "xiongDi",
+                  "number": 7,
+                  "position": 5,
+                  "stem": "壬",
+                  "wuXing": "jin"
+                },
+                {
+                  "branch": "戌",
+                  "isMoving": false,
+                  "isShi": true,
+                  "isYang": true,
+                  "isYing": false,
+                  "liuQin": "fuMu",
+                  "number": 7,
+                  "position": 6,
+                  "stem": "壬",
+                  "wuXing": "tu"
+                }
+              ],
+              "yingPosition": 3
+            }
+          },
+          "policy": {
+            "calculationOwner": "program",
+            "mayInventSources": false,
+            "mayInventTiming": false,
+            "mayOverrideVerdict": false,
+            "mayRecalculateAnalysis": false,
+            "mayRecalculatePan": false,
+            "mayReselectYongShen": false,
+            "maySuggestYongShen": false,
+            "timingIsGuarantee": false
+          },
+          "projectionSchemaVersion": 1,
+          "roles": [
+            {
+              "actor": {
+                "actorId": "main:yao:1",
+                "branch": "子",
+                "isMoving": false,
+                "kind": "mainYao",
+                "liuQin": "ziSun",
+                "position": 1,
+                "wuXing": "shui"
+              },
+              "reason": "不属用、元、忌、仇的本卦爻",
+              "representative": false,
+              "role": "xianShen",
+              "roleRuleId": "liuyao.rule.liuqin.idle-spirit",
+              "selected": false
+            },
+            {
+              "actor": {
+                "actorId": "main:yao:2",
+                "branch": "寅",
+                "isMoving": false,
+                "kind": "mainYao",
+                "liuQin": "qiCai",
+                "position": 2,
+                "wuXing": "mu"
+              },
+              "reason": "克元神并生忌神者为仇神",
+              "representative": true,
+              "role": "chouShen",
+              "roleRuleId": "liuyao.rule.liuqin.enemy-spirit",
+              "selected": false
+            },
+            {
+              "actor": {
+                "actorId": "main:yao:3",
+                "branch": "辰",
+                "isMoving": false,
+                "kind": "mainYao",
+                "liuQin": "fuMu",
+                "position": 3,
+                "wuXing": "tu"
+              },
+              "reason": "生用神者为元神",
+              "representative": true,
+              "role": "yuanShen",
+              "roleRuleId": "liuyao.rule.liuqin.source-spirit",
+              "selected": false
+            },
+            {
+              "actor": {
+                "actorId": "main:yao:4",
+                "branch": "午",
+                "isMoving": false,
+                "kind": "mainYao",
+                "liuQin": "guanGui",
+                "position": 4,
+                "wuXing": "huo"
+              },
+              "reason": "克用神者为忌神",
+              "representative": true,
+              "role": "jiShen",
+              "roleRuleId": "liuyao.rule.liuqin.adverse-spirit",
+              "selected": false
+            },
+            {
+              "actor": {
+                "actorId": "main:yao:5",
+                "branch": "申",
+                "isMoving": false,
+                "kind": "mainYao",
+                "liuQin": "xiongDi",
+                "position": 5,
+                "wuXing": "jin"
+              },
+              "reason": "用户选定的用神",
+              "representative": true,
+              "role": "yongShen",
+              "roleRuleId": "liuyao.rule.liuqin.selected-use-spirit",
+              "selected": true
+            },
+            {
+              "actor": {
+                "actorId": "main:yao:6",
+                "branch": "戌",
+                "isMoving": false,
+                "kind": "mainYao",
+                "liuQin": "fuMu",
+                "position": 6,
+                "wuXing": "tu"
+              },
+              "reason": "生用神者为元神",
+              "representative": false,
+              "role": "yuanShen",
+              "roleRuleId": "liuyao.rule.liuqin.source-spirit",
+              "selected": false
+            }
+          ],
+          "ruleSetId": "liuyao-zengshan-primary",
+          "ruleSetVersion": "v2",
+          "selectedUseSpiritFacts": [
+            {
+              "active": true,
+              "category": "liuQin",
+              "occurrenceId": "lyo-d15f0cd2e0f7fdf0cfec3f39",
+              "polarity": "neutral",
+              "priority": 0,
+              "reason": "所占之事以此爻为用",
+              "relatedYao": [],
+              "ruleId": "liuyao.rule.liuqin.selected-use-spirit",
+              "sourceIds": [
+                "liuyao.source.zengshan.zhongguonaner-pdf"
+              ],
+              "suppressedByOccurrenceIds": [],
+              "suppressedByRuleIds": [],
+              "term": "用神"
+            },
+            {
+              "active": true,
+              "category": "wangShuai",
+              "occurrenceId": "lyo-0fd7ea92cc7e1a63e8db33b2",
+              "polarity": "ji",
+              "priority": 12,
+              "reason": "爻支申即月建",
+              "relatedYao": [],
+              "ruleId": "liuyao.rule.wangshuai.month-command",
+              "sourceIds": [
+                "liuyao.source.zengshan.zhongguonaner-pdf"
+              ],
+              "suppressedByOccurrenceIds": [],
+              "suppressedByRuleIds": [],
+              "term": "临月建"
+            },
+            {
+              "active": true,
+              "category": "wangShuai",
+              "occurrenceId": "lyo-397435ef7084cd3bc3d5d5d7",
+              "polarity": "ji",
+              "priority": 32,
+              "reason": "日辰土生金",
+              "relatedYao": [],
+              "ruleId": "liuyao.rule.wangshuai.day-generates",
+              "sourceIds": [
+                "liuyao.source.zengshan.zhongguonaner-pdf"
+              ],
+              "suppressedByOccurrenceIds": [],
+              "suppressedByRuleIds": [],
+              "term": "日生"
+            },
+            {
+              "active": true,
+              "category": "wangShuai",
+              "occurrenceId": "lyo-6f244b602ddad821640845ad",
+              "polarity": "ji",
+              "priority": 35,
+              "reason": "金于申月为旺",
+              "relatedYao": [],
+              "ruleId": "liuyao.rule.wangshuai.prosperous",
+              "sourceIds": [
+                "liuyao.source.zengshan.zhongguonaner-pdf"
+              ],
+              "suppressedByOccurrenceIds": [],
+              "suppressedByRuleIds": [],
+              "term": "旺"
+            }
+          ],
+          "sourceCatalogVersion": "liuyao-evidence/1.0.0",
+          "sources": [
+            {
+              "adjudication": "Executable project convention; never presented as a quote.",
+              "adoptionStatus": "adopted",
+              "edition": "liuyao-evidence/1.0.0",
+              "kind": "projectContract",
+              "pageSystem": "stable section locator",
+              "publicLocator": ".trellis/spec/domain/liuyao-analysis-engine.md",
+              "references": [
+                {
+                  "adoptionNote": "Executable software convention, not a classical quotation.",
+                  "evidenceLevel": "D",
+                  "locator": "analysis-contract:phase-order-and-policy",
+                  "primaryTerm": "待出月",
+                  "referenceKind": "projectConvention",
+                  "ruleId": "liuyao.condition.month-break.exit-fill-or-join"
+                },
+                {
+                  "adoptionNote": "Executable software convention, not a classical quotation.",
+                  "evidenceLevel": "D",
+                  "locator": "analysis-contract:phase-order-and-policy",
+                  "primaryTerm": "日月生扶而无阻",
+                  "referenceKind": "projectConvention",
+                  "ruleId": "liuyao.decision.strong-clear"
+                },
+                {
+                  "adoptionNote": "Executable software convention, not a classical quotation.",
+                  "evidenceLevel": "D",
+                  "locator": "analysis-contract:phase-order-and-policy",
+                  "primaryTerm": "月破悬置作用者",
+                  "referenceKind": "projectConvention",
+                  "ruleId": "liuyao.project.availability.month-break-suspends"
+                }
+              ],
+              "reviewedOn": "2026-08-01",
+              "revisionOrFingerprint": "rule-set:liuyao-zengshan-primary@v2",
+              "scope": "Software convergence, ordering, identity, and decision policy.",
+              "sourceId": "liuyao.source.project.analysis-contract",
+              "title": "Liuyao analysis contract"
+            },
+            {
+              "adjudication": "Adopted witness for the liuyao-zengshan-primary rule set.",
+              "adoptionStatus": "adopted",
+              "edition": "fixed PDF witness",
+              "kind": "classicalWitness",
+              "pageSystem": "PDF page / printed page",
+              "publicLocator": "public fixed-document locator recorded by the project",
+              "references": [
+                {
+                  "adoptionNote": "Adopted as a reviewed paraphrase; no verbatim quote allowed.",
+                  "evidenceLevel": "B",
+                  "locator": "chapter locator for 六冲卦",
+                  "primaryTerm": "六冲卦",
+                  "referenceKind": "paraphrase",
+                  "ruleId": "liuyao.rule.guachange.six-clash"
+                },
+                {
+                  "adoptionNote": "Page-render and text reviewed; broader boundary is paraphrased.",
+                  "evidenceLevel": "A",
+                  "locator": "PDF 46 / printed 45, 旬空章",
+                  "primaryTerm": "假空",
+                  "quote": "旺不为空，动不为空",
+                  "referenceKind": "exactQuote",
+                  "reviewer": "Trellis source verification 2026-08-01",
+                  "ruleId": "liuyao.rule.kongwang.apparent-void"
+                },
+                {
+                  "adoptionNote": "Page-render and text reviewed; broader boundary is paraphrased.",
+                  "evidenceLevel": "A",
+                  "locator": "PDF 46 / printed 45, 旬空章",
+                  "primaryTerm": "旬空",
+                  "quote": "旺不为空，动不为空",
+                  "referenceKind": "exactQuote",
+                  "reviewer": "Trellis source verification 2026-08-01",
+                  "ruleId": "liuyao.rule.kongwang.void"
+                },
+                {
+                  "adoptionNote": "Adopted as a reviewed paraphrase; no verbatim quote allowed.",
+                  "evidenceLevel": "B",
+                  "locator": "chapter locator for 冲空",
+                  "primaryTerm": "冲空",
+                  "referenceKind": "paraphrase",
+                  "ruleId": "liuyao.rule.kongwang.void-clashed"
+                },
+                {
+                  "adoptionNote": "Adopted as a reviewed paraphrase; no verbatim quote allowed.",
+                  "evidenceLevel": "B",
+                  "locator": "chapter locator for 忌神",
+                  "primaryTerm": "忌神",
+                  "referenceKind": "paraphrase",
+                  "ruleId": "liuyao.rule.liuqin.adverse-spirit"
+                },
+                {
+                  "adoptionNote": "Adopted as a reviewed paraphrase; no verbatim quote allowed.",
+                  "evidenceLevel": "B",
+                  "locator": "chapter locator for 仇神",
+                  "primaryTerm": "仇神",
+                  "referenceKind": "paraphrase",
+                  "ruleId": "liuyao.rule.liuqin.enemy-spirit"
+                },
+                {
+                  "adoptionNote": "Adopted as a reviewed paraphrase; no verbatim quote allowed.",
+                  "evidenceLevel": "B",
+                  "locator": "chapter locator for 闲神",
+                  "primaryTerm": "闲神",
+                  "referenceKind": "paraphrase",
+                  "ruleId": "liuyao.rule.liuqin.idle-spirit"
+                },
+                {
+                  "adoptionNote": "Adopted as a reviewed paraphrase; no verbatim quote allowed.",
+                  "evidenceLevel": "B",
+                  "locator": "chapter locator for 用神",
+                  "primaryTerm": "用神",
+                  "referenceKind": "paraphrase",
+                  "ruleId": "liuyao.rule.liuqin.selected-use-spirit"
+                },
+                {
+                  "adoptionNote": "Adopted as a reviewed paraphrase; no verbatim quote allowed.",
+                  "evidenceLevel": "B",
+                  "locator": "chapter locator for 元神",
+                  "primaryTerm": "元神",
+                  "referenceKind": "paraphrase",
+                  "ruleId": "liuyao.rule.liuqin.source-spirit"
+                },
+                {
+                  "adoptionNote": "Adopted as a reviewed paraphrase; no verbatim quote allowed.",
+                  "evidenceLevel": "B",
+                  "locator": "chapter locator for 入日墓",
+                  "primaryTerm": "入日墓",
+                  "referenceKind": "paraphrase",
+                  "ruleId": "liuyao.rule.mujue.day-tomb"
+                },
+                {
+                  "adoptionNote": "Adopted as a reviewed paraphrase; no verbatim quote allowed.",
+                  "evidenceLevel": "B",
+                  "locator": "chapter locator for 临绝",
+                  "primaryTerm": "临绝",
+                  "referenceKind": "paraphrase",
+                  "ruleId": "liuyao.rule.mujue.terminal"
+                },
+                {
+                  "adoptionNote": "Adopted as a reviewed paraphrase; no verbatim quote allowed.",
+                  "evidenceLevel": "B",
+                  "locator": "chapter locator for 囚",
+                  "primaryTerm": "囚",
+                  "referenceKind": "paraphrase",
+                  "ruleId": "liuyao.rule.wangshuai.confined"
+                },
+                {
+                  "adoptionNote": "Adopted as a reviewed paraphrase; no verbatim quote allowed.",
+                  "evidenceLevel": "B",
+                  "locator": "chapter locator for 临日建",
+                  "primaryTerm": "临日建",
+                  "referenceKind": "paraphrase",
+                  "ruleId": "liuyao.rule.wangshuai.day-command"
+                },
+                {
+                  "adoptionNote": "Adopted as a reviewed paraphrase; no verbatim quote allowed.",
+                  "evidenceLevel": "B",
+                  "locator": "chapter locator for 日生",
+                  "primaryTerm": "日生",
+                  "referenceKind": "paraphrase",
+                  "ruleId": "liuyao.rule.wangshuai.day-generates"
+                },
+                {
+                  "adoptionNote": "Adopted as a reviewed paraphrase; no verbatim quote allowed.",
+                  "evidenceLevel": "B",
+                  "locator": "chapter locator for 日克",
+                  "primaryTerm": "日克",
+                  "referenceKind": "paraphrase",
+                  "ruleId": "liuyao.rule.wangshuai.day-overcomes"
+                },
+                {
+                  "adoptionNote": "Adopted as a reviewed paraphrase; no verbatim quote allowed.",
+                  "evidenceLevel": "B",
+                  "locator": "chapter locator for 日扶",
+                  "primaryTerm": "日扶",
+                  "referenceKind": "paraphrase",
+                  "ruleId": "liuyao.rule.wangshuai.day-supports"
+                },
+                {
+                  "adoptionNote": "Adopted as a reviewed paraphrase; no verbatim quote allowed.",
+                  "evidenceLevel": "B",
+                  "locator": "chapter locator for 死",
+                  "primaryTerm": "死",
+                  "referenceKind": "paraphrase",
+                  "ruleId": "liuyao.rule.wangshuai.dead"
+                },
+                {
+                  "adoptionNote": "Adopted as a reviewed paraphrase; no verbatim quote allowed.",
+                  "evidenceLevel": "B",
+                  "locator": "chapter locator for 月破",
+                  "primaryTerm": "月破",
+                  "referenceKind": "paraphrase",
+                  "ruleId": "liuyao.rule.wangshuai.month-break"
+                },
+                {
+                  "adoptionNote": "Adopted as a reviewed paraphrase; no verbatim quote allowed.",
+                  "evidenceLevel": "B",
+                  "locator": "chapter locator for 临月建",
+                  "primaryTerm": "临月建",
+                  "referenceKind": "paraphrase",
+                  "ruleId": "liuyao.rule.wangshuai.month-command"
+                },
+                {
+                  "adoptionNote": "Adopted as a reviewed paraphrase; no verbatim quote allowed.",
+                  "evidenceLevel": "B",
+                  "locator": "chapter locator for 月生",
+                  "primaryTerm": "月生",
+                  "referenceKind": "paraphrase",
+                  "ruleId": "liuyao.rule.wangshuai.month-generates"
+                },
+                {
+                  "adoptionNote": "Adopted as a reviewed paraphrase; no verbatim quote allowed.",
+                  "evidenceLevel": "B",
+                  "locator": "chapter locator for 月克",
+                  "primaryTerm": "月克",
+                  "referenceKind": "paraphrase",
+                  "ruleId": "liuyao.rule.wangshuai.month-overcomes"
+                },
+                {
+                  "adoptionNote": "Adopted as a reviewed paraphrase; no verbatim quote allowed.",
+                  "evidenceLevel": "B",
+                  "locator": "chapter locator for 旺",
+                  "primaryTerm": "旺",
+                  "referenceKind": "paraphrase",
+                  "ruleId": "liuyao.rule.wangshuai.prosperous"
+                },
+                {
+                  "adoptionNote": "Adopted as a reviewed paraphrase; no verbatim quote allowed.",
+                  "evidenceLevel": "B",
+                  "locator": "chapter locator for 休",
+                  "primaryTerm": "休",
+                  "referenceKind": "paraphrase",
+                  "ruleId": "liuyao.rule.wangshuai.resting"
+                },
+                {
+                  "adoptionNote": "Adopted as a reviewed paraphrase; no verbatim quote allowed.",
+                  "evidenceLevel": "B",
+                  "locator": "chapter locator for 相",
+                  "primaryTerm": "相",
+                  "referenceKind": "paraphrase",
+                  "ruleId": "liuyao.rule.wangshuai.supported"
+                }
+              ],
+              "reviewedOn": "2026-08-01",
+              "revisionOrFingerprint": "DE5C6C0CB5A73C47960A4D6C5EB87337CD677A59B768E15E42CFCB24C932FD68",
+              "scope": "Primary Liuyao classical predicates; quotes require page review.",
+              "sourceId": "liuyao.source.zengshan.zhongguonaner-pdf",
+              "title": "增删卜易（校对：中国男儿）"
+            }
+          ],
+          "status": "success",
+          "timingCandidates": [],
+          "trace": [
+            {
+              "notes": [],
+              "occurrenceIds": [],
+              "ruleIds": [],
+              "stageId": "liuyao.stage.01.validate-input"
+            },
+            {
+              "notes": [],
+              "occurrenceIds": [],
+              "ruleIds": [],
+              "stageId": "liuyao.stage.02.freeze-facts"
+            },
+            {
+              "notes": [],
+              "occurrenceIds": [
+                "lyo-2cf55798a72fe25cb691fdc2",
+                "lyo-6668612862956aa68757d84e",
+                "lyo-d15f0cd2e0f7fdf0cfec3f39",
+                "lyo-dbabac52a84d611a41ad7ff7"
+              ],
+              "ruleIds": [
+                "liuyao.rule.liuqin.adverse-spirit",
+                "liuyao.rule.liuqin.enemy-spirit",
+                "liuyao.rule.liuqin.selected-use-spirit",
+                "liuyao.rule.liuqin.source-spirit"
+              ],
+              "stageId": "liuyao.stage.03.build-roles"
+            },
+            {
+              "notes": [],
+              "occurrenceIds": [
+                "lyo-0239302b74eb9d31029b8fd0",
+                "lyo-0fd7ea92cc7e1a63e8db33b2",
+                "lyo-136becebc47e680979d85240",
+                "lyo-239fd473808858aa5af6d2c7",
+                "lyo-2de0668c90eead19b3ec7615",
+                "lyo-397435ef7084cd3bc3d5d5d7",
+                "lyo-4615af0504d0eef5bafe07e3",
+                "lyo-6f244b602ddad821640845ad",
+                "lyo-89ddf6fa4290b72c0f4f29de",
+                "lyo-9523a9604f0eb4e47f066909",
+                "lyo-a88918622f277241455b9ded",
+                "lyo-b429d0ec4a1bce8f08f08644",
+                "lyo-b8f8d17cf5030bb53483be5b",
+                "lyo-c2d975b25d9bd9c4a803276d",
+                "lyo-d990392b4c09c9af88123a2d",
+                "lyo-da924639f1da914f7b05e339",
+                "lyo-db67506f1899d7f8119532f8",
+                "lyo-e62269eaf559ecc6ad77e2e4",
+                "lyo-e824b5c3e928d84cc3ec5051"
+              ],
+              "ruleIds": [
+                "liuyao.rule.kongwang.apparent-void",
+                "liuyao.rule.kongwang.void",
+                "liuyao.rule.kongwang.void-clashed",
+                "liuyao.rule.mujue.day-tomb",
+                "liuyao.rule.mujue.terminal",
+                "liuyao.rule.wangshuai.confined",
+                "liuyao.rule.wangshuai.day-command",
+                "liuyao.rule.wangshuai.day-generates",
+                "liuyao.rule.wangshuai.day-overcomes",
+                "liuyao.rule.wangshuai.day-supports",
+                "liuyao.rule.wangshuai.dead",
+                "liuyao.rule.wangshuai.month-break",
+                "liuyao.rule.wangshuai.month-command",
+                "liuyao.rule.wangshuai.month-generates",
+                "liuyao.rule.wangshuai.month-overcomes",
+                "liuyao.rule.wangshuai.prosperous",
+                "liuyao.rule.wangshuai.resting",
+                "liuyao.rule.wangshuai.supported"
+              ],
+              "stageId": "liuyao.stage.04.calculate-state"
+            },
+            {
+              "notes": [],
+              "occurrenceIds": [],
+              "ruleIds": [],
+              "stageId": "liuyao.stage.05.calculate-availability"
+            },
+            {
+              "notes": [],
+              "occurrenceIds": [],
+              "ruleIds": [],
+              "stageId": "liuyao.stage.06.calculate-directed-effects"
+            },
+            {
+              "notes": [],
+              "occurrenceIds": [
+                "lyo-ced1a4cf916ebac0264d8309"
+              ],
+              "ruleIds": [
+                "liuyao.rule.guachange.six-clash"
+              ],
+              "stageId": "liuyao.stage.07.auxiliary-evidence"
+            },
+            {
+              "notes": [],
+              "occurrenceIds": [],
+              "ruleIds": [],
+              "stageId": "liuyao.stage.08.arbitrate-conflicts"
+            },
+            {
+              "notes": [],
+              "occurrenceIds": [
+                "lyf-0914c5632fe0242688174f9f",
+                "lyf-0f5a2764d7aa469f656715b8",
+                "lyf-1438a405ce501067cf7b0a5d",
+                "lyf-2e3926831b4b9becf08412f6"
+              ],
+              "ruleIds": [
+                "liuyao.decision.strong-clear",
+                "liuyao.rule.wangshuai.day-generates",
+                "liuyao.rule.wangshuai.month-command",
+                "liuyao.rule.wangshuai.prosperous"
+              ],
+              "stageId": "liuyao.stage.09.judge-verdict"
+            },
+            {
+              "notes": [],
+              "occurrenceIds": [],
+              "ruleIds": [],
+              "stageId": "liuyao.stage.10.calculate-timing"
+            },
+            {
+              "notes": [],
+              "occurrenceIds": [],
+              "ruleIds": [],
+              "stageId": "liuyao.stage.11.build-projection"
+            }
+          ],
+          "useSpirit": {
+            "maySuggestCandidates": false,
+            "mode": "selectedVisible",
+            "position": 5,
+            "selectedActorId": "main:yao:5",
+            "userOverride": true
+          },
+          "verdict": {
+            "matchedDecisionRowId": "liuyao.decision.strong-clear",
+            "nuance": null,
+            "summary": "用神兄弟申金，断曰：可成。应期候选仅表示条件触发窗口，不单独决定事情成败",
+            "trend": "keCheng"
+          }
+        },
+        "question": "兄弟所谋能否成"
+      },
+      "scoringReference": {
+        "allowedPanFactIds": [
+          "pan.calendar.dayGanZhi=戊戌",
+          "pan.calendar.hourGanZhi=戊午",
+          "pan.calendar.kongWang=巳",
+          "pan.calendar.kongWang=辰",
+          "pan.calendar.monthGanZhi=庚申",
+          "pan.calendar.yearGanZhi=癸卯",
+          "pan.calendar.yueJian=申",
+          "pan.castMethod=manual",
+          "pan.hasChangingGua=false",
+          "pan.liuShen.1=勾陈",
+          "pan.liuShen.2=腾蛇",
+          "pan.liuShen.3=白虎",
+          "pan.liuShen.4=玄武",
+          "pan.liuShen.5=青龙",
+          "pan.liuShen.6=朱雀",
+          "pan.mainGua.id=111111",
+          "pan.mainGua.name=乾为天",
+          "pan.mainGua.palace=qian",
+          "pan.mainGua.shiPosition=6",
+          "pan.mainGua.specialType=liuChong",
+          "pan.mainGua.yao.1.branch=子",
+          "pan.mainGua.yao.1.isMoving=false",
+          "pan.mainGua.yao.1.isShi=false",
+          "pan.mainGua.yao.1.isYang=true",
+          "pan.mainGua.yao.1.isYing=false",
+          "pan.mainGua.yao.1.liuQin=ziSun",
+          "pan.mainGua.yao.1.number=7",
+          "pan.mainGua.yao.1.stem=甲",
+          "pan.mainGua.yao.1.wuXing=shui",
+          "pan.mainGua.yao.2.branch=寅",
+          "pan.mainGua.yao.2.isMoving=false",
+          "pan.mainGua.yao.2.isShi=false",
+          "pan.mainGua.yao.2.isYang=true",
+          "pan.mainGua.yao.2.isYing=false",
+          "pan.mainGua.yao.2.liuQin=qiCai",
+          "pan.mainGua.yao.2.number=7",
+          "pan.mainGua.yao.2.stem=甲",
+          "pan.mainGua.yao.2.wuXing=mu",
+          "pan.mainGua.yao.3.branch=辰",
+          "pan.mainGua.yao.3.isMoving=false",
+          "pan.mainGua.yao.3.isShi=false",
+          "pan.mainGua.yao.3.isYang=true",
+          "pan.mainGua.yao.3.isYing=true",
+          "pan.mainGua.yao.3.liuQin=fuMu",
+          "pan.mainGua.yao.3.number=7",
+          "pan.mainGua.yao.3.stem=甲",
+          "pan.mainGua.yao.3.wuXing=tu",
+          "pan.mainGua.yao.4.branch=午",
+          "pan.mainGua.yao.4.isMoving=false",
+          "pan.mainGua.yao.4.isShi=false",
+          "pan.mainGua.yao.4.isYang=true",
+          "pan.mainGua.yao.4.isYing=false",
+          "pan.mainGua.yao.4.liuQin=guanGui",
+          "pan.mainGua.yao.4.number=7",
+          "pan.mainGua.yao.4.stem=壬",
+          "pan.mainGua.yao.4.wuXing=huo",
+          "pan.mainGua.yao.5.branch=申",
+          "pan.mainGua.yao.5.isMoving=false",
+          "pan.mainGua.yao.5.isShi=false",
+          "pan.mainGua.yao.5.isYang=true",
+          "pan.mainGua.yao.5.isYing=false",
+          "pan.mainGua.yao.5.liuQin=xiongDi",
+          "pan.mainGua.yao.5.number=7",
+          "pan.mainGua.yao.5.stem=壬",
+          "pan.mainGua.yao.5.wuXing=jin",
+          "pan.mainGua.yao.6.branch=戌",
+          "pan.mainGua.yao.6.isMoving=false",
+          "pan.mainGua.yao.6.isShi=true",
+          "pan.mainGua.yao.6.isYang=true",
+          "pan.mainGua.yao.6.isYing=false",
+          "pan.mainGua.yao.6.liuQin=fuMu",
+          "pan.mainGua.yao.6.number=7",
+          "pan.mainGua.yao.6.stem=壬",
+          "pan.mainGua.yao.6.wuXing=tu",
+          "pan.mainGua.yingPosition=3"
+        ],
+        "allowedSources": [
+          {
+            "exactQuotes": [],
+            "locators": [
+              "analysis-contract:phase-order-and-policy"
+            ],
+            "sourceId": "liuyao.source.project.analysis-contract"
+          },
+          {
+            "exactQuotes": [
+              "旺不为空，动不为空"
+            ],
+            "locators": [
+              "PDF 46 / printed 45, 旬空章",
+              "chapter locator for 临日建",
+              "chapter locator for 临月建",
+              "chapter locator for 临绝",
+              "chapter locator for 仇神",
+              "chapter locator for 休",
+              "chapter locator for 元神",
+              "chapter locator for 入日墓",
+              "chapter locator for 六冲卦",
+              "chapter locator for 冲空",
+              "chapter locator for 囚",
+              "chapter locator for 忌神",
+              "chapter locator for 日克",
+              "chapter locator for 日扶",
+              "chapter locator for 日生",
+              "chapter locator for 旺",
+              "chapter locator for 月克",
+              "chapter locator for 月生",
+              "chapter locator for 月破",
+              "chapter locator for 死",
+              "chapter locator for 用神",
+              "chapter locator for 相",
+              "chapter locator for 闲神"
+            ],
+            "sourceId": "liuyao.source.zengshan.zhongguonaner-pdf"
+          }
+        ],
+        "allowedTimingIds": [],
+        "expectedVerdictTrend": "keCheng",
+        "expectedYongShenActorId": "main:yao:5",
+        "requiredConditionIds": []
+      }
+    },
+    {
+      "caseId": "liuyao.case.golden.007",
+      "caseKind": "originalBook",
+      "cohortIds": [
+        "overall",
+        "originalBook",
+        "calibration"
+      ],
+      "evaluationSplit": "calibration",
+      "requestInput": {
+        "projection": {
+          "actorAvailability": [
+            {
+              "actor": {
+                "actorId": "main:yao:1",
+                "branch": "子",
+                "isMoving": false,
+                "kind": "mainYao",
+                "liuQin": "ziSun",
+                "position": 1,
+                "wuXing": "shui"
+              },
+              "reasonRuleIds": [],
+              "releaseConditionRuleIds": [],
+              "state": "active",
+              "suppressedByOccurrenceIds": []
+            },
+            {
+              "actor": {
+                "actorId": "main:yao:2",
+                "branch": "寅",
+                "isMoving": false,
+                "kind": "mainYao",
+                "liuQin": "qiCai",
+                "position": 2,
+                "wuXing": "mu"
+              },
+              "reasonRuleIds": [],
+              "releaseConditionRuleIds": [],
+              "state": "active",
+              "suppressedByOccurrenceIds": []
+            },
+            {
+              "actor": {
+                "actorId": "main:yao:3",
+                "branch": "辰",
+                "isMoving": false,
+                "kind": "mainYao",
+                "liuQin": "fuMu",
+                "position": 3,
+                "wuXing": "tu"
+              },
+              "reasonRuleIds": [],
+              "releaseConditionRuleIds": [],
+              "state": "active",
+              "suppressedByOccurrenceIds": []
+            },
+            {
+              "actor": {
+                "actorId": "main:yao:4",
+                "branch": "午",
+                "isMoving": false,
+                "kind": "mainYao",
+                "liuQin": "guanGui",
+                "position": 4,
+                "wuXing": "huo"
+              },
+              "reasonRuleIds": [
+                "liuyao.project.availability.true-void-unavailable",
+                "liuyao.rule.kongwang.true-void",
+                "liuyao.rule.kongwang.void"
+              ],
+              "releaseConditionRuleIds": [],
+              "state": "unavailable",
+              "suppressedByOccurrenceIds": [
+                "lyo-0353a6ff415da335c490bde1",
+                "lyo-d3be6defb6f653c8ac84272d"
+              ]
+            },
+            {
+              "actor": {
+                "actorId": "main:yao:5",
+                "branch": "申",
+                "isMoving": false,
+                "kind": "mainYao",
+                "liuQin": "xiongDi",
+                "position": 5,
+                "wuXing": "jin"
+              },
+              "reasonRuleIds": [],
+              "releaseConditionRuleIds": [],
+              "state": "active",
+              "suppressedByOccurrenceIds": []
+            },
+            {
+              "actor": {
+                "actorId": "main:yao:6",
+                "branch": "戌",
+                "isMoving": true,
+                "kind": "mainYao",
+                "liuQin": "fuMu",
+                "position": 6,
+                "wuXing": "tu"
+              },
+              "reasonRuleIds": [
+                "liuyao.project.availability.retreat-blocks",
+                "liuyao.rule.dongbian.retreat"
+              ],
+              "releaseConditionRuleIds": [],
+              "state": "suppressed",
+              "suppressedByOccurrenceIds": [
+                "lyo-ac42cddd19d50462e936d8c3"
+              ]
+            },
+            {
+              "actor": {
+                "actorId": "changed:yao:6",
+                "branch": "未",
+                "isMoving": false,
+                "kind": "changedYao",
+                "liuQin": "fuMu",
+                "position": 6,
+                "wuXing": "tu"
+              },
+              "reasonRuleIds": [],
+              "releaseConditionRuleIds": [],
+              "state": "active",
+              "suppressedByOccurrenceIds": []
+            },
+            {
+              "actor": {
+                "actorId": "calendar:day",
+                "branch": "子",
+                "isMoving": false,
+                "kind": "calendarDay",
+                "liuQin": null,
+                "position": null,
+                "wuXing": "shui"
+              },
+              "reasonRuleIds": [],
+              "releaseConditionRuleIds": [],
+              "state": "active",
+              "suppressedByOccurrenceIds": []
+            },
+            {
+              "actor": {
+                "actorId": "calendar:month",
+                "branch": "辰",
+                "isMoving": false,
+                "kind": "calendarMonth",
+                "liuQin": null,
+                "position": null,
+                "wuXing": "tu"
+              },
+              "reasonRuleIds": [],
+              "releaseConditionRuleIds": [],
+              "state": "active",
+              "suppressedByOccurrenceIds": []
+            }
+          ],
+          "analysisSchemaVersion": 1,
+          "analysisStages": [
+            "liuyao.stage.01.validate-input",
+            "liuyao.stage.02.freeze-facts",
+            "liuyao.stage.03.build-roles",
+            "liuyao.stage.04.calculate-state",
+            "liuyao.stage.05.calculate-availability",
+            "liuyao.stage.06.calculate-directed-effects",
+            "liuyao.stage.07.auxiliary-evidence",
+            "liuyao.stage.08.arbitrate-conflicts",
+            "liuyao.stage.09.judge-verdict",
+            "liuyao.stage.10.calculate-timing",
+            "liuyao.stage.11.build-projection"
+          ],
+          "auxiliaryEvidence": [
+            {
+              "active": true,
+              "category": "guaChange",
+              "occurrenceId": "lyo-ced1a4cf916ebac0264d8309",
+              "polarity": "neutral",
+              "priority": 9,
+              "reason": "本卦六爻逐位相冲，主散、主快",
+              "relatedYao": [],
+              "ruleId": "liuyao.rule.guachange.six-clash",
+              "sourceIds": [
+                "liuyao.source.zengshan.zhongguonaner-pdf"
+              ],
+              "suppressedByOccurrenceIds": [],
+              "suppressedByRuleIds": [],
+              "term": "六冲卦"
+            }
+          ],
+          "conditions": [
+            {
+              "branch": "戌",
+              "conditionId": "lyc-66cb92d81ae97496441b78e0",
+              "conditionRuleId": "liuyao.condition.month-break.exit-fill-or-join",
+              "hasRescue": true,
+              "label": "待出月",
+              "reason": "月破待出月、填实或逢合解破",
+              "sourceIds": [
+                "liuyao.source.project.analysis-contract",
+                "liuyao.source.zengshan.zhongguonaner-pdf"
+              ],
+              "status": "unresolved",
+              "upstreamOccurrenceIds": [
+                "lyo-9f03a2b3adf0e8c3a74d17fe"
+              ]
+            },
+            {
+              "branch": "戌",
+              "conditionId": "lyc-0aeec0f9c115ddbe9c9760fc",
+              "conditionRuleId": "liuyao.condition.tomb.clash-open",
+              "hasRescue": true,
+              "label": "待冲开墓库",
+              "reason": "入墓待冲开墓库辰之日",
+              "sourceIds": [
+                "liuyao.source.project.analysis-contract",
+                "liuyao.source.zengshan.zhongguonaner-pdf"
+              ],
+              "status": "unresolved",
+              "upstreamOccurrenceIds": [
+                "lyo-87b8bc09484346e1bf1464c3"
+              ]
+            },
+            {
+              "branch": "未",
+              "conditionId": "lyc-1331c207a3d52dd13a063d1a",
+              "conditionRuleId": "liuyao.condition.changed-void.fill-or-clash",
+              "hasRescue": true,
+              "label": "待变爻填实",
+              "reason": "动而化空，变爻未出空填实之日应之",
+              "sourceIds": [
+                "liuyao.source.project.analysis-contract",
+                "liuyao.source.zengshan.zhongguonaner-pdf"
+              ],
+              "status": "unresolved",
+              "upstreamOccurrenceIds": [
+                "lyo-633ee1c86d34104dade2dfa1"
+              ]
+            }
+          ],
+          "conflicts": [
+            {
+              "active": false,
+              "category": "shengKe",
+              "occurrenceId": "lyo-1fe0011ca557f1ceb27e5c52",
+              "polarity": "xiong",
+              "priority": 37,
+              "reason": "6爻戌受制，不能克本爻",
+              "relatedYao": [
+                6
+              ],
+              "ruleId": "liuyao.rule.shengke.moving-overcomes",
+              "sourceIds": [
+                "liuyao.source.zengshan.zhongguonaner-pdf"
+              ],
+              "suppressedByOccurrenceIds": [],
+              "suppressedByRuleIds": [
+                "liuyao.project.availability.retreat-blocks",
+                "liuyao.rule.dongbian.retreat"
+              ],
+              "term": "动爻克"
+            },
+            {
+              "active": false,
+              "category": "shengKe",
+              "occurrenceId": "lyo-93cc8e67db0346ed1bb55f67",
+              "polarity": "ji",
+              "priority": 39,
+              "reason": "6爻戌受制，不能拱扶本爻",
+              "relatedYao": [
+                6
+              ],
+              "ruleId": "liuyao.rule.shengke.moving-supports",
+              "sourceIds": [
+                "liuyao.source.zengshan.zhongguonaner-pdf"
+              ],
+              "suppressedByOccurrenceIds": [],
+              "suppressedByRuleIds": [
+                "liuyao.project.availability.retreat-blocks",
+                "liuyao.rule.dongbian.retreat"
+              ],
+              "term": "动爻扶"
+            },
+            {
+              "active": false,
+              "category": "shengKe",
+              "occurrenceId": "lyo-d5b16a50849a491fefac5626",
+              "polarity": "ji",
+              "priority": 38,
+              "reason": "6爻戌受制，不能生本爻",
+              "relatedYao": [
+                6
+              ],
+              "ruleId": "liuyao.rule.shengke.moving-generates",
+              "sourceIds": [
+                "liuyao.source.zengshan.zhongguonaner-pdf"
+              ],
+              "suppressedByOccurrenceIds": [],
+              "suppressedByRuleIds": [
+                "liuyao.project.availability.retreat-blocks",
+                "liuyao.rule.dongbian.retreat"
+              ],
+              "term": "动爻生"
+            },
+            {
+              "effect": "ke",
+              "fromActor": {
+                "actorId": "main:yao:6",
+                "branch": "戌",
+                "isMoving": true,
+                "kind": "mainYao",
+                "liuQin": "fuMu",
+                "position": 6,
+                "wuXing": "tu"
+              },
+              "inputRefs": [
+                "mainGua.yaos[6]",
+                "mainGua.yaos[1]"
+              ],
+              "occurrenceId": "lyo-1fe0011ca557f1ceb27e5c52",
+              "pathActorIds": [
+                "main:yao:6",
+                "main:yao:1"
+              ],
+              "pathStep": 0,
+              "ruleId": "liuyao.rule.shengke.moving-overcomes",
+              "sourceIds": [
+                "liuyao.source.zengshan.zhongguonaner-pdf"
+              ],
+              "status": "suppressed",
+              "suppressedByOccurrenceIds": [
+                "lyo-ac42cddd19d50462e936d8c3"
+              ],
+              "suppressedByRuleIds": [
+                "liuyao.project.availability.retreat-blocks",
+                "liuyao.rule.dongbian.retreat"
+              ],
+              "toActor": {
+                "actorId": "main:yao:1",
+                "branch": "子",
+                "isMoving": false,
+                "kind": "mainYao",
+                "liuQin": "ziSun",
+                "position": 1,
+                "wuXing": "shui"
+              }
+            },
+            {
+              "effect": "fu",
+              "fromActor": {
+                "actorId": "main:yao:6",
+                "branch": "戌",
+                "isMoving": true,
+                "kind": "mainYao",
+                "liuQin": "fuMu",
+                "position": 6,
+                "wuXing": "tu"
+              },
+              "inputRefs": [
+                "mainGua.yaos[6]",
+                "mainGua.yaos[3]"
+              ],
+              "occurrenceId": "lyo-93cc8e67db0346ed1bb55f67",
+              "pathActorIds": [
+                "main:yao:6",
+                "main:yao:3"
+              ],
+              "pathStep": 0,
+              "ruleId": "liuyao.rule.shengke.moving-supports",
+              "sourceIds": [
+                "liuyao.source.zengshan.zhongguonaner-pdf"
+              ],
+              "status": "suppressed",
+              "suppressedByOccurrenceIds": [
+                "lyo-ac42cddd19d50462e936d8c3"
+              ],
+              "suppressedByRuleIds": [
+                "liuyao.project.availability.retreat-blocks",
+                "liuyao.rule.dongbian.retreat"
+              ],
+              "toActor": {
+                "actorId": "main:yao:3",
+                "branch": "辰",
+                "isMoving": false,
+                "kind": "mainYao",
+                "liuQin": "fuMu",
+                "position": 3,
+                "wuXing": "tu"
+              }
+            },
+            {
+              "effect": "sheng",
+              "fromActor": {
+                "actorId": "main:yao:6",
+                "branch": "戌",
+                "isMoving": true,
+                "kind": "mainYao",
+                "liuQin": "fuMu",
+                "position": 6,
+                "wuXing": "tu"
+              },
+              "inputRefs": [
+                "mainGua.yaos[6]",
+                "mainGua.yaos[5]"
+              ],
+              "occurrenceId": "lyo-d5b16a50849a491fefac5626",
+              "pathActorIds": [
+                "main:yao:6",
+                "main:yao:5"
+              ],
+              "pathStep": 0,
+              "ruleId": "liuyao.rule.shengke.moving-generates",
+              "sourceIds": [
+                "liuyao.source.zengshan.zhongguonaner-pdf"
+              ],
+              "status": "suppressed",
+              "suppressedByOccurrenceIds": [
+                "lyo-ac42cddd19d50462e936d8c3"
+              ],
+              "suppressedByRuleIds": [
+                "liuyao.project.availability.retreat-blocks",
+                "liuyao.rule.dongbian.retreat"
+              ],
+              "toActor": {
+                "actorId": "main:yao:5",
+                "branch": "申",
+                "isMoving": false,
+                "kind": "mainYao",
+                "liuQin": "xiongDi",
+                "position": 5,
+                "wuXing": "jin"
+              }
+            }
+          ],
+          "diagnostics": [],
+          "directedEffects": [
+            {
+              "effect": "ke",
+              "fromActor": {
+                "actorId": "main:yao:6",
+                "branch": "戌",
+                "isMoving": true,
+                "kind": "mainYao",
+                "liuQin": "fuMu",
+                "position": 6,
+                "wuXing": "tu"
+              },
+              "inputRefs": [
+                "mainGua.yaos[6]",
+                "mainGua.yaos[1]"
+              ],
+              "occurrenceId": "lyo-1fe0011ca557f1ceb27e5c52",
+              "pathActorIds": [
+                "main:yao:6",
+                "main:yao:1"
+              ],
+              "pathStep": 0,
+              "ruleId": "liuyao.rule.shengke.moving-overcomes",
+              "sourceIds": [
+                "liuyao.source.zengshan.zhongguonaner-pdf"
+              ],
+              "status": "suppressed",
+              "suppressedByOccurrenceIds": [
+                "lyo-ac42cddd19d50462e936d8c3"
+              ],
+              "suppressedByRuleIds": [
+                "liuyao.project.availability.retreat-blocks",
+                "liuyao.rule.dongbian.retreat"
+              ],
+              "toActor": {
+                "actorId": "main:yao:1",
+                "branch": "子",
+                "isMoving": false,
+                "kind": "mainYao",
+                "liuQin": "ziSun",
+                "position": 1,
+                "wuXing": "shui"
+              }
+            },
+            {
+              "effect": "fu",
+              "fromActor": {
+                "actorId": "main:yao:6",
+                "branch": "戌",
+                "isMoving": true,
+                "kind": "mainYao",
+                "liuQin": "fuMu",
+                "position": 6,
+                "wuXing": "tu"
+              },
+              "inputRefs": [
+                "mainGua.yaos[6]",
+                "mainGua.yaos[3]"
+              ],
+              "occurrenceId": "lyo-93cc8e67db0346ed1bb55f67",
+              "pathActorIds": [
+                "main:yao:6",
+                "main:yao:3"
+              ],
+              "pathStep": 0,
+              "ruleId": "liuyao.rule.shengke.moving-supports",
+              "sourceIds": [
+                "liuyao.source.zengshan.zhongguonaner-pdf"
+              ],
+              "status": "suppressed",
+              "suppressedByOccurrenceIds": [
+                "lyo-ac42cddd19d50462e936d8c3"
+              ],
+              "suppressedByRuleIds": [
+                "liuyao.project.availability.retreat-blocks",
+                "liuyao.rule.dongbian.retreat"
+              ],
+              "toActor": {
+                "actorId": "main:yao:3",
+                "branch": "辰",
+                "isMoving": false,
+                "kind": "mainYao",
+                "liuQin": "fuMu",
+                "position": 3,
+                "wuXing": "tu"
+              }
+            },
+            {
+              "effect": "sheng",
+              "fromActor": {
+                "actorId": "main:yao:6",
+                "branch": "戌",
+                "isMoving": true,
+                "kind": "mainYao",
+                "liuQin": "fuMu",
+                "position": 6,
+                "wuXing": "tu"
+              },
+              "inputRefs": [
+                "mainGua.yaos[6]",
+                "mainGua.yaos[5]"
+              ],
+              "occurrenceId": "lyo-d5b16a50849a491fefac5626",
+              "pathActorIds": [
+                "main:yao:6",
+                "main:yao:5"
+              ],
+              "pathStep": 0,
+              "ruleId": "liuyao.rule.shengke.moving-generates",
+              "sourceIds": [
+                "liuyao.source.zengshan.zhongguonaner-pdf"
+              ],
+              "status": "suppressed",
+              "suppressedByOccurrenceIds": [
+                "lyo-ac42cddd19d50462e936d8c3"
+              ],
+              "suppressedByRuleIds": [
+                "liuyao.project.availability.retreat-blocks",
+                "liuyao.rule.dongbian.retreat"
+              ],
+              "toActor": {
+                "actorId": "main:yao:5",
+                "branch": "申",
+                "isMoving": false,
+                "kind": "mainYao",
+                "liuQin": "xiongDi",
+                "position": 5,
+                "wuXing": "jin"
+              }
+            }
+          ],
+          "factors": [
+            {
+              "active": true,
+              "arbitrationOrder": 4,
+              "arbitrationTier": 1,
+              "decisionRowId": "",
+              "effect": "fu",
+              "factorId": "lyf-5e1802aa95ae57948e498f6b",
+              "reason": "土于辰月为旺",
+              "rule": "旺",
+              "ruleId": "liuyao.rule.wangshuai.prosperous",
+              "source": "《增删卜易》",
+              "sourceIds": [
+                "liuyao.source.zengshan.zhongguonaner-pdf"
+              ],
+              "upstreamOccurrenceIds": [
+                "lyo-589e2d43e26d4c34660feb90"
+              ]
+            },
+            {
+              "active": true,
+              "arbitrationOrder": 1,
+              "arbitrationTier": 4,
+              "decisionRowId": "",
+              "effect": "yi",
+              "factorId": "lyf-75f3bd597fe25b464c130a49",
+              "reason": "戌化未，同气逆行为退",
+              "rule": "化退神",
+              "ruleId": "liuyao.rule.dongbian.retreat",
+              "source": "《增删卜易》",
+              "sourceIds": [
+                "liuyao.source.zengshan.zhongguonaner-pdf"
+              ],
+              "upstreamOccurrenceIds": [
+                "lyo-ac42cddd19d50462e936d8c3"
+              ]
+            },
+            {
+              "active": true,
+              "arbitrationOrder": 0,
+              "arbitrationTier": 5,
+              "decisionRowId": "",
+              "effect": "suspend",
+              "factorId": "lyf-35bb3374cf59e8ed37111cae",
+              "reason": "月建辰冲爻支戌",
+              "rule": "月破",
+              "ruleId": "liuyao.rule.wangshuai.month-break",
+              "source": "《增删卜易》",
+              "sourceIds": [
+                "liuyao.source.zengshan.zhongguonaner-pdf"
+              ],
+              "upstreamOccurrenceIds": [
+                "lyo-9f03a2b3adf0e8c3a74d17fe"
+              ]
+            },
+            {
+              "active": true,
+              "arbitrationOrder": 2,
+              "arbitrationTier": 5,
+              "decisionRowId": "",
+              "effect": "suspend",
+              "factorId": "lyf-da41d02c76d86f5fba5c803a",
+              "reason": "土墓于辰，月建即墓库",
+              "rule": "入月墓",
+              "ruleId": "liuyao.rule.mujue.month-tomb",
+              "source": "《增删卜易》",
+              "sourceIds": [
+                "liuyao.source.zengshan.zhongguonaner-pdf"
+              ],
+              "upstreamOccurrenceIds": [
+                "lyo-87b8bc09484346e1bf1464c3"
+              ]
+            },
+            {
+              "active": true,
+              "arbitrationOrder": 3,
+              "arbitrationTier": 5,
+              "decisionRowId": "",
+              "effect": "suspend",
+              "factorId": "lyf-aef38f6956dc27ff3e361442",
+              "reason": "变爻未旬空，出空之日应之",
+              "rule": "化空",
+              "ruleId": "liuyao.rule.dongbian.changed-void",
+              "source": "《增删卜易》",
+              "sourceIds": [
+                "liuyao.source.zengshan.zhongguonaner-pdf"
+              ],
+              "upstreamOccurrenceIds": [
+                "lyo-633ee1c86d34104dade2dfa1"
+              ]
+            },
+            {
+              "active": true,
+              "arbitrationOrder": 5,
+              "arbitrationTier": 9,
+              "decisionRowId": "liuyao.decision.mixed-rescuable-conditions",
+              "effect": "neutral",
+              "factorId": "lyf-90f621183cbbd6409072b241",
+              "reason": "决策表命中：待条件（待解除后再断）",
+              "rule": "裁决·悬而未决",
+              "ruleId": "liuyao.decision.mixed-rescuable-conditions",
+              "source": "项目约定·六爻分析合同",
+              "sourceIds": [
+                "liuyao.source.project.analysis-contract"
+              ],
+              "upstreamOccurrenceIds": [
+                "lyo-589e2d43e26d4c34660feb90",
+                "lyo-633ee1c86d34104dade2dfa1",
+                "lyo-87b8bc09484346e1bf1464c3",
+                "lyo-9f03a2b3adf0e8c3a74d17fe",
+                "lyo-ac42cddd19d50462e936d8c3"
+              ]
+            }
+          ],
+          "pan": {
+            "calendar": {
+              "dayGanZhi": "戊子",
+              "hourGanZhi": "戊午",
+              "kongWang": [
+                "午",
+                "未"
+              ],
+              "monthGanZhi": "丙辰",
+              "yearGanZhi": "癸卯",
+              "yueJian": "辰"
+            },
+            "castMethod": "manual",
+            "changingGua": {
+              "id": "111110",
+              "name": "泽天夬",
+              "palace": "kun",
+              "shiPosition": 5,
+              "specialType": "none",
+              "yaos": [
+                {
+                  "branch": "子",
+                  "isMoving": false,
+                  "isShi": false,
+                  "isYang": true,
+                  "isYing": false,
+                  "liuQin": "ziSun",
+                  "number": 7,
+                  "position": 1,
+                  "stem": "甲",
+                  "wuXing": "shui"
+                },
+                {
+                  "branch": "寅",
+                  "isMoving": false,
+                  "isShi": false,
+                  "isYang": true,
+                  "isYing": true,
+                  "liuQin": "qiCai",
+                  "number": 7,
+                  "position": 2,
+                  "stem": "甲",
+                  "wuXing": "mu"
+                },
+                {
+                  "branch": "辰",
+                  "isMoving": false,
+                  "isShi": false,
+                  "isYang": true,
+                  "isYing": false,
+                  "liuQin": "fuMu",
+                  "number": 7,
+                  "position": 3,
+                  "stem": "甲",
+                  "wuXing": "tu"
+                },
+                {
+                  "branch": "亥",
+                  "isMoving": false,
+                  "isShi": false,
+                  "isYang": true,
+                  "isYing": false,
+                  "liuQin": "ziSun",
+                  "number": 7,
+                  "position": 4,
+                  "stem": "丁",
+                  "wuXing": "shui"
+                },
+                {
+                  "branch": "酉",
+                  "isMoving": false,
+                  "isShi": true,
+                  "isYang": true,
+                  "isYing": false,
+                  "liuQin": "xiongDi",
+                  "number": 7,
+                  "position": 5,
+                  "stem": "丁",
+                  "wuXing": "jin"
+                },
+                {
+                  "branch": "未",
+                  "isMoving": false,
+                  "isShi": false,
+                  "isYang": false,
+                  "isYing": false,
+                  "liuQin": "fuMu",
+                  "number": 8,
+                  "position": 6,
+                  "stem": "丁",
+                  "wuXing": "tu"
+                }
+              ],
+              "yingPosition": 2
+            },
+            "hasChangingGua": true,
+            "liuShen": [
+              "勾陈",
+              "腾蛇",
+              "白虎",
+              "玄武",
+              "青龙",
+              "朱雀"
+            ],
+            "mainGua": {
+              "id": "111111",
+              "name": "乾为天",
+              "palace": "qian",
+              "shiPosition": 6,
+              "specialType": "liuChong",
+              "yaos": [
+                {
+                  "branch": "子",
+                  "isMoving": false,
+                  "isShi": false,
+                  "isYang": true,
+                  "isYing": false,
+                  "liuQin": "ziSun",
+                  "number": 7,
+                  "position": 1,
+                  "stem": "甲",
+                  "wuXing": "shui"
+                },
+                {
+                  "branch": "寅",
+                  "isMoving": false,
+                  "isShi": false,
+                  "isYang": true,
+                  "isYing": false,
+                  "liuQin": "qiCai",
+                  "number": 7,
+                  "position": 2,
+                  "stem": "甲",
+                  "wuXing": "mu"
+                },
+                {
+                  "branch": "辰",
+                  "isMoving": false,
+                  "isShi": false,
+                  "isYang": true,
+                  "isYing": true,
+                  "liuQin": "fuMu",
+                  "number": 7,
+                  "position": 3,
+                  "stem": "甲",
+                  "wuXing": "tu"
+                },
+                {
+                  "branch": "午",
+                  "isMoving": false,
+                  "isShi": false,
+                  "isYang": true,
+                  "isYing": false,
+                  "liuQin": "guanGui",
+                  "number": 7,
+                  "position": 4,
+                  "stem": "壬",
+                  "wuXing": "huo"
+                },
+                {
+                  "branch": "申",
+                  "isMoving": false,
+                  "isShi": false,
+                  "isYang": true,
+                  "isYing": false,
+                  "liuQin": "xiongDi",
+                  "number": 7,
+                  "position": 5,
+                  "stem": "壬",
+                  "wuXing": "jin"
+                },
+                {
+                  "branch": "戌",
+                  "isMoving": true,
+                  "isShi": true,
+                  "isYang": true,
+                  "isYing": false,
+                  "liuQin": "fuMu",
+                  "number": 9,
+                  "position": 6,
+                  "stem": "壬",
+                  "wuXing": "tu"
+                }
+              ],
+              "yingPosition": 3
+            }
+          },
+          "policy": {
+            "calculationOwner": "program",
+            "mayInventSources": false,
+            "mayInventTiming": false,
+            "mayOverrideVerdict": false,
+            "mayRecalculateAnalysis": false,
+            "mayRecalculatePan": false,
+            "mayReselectYongShen": false,
+            "maySuggestYongShen": false,
+            "timingIsGuarantee": false
+          },
+          "projectionSchemaVersion": 1,
+          "roles": [
+            {
+              "actor": {
+                "actorId": "main:yao:1",
+                "branch": "子",
+                "isMoving": false,
+                "kind": "mainYao",
+                "liuQin": "ziSun",
+                "position": 1,
+                "wuXing": "shui"
+              },
+              "reason": "克元神并生忌神者为仇神",
+              "representative": true,
+              "role": "chouShen",
+              "roleRuleId": "liuyao.rule.liuqin.enemy-spirit",
+              "selected": false
+            },
+            {
+              "actor": {
+                "actorId": "main:yao:2",
+                "branch": "寅",
+                "isMoving": false,
+                "kind": "mainYao",
+                "liuQin": "qiCai",
+                "position": 2,
+                "wuXing": "mu"
+              },
+              "reason": "克用神者为忌神",
+              "representative": true,
+              "role": "jiShen",
+              "roleRuleId": "liuyao.rule.liuqin.adverse-spirit",
+              "selected": false
+            },
+            {
+              "actor": {
+                "actorId": "main:yao:3",
+                "branch": "辰",
+                "isMoving": false,
+                "kind": "mainYao",
+                "liuQin": "fuMu",
+                "position": 3,
+                "wuXing": "tu"
+              },
+              "reason": "与所选用神同六亲",
+              "representative": false,
+              "role": "duplicateYongShen",
+              "roleRuleId": "liuyao.rule.liuqin.duplicate-use-spirit",
+              "selected": false
+            },
+            {
+              "actor": {
+                "actorId": "main:yao:4",
+                "branch": "午",
+                "isMoving": false,
+                "kind": "mainYao",
+                "liuQin": "guanGui",
+                "position": 4,
+                "wuXing": "huo"
+              },
+              "reason": "生用神者为元神",
+              "representative": true,
+              "role": "yuanShen",
+              "roleRuleId": "liuyao.rule.liuqin.source-spirit",
+              "selected": false
+            },
+            {
+              "actor": {
+                "actorId": "main:yao:5",
+                "branch": "申",
+                "isMoving": false,
+                "kind": "mainYao",
+                "liuQin": "xiongDi",
+                "position": 5,
+                "wuXing": "jin"
+              },
+              "reason": "不属用、元、忌、仇的本卦爻",
+              "representative": false,
+              "role": "xianShen",
+              "roleRuleId": "liuyao.rule.liuqin.idle-spirit",
+              "selected": false
+            },
+            {
+              "actor": {
+                "actorId": "main:yao:6",
+                "branch": "戌",
+                "isMoving": true,
+                "kind": "mainYao",
+                "liuQin": "fuMu",
+                "position": 6,
+                "wuXing": "tu"
+              },
+              "reason": "用户选定的用神",
+              "representative": true,
+              "role": "yongShen",
+              "roleRuleId": "liuyao.rule.liuqin.selected-use-spirit",
+              "selected": true
+            }
+          ],
+          "ruleSetId": "liuyao-zengshan-primary",
+          "ruleSetVersion": "v2",
+          "selectedUseSpiritFacts": [
+            {
+              "active": true,
+              "category": "liuQin",
+              "occurrenceId": "lyo-3f29929f076a307d571cd157",
+              "polarity": "neutral",
+              "priority": 0,
+              "reason": "所占之事以此爻为用",
+              "relatedYao": [],
+              "ruleId": "liuyao.rule.liuqin.selected-use-spirit",
+              "sourceIds": [
+                "liuyao.source.zengshan.zhongguonaner-pdf"
+              ],
+              "suppressedByOccurrenceIds": [],
+              "suppressedByRuleIds": [],
+              "term": "用神"
+            },
+            {
+              "active": true,
+              "category": "wangShuai",
+              "occurrenceId": "lyo-9f03a2b3adf0e8c3a74d17fe",
+              "polarity": "xiong",
+              "priority": 2,
+              "reason": "月建辰冲爻支戌",
+              "relatedYao": [],
+              "ruleId": "liuyao.rule.wangshuai.month-break",
+              "sourceIds": [
+                "liuyao.source.zengshan.zhongguonaner-pdf"
+              ],
+              "suppressedByOccurrenceIds": [],
+              "suppressedByRuleIds": [],
+              "term": "月破"
+            },
+            {
+              "active": true,
+              "category": "dongBian",
+              "occurrenceId": "lyo-ac42cddd19d50462e936d8c3",
+              "polarity": "xiong",
+              "priority": 17,
+              "reason": "戌化未，同气逆行为退",
+              "relatedYao": [],
+              "ruleId": "liuyao.rule.dongbian.retreat",
+              "sourceIds": [
+                "liuyao.source.zengshan.zhongguonaner-pdf"
+              ],
+              "suppressedByOccurrenceIds": [],
+              "suppressedByRuleIds": [],
+              "term": "化退神"
+            },
+            {
+              "active": true,
+              "category": "dongBian",
+              "occurrenceId": "lyo-5efa8b80e27e57a8801ddc19",
+              "polarity": "neutral",
+              "priority": 18,
+              "reason": "六爻唯此爻独动，事应专一",
+              "relatedYao": [],
+              "ruleId": "liuyao.rule.dongbian.single-moving",
+              "sourceIds": [
+                "liuyao.source.zengshan.zhongguonaner-pdf"
+              ],
+              "suppressedByOccurrenceIds": [],
+              "suppressedByRuleIds": [],
+              "term": "独发"
+            },
+            {
+              "active": true,
+              "category": "muJue",
+              "occurrenceId": "lyo-87b8bc09484346e1bf1464c3",
+              "polarity": "xiong",
+              "priority": 21,
+              "reason": "土墓于辰，月建即墓库",
+              "relatedYao": [],
+              "ruleId": "liuyao.rule.mujue.month-tomb",
+              "sourceIds": [
+                "liuyao.source.zengshan.zhongguonaner-pdf"
+              ],
+              "suppressedByOccurrenceIds": [],
+              "suppressedByRuleIds": [],
+              "term": "入月墓"
+            },
+            {
+              "active": true,
+              "category": "dongBian",
+              "occurrenceId": "lyo-633ee1c86d34104dade2dfa1",
+              "polarity": "neutral",
+              "priority": 24,
+              "reason": "变爻未旬空，出空之日应之",
+              "relatedYao": [],
+              "ruleId": "liuyao.rule.dongbian.changed-void",
+              "sourceIds": [
+                "liuyao.source.zengshan.zhongguonaner-pdf"
+              ],
+              "suppressedByOccurrenceIds": [],
+              "suppressedByRuleIds": [],
+              "term": "化空"
+            },
+            {
+              "active": true,
+              "category": "heChong",
+              "occurrenceId": "lyo-00f55a579270fdc6f38e156c",
+              "polarity": "neutral",
+              "priority": 28,
+              "reason": "辰戌相冲",
+              "relatedYao": [
+                3
+              ],
+              "ruleId": "liuyao.rule.hechong.mutual-clash",
+              "sourceIds": [
+                "liuyao.source.zengshan.zhongguonaner-pdf"
+              ],
+              "suppressedByOccurrenceIds": [],
+              "suppressedByRuleIds": [],
+              "term": "相冲"
+            },
+            {
+              "active": true,
+              "category": "wangShuai",
+              "occurrenceId": "lyo-589e2d43e26d4c34660feb90",
+              "polarity": "ji",
+              "priority": 35,
+              "reason": "土于辰月为旺",
+              "relatedYao": [],
+              "ruleId": "liuyao.rule.wangshuai.prosperous",
+              "sourceIds": [
+                "liuyao.source.zengshan.zhongguonaner-pdf"
+              ],
+              "suppressedByOccurrenceIds": [],
+              "suppressedByRuleIds": [],
+              "term": "旺"
+            }
+          ],
+          "sourceCatalogVersion": "liuyao-evidence/1.0.0",
+          "sources": [
+            {
+              "adjudication": "Executable project convention; never presented as a quote.",
+              "adoptionStatus": "adopted",
+              "edition": "liuyao-evidence/1.0.0",
+              "kind": "projectContract",
+              "pageSystem": "stable section locator",
+              "publicLocator": ".trellis/spec/domain/liuyao-analysis-engine.md",
+              "references": [
+                {
+                  "adoptionNote": "Executable software convention, not a classical quotation.",
+                  "evidenceLevel": "D",
+                  "locator": "analysis-contract:phase-order-and-policy",
+                  "primaryTerm": "待变爻填实",
+                  "referenceKind": "projectConvention",
+                  "ruleId": "liuyao.condition.changed-void.fill-or-clash"
+                },
+                {
+                  "adoptionNote": "Executable software convention, not a classical quotation.",
+                  "evidenceLevel": "D",
+                  "locator": "analysis-contract:phase-order-and-policy",
+                  "primaryTerm": "待出月",
+                  "referenceKind": "projectConvention",
+                  "ruleId": "liuyao.condition.month-break.exit-fill-or-join"
+                },
+                {
+                  "adoptionNote": "Executable software convention, not a classical quotation.",
+                  "evidenceLevel": "D",
+                  "locator": "analysis-contract:phase-order-and-policy",
+                  "primaryTerm": "待冲开墓库",
+                  "referenceKind": "projectConvention",
+                  "ruleId": "liuyao.condition.tomb.clash-open"
+                },
+                {
+                  "adoptionNote": "Executable software convention, not a classical quotation.",
+                  "evidenceLevel": "D",
+                  "locator": "analysis-contract:phase-order-and-policy",
+                  "primaryTerm": "悬而未决",
+                  "referenceKind": "projectConvention",
+                  "ruleId": "liuyao.decision.mixed-rescuable-conditions"
+                },
+                {
+                  "adoptionNote": "Executable software convention, not a classical quotation.",
+                  "evidenceLevel": "D",
+                  "locator": "analysis-contract:phase-order-and-policy",
+                  "primaryTerm": "化退阻断作用者",
+                  "referenceKind": "projectConvention",
+                  "ruleId": "liuyao.project.availability.retreat-blocks"
+                },
+                {
+                  "adoptionNote": "Executable software convention, not a classical quotation.",
+                  "evidenceLevel": "D",
+                  "locator": "analysis-contract:phase-order-and-policy",
+                  "primaryTerm": "真空不可用",
+                  "referenceKind": "projectConvention",
+                  "ruleId": "liuyao.project.availability.true-void-unavailable"
+                },
+                {
+                  "adoptionNote": "Executable software convention, not a classical quotation.",
+                  "evidenceLevel": "D",
+                  "locator": "analysis-contract:phase-order-and-policy",
+                  "primaryTerm": "冲起化空",
+                  "referenceKind": "projectConvention",
+                  "ruleId": "liuyao.timing.changed-void.branch-clash"
+                },
+                {
+                  "adoptionNote": "Executable software convention, not a classical quotation.",
+                  "evidenceLevel": "D",
+                  "locator": "analysis-contract:phase-order-and-policy",
+                  "primaryTerm": "变爻值日填实化空",
+                  "referenceKind": "projectConvention",
+                  "ruleId": "liuyao.timing.changed-void.branch-fills"
+                },
+                {
+                  "adoptionNote": "Executable software convention, not a classical quotation.",
+                  "evidenceLevel": "D",
+                  "locator": "analysis-contract:phase-order-and-policy",
+                  "primaryTerm": "值日填实月破",
+                  "referenceKind": "projectConvention",
+                  "ruleId": "liuyao.timing.month-break.branch-fills"
+                },
+                {
+                  "adoptionNote": "Executable software convention, not a classical quotation.",
+                  "evidenceLevel": "D",
+                  "locator": "analysis-contract:phase-order-and-policy",
+                  "primaryTerm": "逢合解破",
+                  "referenceKind": "projectConvention",
+                  "ruleId": "liuyao.timing.month-break.branch-joins"
+                },
+                {
+                  "adoptionNote": "Executable software convention, not a classical quotation.",
+                  "evidenceLevel": "D",
+                  "locator": "analysis-contract:phase-order-and-policy",
+                  "primaryTerm": "出月解除月破",
+                  "referenceKind": "projectConvention",
+                  "ruleId": "liuyao.timing.month-break.next-month"
+                },
+                {
+                  "adoptionNote": "Executable software convention, not a classical quotation.",
+                  "evidenceLevel": "D",
+                  "locator": "analysis-contract:phase-order-and-policy",
+                  "primaryTerm": "冲开墓库",
+                  "referenceKind": "projectConvention",
+                  "ruleId": "liuyao.timing.tomb.clash-opens"
+                }
+              ],
+              "reviewedOn": "2026-08-01",
+              "revisionOrFingerprint": "rule-set:liuyao-zengshan-primary@v2",
+              "scope": "Software convergence, ordering, identity, and decision policy.",
+              "sourceId": "liuyao.source.project.analysis-contract",
+              "title": "Liuyao analysis contract"
+            },
+            {
+              "adjudication": "Adopted witness for the liuyao-zengshan-primary rule set.",
+              "adoptionStatus": "adopted",
+              "edition": "fixed PDF witness",
+              "kind": "classicalWitness",
+              "pageSystem": "PDF page / printed page",
+              "publicLocator": "public fixed-document locator recorded by the project",
+              "references": [
+                {
+                  "adoptionNote": "Adopted as a reviewed paraphrase; no verbatim quote allowed.",
+                  "evidenceLevel": "B",
+                  "locator": "chapter locator for 化空",
+                  "primaryTerm": "化空",
+                  "referenceKind": "paraphrase",
+                  "ruleId": "liuyao.rule.dongbian.changed-void"
+                },
+                {
+                  "adoptionNote": "Adopted as a reviewed paraphrase; no verbatim quote allowed.",
+                  "evidenceLevel": "B",
+                  "locator": "chapter locator for 化退神",
+                  "primaryTerm": "化退神",
+                  "referenceKind": "paraphrase",
+                  "ruleId": "liuyao.rule.dongbian.retreat"
+                },
+                {
+                  "adoptionNote": "Adopted as a reviewed paraphrase; no verbatim quote allowed.",
+                  "evidenceLevel": "B",
+                  "locator": "chapter locator for 独发",
+                  "primaryTerm": "独发",
+                  "referenceKind": "paraphrase",
+                  "ruleId": "liuyao.rule.dongbian.single-moving"
+                },
+                {
+                  "adoptionNote": "Adopted as a reviewed paraphrase; no verbatim quote allowed.",
+                  "evidenceLevel": "B",
+                  "locator": "chapter locator for 六冲卦",
+                  "primaryTerm": "六冲卦",
+                  "referenceKind": "paraphrase",
+                  "ruleId": "liuyao.rule.guachange.six-clash"
+                },
+                {
+                  "adoptionNote": "Adopted as a reviewed paraphrase; no verbatim quote allowed.",
+                  "evidenceLevel": "B",
+                  "locator": "chapter locator for 相冲",
+                  "primaryTerm": "相冲",
+                  "referenceKind": "paraphrase",
+                  "ruleId": "liuyao.rule.hechong.mutual-clash"
+                },
+                {
+                  "adoptionNote": "Page-render and text reviewed; broader boundary is paraphrased.",
+                  "evidenceLevel": "A",
+                  "locator": "PDF 46 / printed 45, 旬空章",
+                  "primaryTerm": "真空",
+                  "quote": "旺不为空，动不为空",
+                  "referenceKind": "exactQuote",
+                  "reviewer": "Trellis source verification 2026-08-01",
+                  "ruleId": "liuyao.rule.kongwang.true-void"
+                },
+                {
+                  "adoptionNote": "Page-render and text reviewed; broader boundary is paraphrased.",
+                  "evidenceLevel": "A",
+                  "locator": "PDF 46 / printed 45, 旬空章",
+                  "primaryTerm": "旬空",
+                  "quote": "旺不为空，动不为空",
+                  "referenceKind": "exactQuote",
+                  "reviewer": "Trellis source verification 2026-08-01",
+                  "ruleId": "liuyao.rule.kongwang.void"
+                },
+                {
+                  "adoptionNote": "Adopted as a reviewed paraphrase; no verbatim quote allowed.",
+                  "evidenceLevel": "B",
+                  "locator": "chapter locator for 冲空",
+                  "primaryTerm": "冲空",
+                  "referenceKind": "paraphrase",
+                  "ruleId": "liuyao.rule.kongwang.void-clashed"
+                },
+                {
+                  "adoptionNote": "Adopted as a reviewed paraphrase; no verbatim quote allowed.",
+                  "evidenceLevel": "B",
+                  "locator": "chapter locator for 忌神",
+                  "primaryTerm": "忌神",
+                  "referenceKind": "paraphrase",
+                  "ruleId": "liuyao.rule.liuqin.adverse-spirit"
+                },
+                {
+                  "adoptionNote": "Adopted as a reviewed paraphrase; no verbatim quote allowed.",
+                  "evidenceLevel": "B",
+                  "locator": "chapter locator for 用神两现",
+                  "primaryTerm": "用神两现",
+                  "referenceKind": "paraphrase",
+                  "ruleId": "liuyao.rule.liuqin.duplicate-use-spirit"
+                },
+                {
+                  "adoptionNote": "Adopted as a reviewed paraphrase; no verbatim quote allowed.",
+                  "evidenceLevel": "B",
+                  "locator": "chapter locator for 仇神",
+                  "primaryTerm": "仇神",
+                  "referenceKind": "paraphrase",
+                  "ruleId": "liuyao.rule.liuqin.enemy-spirit"
+                },
+                {
+                  "adoptionNote": "Adopted as a reviewed paraphrase; no verbatim quote allowed.",
+                  "evidenceLevel": "B",
+                  "locator": "chapter locator for 闲神",
+                  "primaryTerm": "闲神",
+                  "referenceKind": "paraphrase",
+                  "ruleId": "liuyao.rule.liuqin.idle-spirit"
+                },
+                {
+                  "adoptionNote": "Adopted as a reviewed paraphrase; no verbatim quote allowed.",
+                  "evidenceLevel": "B",
+                  "locator": "chapter locator for 用神",
+                  "primaryTerm": "用神",
+                  "referenceKind": "paraphrase",
+                  "ruleId": "liuyao.rule.liuqin.selected-use-spirit"
+                },
+                {
+                  "adoptionNote": "Adopted as a reviewed paraphrase; no verbatim quote allowed.",
+                  "evidenceLevel": "B",
+                  "locator": "chapter locator for 元神",
+                  "primaryTerm": "元神",
+                  "referenceKind": "paraphrase",
+                  "ruleId": "liuyao.rule.liuqin.source-spirit"
+                },
+                {
+                  "adoptionNote": "Adopted as a reviewed paraphrase; no verbatim quote allowed.",
+                  "evidenceLevel": "B",
+                  "locator": "chapter locator for 入月墓",
+                  "primaryTerm": "入月墓",
+                  "referenceKind": "paraphrase",
+                  "ruleId": "liuyao.rule.mujue.month-tomb"
+                },
+                {
+                  "adoptionNote": "Adopted as a reviewed paraphrase; no verbatim quote allowed.",
+                  "evidenceLevel": "B",
+                  "locator": "chapter locator for 入动墓",
+                  "primaryTerm": "入动墓",
+                  "referenceKind": "paraphrase",
+                  "ruleId": "liuyao.rule.mujue.moving-tomb"
+                },
+                {
+                  "adoptionNote": "Adopted as a reviewed paraphrase; no verbatim quote allowed.",
+                  "evidenceLevel": "B",
+                  "locator": "chapter locator for 动爻生",
+                  "primaryTerm": "动爻生",
+                  "referenceKind": "paraphrase",
+                  "ruleId": "liuyao.rule.shengke.moving-generates"
+                },
+                {
+                  "adoptionNote": "Adopted as a reviewed paraphrase; no verbatim quote allowed.",
+                  "evidenceLevel": "B",
+                  "locator": "chapter locator for 动爻克",
+                  "primaryTerm": "动爻克",
+                  "referenceKind": "paraphrase",
+                  "ruleId": "liuyao.rule.shengke.moving-overcomes"
+                },
+                {
+                  "adoptionNote": "Adopted as a reviewed paraphrase; no verbatim quote allowed.",
+                  "evidenceLevel": "B",
+                  "locator": "chapter locator for 动爻扶",
+                  "primaryTerm": "动爻扶",
+                  "referenceKind": "paraphrase",
+                  "ruleId": "liuyao.rule.shengke.moving-supports"
+                },
+                {
+                  "adoptionNote": "Adopted as a reviewed paraphrase; no verbatim quote allowed.",
+                  "evidenceLevel": "B",
+                  "locator": "chapter locator for 囚",
+                  "primaryTerm": "囚",
+                  "referenceKind": "paraphrase",
+                  "ruleId": "liuyao.rule.wangshuai.confined"
+                },
+                {
+                  "adoptionNote": "Adopted as a reviewed paraphrase; no verbatim quote allowed.",
+                  "evidenceLevel": "B",
+                  "locator": "chapter locator for 临日建",
+                  "primaryTerm": "临日建",
+                  "referenceKind": "paraphrase",
+                  "ruleId": "liuyao.rule.wangshuai.day-command"
+                },
+                {
+                  "adoptionNote": "Adopted as a reviewed paraphrase; no verbatim quote allowed.",
+                  "evidenceLevel": "B",
+                  "locator": "chapter locator for 日生",
+                  "primaryTerm": "日生",
+                  "referenceKind": "paraphrase",
+                  "ruleId": "liuyao.rule.wangshuai.day-generates"
+                },
+                {
+                  "adoptionNote": "Adopted as a reviewed paraphrase; no verbatim quote allowed.",
+                  "evidenceLevel": "B",
+                  "locator": "chapter locator for 日克",
+                  "primaryTerm": "日克",
+                  "referenceKind": "paraphrase",
+                  "ruleId": "liuyao.rule.wangshuai.day-overcomes"
+                },
+                {
+                  "adoptionNote": "Adopted as a reviewed paraphrase; no verbatim quote allowed.",
+                  "evidenceLevel": "B",
+                  "locator": "chapter locator for 死",
+                  "primaryTerm": "死",
+                  "referenceKind": "paraphrase",
+                  "ruleId": "liuyao.rule.wangshuai.dead"
+                },
+                {
+                  "adoptionNote": "Adopted as a reviewed paraphrase; no verbatim quote allowed.",
+                  "evidenceLevel": "B",
+                  "locator": "chapter locator for 月破",
+                  "primaryTerm": "月破",
+                  "referenceKind": "paraphrase",
+                  "ruleId": "liuyao.rule.wangshuai.month-break"
+                },
+                {
+                  "adoptionNote": "Adopted as a reviewed paraphrase; no verbatim quote allowed.",
+                  "evidenceLevel": "B",
+                  "locator": "chapter locator for 临月建",
+                  "primaryTerm": "临月建",
+                  "referenceKind": "paraphrase",
+                  "ruleId": "liuyao.rule.wangshuai.month-command"
+                },
+                {
+                  "adoptionNote": "Adopted as a reviewed paraphrase; no verbatim quote allowed.",
+                  "evidenceLevel": "B",
+                  "locator": "chapter locator for 月生",
+                  "primaryTerm": "月生",
+                  "referenceKind": "paraphrase",
+                  "ruleId": "liuyao.rule.wangshuai.month-generates"
+                },
+                {
+                  "adoptionNote": "Adopted as a reviewed paraphrase; no verbatim quote allowed.",
+                  "evidenceLevel": "B",
+                  "locator": "chapter locator for 月克",
+                  "primaryTerm": "月克",
+                  "referenceKind": "paraphrase",
+                  "ruleId": "liuyao.rule.wangshuai.month-overcomes"
+                },
+                {
+                  "adoptionNote": "Adopted as a reviewed paraphrase; no verbatim quote allowed.",
+                  "evidenceLevel": "B",
+                  "locator": "chapter locator for 旺",
+                  "primaryTerm": "旺",
+                  "referenceKind": "paraphrase",
+                  "ruleId": "liuyao.rule.wangshuai.prosperous"
+                },
+                {
+                  "adoptionNote": "Adopted as a reviewed paraphrase; no verbatim quote allowed.",
+                  "evidenceLevel": "B",
+                  "locator": "chapter locator for 休",
+                  "primaryTerm": "休",
+                  "referenceKind": "paraphrase",
+                  "ruleId": "liuyao.rule.wangshuai.resting"
+                },
+                {
+                  "adoptionNote": "Adopted as a reviewed paraphrase; no verbatim quote allowed.",
+                  "evidenceLevel": "B",
+                  "locator": "chapter locator for 相",
+                  "primaryTerm": "相",
+                  "referenceKind": "paraphrase",
+                  "ruleId": "liuyao.rule.wangshuai.supported"
+                }
+              ],
+              "reviewedOn": "2026-08-01",
+              "revisionOrFingerprint": "DE5C6C0CB5A73C47960A4D6C5EB87337CD677A59B768E15E42CFCB24C932FD68",
+              "scope": "Primary Liuyao classical predicates; quotes require page review.",
+              "sourceId": "liuyao.source.zengshan.zhongguonaner-pdf",
+              "title": "增删卜易（校对：中国男儿）"
+            }
+          ],
+          "status": "success",
+          "timingCandidates": [
+            {
+              "branch": "巳",
+              "label": "巳月（出月解除月破）",
+              "priority": 1,
+              "reason": "出月解除月破",
+              "scale": "yue",
+              "sourceIds": [
+                "liuyao.source.project.analysis-contract",
+                "liuyao.source.zengshan.zhongguonaner-pdf"
+              ],
+              "targetActorId": "main:yao:6",
+              "timingId": "lyt-9cb5d833785b76eba8b6d7db",
+              "timingRuleId": "liuyao.timing.month-break.next-month",
+              "triggerKind": "branch",
+              "triggerValue": "巳",
+              "upstreamConditionIds": [
+                "lyc-66cb92d81ae97496441b78e0"
+              ],
+              "upstreamRuleIds": [
+                "liuyao.condition.month-break.exit-fill-or-join",
+                "liuyao.timing.month-break.next-month"
+              ]
+            },
+            {
+              "branch": "戌",
+              "label": "戌日（值日填实月破；冲开墓库）",
+              "priority": 2,
+              "reason": "值日填实月破；冲开墓库",
+              "scale": "ri",
+              "sourceIds": [
+                "liuyao.source.project.analysis-contract",
+                "liuyao.source.zengshan.zhongguonaner-pdf"
+              ],
+              "targetActorId": "main:yao:6",
+              "timingId": "lyt-2ff9a809b0d809b21f732950",
+              "timingRuleId": "liuyao.timing.month-break.branch-fills",
+              "triggerKind": "branch",
+              "triggerValue": "戌",
+              "upstreamConditionIds": [
+                "lyc-0aeec0f9c115ddbe9c9760fc",
+                "lyc-66cb92d81ae97496441b78e0"
+              ],
+              "upstreamRuleIds": [
+                "liuyao.condition.month-break.exit-fill-or-join",
+                "liuyao.condition.tomb.clash-open",
+                "liuyao.timing.month-break.branch-fills",
+                "liuyao.timing.tomb.clash-opens"
+              ]
+            },
+            {
+              "branch": "未",
+              "label": "未日（变爻值日填实化空）",
+              "priority": 2,
+              "reason": "变爻值日填实化空",
+              "scale": "ri",
+              "sourceIds": [
+                "liuyao.source.project.analysis-contract",
+                "liuyao.source.zengshan.zhongguonaner-pdf"
+              ],
+              "targetActorId": "main:yao:6",
+              "timingId": "lyt-caaca8aab3858b36fa064f2c",
+              "timingRuleId": "liuyao.timing.changed-void.branch-fills",
+              "triggerKind": "branch",
+              "triggerValue": "未",
+              "upstreamConditionIds": [
+                "lyc-1331c207a3d52dd13a063d1a"
+              ],
+              "upstreamRuleIds": [
+                "liuyao.condition.changed-void.fill-or-clash",
+                "liuyao.timing.changed-void.branch-fills"
+              ]
+            },
+            {
+              "branch": "丑",
+              "label": "丑日（冲起化空）",
+              "priority": 3,
+              "reason": "冲起化空",
+              "scale": "ri",
+              "sourceIds": [
+                "liuyao.source.project.analysis-contract",
+                "liuyao.source.zengshan.zhongguonaner-pdf"
+              ],
+              "targetActorId": "main:yao:6",
+              "timingId": "lyt-6a7d03d2eeaef3fc4ff27677",
+              "timingRuleId": "liuyao.timing.changed-void.branch-clash",
+              "triggerKind": "branch",
+              "triggerValue": "丑",
+              "upstreamConditionIds": [
+                "lyc-1331c207a3d52dd13a063d1a"
+              ],
+              "upstreamRuleIds": [
+                "liuyao.condition.changed-void.fill-or-clash",
+                "liuyao.timing.changed-void.branch-clash"
+              ]
+            },
+            {
+              "branch": "卯",
+              "label": "卯日（逢合解破）",
+              "priority": 3,
+              "reason": "逢合解破",
+              "scale": "ri",
+              "sourceIds": [
+                "liuyao.source.project.analysis-contract",
+                "liuyao.source.zengshan.zhongguonaner-pdf"
+              ],
+              "targetActorId": "main:yao:6",
+              "timingId": "lyt-ebd99c8ee82948f383e86d8a",
+              "timingRuleId": "liuyao.timing.month-break.branch-joins",
+              "triggerKind": "branch",
+              "triggerValue": "卯",
+              "upstreamConditionIds": [
+                "lyc-66cb92d81ae97496441b78e0"
+              ],
+              "upstreamRuleIds": [
+                "liuyao.condition.month-break.exit-fill-or-join",
+                "liuyao.timing.month-break.branch-joins"
+              ]
+            }
+          ],
+          "trace": [
+            {
+              "notes": [],
+              "occurrenceIds": [],
+              "ruleIds": [],
+              "stageId": "liuyao.stage.01.validate-input"
+            },
+            {
+              "notes": [],
+              "occurrenceIds": [
+                "lyo-5efa8b80e27e57a8801ddc19"
+              ],
+              "ruleIds": [
+                "liuyao.rule.dongbian.single-moving"
+              ],
+              "stageId": "liuyao.stage.02.freeze-facts"
+            },
+            {
+              "notes": [],
+              "occurrenceIds": [
+                "lyo-297bad4f7e8637ce062b92be",
+                "lyo-3aa4d5bcee8142010e3644f1",
+                "lyo-3f29929f076a307d571cd157",
+                "lyo-659b4682e88395049d26c979",
+                "lyo-989a273e278d437ec68b7185"
+              ],
+              "ruleIds": [
+                "liuyao.rule.liuqin.adverse-spirit",
+                "liuyao.rule.liuqin.duplicate-use-spirit",
+                "liuyao.rule.liuqin.enemy-spirit",
+                "liuyao.rule.liuqin.selected-use-spirit",
+                "liuyao.rule.liuqin.source-spirit"
+              ],
+              "stageId": "liuyao.stage.03.build-roles"
+            },
+            {
+              "notes": [],
+              "occurrenceIds": [
+                "lyo-0353a6ff415da335c490bde1",
+                "lyo-171b5f228c71ee6359566057",
+                "lyo-2aea413f99a3b8aa28e915e1",
+                "lyo-589e2d43e26d4c34660feb90",
+                "lyo-633ee1c86d34104dade2dfa1",
+                "lyo-63dbe3efafe2f1e68f910b63",
+                "lyo-6cfd6973537a4fdeda7da258",
+                "lyo-7579f78040a29b972b637d11",
+                "lyo-86933851d5c3126a8483a6fc",
+                "lyo-87b8bc09484346e1bf1464c3",
+                "lyo-935c88ee0fc8efd1ed7c26fa",
+                "lyo-9f03a2b3adf0e8c3a74d17fe",
+                "lyo-ace68de32866ab1c3bb77502",
+                "lyo-b7087a0391cff7e59f332655",
+                "lyo-be1d5b74d25425f6845fb46e",
+                "lyo-bfc3611c8b6121b748bbd948",
+                "lyo-d3be6defb6f653c8ac84272d",
+                "lyo-e170357568e63b6e40666e6c",
+                "lyo-e89f5132a3438acd946f1753",
+                "lyo-e9c2f014b4ab627b6633633d",
+                "lyo-f0580d2bf30d358a860b661a"
+              ],
+              "ruleIds": [
+                "liuyao.rule.dongbian.changed-void",
+                "liuyao.rule.kongwang.true-void",
+                "liuyao.rule.kongwang.void",
+                "liuyao.rule.kongwang.void-clashed",
+                "liuyao.rule.mujue.month-tomb",
+                "liuyao.rule.mujue.moving-tomb",
+                "liuyao.rule.wangshuai.confined",
+                "liuyao.rule.wangshuai.day-command",
+                "liuyao.rule.wangshuai.day-generates",
+                "liuyao.rule.wangshuai.day-overcomes",
+                "liuyao.rule.wangshuai.dead",
+                "liuyao.rule.wangshuai.month-break",
+                "liuyao.rule.wangshuai.month-command",
+                "liuyao.rule.wangshuai.month-generates",
+                "liuyao.rule.wangshuai.month-overcomes",
+                "liuyao.rule.wangshuai.prosperous",
+                "liuyao.rule.wangshuai.resting",
+                "liuyao.rule.wangshuai.supported"
+              ],
+              "stageId": "liuyao.stage.04.calculate-state"
+            },
+            {
+              "notes": [],
+              "occurrenceIds": [
+                "lyo-ac42cddd19d50462e936d8c3"
+              ],
+              "ruleIds": [
+                "liuyao.rule.dongbian.retreat"
+              ],
+              "stageId": "liuyao.stage.05.calculate-availability"
+            },
+            {
+              "notes": [],
+              "occurrenceIds": [
+                "lyo-00f55a579270fdc6f38e156c",
+                "lyo-1fe0011ca557f1ceb27e5c52",
+                "lyo-45ed63fd0fc92094788360d8",
+                "lyo-93cc8e67db0346ed1bb55f67",
+                "lyo-d5b16a50849a491fefac5626"
+              ],
+              "ruleIds": [
+                "liuyao.rule.hechong.mutual-clash",
+                "liuyao.rule.shengke.moving-generates",
+                "liuyao.rule.shengke.moving-overcomes",
+                "liuyao.rule.shengke.moving-supports"
+              ],
+              "stageId": "liuyao.stage.06.calculate-directed-effects"
+            },
+            {
+              "notes": [],
+              "occurrenceIds": [
+                "lyo-ced1a4cf916ebac0264d8309"
+              ],
+              "ruleIds": [
+                "liuyao.rule.guachange.six-clash"
+              ],
+              "stageId": "liuyao.stage.07.auxiliary-evidence"
+            },
+            {
+              "notes": [],
+              "occurrenceIds": [],
+              "ruleIds": [],
+              "stageId": "liuyao.stage.08.arbitrate-conflicts"
+            },
+            {
+              "notes": [],
+              "occurrenceIds": [
+                "lyc-0aeec0f9c115ddbe9c9760fc",
+                "lyc-1331c207a3d52dd13a063d1a",
+                "lyc-66cb92d81ae97496441b78e0",
+                "lyf-35bb3374cf59e8ed37111cae",
+                "lyf-5e1802aa95ae57948e498f6b",
+                "lyf-75f3bd597fe25b464c130a49",
+                "lyf-90f621183cbbd6409072b241",
+                "lyf-aef38f6956dc27ff3e361442",
+                "lyf-da41d02c76d86f5fba5c803a"
+              ],
+              "ruleIds": [
+                "liuyao.condition.changed-void.fill-or-clash",
+                "liuyao.condition.month-break.exit-fill-or-join",
+                "liuyao.condition.tomb.clash-open",
+                "liuyao.decision.mixed-rescuable-conditions",
+                "liuyao.rule.dongbian.changed-void",
+                "liuyao.rule.dongbian.retreat",
+                "liuyao.rule.mujue.month-tomb",
+                "liuyao.rule.wangshuai.month-break",
+                "liuyao.rule.wangshuai.prosperous"
+              ],
+              "stageId": "liuyao.stage.09.judge-verdict"
+            },
+            {
+              "notes": [],
+              "occurrenceIds": [
+                "lyt-2ff9a809b0d809b21f732950",
+                "lyt-6a7d03d2eeaef3fc4ff27677",
+                "lyt-9cb5d833785b76eba8b6d7db",
+                "lyt-caaca8aab3858b36fa064f2c",
+                "lyt-ebd99c8ee82948f383e86d8a"
+              ],
+              "ruleIds": [
+                "liuyao.timing.changed-void.branch-clash",
+                "liuyao.timing.changed-void.branch-fills",
+                "liuyao.timing.month-break.branch-fills",
+                "liuyao.timing.month-break.branch-joins",
+                "liuyao.timing.month-break.next-month"
+              ],
+              "stageId": "liuyao.stage.10.calculate-timing"
+            },
+            {
+              "notes": [],
+              "occurrenceIds": [],
+              "ruleIds": [],
+              "stageId": "liuyao.stage.11.build-projection"
+            }
+          ],
+          "useSpirit": {
+            "maySuggestCandidates": false,
+            "mode": "selectedVisible",
+            "position": 6,
+            "selectedActorId": "main:yao:6",
+            "userOverride": true
+          },
+          "verdict": {
+            "matchedDecisionRowId": "liuyao.decision.mixed-rescuable-conditions",
+            "nuance": "待解除后再断",
+            "summary": "用神父母戌土，断曰：待条件（待解除后再断）。未决条件：待出月、待冲开墓库。应期候选仅表示条件触发窗口，不单独决定事情成败；优先观察：巳月（出月解除月破），戌日（值日填实月破；冲开墓库）",
+            "trend": "daiTiaoJian"
+          }
+        },
+        "question": "父何日归"
+      },
+      "scoringReference": {
+        "allowedPanFactIds": [
+          "pan.calendar.dayGanZhi=戊子",
+          "pan.calendar.hourGanZhi=戊午",
+          "pan.calendar.kongWang=午",
+          "pan.calendar.kongWang=未",
+          "pan.calendar.monthGanZhi=丙辰",
+          "pan.calendar.yearGanZhi=癸卯",
+          "pan.calendar.yueJian=辰",
+          "pan.castMethod=manual",
+          "pan.changingGua.id=111110",
+          "pan.changingGua.name=泽天夬",
+          "pan.changingGua.palace=kun",
+          "pan.changingGua.shiPosition=5",
+          "pan.changingGua.specialType=none",
+          "pan.changingGua.yao.1.branch=子",
+          "pan.changingGua.yao.1.isMoving=false",
+          "pan.changingGua.yao.1.isShi=false",
+          "pan.changingGua.yao.1.isYang=true",
+          "pan.changingGua.yao.1.isYing=false",
+          "pan.changingGua.yao.1.liuQin=ziSun",
+          "pan.changingGua.yao.1.number=7",
+          "pan.changingGua.yao.1.stem=甲",
+          "pan.changingGua.yao.1.wuXing=shui",
+          "pan.changingGua.yao.2.branch=寅",
+          "pan.changingGua.yao.2.isMoving=false",
+          "pan.changingGua.yao.2.isShi=false",
+          "pan.changingGua.yao.2.isYang=true",
+          "pan.changingGua.yao.2.isYing=true",
+          "pan.changingGua.yao.2.liuQin=qiCai",
+          "pan.changingGua.yao.2.number=7",
+          "pan.changingGua.yao.2.stem=甲",
+          "pan.changingGua.yao.2.wuXing=mu",
+          "pan.changingGua.yao.3.branch=辰",
+          "pan.changingGua.yao.3.isMoving=false",
+          "pan.changingGua.yao.3.isShi=false",
+          "pan.changingGua.yao.3.isYang=true",
+          "pan.changingGua.yao.3.isYing=false",
+          "pan.changingGua.yao.3.liuQin=fuMu",
+          "pan.changingGua.yao.3.number=7",
+          "pan.changingGua.yao.3.stem=甲",
+          "pan.changingGua.yao.3.wuXing=tu",
+          "pan.changingGua.yao.4.branch=亥",
+          "pan.changingGua.yao.4.isMoving=false",
+          "pan.changingGua.yao.4.isShi=false",
+          "pan.changingGua.yao.4.isYang=true",
+          "pan.changingGua.yao.4.isYing=false",
+          "pan.changingGua.yao.4.liuQin=ziSun",
+          "pan.changingGua.yao.4.number=7",
+          "pan.changingGua.yao.4.stem=丁",
+          "pan.changingGua.yao.4.wuXing=shui",
+          "pan.changingGua.yao.5.branch=酉",
+          "pan.changingGua.yao.5.isMoving=false",
+          "pan.changingGua.yao.5.isShi=true",
+          "pan.changingGua.yao.5.isYang=true",
+          "pan.changingGua.yao.5.isYing=false",
+          "pan.changingGua.yao.5.liuQin=xiongDi",
+          "pan.changingGua.yao.5.number=7",
+          "pan.changingGua.yao.5.stem=丁",
+          "pan.changingGua.yao.5.wuXing=jin",
+          "pan.changingGua.yao.6.branch=未",
+          "pan.changingGua.yao.6.isMoving=false",
+          "pan.changingGua.yao.6.isShi=false",
+          "pan.changingGua.yao.6.isYang=false",
+          "pan.changingGua.yao.6.isYing=false",
+          "pan.changingGua.yao.6.liuQin=fuMu",
+          "pan.changingGua.yao.6.number=8",
+          "pan.changingGua.yao.6.stem=丁",
+          "pan.changingGua.yao.6.wuXing=tu",
+          "pan.changingGua.yingPosition=2",
+          "pan.hasChangingGua=true",
+          "pan.liuShen.1=勾陈",
+          "pan.liuShen.2=腾蛇",
+          "pan.liuShen.3=白虎",
+          "pan.liuShen.4=玄武",
+          "pan.liuShen.5=青龙",
+          "pan.liuShen.6=朱雀",
+          "pan.mainGua.id=111111",
+          "pan.mainGua.name=乾为天",
+          "pan.mainGua.palace=qian",
+          "pan.mainGua.shiPosition=6",
+          "pan.mainGua.specialType=liuChong",
+          "pan.mainGua.yao.1.branch=子",
+          "pan.mainGua.yao.1.isMoving=false",
+          "pan.mainGua.yao.1.isShi=false",
+          "pan.mainGua.yao.1.isYang=true",
+          "pan.mainGua.yao.1.isYing=false",
+          "pan.mainGua.yao.1.liuQin=ziSun",
+          "pan.mainGua.yao.1.number=7",
+          "pan.mainGua.yao.1.stem=甲",
+          "pan.mainGua.yao.1.wuXing=shui",
+          "pan.mainGua.yao.2.branch=寅",
+          "pan.mainGua.yao.2.isMoving=false",
+          "pan.mainGua.yao.2.isShi=false",
+          "pan.mainGua.yao.2.isYang=true",
+          "pan.mainGua.yao.2.isYing=false",
+          "pan.mainGua.yao.2.liuQin=qiCai",
+          "pan.mainGua.yao.2.number=7",
+          "pan.mainGua.yao.2.stem=甲",
+          "pan.mainGua.yao.2.wuXing=mu",
+          "pan.mainGua.yao.3.branch=辰",
+          "pan.mainGua.yao.3.isMoving=false",
+          "pan.mainGua.yao.3.isShi=false",
+          "pan.mainGua.yao.3.isYang=true",
+          "pan.mainGua.yao.3.isYing=true",
+          "pan.mainGua.yao.3.liuQin=fuMu",
+          "pan.mainGua.yao.3.number=7",
+          "pan.mainGua.yao.3.stem=甲",
+          "pan.mainGua.yao.3.wuXing=tu",
+          "pan.mainGua.yao.4.branch=午",
+          "pan.mainGua.yao.4.isMoving=false",
+          "pan.mainGua.yao.4.isShi=false",
+          "pan.mainGua.yao.4.isYang=true",
+          "pan.mainGua.yao.4.isYing=false",
+          "pan.mainGua.yao.4.liuQin=guanGui",
+          "pan.mainGua.yao.4.number=7",
+          "pan.mainGua.yao.4.stem=壬",
+          "pan.mainGua.yao.4.wuXing=huo",
+          "pan.mainGua.yao.5.branch=申",
+          "pan.mainGua.yao.5.isMoving=false",
+          "pan.mainGua.yao.5.isShi=false",
+          "pan.mainGua.yao.5.isYang=true",
+          "pan.mainGua.yao.5.isYing=false",
+          "pan.mainGua.yao.5.liuQin=xiongDi",
+          "pan.mainGua.yao.5.number=7",
+          "pan.mainGua.yao.5.stem=壬",
+          "pan.mainGua.yao.5.wuXing=jin",
+          "pan.mainGua.yao.6.branch=戌",
+          "pan.mainGua.yao.6.isMoving=true",
+          "pan.mainGua.yao.6.isShi=true",
+          "pan.mainGua.yao.6.isYang=true",
+          "pan.mainGua.yao.6.isYing=false",
+          "pan.mainGua.yao.6.liuQin=fuMu",
+          "pan.mainGua.yao.6.number=9",
+          "pan.mainGua.yao.6.stem=壬",
+          "pan.mainGua.yao.6.wuXing=tu",
+          "pan.mainGua.yingPosition=3"
+        ],
+        "allowedSources": [
+          {
+            "exactQuotes": [],
+            "locators": [
+              "analysis-contract:phase-order-and-policy"
+            ],
+            "sourceId": "liuyao.source.project.analysis-contract"
+          },
+          {
+            "exactQuotes": [
+              "旺不为空，动不为空"
+            ],
+            "locators": [
+              "PDF 46 / printed 45, 旬空章",
+              "chapter locator for 临日建",
+              "chapter locator for 临月建",
+              "chapter locator for 仇神",
+              "chapter locator for 休",
+              "chapter locator for 元神",
+              "chapter locator for 入动墓",
+              "chapter locator for 入月墓",
+              "chapter locator for 六冲卦",
+              "chapter locator for 冲空",
+              "chapter locator for 动爻克",
+              "chapter locator for 动爻扶",
+              "chapter locator for 动爻生",
+              "chapter locator for 化空",
+              "chapter locator for 化退神",
+              "chapter locator for 囚",
+              "chapter locator for 忌神",
+              "chapter locator for 日克",
+              "chapter locator for 日生",
+              "chapter locator for 旺",
+              "chapter locator for 月克",
+              "chapter locator for 月生",
+              "chapter locator for 月破",
+              "chapter locator for 死",
+              "chapter locator for 独发",
+              "chapter locator for 用神",
+              "chapter locator for 用神两现",
+              "chapter locator for 相",
+              "chapter locator for 相冲",
+              "chapter locator for 闲神"
+            ],
+            "sourceId": "liuyao.source.zengshan.zhongguonaner-pdf"
+          }
+        ],
+        "allowedTimingIds": [
+          "lyt-2ff9a809b0d809b21f732950",
+          "lyt-6a7d03d2eeaef3fc4ff27677",
+          "lyt-9cb5d833785b76eba8b6d7db",
+          "lyt-caaca8aab3858b36fa064f2c",
+          "lyt-ebd99c8ee82948f383e86d8a"
+        ],
+        "expectedVerdictTrend": "daiTiaoJian",
+        "expectedYongShenActorId": "main:yao:6",
+        "requiredConditionIds": [
+          "lyc-0aeec0f9c115ddbe9c9760fc",
+          "lyc-1331c207a3d52dd13a063d1a",
+          "lyc-66cb92d81ae97496441b78e0"
+        ]
+      }
+    },
+    {
+      "caseId": "liuyao.case.golden.037",
+      "caseKind": "ruleValidation",
+      "cohortIds": [
+        "overall",
+        "ruleValidation",
+        "calibration"
+      ],
+      "evaluationSplit": "calibration",
+      "requestInput": {
+        "projection": {
+          "actorAvailability": [
+            {
+              "actor": {
+                "actorId": "main:yao:1",
+                "branch": "辰",
+                "isMoving": false,
+                "kind": "mainYao",
+                "liuQin": "fuMu",
+                "position": 1,
+                "wuXing": "tu"
+              },
+              "reasonRuleIds": [
+                "liuyao.project.availability.hidden-suppressed",
+                "liuyao.rule.fushen.flight-overcomes-hidden",
+                "liuyao.rule.fushen.hidden-suppressed"
+              ],
+              "releaseConditionRuleIds": [],
+              "state": "unavailable",
+              "suppressedByOccurrenceIds": [
+                "lyo-837319abb59398f4674bfdb4",
+                "lyo-aff6dbdd1971eef4609b185a"
+              ]
+            },
+            {
+              "actor": {
+                "actorId": "main:yao:2",
+                "branch": "午",
+                "isMoving": false,
+                "kind": "mainYao",
+                "liuQin": "guanGui",
+                "position": 2,
+                "wuXing": "huo"
+              },
+              "reasonRuleIds": [],
+              "releaseConditionRuleIds": [],
+              "state": "active",
+              "suppressedByOccurrenceIds": []
+            },
+            {
+              "actor": {
+                "actorId": "main:yao:3",
+                "branch": "申",
+                "isMoving": false,
+                "kind": "mainYao",
+                "liuQin": "xiongDi",
+                "position": 3,
+                "wuXing": "jin"
+              },
+              "reasonRuleIds": [],
+              "releaseConditionRuleIds": [],
+              "state": "active",
+              "suppressedByOccurrenceIds": []
+            },
+            {
+              "actor": {
+                "actorId": "main:yao:4",
+                "branch": "午",
+                "isMoving": false,
+                "kind": "mainYao",
+                "liuQin": "guanGui",
+                "position": 4,
+                "wuXing": "huo"
+              },
+              "reasonRuleIds": [],
+              "releaseConditionRuleIds": [],
+              "state": "active",
+              "suppressedByOccurrenceIds": []
+            },
+            {
+              "actor": {
+                "actorId": "main:yao:5",
+                "branch": "申",
+                "isMoving": false,
+                "kind": "mainYao",
+                "liuQin": "xiongDi",
+                "position": 5,
+                "wuXing": "jin"
+              },
+              "reasonRuleIds": [],
+              "releaseConditionRuleIds": [],
+              "state": "active",
+              "suppressedByOccurrenceIds": []
+            },
+            {
+              "actor": {
+                "actorId": "main:yao:6",
+                "branch": "戌",
+                "isMoving": false,
+                "kind": "mainYao",
+                "liuQin": "fuMu",
+                "position": 6,
+                "wuXing": "tu"
+              },
+              "reasonRuleIds": [],
+              "releaseConditionRuleIds": [],
+              "state": "active",
+              "suppressedByOccurrenceIds": []
+            },
+            {
+              "actor": {
+                "actorId": "calendar:day",
+                "branch": "辰",
+                "isMoving": false,
+                "kind": "calendarDay",
+                "liuQin": null,
+                "position": null,
+                "wuXing": "tu"
+              },
+              "reasonRuleIds": [],
+              "releaseConditionRuleIds": [],
+              "state": "active",
+              "suppressedByOccurrenceIds": []
+            },
+            {
+              "actor": {
+                "actorId": "calendar:month",
+                "branch": "午",
+                "isMoving": false,
+                "kind": "calendarMonth",
+                "liuQin": null,
+                "position": null,
+                "wuXing": "huo"
+              },
+              "reasonRuleIds": [],
+              "releaseConditionRuleIds": [],
+              "state": "active",
+              "suppressedByOccurrenceIds": []
+            },
+            {
+              "actor": {
+                "actorId": "hidden:host-yao:1",
+                "branch": "子",
+                "isMoving": false,
+                "kind": "hiddenYao",
+                "liuQin": "ziSun",
+                "position": 1,
+                "wuXing": "shui"
+              },
+              "reasonRuleIds": [
+                "liuyao.project.availability.hidden-suppressed",
+                "liuyao.rule.fushen.flight-overcomes-hidden",
+                "liuyao.rule.fushen.hidden-suppressed"
+              ],
+              "releaseConditionRuleIds": [],
+              "state": "unavailable",
+              "suppressedByOccurrenceIds": [
+                "lyo-518ccc845423f90d1825f16f",
+                "lyo-6805b513073081fcd6f6d1ea"
+              ]
+            }
+          ],
+          "analysisSchemaVersion": 1,
+          "analysisStages": [
+            "liuyao.stage.01.validate-input",
+            "liuyao.stage.02.freeze-facts",
+            "liuyao.stage.03.build-roles",
+            "liuyao.stage.04.calculate-state",
+            "liuyao.stage.05.calculate-availability",
+            "liuyao.stage.06.calculate-directed-effects",
+            "liuyao.stage.07.auxiliary-evidence",
+            "liuyao.stage.08.arbitrate-conflicts",
+            "liuyao.stage.09.judge-verdict",
+            "liuyao.stage.10.calculate-timing",
+            "liuyao.stage.11.build-projection"
+          ],
+          "auxiliaryEvidence": [],
+          "conditions": [
+            {
+              "branch": "子",
+              "conditionId": "lyc-3ed031ab7877cf6077bcdfe7",
+              "conditionRuleId": "liuyao.condition.month-break.exit-fill-or-join",
+              "hasRescue": false,
+              "label": "待出月",
+              "reason": "月破待出月、填实或逢合解破",
+              "sourceIds": [
+                "liuyao.source.project.analysis-contract",
+                "liuyao.source.zengshan.zhongguonaner-pdf"
+              ],
+              "status": "unresolved",
+              "upstreamOccurrenceIds": [
+                "lyo-2421a323c5f17435ee742359"
+              ]
+            },
+            {
+              "branch": "戌",
+              "conditionId": "lyc-d0997a11443a416178fd5486",
+              "conditionRuleId": "liuyao.condition.tomb.clash-open",
+              "hasRescue": true,
+              "label": "待冲开墓库",
+              "reason": "入墓待冲开墓库辰之日",
+              "sourceIds": [
+                "liuyao.source.project.analysis-contract",
+                "liuyao.source.zengshan.zhongguonaner-pdf"
+              ],
+              "status": "unresolved",
+              "upstreamOccurrenceIds": [
+                "lyo-99cdf68ea4dda313ef73d6cc"
+              ]
+            },
+            {
+              "branch": "子",
+              "conditionId": "lyc-98b6c4c17f8ed8184234faf9",
+              "conditionRuleId": "liuyao.condition.hidden.no-release-while-suppressed",
+              "hasRescue": false,
+              "label": "伏神受制无解",
+              "reason": "伏神受飞神及日月压制，当前无可执行的释放路径",
+              "sourceIds": [
+                "liuyao.source.project.analysis-contract",
+                "liuyao.source.zengshan.zhongguonaner-pdf"
+              ],
+              "status": "unresolved",
+              "upstreamOccurrenceIds": [
+                "lyo-518ccc845423f90d1825f16f",
+                "lyo-6805b513073081fcd6f6d1ea",
+                "lyo-d2c0b07f666fd68d5193bdca"
+              ]
+            }
+          ],
+          "conflicts": [],
+          "diagnostics": [],
+          "directedEffects": [
+            {
+              "effect": "sheng",
+              "fromActor": {
+                "actorId": "main:yao:6",
+                "branch": "戌",
+                "isMoving": false,
+                "kind": "mainYao",
+                "liuQin": "fuMu",
+                "position": 6,
+                "wuXing": "tu"
+              },
+              "inputRefs": [
+                "mainGua.yaos[6]",
+                "mainGua.yaos[3]"
+              ],
+              "occurrenceId": "lyo-dac438c79dd43b3dc7723ebf",
+              "pathActorIds": [
+                "main:yao:6",
+                "main:yao:3"
+              ],
+              "pathStep": 0,
+              "ruleId": "liuyao.rule.shengke.hidden-moving-generates",
+              "sourceIds": [
+                "liuyao.source.project.analysis-contract"
+              ],
+              "status": "active",
+              "suppressedByOccurrenceIds": [],
+              "suppressedByRuleIds": [],
+              "toActor": {
+                "actorId": "main:yao:3",
+                "branch": "申",
+                "isMoving": false,
+                "kind": "mainYao",
+                "liuQin": "xiongDi",
+                "position": 3,
+                "wuXing": "jin"
+              }
+            },
+            {
+              "effect": "sheng",
+              "fromActor": {
+                "actorId": "main:yao:6",
+                "branch": "戌",
+                "isMoving": false,
+                "kind": "mainYao",
+                "liuQin": "fuMu",
+                "position": 6,
+                "wuXing": "tu"
+              },
+              "inputRefs": [
+                "mainGua.yaos[6]",
+                "mainGua.yaos[5]"
+              ],
+              "occurrenceId": "lyo-c7304b4992cc2221f9578579",
+              "pathActorIds": [
+                "main:yao:6",
+                "main:yao:5"
+              ],
+              "pathStep": 0,
+              "ruleId": "liuyao.rule.shengke.hidden-moving-generates",
+              "sourceIds": [
+                "liuyao.source.project.analysis-contract"
+              ],
+              "status": "active",
+              "suppressedByOccurrenceIds": [],
+              "suppressedByRuleIds": [],
+              "toActor": {
+                "actorId": "main:yao:5",
+                "branch": "申",
+                "isMoving": false,
+                "kind": "mainYao",
+                "liuQin": "xiongDi",
+                "position": 5,
+                "wuXing": "jin"
+              }
+            }
+          ],
+          "factors": [
+            {
+              "active": true,
+              "arbitrationOrder": 4,
+              "arbitrationTier": 1,
+              "decisionRowId": "",
+              "effect": "yi",
+              "factorId": "lyf-b46330126d74a88495f42889",
+              "reason": "日辰土克水",
+              "rule": "日克",
+              "ruleId": "liuyao.rule.wangshuai.day-overcomes",
+              "source": "《增删卜易》",
+              "sourceIds": [
+                "liuyao.source.zengshan.zhongguonaner-pdf"
+              ],
+              "upstreamOccurrenceIds": [
+                "lyo-6c2b94510d658a64e7b991d9"
+              ]
+            },
+            {
+              "active": true,
+              "arbitrationOrder": 5,
+              "arbitrationTier": 1,
+              "decisionRowId": "",
+              "effect": "yi",
+              "factorId": "lyf-af5e8e50217b3e757f80216a",
+              "reason": "水于午月为囚",
+              "rule": "囚",
+              "ruleId": "liuyao.rule.wangshuai.confined",
+              "source": "《增删卜易》",
+              "sourceIds": [
+                "liuyao.source.zengshan.zhongguonaner-pdf"
+              ],
+              "upstreamOccurrenceIds": [
+                "lyo-6191552736c7f665bb5d49d8"
+              ]
+            },
+            {
+              "active": true,
+              "arbitrationOrder": 0,
+              "arbitrationTier": 5,
+              "decisionRowId": "",
+              "effect": "suspend",
+              "factorId": "lyf-d30d1fc22f3687b90bf6bc79",
+              "reason": "月建午冲爻支子",
+              "rule": "月破",
+              "ruleId": "liuyao.rule.wangshuai.month-break",
+              "source": "《增删卜易》",
+              "sourceIds": [
+                "liuyao.source.zengshan.zhongguonaner-pdf"
+              ],
+              "upstreamOccurrenceIds": [
+                "lyo-2421a323c5f17435ee742359"
+              ]
+            },
+            {
+              "active": true,
+              "arbitrationOrder": 1,
+              "arbitrationTier": 5,
+              "decisionRowId": "",
+              "effect": "suspend",
+              "factorId": "lyf-5db9715f561c013109b708dd",
+              "reason": "水墓于辰，日辰即墓库",
+              "rule": "入日墓",
+              "ruleId": "liuyao.rule.mujue.day-tomb",
+              "source": "《增删卜易》",
+              "sourceIds": [
+                "liuyao.source.zengshan.zhongguonaner-pdf"
+              ],
+              "upstreamOccurrenceIds": [
+                "lyo-99cdf68ea4dda313ef73d6cc"
+              ]
+            },
+            {
+              "active": true,
+              "arbitrationOrder": 2,
+              "arbitrationTier": 5,
+              "decisionRowId": "",
+              "effect": "yi",
+              "factorId": "lyf-df7a99e4f13af9432a3be7ab",
+              "reason": "伏神子孙子水既被飞神克又遭日月克，受制难出",
+              "rule": "伏神受制",
+              "ruleId": "liuyao.rule.fushen.hidden-suppressed",
+              "source": "《增删卜易》",
+              "sourceIds": [
+                "liuyao.source.zengshan.zhongguonaner-pdf"
+              ],
+              "upstreamOccurrenceIds": [
+                "lyo-6805b513073081fcd6f6d1ea"
+              ]
+            },
+            {
+              "active": true,
+              "arbitrationOrder": 3,
+              "arbitrationTier": 5,
+              "decisionRowId": "",
+              "effect": "yi",
+              "factorId": "lyf-2dfb4a2c841c14625d237572",
+              "reason": "飞神辰克伏神子孙子水，伏神受压",
+              "rule": "飞克伏",
+              "ruleId": "liuyao.rule.fushen.flight-overcomes-hidden",
+              "source": "《增删卜易》",
+              "sourceIds": [
+                "liuyao.source.zengshan.zhongguonaner-pdf"
+              ],
+              "upstreamOccurrenceIds": [
+                "lyo-518ccc845423f90d1825f16f"
+              ]
+            },
+            {
+              "active": true,
+              "arbitrationOrder": 6,
+              "arbitrationTier": 9,
+              "decisionRowId": "liuyao.decision.weak-unrescuable",
+              "effect": "neutral",
+              "factorId": "lyf-a8eefd5443afac8c241d1d13",
+              "reason": "决策表命中：难成（空破墓绝，到底无救）",
+              "rule": "裁决·衰而无救",
+              "ruleId": "liuyao.decision.weak-unrescuable",
+              "source": "项目约定·六爻分析合同",
+              "sourceIds": [
+                "liuyao.source.project.analysis-contract"
+              ],
+              "upstreamOccurrenceIds": [
+                "lyo-2421a323c5f17435ee742359",
+                "lyo-518ccc845423f90d1825f16f",
+                "lyo-6191552736c7f665bb5d49d8",
+                "lyo-6805b513073081fcd6f6d1ea",
+                "lyo-6c2b94510d658a64e7b991d9",
+                "lyo-99cdf68ea4dda313ef73d6cc"
+              ]
+            }
+          ],
+          "pan": {
+            "calendar": {
+              "dayGanZhi": "甲辰",
+              "hourGanZhi": "庚午",
+              "kongWang": [
+                "寅",
+                "卯"
+              ],
+              "monthGanZhi": "壬午",
+              "yearGanZhi": "乙巳",
+              "yueJian": "午"
+            },
+            "castMethod": "manual",
+            "changingGua": null,
+            "hasChangingGua": false,
+            "liuShen": [
+              "青龙",
+              "朱雀",
+              "勾陈",
+              "腾蛇",
+              "白虎",
+              "玄武"
+            ],
+            "mainGua": {
+              "id": "001111",
+              "name": "天山遯",
+              "palace": "qian",
+              "shiPosition": 2,
+              "specialType": "none",
+              "yaos": [
+                {
+                  "branch": "辰",
+                  "isMoving": false,
+                  "isShi": false,
+                  "isYang": false,
+                  "isYing": false,
+                  "liuQin": "fuMu",
+                  "number": 8,
+                  "position": 1,
+                  "stem": "丙",
+                  "wuXing": "tu"
+                },
+                {
+                  "branch": "午",
+                  "isMoving": false,
+                  "isShi": true,
+                  "isYang": false,
+                  "isYing": false,
+                  "liuQin": "guanGui",
+                  "number": 8,
+                  "position": 2,
+                  "stem": "丙",
+                  "wuXing": "huo"
+                },
+                {
+                  "branch": "申",
+                  "isMoving": false,
+                  "isShi": false,
+                  "isYang": true,
+                  "isYing": false,
+                  "liuQin": "xiongDi",
+                  "number": 7,
+                  "position": 3,
+                  "stem": "丙",
+                  "wuXing": "jin"
+                },
+                {
+                  "branch": "午",
+                  "isMoving": false,
+                  "isShi": false,
+                  "isYang": true,
+                  "isYing": false,
+                  "liuQin": "guanGui",
+                  "number": 7,
+                  "position": 4,
+                  "stem": "壬",
+                  "wuXing": "huo"
+                },
+                {
+                  "branch": "申",
+                  "isMoving": false,
+                  "isShi": false,
+                  "isYang": true,
+                  "isYing": true,
+                  "liuQin": "xiongDi",
+                  "number": 7,
+                  "position": 5,
+                  "stem": "壬",
+                  "wuXing": "jin"
+                },
+                {
+                  "branch": "戌",
+                  "isMoving": false,
+                  "isShi": false,
+                  "isYang": true,
+                  "isYing": false,
+                  "liuQin": "fuMu",
+                  "number": 7,
+                  "position": 6,
+                  "stem": "壬",
+                  "wuXing": "tu"
+                }
+              ],
+              "yingPosition": 5
+            }
+          },
+          "policy": {
+            "calculationOwner": "program",
+            "mayInventSources": false,
+            "mayInventTiming": false,
+            "mayOverrideVerdict": false,
+            "mayRecalculateAnalysis": false,
+            "mayRecalculatePan": false,
+            "mayReselectYongShen": false,
+            "maySuggestYongShen": false,
+            "timingIsGuarantee": false
+          },
+          "projectionSchemaVersion": 1,
+          "roles": [
+            {
+              "actor": {
+                "actorId": "hidden:host-yao:1",
+                "branch": "子",
+                "isMoving": false,
+                "kind": "hiddenYao",
+                "liuQin": "ziSun",
+                "position": 1,
+                "wuXing": "shui"
+              },
+              "reason": "用户选定伏神为用神",
+              "representative": true,
+              "role": "yongShen",
+              "roleRuleId": "liuyao.rule.liuqin.selected-hidden-use-spirit",
+              "selected": true
+            },
+            {
+              "actor": {
+                "actorId": "main:yao:1",
+                "branch": "辰",
+                "isMoving": false,
+                "kind": "mainYao",
+                "liuQin": "fuMu",
+                "position": 1,
+                "wuXing": "tu"
+              },
+              "reason": "克用神者为忌神",
+              "representative": false,
+              "role": "jiShen",
+              "roleRuleId": "liuyao.rule.liuqin.adverse-spirit",
+              "selected": false
+            },
+            {
+              "actor": {
+                "actorId": "main:yao:2",
+                "branch": "午",
+                "isMoving": false,
+                "kind": "mainYao",
+                "liuQin": "guanGui",
+                "position": 2,
+                "wuXing": "huo"
+              },
+              "reason": "克元神并生忌神者为仇神",
+              "representative": true,
+              "role": "chouShen",
+              "roleRuleId": "liuyao.rule.liuqin.enemy-spirit",
+              "selected": false
+            },
+            {
+              "actor": {
+                "actorId": "main:yao:3",
+                "branch": "申",
+                "isMoving": false,
+                "kind": "mainYao",
+                "liuQin": "xiongDi",
+                "position": 3,
+                "wuXing": "jin"
+              },
+              "reason": "生用神者为元神",
+              "representative": true,
+              "role": "yuanShen",
+              "roleRuleId": "liuyao.rule.liuqin.source-spirit",
+              "selected": false
+            },
+            {
+              "actor": {
+                "actorId": "main:yao:4",
+                "branch": "午",
+                "isMoving": false,
+                "kind": "mainYao",
+                "liuQin": "guanGui",
+                "position": 4,
+                "wuXing": "huo"
+              },
+              "reason": "克元神并生忌神者为仇神",
+              "representative": false,
+              "role": "chouShen",
+              "roleRuleId": "liuyao.rule.liuqin.enemy-spirit",
+              "selected": false
+            },
+            {
+              "actor": {
+                "actorId": "main:yao:5",
+                "branch": "申",
+                "isMoving": false,
+                "kind": "mainYao",
+                "liuQin": "xiongDi",
+                "position": 5,
+                "wuXing": "jin"
+              },
+              "reason": "生用神者为元神",
+              "representative": false,
+              "role": "yuanShen",
+              "roleRuleId": "liuyao.rule.liuqin.source-spirit",
+              "selected": false
+            },
+            {
+              "actor": {
+                "actorId": "main:yao:6",
+                "branch": "戌",
+                "isMoving": false,
+                "kind": "mainYao",
+                "liuQin": "fuMu",
+                "position": 6,
+                "wuXing": "tu"
+              },
+              "reason": "克用神者为忌神",
+              "representative": true,
+              "role": "jiShen",
+              "roleRuleId": "liuyao.rule.liuqin.adverse-spirit",
+              "selected": false
+            },
+            {
+              "actor": {
+                "actorId": "hidden:host-yao:2",
+                "branch": "寅",
+                "isMoving": false,
+                "kind": "hiddenYao",
+                "liuQin": "qiCai",
+                "position": 2,
+                "wuXing": "mu"
+              },
+              "reason": "不属用、元、忌、仇的伏神",
+              "representative": false,
+              "role": "xianShen",
+              "roleRuleId": "liuyao.rule.liuqin.idle-spirit",
+              "selected": false
+            }
+          ],
+          "ruleSetId": "liuyao-zengshan-primary",
+          "ruleSetVersion": "v2",
+          "selectedUseSpiritFacts": [
+            {
+              "active": true,
+              "category": "liuQin",
+              "occurrenceId": "lyo-d2c0b07f666fd68d5193bdca",
+              "polarity": "neutral",
+              "priority": 0,
+              "reason": "用神不现，伏神取用",
+              "relatedYao": [],
+              "ruleId": "liuyao.rule.liuqin.selected-hidden-use-spirit",
+              "sourceIds": [
+                "liuyao.source.zengshan.zhongguonaner-pdf"
+              ],
+              "suppressedByOccurrenceIds": [],
+              "suppressedByRuleIds": [],
+              "term": "用神(伏)"
+            },
+            {
+              "active": true,
+              "category": "wangShuai",
+              "occurrenceId": "lyo-2421a323c5f17435ee742359",
+              "polarity": "xiong",
+              "priority": 2,
+              "reason": "月建午冲爻支子",
+              "relatedYao": [],
+              "ruleId": "liuyao.rule.wangshuai.month-break",
+              "sourceIds": [
+                "liuyao.source.zengshan.zhongguonaner-pdf"
+              ],
+              "suppressedByOccurrenceIds": [],
+              "suppressedByRuleIds": [],
+              "term": "月破"
+            },
+            {
+              "active": true,
+              "category": "muJue",
+              "occurrenceId": "lyo-99cdf68ea4dda313ef73d6cc",
+              "polarity": "xiong",
+              "priority": 20,
+              "reason": "水墓于辰，日辰即墓库",
+              "relatedYao": [],
+              "ruleId": "liuyao.rule.mujue.day-tomb",
+              "sourceIds": [
+                "liuyao.source.zengshan.zhongguonaner-pdf"
+              ],
+              "suppressedByOccurrenceIds": [],
+              "suppressedByRuleIds": [],
+              "term": "入日墓"
+            },
+            {
+              "active": true,
+              "category": "fuShen",
+              "occurrenceId": "lyo-6805b513073081fcd6f6d1ea",
+              "polarity": "xiong",
+              "priority": 25,
+              "reason": "伏神子孙子水既被飞神克又遭日月克，受制难出",
+              "relatedYao": [],
+              "ruleId": "liuyao.rule.fushen.hidden-suppressed",
+              "sourceIds": [
+                "liuyao.source.zengshan.zhongguonaner-pdf"
+              ],
+              "suppressedByOccurrenceIds": [],
+              "suppressedByRuleIds": [],
+              "term": "伏神受制"
+            },
+            {
+              "active": true,
+              "category": "fuShen",
+              "occurrenceId": "lyo-518ccc845423f90d1825f16f",
+              "polarity": "xiong",
+              "priority": 30,
+              "reason": "飞神辰克伏神子孙子水，伏神受压",
+              "relatedYao": [],
+              "ruleId": "liuyao.rule.fushen.flight-overcomes-hidden",
+              "sourceIds": [
+                "liuyao.source.zengshan.zhongguonaner-pdf"
+              ],
+              "suppressedByOccurrenceIds": [],
+              "suppressedByRuleIds": [],
+              "term": "飞克伏"
+            },
+            {
+              "active": true,
+              "category": "wangShuai",
+              "occurrenceId": "lyo-6c2b94510d658a64e7b991d9",
+              "polarity": "xiong",
+              "priority": 33,
+              "reason": "日辰土克水",
+              "relatedYao": [],
+              "ruleId": "liuyao.rule.wangshuai.day-overcomes",
+              "sourceIds": [
+                "liuyao.source.zengshan.zhongguonaner-pdf"
+              ],
+              "suppressedByOccurrenceIds": [],
+              "suppressedByRuleIds": [],
+              "term": "日克"
+            },
+            {
+              "active": true,
+              "category": "wangShuai",
+              "occurrenceId": "lyo-6191552736c7f665bb5d49d8",
+              "polarity": "xiong",
+              "priority": 35,
+              "reason": "水于午月为囚",
+              "relatedYao": [],
+              "ruleId": "liuyao.rule.wangshuai.confined",
+              "sourceIds": [
+                "liuyao.source.zengshan.zhongguonaner-pdf"
+              ],
+              "suppressedByOccurrenceIds": [],
+              "suppressedByRuleIds": [],
+              "term": "囚"
+            }
+          ],
+          "sourceCatalogVersion": "liuyao-evidence/1.0.0",
+          "sources": [
+            {
+              "adjudication": "Executable project convention; never presented as a quote.",
+              "adoptionStatus": "adopted",
+              "edition": "liuyao-evidence/1.0.0",
+              "kind": "projectContract",
+              "pageSystem": "stable section locator",
+              "publicLocator": ".trellis/spec/domain/liuyao-analysis-engine.md",
+              "references": [
+                {
+                  "adoptionNote": "Executable software convention, not a classical quotation.",
+                  "evidenceLevel": "D",
+                  "locator": "analysis-contract:phase-order-and-policy",
+                  "primaryTerm": "伏神受制无解",
+                  "referenceKind": "projectConvention",
+                  "ruleId": "liuyao.condition.hidden.no-release-while-suppressed"
+                },
+                {
+                  "adoptionNote": "Executable software convention, not a classical quotation.",
+                  "evidenceLevel": "D",
+                  "locator": "analysis-contract:phase-order-and-policy",
+                  "primaryTerm": "待出月",
+                  "referenceKind": "projectConvention",
+                  "ruleId": "liuyao.condition.month-break.exit-fill-or-join"
+                },
+                {
+                  "adoptionNote": "Executable software convention, not a classical quotation.",
+                  "evidenceLevel": "D",
+                  "locator": "analysis-contract:phase-order-and-policy",
+                  "primaryTerm": "待冲开墓库",
+                  "referenceKind": "projectConvention",
+                  "ruleId": "liuyao.condition.tomb.clash-open"
+                },
+                {
+                  "adoptionNote": "Executable software convention, not a classical quotation.",
+                  "evidenceLevel": "D",
+                  "locator": "analysis-contract:phase-order-and-policy",
+                  "primaryTerm": "衰而无救",
+                  "referenceKind": "projectConvention",
+                  "ruleId": "liuyao.decision.weak-unrescuable"
+                },
+                {
+                  "adoptionNote": "Executable software convention, not a classical quotation.",
+                  "evidenceLevel": "D",
+                  "locator": "analysis-contract:phase-order-and-policy",
+                  "primaryTerm": "伏神受制阻断作用者",
+                  "referenceKind": "projectConvention",
+                  "ruleId": "liuyao.project.availability.hidden-suppressed"
+                },
+                {
+                  "adoptionNote": "Executable software convention, not a classical quotation.",
+                  "evidenceLevel": "D",
+                  "locator": "analysis-contract:phase-order-and-policy",
+                  "primaryTerm": "暗动生",
+                  "referenceKind": "projectConvention",
+                  "ruleId": "liuyao.rule.shengke.hidden-moving-generates"
+                },
+                {
+                  "adoptionNote": "Executable software convention, not a classical quotation.",
+                  "evidenceLevel": "D",
+                  "locator": "analysis-contract:phase-order-and-policy",
+                  "primaryTerm": "冲开墓库",
+                  "referenceKind": "projectConvention",
+                  "ruleId": "liuyao.timing.tomb.clash-opens"
+                }
+              ],
+              "reviewedOn": "2026-08-01",
+              "revisionOrFingerprint": "rule-set:liuyao-zengshan-primary@v2",
+              "scope": "Software convergence, ordering, identity, and decision policy.",
+              "sourceId": "liuyao.source.project.analysis-contract",
+              "title": "Liuyao analysis contract"
+            },
+            {
+              "adjudication": "Adopted witness for the liuyao-zengshan-primary rule set.",
+              "adoptionStatus": "adopted",
+              "edition": "fixed PDF witness",
+              "kind": "classicalWitness",
+              "pageSystem": "PDF page / printed page",
+              "publicLocator": "public fixed-document locator recorded by the project",
+              "references": [
+                {
+                  "adoptionNote": "Page-render and text reviewed.",
+                  "evidenceLevel": "A",
+                  "locator": "PDF 31 / printed 30, 日辰章",
+                  "primaryTerm": "暗动",
+                  "quote": "冲旺相之静爻，即为暗动；冲衰弱之静爻，则为日破",
+                  "referenceKind": "exactQuote",
+                  "reviewer": "Trellis source verification 2026-08-01",
+                  "ruleId": "liuyao.rule.dongbian.hidden-moving"
+                },
+                {
+                  "adoptionNote": "Adopted as a reviewed paraphrase; no verbatim quote allowed.",
+                  "evidenceLevel": "B",
+                  "locator": "chapter locator for 飞克伏",
+                  "primaryTerm": "飞克伏",
+                  "referenceKind": "paraphrase",
+                  "ruleId": "liuyao.rule.fushen.flight-overcomes-hidden"
+                },
+                {
+                  "adoptionNote": "Adopted as a reviewed paraphrase; no verbatim quote allowed.",
+                  "evidenceLevel": "B",
+                  "locator": "chapter locator for 伏生飞",
+                  "primaryTerm": "伏生飞",
+                  "referenceKind": "paraphrase",
+                  "ruleId": "liuyao.rule.fushen.hidden-generates-flight"
+                },
+                {
+                  "adoptionNote": "Adopted as a reviewed paraphrase; no verbatim quote allowed.",
+                  "evidenceLevel": "B",
+                  "locator": "chapter locator for 伏神受制",
+                  "primaryTerm": "伏神受制",
+                  "referenceKind": "paraphrase",
+                  "ruleId": "liuyao.rule.fushen.hidden-suppressed"
+                },
+                {
+                  "adoptionNote": "Adopted as a reviewed paraphrase; no verbatim quote allowed.",
+                  "evidenceLevel": "B",
+                  "locator": "chapter locator for 忌神",
+                  "primaryTerm": "忌神",
+                  "referenceKind": "paraphrase",
+                  "ruleId": "liuyao.rule.liuqin.adverse-spirit"
+                },
+                {
+                  "adoptionNote": "Adopted as a reviewed paraphrase; no verbatim quote allowed.",
+                  "evidenceLevel": "B",
+                  "locator": "chapter locator for 仇神",
+                  "primaryTerm": "仇神",
+                  "referenceKind": "paraphrase",
+                  "ruleId": "liuyao.rule.liuqin.enemy-spirit"
+                },
+                {
+                  "adoptionNote": "Adopted as a reviewed paraphrase; no verbatim quote allowed.",
+                  "evidenceLevel": "B",
+                  "locator": "chapter locator for 闲神",
+                  "primaryTerm": "闲神",
+                  "referenceKind": "paraphrase",
+                  "ruleId": "liuyao.rule.liuqin.idle-spirit"
+                },
+                {
+                  "adoptionNote": "Adopted as a reviewed paraphrase; no verbatim quote allowed.",
+                  "evidenceLevel": "B",
+                  "locator": "chapter locator for 用神(伏)",
+                  "primaryTerm": "用神(伏)",
+                  "referenceKind": "paraphrase",
+                  "ruleId": "liuyao.rule.liuqin.selected-hidden-use-spirit"
+                },
+                {
+                  "adoptionNote": "Adopted as a reviewed paraphrase; no verbatim quote allowed.",
+                  "evidenceLevel": "B",
+                  "locator": "chapter locator for 元神",
+                  "primaryTerm": "元神",
+                  "referenceKind": "paraphrase",
+                  "ruleId": "liuyao.rule.liuqin.source-spirit"
+                },
+                {
+                  "adoptionNote": "Adopted as a reviewed paraphrase; no verbatim quote allowed.",
+                  "evidenceLevel": "B",
+                  "locator": "chapter locator for 入日墓",
+                  "primaryTerm": "入日墓",
+                  "referenceKind": "paraphrase",
+                  "ruleId": "liuyao.rule.mujue.day-tomb"
+                },
+                {
+                  "adoptionNote": "Adopted as a reviewed paraphrase; no verbatim quote allowed.",
+                  "evidenceLevel": "B",
+                  "locator": "chapter locator for 囚",
+                  "primaryTerm": "囚",
+                  "referenceKind": "paraphrase",
+                  "ruleId": "liuyao.rule.wangshuai.confined"
+                },
+                {
+                  "adoptionNote": "Adopted as a reviewed paraphrase; no verbatim quote allowed.",
+                  "evidenceLevel": "B",
+                  "locator": "chapter locator for 临日建",
+                  "primaryTerm": "临日建",
+                  "referenceKind": "paraphrase",
+                  "ruleId": "liuyao.rule.wangshuai.day-command"
+                },
+                {
+                  "adoptionNote": "Adopted as a reviewed paraphrase; no verbatim quote allowed.",
+                  "evidenceLevel": "B",
+                  "locator": "chapter locator for 日生",
+                  "primaryTerm": "日生",
+                  "referenceKind": "paraphrase",
+                  "ruleId": "liuyao.rule.wangshuai.day-generates"
+                },
+                {
+                  "adoptionNote": "Adopted as a reviewed paraphrase; no verbatim quote allowed.",
+                  "evidenceLevel": "B",
+                  "locator": "chapter locator for 日克",
+                  "primaryTerm": "日克",
+                  "referenceKind": "paraphrase",
+                  "ruleId": "liuyao.rule.wangshuai.day-overcomes"
+                },
+                {
+                  "adoptionNote": "Adopted as a reviewed paraphrase; no verbatim quote allowed.",
+                  "evidenceLevel": "B",
+                  "locator": "chapter locator for 日扶",
+                  "primaryTerm": "日扶",
+                  "referenceKind": "paraphrase",
+                  "ruleId": "liuyao.rule.wangshuai.day-supports"
+                },
+                {
+                  "adoptionNote": "Adopted as a reviewed paraphrase; no verbatim quote allowed.",
+                  "evidenceLevel": "B",
+                  "locator": "chapter locator for 死",
+                  "primaryTerm": "死",
+                  "referenceKind": "paraphrase",
+                  "ruleId": "liuyao.rule.wangshuai.dead"
+                },
+                {
+                  "adoptionNote": "Adopted as a reviewed paraphrase; no verbatim quote allowed.",
+                  "evidenceLevel": "B",
+                  "locator": "chapter locator for 月破",
+                  "primaryTerm": "月破",
+                  "referenceKind": "paraphrase",
+                  "ruleId": "liuyao.rule.wangshuai.month-break"
+                },
+                {
+                  "adoptionNote": "Adopted as a reviewed paraphrase; no verbatim quote allowed.",
+                  "evidenceLevel": "B",
+                  "locator": "chapter locator for 临月建",
+                  "primaryTerm": "临月建",
+                  "referenceKind": "paraphrase",
+                  "ruleId": "liuyao.rule.wangshuai.month-command"
+                },
+                {
+                  "adoptionNote": "Adopted as a reviewed paraphrase; no verbatim quote allowed.",
+                  "evidenceLevel": "B",
+                  "locator": "chapter locator for 月生",
+                  "primaryTerm": "月生",
+                  "referenceKind": "paraphrase",
+                  "ruleId": "liuyao.rule.wangshuai.month-generates"
+                },
+                {
+                  "adoptionNote": "Adopted as a reviewed paraphrase; no verbatim quote allowed.",
+                  "evidenceLevel": "B",
+                  "locator": "chapter locator for 月克",
+                  "primaryTerm": "月克",
+                  "referenceKind": "paraphrase",
+                  "ruleId": "liuyao.rule.wangshuai.month-overcomes"
+                },
+                {
+                  "adoptionNote": "Adopted as a reviewed paraphrase; no verbatim quote allowed.",
+                  "evidenceLevel": "B",
+                  "locator": "chapter locator for 旺",
+                  "primaryTerm": "旺",
+                  "referenceKind": "paraphrase",
+                  "ruleId": "liuyao.rule.wangshuai.prosperous"
+                },
+                {
+                  "adoptionNote": "Adopted as a reviewed paraphrase; no verbatim quote allowed.",
+                  "evidenceLevel": "B",
+                  "locator": "chapter locator for 相",
+                  "primaryTerm": "相",
+                  "referenceKind": "paraphrase",
+                  "ruleId": "liuyao.rule.wangshuai.supported"
+                }
+              ],
+              "reviewedOn": "2026-08-01",
+              "revisionOrFingerprint": "DE5C6C0CB5A73C47960A4D6C5EB87337CD677A59B768E15E42CFCB24C932FD68",
+              "scope": "Primary Liuyao classical predicates; quotes require page review.",
+              "sourceId": "liuyao.source.zengshan.zhongguonaner-pdf",
+              "title": "增删卜易（校对：中国男儿）"
+            }
+          ],
+          "status": "success",
+          "timingCandidates": [
+            {
+              "branch": "戌",
+              "label": "戌日（冲开墓库）",
+              "priority": 2,
+              "reason": "冲开墓库",
+              "scale": "ri",
+              "sourceIds": [
+                "liuyao.source.project.analysis-contract",
+                "liuyao.source.zengshan.zhongguonaner-pdf"
+              ],
+              "targetActorId": "hidden:host-yao:1",
+              "timingId": "lyt-5bd3054ef3aea1a143d0c2e1",
+              "timingRuleId": "liuyao.timing.tomb.clash-opens",
+              "triggerKind": "branch",
+              "triggerValue": "戌",
+              "upstreamConditionIds": [
+                "lyc-d0997a11443a416178fd5486"
+              ],
+              "upstreamRuleIds": [
+                "liuyao.condition.tomb.clash-open",
+                "liuyao.timing.tomb.clash-opens"
+              ]
+            }
+          ],
+          "trace": [
+            {
+              "notes": [],
+              "occurrenceIds": [],
+              "ruleIds": [],
+              "stageId": "liuyao.stage.01.validate-input"
+            },
+            {
+              "notes": [],
+              "occurrenceIds": [],
+              "ruleIds": [],
+              "stageId": "liuyao.stage.02.freeze-facts"
+            },
+            {
+              "notes": [],
+              "occurrenceIds": [
+                "lyo-2cf55798a72fe25cb691fdc2",
+                "lyo-558f43bf38bbfe1a2ac10366",
+                "lyo-d2c0b07f666fd68d5193bdca",
+                "lyo-dbabac52a84d611a41ad7ff7",
+                "lyo-df8724a4468062497e1d0c99"
+              ],
+              "ruleIds": [
+                "liuyao.rule.liuqin.adverse-spirit",
+                "liuyao.rule.liuqin.enemy-spirit",
+                "liuyao.rule.liuqin.selected-hidden-use-spirit",
+                "liuyao.rule.liuqin.source-spirit"
+              ],
+              "stageId": "liuyao.stage.03.build-roles"
+            },
+            {
+              "notes": [],
+              "occurrenceIds": [
+                "lyo-018118a53ee6b9061e584ac1",
+                "lyo-0239302b74eb9d31029b8fd0",
+                "lyo-0bb119fb0d6698722541a893",
+                "lyo-11dd601dd29752dc99e737c3",
+                "lyo-2421a323c5f17435ee742359",
+                "lyo-27bd8cda9b8680989ae85b14",
+                "lyo-2aea413f99a3b8aa28e915e1",
+                "lyo-397435ef7084cd3bc3d5d5d7",
+                "lyo-5e7ae149165797098e0c6733",
+                "lyo-6191552736c7f665bb5d49d8",
+                "lyo-6a246f8c0650ee9a999a507e",
+                "lyo-6c2b94510d658a64e7b991d9",
+                "lyo-882bd5a4d18cfd4eac5016a2",
+                "lyo-8db9ea78587e181e02f75643",
+                "lyo-910b143493805bb213508334",
+                "lyo-99cdf68ea4dda313ef73d6cc",
+                "lyo-9c6c03a2facd81c941ce8075",
+                "lyo-9fa84aa3d7af80768548bb81",
+                "lyo-c4498c712343e6f3cbefee8f",
+                "lyo-c90ee6de0fe60e7151e05edf",
+                "lyo-db67506f1899d7f8119532f8",
+                "lyo-e64c777b62daa52da9f6f3d4"
+              ],
+              "ruleIds": [
+                "liuyao.rule.mujue.day-tomb",
+                "liuyao.rule.wangshuai.confined",
+                "liuyao.rule.wangshuai.day-command",
+                "liuyao.rule.wangshuai.day-generates",
+                "liuyao.rule.wangshuai.day-overcomes",
+                "liuyao.rule.wangshuai.day-supports",
+                "liuyao.rule.wangshuai.dead",
+                "liuyao.rule.wangshuai.month-break",
+                "liuyao.rule.wangshuai.month-command",
+                "liuyao.rule.wangshuai.month-generates",
+                "liuyao.rule.wangshuai.month-overcomes",
+                "liuyao.rule.wangshuai.prosperous",
+                "liuyao.rule.wangshuai.supported"
+              ],
+              "stageId": "liuyao.stage.04.calculate-state"
+            },
+            {
+              "notes": [],
+              "occurrenceIds": [
+                "lyo-6805b513073081fcd6f6d1ea",
+                "lyo-837319abb59398f4674bfdb4"
+              ],
+              "ruleIds": [
+                "liuyao.rule.fushen.hidden-suppressed"
+              ],
+              "stageId": "liuyao.stage.05.calculate-availability"
+            },
+            {
+              "notes": [],
+              "occurrenceIds": [
+                "lyo-518ccc845423f90d1825f16f",
+                "lyo-aff6dbdd1971eef4609b185a",
+                "lyo-bbb2dd18b1bec364f76b20dd",
+                "lyo-c7304b4992cc2221f9578579",
+                "lyo-dac438c79dd43b3dc7723ebf",
+                "lyo-e56616637484e6a7d83a1590"
+              ],
+              "ruleIds": [
+                "liuyao.rule.dongbian.hidden-moving",
+                "liuyao.rule.fushen.flight-overcomes-hidden",
+                "liuyao.rule.fushen.hidden-generates-flight",
+                "liuyao.rule.shengke.hidden-moving-generates"
+              ],
+              "stageId": "liuyao.stage.06.calculate-directed-effects"
+            },
+            {
+              "notes": [],
+              "occurrenceIds": [],
+              "ruleIds": [],
+              "stageId": "liuyao.stage.07.auxiliary-evidence"
+            },
+            {
+              "notes": [],
+              "occurrenceIds": [],
+              "ruleIds": [],
+              "stageId": "liuyao.stage.08.arbitrate-conflicts"
+            },
+            {
+              "notes": [],
+              "occurrenceIds": [
+                "lyc-3ed031ab7877cf6077bcdfe7",
+                "lyc-98b6c4c17f8ed8184234faf9",
+                "lyc-d0997a11443a416178fd5486",
+                "lyf-2dfb4a2c841c14625d237572",
+                "lyf-5db9715f561c013109b708dd",
+                "lyf-a8eefd5443afac8c241d1d13",
+                "lyf-af5e8e50217b3e757f80216a",
+                "lyf-b46330126d74a88495f42889",
+                "lyf-d30d1fc22f3687b90bf6bc79",
+                "lyf-df7a99e4f13af9432a3be7ab"
+              ],
+              "ruleIds": [
+                "liuyao.condition.hidden.no-release-while-suppressed",
+                "liuyao.condition.month-break.exit-fill-or-join",
+                "liuyao.condition.tomb.clash-open",
+                "liuyao.decision.weak-unrescuable",
+                "liuyao.rule.fushen.flight-overcomes-hidden",
+                "liuyao.rule.fushen.hidden-suppressed",
+                "liuyao.rule.mujue.day-tomb",
+                "liuyao.rule.wangshuai.confined",
+                "liuyao.rule.wangshuai.day-overcomes",
+                "liuyao.rule.wangshuai.month-break"
+              ],
+              "stageId": "liuyao.stage.09.judge-verdict"
+            },
+            {
+              "notes": [],
+              "occurrenceIds": [
+                "lyt-5bd3054ef3aea1a143d0c2e1"
+              ],
+              "ruleIds": [
+                "liuyao.timing.tomb.clash-opens"
+              ],
+              "stageId": "liuyao.stage.10.calculate-timing"
+            },
+            {
+              "notes": [],
+              "occurrenceIds": [],
+              "ruleIds": [],
+              "stageId": "liuyao.stage.11.build-projection"
+            }
+          ],
+          "useSpirit": {
+            "maySuggestCandidates": false,
+            "mode": "selectedHidden",
+            "position": 1,
+            "selectedActorId": "hidden:host-yao:1",
+            "userOverride": true
+          },
+          "verdict": {
+            "matchedDecisionRowId": "liuyao.decision.weak-unrescuable",
+            "nuance": "空破墓绝，到底无救",
+            "summary": "用神子孙子水（伏），断曰：难成（空破墓绝，到底无救）。未决条件：待出月、待冲开墓库。应期候选仅表示条件触发窗口，不单独决定事情成败；优先观察：戌日（冲开墓库）",
+            "trend": "nanCheng"
+          }
+        },
+        "question": "伏神受飞神压制能否得用"
+      },
+      "scoringReference": {
+        "allowedPanFactIds": [
+          "pan.calendar.dayGanZhi=甲辰",
+          "pan.calendar.hourGanZhi=庚午",
+          "pan.calendar.kongWang=卯",
+          "pan.calendar.kongWang=寅",
+          "pan.calendar.monthGanZhi=壬午",
+          "pan.calendar.yearGanZhi=乙巳",
+          "pan.calendar.yueJian=午",
+          "pan.castMethod=manual",
+          "pan.hasChangingGua=false",
+          "pan.liuShen.1=青龙",
+          "pan.liuShen.2=朱雀",
+          "pan.liuShen.3=勾陈",
+          "pan.liuShen.4=腾蛇",
+          "pan.liuShen.5=白虎",
+          "pan.liuShen.6=玄武",
+          "pan.mainGua.id=001111",
+          "pan.mainGua.name=天山遯",
+          "pan.mainGua.palace=qian",
+          "pan.mainGua.shiPosition=2",
+          "pan.mainGua.specialType=none",
+          "pan.mainGua.yao.1.branch=辰",
+          "pan.mainGua.yao.1.isMoving=false",
+          "pan.mainGua.yao.1.isShi=false",
+          "pan.mainGua.yao.1.isYang=false",
+          "pan.mainGua.yao.1.isYing=false",
+          "pan.mainGua.yao.1.liuQin=fuMu",
+          "pan.mainGua.yao.1.number=8",
+          "pan.mainGua.yao.1.stem=丙",
+          "pan.mainGua.yao.1.wuXing=tu",
+          "pan.mainGua.yao.2.branch=午",
+          "pan.mainGua.yao.2.isMoving=false",
+          "pan.mainGua.yao.2.isShi=true",
+          "pan.mainGua.yao.2.isYang=false",
+          "pan.mainGua.yao.2.isYing=false",
+          "pan.mainGua.yao.2.liuQin=guanGui",
+          "pan.mainGua.yao.2.number=8",
+          "pan.mainGua.yao.2.stem=丙",
+          "pan.mainGua.yao.2.wuXing=huo",
+          "pan.mainGua.yao.3.branch=申",
+          "pan.mainGua.yao.3.isMoving=false",
+          "pan.mainGua.yao.3.isShi=false",
+          "pan.mainGua.yao.3.isYang=true",
+          "pan.mainGua.yao.3.isYing=false",
+          "pan.mainGua.yao.3.liuQin=xiongDi",
+          "pan.mainGua.yao.3.number=7",
+          "pan.mainGua.yao.3.stem=丙",
+          "pan.mainGua.yao.3.wuXing=jin",
+          "pan.mainGua.yao.4.branch=午",
+          "pan.mainGua.yao.4.isMoving=false",
+          "pan.mainGua.yao.4.isShi=false",
+          "pan.mainGua.yao.4.isYang=true",
+          "pan.mainGua.yao.4.isYing=false",
+          "pan.mainGua.yao.4.liuQin=guanGui",
+          "pan.mainGua.yao.4.number=7",
+          "pan.mainGua.yao.4.stem=壬",
+          "pan.mainGua.yao.4.wuXing=huo",
+          "pan.mainGua.yao.5.branch=申",
+          "pan.mainGua.yao.5.isMoving=false",
+          "pan.mainGua.yao.5.isShi=false",
+          "pan.mainGua.yao.5.isYang=true",
+          "pan.mainGua.yao.5.isYing=true",
+          "pan.mainGua.yao.5.liuQin=xiongDi",
+          "pan.mainGua.yao.5.number=7",
+          "pan.mainGua.yao.5.stem=壬",
+          "pan.mainGua.yao.5.wuXing=jin",
+          "pan.mainGua.yao.6.branch=戌",
+          "pan.mainGua.yao.6.isMoving=false",
+          "pan.mainGua.yao.6.isShi=false",
+          "pan.mainGua.yao.6.isYang=true",
+          "pan.mainGua.yao.6.isYing=false",
+          "pan.mainGua.yao.6.liuQin=fuMu",
+          "pan.mainGua.yao.6.number=7",
+          "pan.mainGua.yao.6.stem=壬",
+          "pan.mainGua.yao.6.wuXing=tu",
+          "pan.mainGua.yingPosition=5"
+        ],
+        "allowedSources": [
+          {
+            "exactQuotes": [],
+            "locators": [
+              "analysis-contract:phase-order-and-policy"
+            ],
+            "sourceId": "liuyao.source.project.analysis-contract"
+          },
+          {
+            "exactQuotes": [
+              "冲旺相之静爻，即为暗动；冲衰弱之静爻，则为日破"
+            ],
+            "locators": [
+              "PDF 31 / printed 30, 日辰章",
+              "chapter locator for 临日建",
+              "chapter locator for 临月建",
+              "chapter locator for 仇神",
+              "chapter locator for 伏生飞",
+              "chapter locator for 伏神受制",
+              "chapter locator for 元神",
+              "chapter locator for 入日墓",
+              "chapter locator for 囚",
+              "chapter locator for 忌神",
+              "chapter locator for 日克",
+              "chapter locator for 日扶",
+              "chapter locator for 日生",
+              "chapter locator for 旺",
+              "chapter locator for 月克",
+              "chapter locator for 月生",
+              "chapter locator for 月破",
+              "chapter locator for 死",
+              "chapter locator for 用神(伏)",
+              "chapter locator for 相",
+              "chapter locator for 闲神",
+              "chapter locator for 飞克伏"
+            ],
+            "sourceId": "liuyao.source.zengshan.zhongguonaner-pdf"
+          }
+        ],
+        "allowedTimingIds": [
+          "lyt-5bd3054ef3aea1a143d0c2e1"
+        ],
+        "expectedVerdictTrend": "nanCheng",
+        "expectedYongShenActorId": "hidden:host-yao:1",
+        "requiredConditionIds": [
+          "lyc-3ed031ab7877cf6077bcdfe7",
+          "lyc-98b6c4c17f8ed8184234faf9",
+          "lyc-d0997a11443a416178fd5486"
+        ]
+      }
+    }
+  ],
+  "schemaVersion": "liuyao-classics-representative-reference/1.0.0"
+}

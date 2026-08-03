@@ -138,7 +138,9 @@ void main() {
       caseInputSetHash: valid.caseInputSetHash,
       modelHash: valid.modelHash,
       judgeModelHash: sha256Text('different-judge-model'),
+      transportEndpointHash: valid.transportEndpointHash,
       requestParametersHash: valid.requestParametersHash,
+      judgeRequestContractHash: valid.judgeRequestContractHash,
       baselineRequestSetHash: valid.baselineRequestSetHash,
       candidateRequestSetHash: valid.candidateRequestSetHash,
     );
@@ -152,6 +154,84 @@ void main() {
       ),
       throwsA(isA<EvalFailure>()),
     );
+  });
+
+  test('transport timeout is part of the comparison identity', () {
+    final List<PairedEvaluation> pairs = _completePairs(rubric, fixture);
+    final ComparisonIdentity original = _identity(fixture, rubric, pairs);
+    final ComparisonIdentity changed = ComparisonIdentity.create(
+      runId: original.runId,
+      fixtureHash: original.fixtureHash,
+      rubricHash: original.rubricHash,
+      adapterHash: original.adapterHash,
+      projectionSetHash: original.projectionSetHash,
+      caseInputSetHash: original.caseInputSetHash,
+      modelHash: original.modelHash,
+      judgeModelHash: original.judgeModelHash,
+      transportEndpointHash: original.transportEndpointHash,
+      transportTimeoutSeconds: original.transportTimeoutSeconds + 1,
+      requestParametersHash: original.requestParametersHash,
+      judgeRequestContractHash: original.judgeRequestContractHash,
+      baselineRequestSetHash: original.baselineRequestSetHash,
+      candidateRequestSetHash: original.candidateRequestSetHash,
+    );
+
+    expect(changed.runHash, isNot(original.runHash));
+    expect(
+      ComparisonIdentity.fromJson(changed.toJson()).transportTimeoutSeconds,
+      original.transportTimeoutSeconds + 1,
+    );
+  });
+
+  test('transport retry policy is part of the comparison identity', () {
+    final List<PairedEvaluation> pairs = _completePairs(rubric, fixture);
+    final ComparisonIdentity original = _identity(fixture, rubric, pairs);
+    final ComparisonIdentity changed = ComparisonIdentity.create(
+      runId: original.runId,
+      fixtureHash: original.fixtureHash,
+      rubricHash: original.rubricHash,
+      adapterHash: original.adapterHash,
+      projectionSetHash: original.projectionSetHash,
+      caseInputSetHash: original.caseInputSetHash,
+      modelHash: original.modelHash,
+      judgeModelHash: original.judgeModelHash,
+      transportEndpointHash: original.transportEndpointHash,
+      transportTimeoutSeconds: original.transportTimeoutSeconds,
+      transportRetryPolicyVersion: 'changed-retry-policy',
+      requestParametersHash: original.requestParametersHash,
+      judgeRequestContractHash: original.judgeRequestContractHash,
+      baselineRequestSetHash: original.baselineRequestSetHash,
+      candidateRequestSetHash: original.candidateRequestSetHash,
+    );
+
+    expect(changed.runHash, isNot(original.runHash));
+    expect(
+      ComparisonIdentity.fromJson(changed.toJson()).transportRetryPolicyVersion,
+      'changed-retry-policy',
+    );
+  });
+
+  test('judge request contract is part of the comparison identity', () {
+    final List<PairedEvaluation> pairs = _completePairs(rubric, fixture);
+    final ComparisonIdentity original = _identity(fixture, rubric, pairs);
+    final ComparisonIdentity changed = ComparisonIdentity.create(
+      runId: original.runId,
+      fixtureHash: original.fixtureHash,
+      rubricHash: original.rubricHash,
+      adapterHash: original.adapterHash,
+      projectionSetHash: original.projectionSetHash,
+      caseInputSetHash: original.caseInputSetHash,
+      modelHash: original.modelHash,
+      judgeModelHash: original.judgeModelHash,
+      transportEndpointHash: original.transportEndpointHash,
+      transportTimeoutSeconds: original.transportTimeoutSeconds,
+      requestParametersHash: original.requestParametersHash,
+      judgeRequestContractHash: sha256Text('changed-judge-contract'),
+      baselineRequestSetHash: original.baselineRequestSetHash,
+      candidateRequestSetHash: original.candidateRequestSetHash,
+    );
+
+    expect(changed.runHash, isNot(original.runHash));
   });
 
   test('blind labels are deterministic and bound to run, case, and repetition',
@@ -314,7 +394,9 @@ ComparisonIdentity _identity(
     caseInputSetHash: sha256Json(inputHashes),
     modelHash: sha256Text('same-model'),
     judgeModelHash: sha256Text('same-model'),
+    transportEndpointHash: sha256Text('same-endpoint'),
     requestParametersHash: sha256Text('same-request-parameters'),
+    judgeRequestContractHash: sha256Text('same-judge-contract'),
     baselineRequestSetHash:
         canonicalRequestSetHash(baselineVariant, baselineHashes),
     candidateRequestSetHash:

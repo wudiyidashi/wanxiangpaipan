@@ -3,6 +3,8 @@
 /// 将六爻排盘结果转换为结构化输出格式，用于 LLM 分析。
 library;
 
+import 'dart:convert';
+
 import '../../../domain/divination_system.dart';
 import '../../../divination_systems/liuyao/liuyao_result.dart';
 import '../../../divination_systems/liuyao/models/gua.dart';
@@ -11,6 +13,7 @@ import '../../../domain/services/liuyao/analysis/liuyao_analyzer.dart';
 import '../../../domain/services/liuyao/analysis/models/liuyao_analysis_projection.dart';
 import '../structured_output.dart';
 import '../structured_output_formatter.dart';
+import 'liuyao_ai_projection_compactor.dart';
 
 /// 六爻结构化输出格式化器
 class LiuYaoStructuredFormatter
@@ -30,6 +33,7 @@ class LiuYaoStructuredFormatter
     final projection = LiuYaoAnalysisProjection.fromReport(
       result: result,
       report: report,
+      question: question,
     );
     return StructuredDivinationOutput(
       systemType: systemType.id,
@@ -84,6 +88,9 @@ class LiuYaoStructuredFormatter
       'analysisRuleSetVersion': projection.ruleSetVersion,
       'sourceCatalogVersion': projection.sourceCatalogVersion,
       'useSpiritMode': projection.useSpirit.toJson()['mode'],
+      'calendarInputMode': projection.pan.calendarInputMode,
+      'analysisCalendarAuthority': projection.pan.analysisCalendarAuthority,
+      'castTimeRole': projection.pan.castTimeRole,
     };
   }
 
@@ -92,6 +99,8 @@ class LiuYaoStructuredFormatter
     LiuYaoAnalysisProjection projection,
   ) {
     final sections = <StructuredSection>[];
+    final projectionJson = projection.toJson();
+    final aiProjection = LiuYaoAiProjectionCompactor.compact(projectionJson);
 
     // 本卦段落
     sections.add(StructuredSection(
@@ -155,16 +164,22 @@ class LiuYaoStructuredFormatter
     sections.add(StructuredSection(
       key: 'analysis',
       title: '断卦分析（规则标注）',
-      content: _formatAnalysis(projection),
+      content: _formatAnalysis(projection, aiProjection),
       priority: 7,
-      metadata: <String, dynamic>{'projection': projection.toJson()},
+      metadata: <String, dynamic>{
+        'projection': projectionJson,
+        'aiProjection': aiProjection,
+      },
     ));
 
     return sections;
   }
 
   /// 渲染同一份经验证 projection，不在 AI 边界重算领域规则。
-  String _formatAnalysis(LiuYaoAnalysisProjection projection) {
+  String _formatAnalysis(
+    LiuYaoAnalysisProjection projection,
+    Map<String, Object?> aiProjection,
+  ) {
     final buffer = StringBuffer();
     buffer
       ..writeln('计算所有权: program；本段只解释程序事实，不重算或覆盖。')
@@ -173,6 +188,9 @@ class LiuYaoStructuredFormatter
           'projection ${projection.projectionSchemaVersion}；'
           'sources ${projection.sourceCatalogVersion}')
       ..writeln('取用模式: ${projection.useSpirit.toJson()['mode']}');
+    buffer.writeln('历法权威: ${projection.pan.analysisCalendarAuthority}；'
+        'castTimeRole=${projection.pan.castTimeRole}；'
+        'inputMode=${projection.pan.calendarInputMode}');
     if (projection.useSpirit.mode == LiuYaoUseSpiritMode.unselected) {
       buffer.writeln('用户未选用神：只可提供明确标注的候选建议；程序裁决、条件和应期均为空。');
     } else {
@@ -181,81 +199,38 @@ class LiuYaoStructuredFormatter
           '${projection.useSpirit.mode == LiuYaoUseSpiritMode.selectedHidden ? '（伏神取用）' : ''}；'
           '不得重选。');
     }
-    if (projection.roles.isNotEmpty) {
-      buffer.writeln('角色清单:');
-      for (final role in projection.roles) {
-        buffer.writeln('- ${role.role.name} ${role.actor.actorId} '
-            '${role.actor.branch}；${role.reason}'
-            '${role.selected ? '；用户选定' : ''}');
-      }
-    }
-    if (projection.selectedUseSpiritFacts.isNotEmpty) {
-      buffer.writeln('用神自身事实:');
-      for (final fact in projection.selectedUseSpiritFacts) {
-        buffer.writeln('- ${fact.ruleId} ${fact.term}: ${fact.reason}；'
-            '${fact.active ? '生效' : '已压制'}');
-      }
-    }
-    if (projection.directedEffects.isNotEmpty) {
-      buffer.writeln('有向作用:');
-      for (final effect in projection.directedEffects) {
-        buffer.writeln('- ${effect.occurrenceId} ${effect.ruleId}: '
-            '${effect.fromActor.actorId} -> ${effect.toActor.actorId}；'
-            '${effect.effect.name}；${effect.status.name}；'
-            'path=${effect.pathActorIds.join(' -> ')}');
-      }
-    }
     final verdict = projection.verdict;
+    final lifecycle = projection.lifecycleVerdict;
+    if (lifecycle != null) {
+      buffer.writeln('生命周期摘要: '
+          'formation=${lifecycle.formation.name}；'
+          'quality=${lifecycle.quality.name}；'
+          'continuity=${lifecycle.continuity.name}；'
+          'persistence=${lifecycle.persistence.name}；'
+          'headline=${lifecycle.headline}；'
+          'row=${lifecycle.matchedDecisionRowId}');
+    }
     if (verdict != null) {
-      buffer
-        ..writeln('程序四值: ${verdict.trend.name}')
-        ..writeln('细化语气: ${verdict.nuance ?? '无'}')
-        ..writeln('命中裁决行: ${verdict.matchedDecisionRowId}')
-        ..writeln('裁决摘要: ${verdict.summary}');
+      // The compact canonical JSON owns summary visibility. Rendering it here
+      // would bypass current-state omission and duplicate timing summaries.
+      buffer.writeln('用神单轴摘要: trend=${verdict.trend.name}；'
+          'nuance=${verdict.nuance ?? '无'}；'
+          'row=${verdict.matchedDecisionRowId}');
     }
-    if (projection.factors.isNotEmpty) {
-      buffer.writeln('全部裁决因素（程序顺序）:');
-      for (final factor in projection.factors) {
-        buffer.writeln('- ${factor.factorId} ${factor.ruleId} '
-            '${factor.effect.name}: ${factor.reason}；'
-            'sources=${factor.sourceIds.join(',')}');
-      }
-    }
-    if (projection.conditions.isNotEmpty) {
-      buffer.writeln('全部未决条件:');
-      for (final condition in projection.conditions) {
-        buffer.writeln('- ${condition.conditionId} '
-            '${condition.conditionRuleId} ${condition.label}: '
-            '${condition.reason}；hasRescue=${condition.hasRescue}；'
-            'status=${condition.status}');
-      }
-    }
-    if (projection.timingCandidates.isNotEmpty) {
-      buffer.writeln('应期观察窗（不保证事件发生或自动转吉）:');
-      for (final timing in projection.timingCandidates) {
-        buffer.writeln('- ${timing.timingId} ${timing.label}: '
-            '${timing.scale.name}尺度；${timing.reason}；'
-            'conditions=${timing.upstreamConditionIds.join(',')}');
-      }
-    }
+    buffer.writeln('投影统计: actors=${projection.actorFacts.length}；'
+        'useSpiritOccurrences=${projection.useSpiritOccurrences.length}；'
+        'effects=${projection.directedEffects.length}；'
+        'factors=${projection.factors.length}；'
+        'conditions=${projection.conditions.length}；'
+        'timing=${projection.timingCandidates.length}');
     if (projection.sources.isNotEmpty) {
-      buffer.writeln('本盘实际来源闭包:');
-      for (final source in projection.sources) {
-        buffer.writeln('- ${source.sourceId} ${source.title} '
-            '(${source.adoptionStatus})');
-        for (final reference in source.references) {
-          final quote = reference.referenceKind == 'exactQuote'
-              ? '；页级核验短引“${reference.quote}”'
-              : '';
-          buffer.writeln('  - ${reference.ruleId}: '
-              '${reference.referenceKind}/${reference.evidenceLevel}；'
-              '${reference.locator}$quote；${reference.adoptionNote}');
-        }
-      }
+      buffer.writeln('来源边界: '
+          '${projection.sources.map((source) => source.sourceId).join(',')}');
     }
+    buffer.writeln('完整事实、证据 ID、条件和来源定位仅以下方 canonical JSON 为准。');
     buffer
       ..writeln('[LIUYAO_CANONICAL_PROJECTION]')
-      ..writeln(projection.toCanonicalJson())
+      ..writeln(jsonEncode(aiProjection))
       ..writeln('[/LIUYAO_CANONICAL_PROJECTION]');
     return buffer.toString().trimRight();
   }
@@ -379,7 +354,7 @@ class LiuYaoStructuredFormatter
     final buffer = StringBuffer();
 
     // 时间信息
-    buffer.writeln(renderTemporalInfo(output.temporal));
+    buffer.writeln(_renderLiuYaoTemporalInfo(output));
     buffer.writeln();
 
     // 摘要
@@ -400,4 +375,34 @@ class LiuYaoStructuredFormatter
 
     return buffer.toString();
   }
+
+  String _renderLiuYaoTemporalInfo(StructuredDivinationOutput output) {
+    final temporal = output.temporal;
+    final authoritativeSolar =
+        output.coreData['castTimeRole'] == 'authoritativeSolarTime';
+    final buffer = StringBuffer()
+      ..writeln('【时间】')
+      ..writeln(authoritativeSolar
+          ? '起卦阳历时间: ${_formatDateTime(temporal.solarTime)}'
+          : '记录时间（不作为四柱换算依据）: '
+              '${_formatDateTime(temporal.solarTime)}')
+      ..writeln('分析四柱: ${temporal.yearGanZhi}年 '
+          '${temporal.monthGanZhi}月 ${temporal.dayGanZhi}日');
+    if (temporal.hourGanZhi != null) {
+      buffer.writeln('时辰: ${temporal.hourGanZhi}');
+    }
+    if (temporal.yueJian != null) {
+      buffer.writeln('月建: ${temporal.yueJian}');
+    }
+    buffer.writeln('空亡: ${temporal.kongWang.join("、")}');
+    if (temporal.solarTerm != null) {
+      buffer.writeln('节气: ${temporal.solarTerm}');
+    }
+    return buffer.toString();
+  }
+
+  String _formatDateTime(DateTime value) =>
+      '${value.year}年${value.month}月${value.day}日 '
+      '${value.hour.toString().padLeft(2, '0')}:'
+      '${value.minute.toString().padLeft(2, '0')}';
 }

@@ -1,0 +1,9 @@
+{
+  "schemaVersion": "liuyao-classics-representative-reference-manifest/1.0.0",
+  "caseIds": [
+    "liuyao.case.golden.001",
+    "liuyao.case.golden.007",
+    "liuyao.case.golden.037"
+  ],
+  "referenceAssetSha256": "95f40bd474b5dd65d25607ffe25dfd93f4509f426f6cc979419b263115e96c5f"
+}

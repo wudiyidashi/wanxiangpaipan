@@ -1,0 +1,26 @@
+{
+  "schemaVersion": "liuyao-real-world-generation/1.0.0",
+  "caseId": "liuyao.real.rental.2026-02-28",
+  "question": "租房是否顺利",
+  "castTime": "2026-02-28T08:00:00.000",
+  "numbers": [8, 8, 6, 7, 8, 6],
+  "expectedCalendar": {
+    "yearGanZhi": "丙午",
+    "monthGanZhi": "庚寅",
+    "dayGanZhi": "癸酉",
+    "monthBranch": "寅",
+    "kongWang": ["戌", "亥"]
+  },
+  "scenarios": [
+    {
+      "scenarioId": "unselected",
+      "selectedPosition": null,
+      "selectedHidden": false
+    },
+    {
+      "scenarioId": "selected-main-1",
+      "selectedPosition": 1,
+      "selectedHidden": false
+    }
+  ]
+}

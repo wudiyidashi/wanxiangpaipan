@@ -193,6 +193,7 @@ class AIConversationService extends ChangeNotifier {
     String resultId,
     String userText, {
     DivinationResult? fallbackResult,
+    String? question,
   }) async {
     final existing = _cache[resultId];
     if (existing == null) {
@@ -213,7 +214,10 @@ class AIConversationService extends ChangeNotifier {
         return;
       }
       try {
-        final prompt = await _promptAssembler.assemble(fallbackResult);
+        final prompt = await _promptAssembler.assemble(
+          fallbackResult,
+          question: question,
+        );
         final modelName = (_providerRegistry
                 .getAvailableProvider()
                 ?.getConfigInfo()?['model'] as String?) ??
@@ -379,6 +383,7 @@ class AIConversationService extends ChangeNotifier {
     String resultId,
     String failedUserMessageId, {
     DivinationResult? fallbackResult,
+    String? question,
   }) async {
     final conv = _cache[resultId];
     if (conv == null) return;
@@ -397,7 +402,12 @@ class AIConversationService extends ChangeNotifier {
     _errors.remove(resultId);
     notifyListeners();
 
-    await sendFollowUp(resultId, originalText, fallbackResult: fallbackResult);
+    await sendFollowUp(
+      resultId,
+      originalText,
+      fallbackResult: fallbackResult,
+      question: question,
+    );
   }
 
   // ==================== 辅助 ====================

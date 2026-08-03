@@ -107,13 +107,14 @@ class OpenAiCompatibleEvalTransport implements EvalModelTransport {
                   'type':
                       request.responseFormat == 'json' ? 'json_object' : 'text',
                 },
+                'reasoning_effort': evaluationReasoningEffort,
                 'stop': <Object?>[],
                 if (includeSeed) 'seed': request.seed,
               }),
             )
-            .timeout(const Duration(seconds: 90));
+            .timeout(Duration(seconds: credentials.timeoutSeconds));
       } on TimeoutException {
-        if (retryCount < 2) {
+        if (retryCount < transportMaxRetryCount) {
           retryCount += 1;
           continue;
         }
@@ -129,7 +130,7 @@ class OpenAiCompatibleEvalTransport implements EvalModelTransport {
           retryCount: retryCount,
         );
       } on http.ClientException {
-        if (retryCount < 2) {
+        if (retryCount < transportMaxRetryCount) {
           retryCount += 1;
           continue;
         }
@@ -151,7 +152,7 @@ class OpenAiCompatibleEvalTransport implements EvalModelTransport {
         continue;
       }
       if ((response.statusCode == 429 || response.statusCode >= 500) &&
-          retryCount < 2) {
+          retryCount < transportMaxRetryCount) {
         retryCount += 1;
         continue;
       }
@@ -170,15 +171,25 @@ class OpenAiCompatibleEvalTransport implements EvalModelTransport {
       }
 
       try {
+        final Object? decoded =
+            response.body.trim().isEmpty ? null : jsonDecode(response.body);
+        if (decoded == null) {
+          throw const _EmptyModelResponse();
+        }
         final Map<String, Object?> body =
-            (jsonDecode(response.body) as Map).cast<String, Object?>();
+            (decoded as Map).cast<String, Object?>();
         final List<Object?> choices =
             (body['choices']! as List).cast<Object?>();
         final Map<String, Object?> choice =
             (choices.first as Map).cast<String, Object?>();
         final Map<String, Object?> message =
             (choice['message']! as Map).cast<String, Object?>();
-        final String content = message['content']! as String;
+        final Object? rawContent = message['content'];
+        if (rawContent == null ||
+            (rawContent is String && rawContent.trim().isEmpty)) {
+          throw const _EmptyModelResponse();
+        }
+        final String content = rawContent as String;
         final Object? usageRaw = body['usage'];
         final int tokens = usageRaw is Map
             ? ((usageRaw.cast<String, Object?>()['total_tokens'] as int?) ?? 0)
@@ -191,6 +202,22 @@ class OpenAiCompatibleEvalTransport implements EvalModelTransport {
           latencyMilliseconds: stopwatch.elapsedMilliseconds,
           seedSupported: includeSeed,
           errorKind: null,
+          statusCode: response.statusCode,
+          retryCount: retryCount,
+        );
+      } on _EmptyModelResponse {
+        if (retryCount < transportMaxRetryCount) {
+          retryCount += 1;
+          continue;
+        }
+        stopwatch.stop();
+        return ModelCallResult(
+          completed: false,
+          content: null,
+          tokensUsed: null,
+          latencyMilliseconds: stopwatch.elapsedMilliseconds,
+          seedSupported: includeSeed,
+          errorKind: 'emptyModelResponse',
           statusCode: response.statusCode,
           retryCount: retryCount,
         );
@@ -258,4 +285,8 @@ class OpenAiCompatibleEvalTransport implements EvalModelTransport {
         >= 500 => 'remoteServerFailure',
         _ => 'remoteRequestRejected',
       };
+}
+
+class _EmptyModelResponse implements Exception {
+  const _EmptyModelResponse();
 }

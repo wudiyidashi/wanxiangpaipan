@@ -6,6 +6,7 @@ import 'package:path/path.dart' as p;
 import '../../../tool/liuyao_ai_eval/canonical_json.dart';
 import '../../../tool/liuyao_ai_eval/constants.dart';
 import '../../../tool/liuyao_ai_eval/model_transport.dart';
+import '../../../tool/liuyao_ai_eval/paired_evaluation.dart';
 import '../../../tool/liuyao_ai_eval/runner.dart';
 import '../../../tool/liuyao_ai_eval/security.dart';
 import 'eval_filesystem_test_lock.dart';
@@ -99,6 +100,82 @@ void main() {
           'inputTooLarge',
         ),
       ),
+    );
+  });
+
+  test('judge request declares the exact nested response contract', () {
+    final request = buildJudgeRequest(
+      runId: 'phase6-judge-schema',
+      evalCase: bundle.fixture.cases.first,
+      repetition: 1,
+      rubric: bundle.rubric,
+      blindMapping: const <String, String>{
+        'A': 'baseline',
+        'B': 'candidate',
+      },
+      generationContentByVariant: const <String, String>{
+        baselineVariant: 'baseline output',
+        candidateVariant: 'candidate output',
+      },
+    );
+    final schema = requireObject(request, 'requiredResponseSchema');
+    expect(requireStringList(schema, 'exactTopLevelKeys'), <String>[
+      'schemaVersion',
+      'caseId',
+      'repetition',
+      'normalizedOutputs',
+      'scores',
+    ]);
+    final normalized = requireObject(schema, 'normalizedOutputs');
+    expect(normalized.keys, <String>{'A', 'B'});
+    final outputA = requireObject(normalized, 'A');
+    expect(
+      requireStringList(outputA, 'exactKeys'),
+      containsAll(<String>['timingClaims', 'citations']),
+    );
+    final scores = requireObject(schema, 'scores');
+    expect(
+        scores.keys, bundle.rubric.dimensions.map((item) => item.dimensionId));
+  });
+
+  test('judge response rejects a mismatched nested output identity', () {
+    final evalCase = bundle.fixture.cases.first;
+    Map<String, Object?> normalized(String caseId) => <String, Object?>{
+          'caseId': caseId,
+          'verdictTrend': null,
+          'conditionIds': <Object?>[],
+          'panFactIds': <Object?>[],
+          'yongShenActorId': null,
+          'timingClaims': <Object?>[],
+          'sourceIds': <Object?>[],
+          'citations': <Object?>[],
+        };
+    final response = <String, Object?>{
+      'schemaVersion': evalJudgeResponseSchemaVersion,
+      'caseId': evalCase.caseId,
+      'repetition': 1,
+      'normalizedOutputs': <String, Object?>{
+        'A': normalized(evalCase.caseId),
+        'B': normalized('different-case'),
+      },
+      'scores': <String, Object?>{
+        for (final dimension in bundle.rubric.dimensions)
+          dimension.dimensionId: <String, Object?>{
+            'A': 1,
+            'B': 1,
+            'reason': 'synthetic identity regression',
+          },
+      },
+    };
+
+    expect(
+      () => JudgeEvaluation.fromContent(
+        content: canonicalJson(response),
+        caseId: evalCase.caseId,
+        repetition: 1,
+        rubric: bundle.rubric,
+      ),
+      throwsA(isA<FormatException>()),
     );
   });
 
@@ -484,7 +561,7 @@ class _FailOnceAfterCalibrationTransport implements EvalModelTransport {
         seedSupported: true,
         errorKind: 'simulatedTransportFailure',
         statusCode: 503,
-        retryCount: 3,
+        retryCount: transportMaxRetryCount,
       ));
     }
     return _delegate.call(credentials: credentials, request: request);

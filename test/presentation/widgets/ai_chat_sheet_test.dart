@@ -6,12 +6,14 @@ import 'package:wanxiang_paipan/ai/model/ai_conversation.dart';
 import 'package:wanxiang_paipan/ai/model/cast_snapshot.dart';
 import 'package:wanxiang_paipan/ai/service/ai_conversation_service.dart';
 import 'package:wanxiang_paipan/domain/divination_system.dart';
+import 'package:wanxiang_paipan/presentation/widgets/ai_chat_input_bar.dart';
 import 'package:wanxiang_paipan/presentation/widgets/ai_chat_sheet.dart';
 
 class _FakeConversationService extends ChangeNotifier
     implements AIConversationService {
   AIConversation? _conv;
   bool _streaming = false;
+  String? lastFollowUpQuestion;
 
   void seed(AIConversation conv, {bool streaming = false}) {
     _conv = conv;
@@ -30,7 +32,9 @@ class _FakeConversationService extends ChangeNotifier
 
   @override
   Future<void> sendFollowUp(String resultId, String userText,
-      {DivinationResult? fallbackResult}) async {}
+      {DivinationResult? fallbackResult, String? question}) async {
+    lastFollowUpQuestion = question;
+  }
 
   @override
   Future<void> stop(String resultId) async {}
@@ -43,7 +47,7 @@ class _FakeConversationService extends ChangeNotifier
 
   @override
   Future<void> retry(String resultId, String failedUserMessageId,
-      {DivinationResult? fallbackResult}) async {}
+      {DivinationResult? fallbackResult, String? question}) async {}
 
   @override
   Future<AIConversation?> loadIfNeeded(String resultId,
@@ -84,7 +88,7 @@ AIConversation _sample({
       updatedAt: DateTime.utc(2026, 4, 23),
     );
 
-Widget _wrap(_FakeConversationService svc) {
+Widget _wrap(_FakeConversationService svc, {String? question}) {
   return ChangeNotifierProvider<AIConversationService>.value(
     value: svc,
     child: MaterialApp(
@@ -99,7 +103,7 @@ Widget _wrap(_FakeConversationService svc) {
                 builder: (ctx) =>
                     ChangeNotifierProvider<AIConversationService>.value(
                   value: svc,
-                  child: const AIChatSheet(resultId: 'r1'),
+                  child: AIChatSheet(resultId: 'r1', question: question),
                 ),
               ),
               child: const Text('打开'),
@@ -166,5 +170,17 @@ void main() {
 
     expect(find.byKey(const ValueKey('liuyao-chat-snapshot-version')),
         findsNothing);
+  });
+
+  testWidgets('追问把原始问题传给 legacy 快照恢复路径', (tester) async {
+    final svc = _FakeConversationService()..seed(_sample());
+    await tester.pumpWidget(_wrap(svc, question: '租房是否顺利'));
+    await tester.tap(find.text('打开'));
+    await tester.pumpAndSettle();
+
+    tester.widget<AIChatInputBar>(find.byType(AIChatInputBar)).onSend('继续解释');
+    await tester.pump();
+
+    expect(svc.lastFollowUpQuestion, '租房是否顺利');
   });
 }

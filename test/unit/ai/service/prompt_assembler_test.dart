@@ -7,6 +7,7 @@ import 'package:wanxiang_paipan/ai/output/structured_output.dart';
 import 'package:wanxiang_paipan/ai/output/structured_output_formatter.dart';
 import 'package:wanxiang_paipan/ai/service/prompt_assembler.dart';
 import 'package:wanxiang_paipan/ai/template/prompt_template.dart' as tmpl;
+import 'package:wanxiang_paipan/ai/template/builtin_templates.dart';
 import 'package:wanxiang_paipan/data/database/app_database.dart';
 import 'package:wanxiang_paipan/data/secure/secure_storage.dart';
 import 'package:wanxiang_paipan/divination_systems/liuyao/liuyao_result.dart';
@@ -126,6 +127,102 @@ class _FakeFormatter extends StructuredOutputFormatter<_FakeResult> {
   String render(StructuredDivinationOutput output) {
     return 'RENDERED:${output.summary}';
   }
+}
+
+class _PhaseAnchorFormatter extends StructuredOutputFormatter<LiuYaoResult> {
+  _PhaseAnchorFormatter({this.timingProvided = false});
+
+  final bool timingProvided;
+
+  @override
+  DivinationType get systemType => DivinationType.liuYao;
+
+  @override
+  StructuredDivinationOutput format(
+    LiuYaoResult result, {
+    String? question,
+  }) {
+    final projection = <String, Object?>{
+      'policy': <String, Object?>{'verdictMode': 'explainLifecycle'},
+      'timingCandidates': timingProvided
+          ? <Object?>[
+              <String, Object?>{'timingId': 'timing-fixture-1'},
+            ]
+          : <Object?>[],
+      'conditions': timingProvided
+          ? <Object?>[
+              <String, Object?>{'conditionId': 'condition-fixture-1'},
+            ]
+          : <Object?>[],
+      'questionFocus': <String, Object?>{'classification': 'unspecified'},
+      'actorFacts': <Object?>[],
+      'directedEffects': <Object?>[
+        _effect(
+          ruleId: 'liuyao.rule.shengke.moving-overcomes',
+          phase: 'earlyProcess',
+          fromActorId: 'main:yao:2',
+          toActorId: 'main:yao:1',
+        ),
+        _effect(
+          ruleId: 'liuyao.rule.shengke.moving-overcomes',
+          phase: 'earlyProcess',
+          fromActorId: 'main:yao:3',
+          toActorId: 'main:yao:1',
+        ),
+        _effect(
+          ruleId: 'liuyao.rule.dongbian.return-overcomes',
+          phase: 'laterProcess',
+          fromActorId: 'changed:yao:3',
+          toActorId: 'main:yao:3',
+        ),
+      ],
+    };
+    return StructuredDivinationOutput(
+      systemType: systemType.id,
+      temporal: TemporalInfo(
+        solarTime: result.castTime,
+        yearGanZhi: result.lunarInfo.yearGanZhi,
+        monthGanZhi: result.lunarInfo.monthGanZhi,
+        dayGanZhi: result.lunarInfo.riGanZhi,
+        hourGanZhi: result.lunarInfo.hourGanZhi,
+        kongWang: result.lunarInfo.kongWang,
+        yueJian: result.lunarInfo.yueJian,
+      ),
+      coreData: const <String, dynamic>{},
+      sections: <StructuredSection>[
+        StructuredSection(
+          key: 'analysis',
+          title: '分析',
+          content: 'PHASE ANCHOR FIXTURE',
+          metadata: <String, dynamic>{
+            'projection': projection,
+            'aiProjection': <String, Object?>{
+              'projectionView': 'phaseAnchorFixture',
+            },
+          },
+        ),
+      ],
+      userQuestion: question,
+      summary: 'PHASE ANCHOR FIXTURE',
+    );
+  }
+
+  @override
+  String render(StructuredDivinationOutput output) => output.summary!;
+
+  Map<String, Object?> _effect({
+    required String ruleId,
+    required String phase,
+    required String fromActorId,
+    required String toActorId,
+  }) =>
+      <String, Object?>{
+        'ruleId': ruleId,
+        'status': 'active',
+        'phase': phase,
+        'fromActor': <String, Object?>{'actorId': fromActorId},
+        'toActor': <String, Object?>{'actorId': toActorId},
+      };
 }
 
 void main() {
@@ -295,6 +392,349 @@ void main() {
         hasLength(1),
       );
     });
+
+    test('comprehensive 与 brief 路径均保留 formation-first 租房生命周期', () async {
+      final result = await _castRentalResult(selected: true);
+
+      for (final template in <String>[
+        BuiltInTemplates.liuYaoAnalysisPrompt.content,
+        BuiltInTemplates.liuYaoBriefPrompt.content,
+      ]) {
+        final prompt = await assembler.preview(
+          result,
+          question: '租房是否顺利',
+          analysisTemplateContent: template,
+        );
+
+        _expectLiuYaoGuardAtEnd(prompt.systemPrompt);
+        expect(
+          prompt.metadata.promptPolicyVersion,
+          PromptAssembler.liuYaoPromptPolicyVersion,
+        );
+        expect(prompt.userPrompt, contains('"verdictMode":"explainLifecycle"'));
+        expect(prompt.userPrompt, contains('"formation":"willForm"'));
+        expect(prompt.userPrompt, contains('"quality":"adverse"'));
+        expect(prompt.userPrompt, contains('"continuity":"unstable"'));
+        expect(prompt.userPrompt, contains('"persistence":"entangled"'));
+        expect(
+          prompt.userPrompt,
+          contains('"headlineCode":"formsButAdverse"'),
+        );
+        expect(prompt.userPrompt, contains('出租权与合同主体'));
+        expect(prompt.userPrompt, contains('完整租期'));
+        _expectLiuYaoOutputContract(
+          prompt.userPrompt,
+          '[LIUYAO_DECISION] mode=explainLifecycle;'
+          'overall=lifecycle;timing=withheld',
+        );
+        expect(prompt.userPrompt, contains('conditions=[] 且 timing=withheld'));
+        expect(
+          prompt.userPrompt,
+          contains('省略条件/时间段落'),
+        );
+        expect(prompt.userPrompt, contains('事后事实隔离'));
+        expect(prompt.userPrompt, contains('不举例、不类比'));
+        expect(prompt.userPrompt, contains('完整租期持续履约风险'));
+        _expectNoTimingResultBoundary(
+          prompt.userPrompt,
+          expectLifecycle: true,
+        );
+        _expectResolvedReleaseWordingForbidden(prompt.userPrompt);
+        _expectLegacyTimingSummaryAbsent(prompt.userPrompt);
+        expect(
+          prompt.userPrompt,
+          contains(
+            '阶段锚点：main:yao:3 在 earlyProcess 对 main:yao:1 的克制已经发生；'
+            'changed:yao:3 在 laterProcess 回头克并限制 main:yao:3 的后段/最终；'
+            '后段限制不追溯抹除前段作用。',
+          ),
+        );
+      }
+    });
+
+    test('comprehensive、brief 与 custom 路径的未选用神状态均强制 abstain', () async {
+      final result = await _castRentalResult(selected: false);
+      final templates = <String>[
+        BuiltInTemplates.liuYaoAnalysisPrompt.content,
+        BuiltInTemplates.liuYaoBriefPrompt.content,
+        'CUSTOM WITHOUT STRUCTURED OUTPUT',
+      ];
+
+      for (final template in templates) {
+        final prompt = await assembler.preview(
+          result,
+          question: '租房是否顺利',
+          analysisTemplateContent: template,
+        );
+
+        _expectLiuYaoGuardAtEnd(prompt.systemPrompt);
+        expect(prompt.systemPrompt, contains('verdictMode=abstain'));
+        expect(prompt.systemPrompt, contains('禁止输出顺利/不顺利'));
+        expect(prompt.userPrompt, contains('"verdictMode":"abstain"'));
+        expect(prompt.userPrompt, contains('"lifecycleVerdict":null'));
+        expect(prompt.userPrompt, contains('"timingCandidates":[]'));
+        _expectLiuYaoOutputContract(
+          prompt.userPrompt,
+          '[LIUYAO_DECISION] mode=abstain;'
+          'overall=withheld;timing=withheld',
+        );
+        expect(prompt.userPrompt, contains('本次不执行上方租房五项回答要求'));
+        expect(prompt.userPrompt, contains('本段合同覆盖此前模板的输出段落要求'));
+        expect(prompt.userPrompt, contains('“候选用神”和“待核验维度”两组列表'));
+        expect(prompt.userPrompt, contains('第二组列表后立即结束回复'));
+        expect(prompt.userPrompt, contains('不得解释 actorFacts'));
+        expect(prompt.userPrompt, contains('本次 timing=withheld'));
+        final outputContract =
+            prompt.userPrompt.split('[LIUYAO_OUTPUT_CONTRACT]').last;
+        expect(outputContract, contains('第二组列表后立即结束'));
+        expect(outputContract, contains('不输出条件、应期、时间或行动文字'));
+        _expectNoTimingResultBoundary(
+          prompt.userPrompt,
+          expectLifecycle: false,
+        );
+        expect(outputContract, isNot(contains('binding-opened')));
+        expect(outputContract, isNot(contains('日冲已解除合绊')));
+      }
+    });
+
+    test('custom 路径不能移除选定用神的生命周期投影', () async {
+      final result = await _castRentalResult(selected: true);
+      final prompt = await assembler.preview(
+        result,
+        question: '租房是否顺利',
+        systemTemplateContent: 'CUSTOM SYSTEM',
+        analysisTemplateContent: 'CUSTOM USER',
+      );
+
+      _expectLiuYaoGuardAtEnd(prompt.systemPrompt);
+      _expectAssemblerOwnedProjection(prompt.userPrompt);
+      expect(prompt.userPrompt, contains('"verdictMode":"explainLifecycle"'));
+      expect(prompt.userPrompt, contains('"headlineCode":"formsButAdverse"'));
+      expect(prompt.userPrompt, contains('"phase":"earlyProcess"'));
+      expect(prompt.userPrompt, contains('"phase":"laterProcess"'));
+      _expectLiuYaoOutputContract(
+        prompt.userPrompt,
+        '[LIUYAO_DECISION] mode=explainLifecycle;'
+        'overall=lifecycle;timing=withheld',
+      );
+      _expectNoTimingResultBoundary(
+        prompt.userPrompt,
+        expectLifecycle: true,
+      );
+      _expectResolvedReleaseWordingForbidden(prompt.userPrompt);
+      _expectLegacyTimingSummaryAbsent(prompt.userPrompt);
+    });
+
+    test('custom 路径的伏神取用保留缺失事实与单轴结论权限', () async {
+      final base = await _castRentalResult(selected: false);
+      final result = base.copyWith(
+        yongShenPosition: 1,
+        yongShenIsFuShen: true,
+      );
+      final prompt = await assembler.preview(
+        result,
+        question: '租房是否顺利',
+        analysisTemplateContent: 'CUSTOM WITHOUT STRUCTURED OUTPUT',
+      );
+
+      _expectAssemblerOwnedProjection(prompt.userPrompt);
+      expect(
+        prompt.userPrompt,
+        contains('"selectedFactOccurrenceIds":'),
+      );
+      expect(
+        prompt.userPrompt,
+        contains('"factsNotPresentElsewhere":'),
+      );
+      expect(
+        prompt.userPrompt,
+        contains('"ruleId":"liuyao.rule.liuqin.selected-hidden-use-spirit"'),
+      );
+      expect(
+        prompt.userPrompt,
+        contains('"verdictMode":"explainSelectedVerdict"'),
+      );
+      _expectLiuYaoOutputContract(
+        prompt.userPrompt,
+        '[LIUYAO_DECISION] mode=explainSelectedVerdict;'
+        'overall=withheld;timing=withheld',
+      );
+      _expectNoTimingResultBoundary(
+        prompt.userPrompt,
+        expectLifecycle: false,
+      );
+    });
+
+    test('selected non-rental paths preserve program verdict without lifecycle',
+        () async {
+      final result = await _castRentalResult(selected: true);
+      for (final template in <String>[
+        BuiltInTemplates.liuYaoAnalysisPrompt.content,
+        BuiltInTemplates.liuYaoBriefPrompt.content,
+        'CUSTOM WITHOUT STRUCTURED OUTPUT',
+      ]) {
+        final prompt = await assembler.preview(
+          result,
+          question: '这次求职能否成功',
+          analysisTemplateContent: template,
+        );
+
+        _expectLiuYaoGuardAtEnd(prompt.systemPrompt);
+        expect(
+          prompt.systemPrompt,
+          contains('verdictMode=explainSelectedVerdict'),
+        );
+        expect(prompt.systemPrompt, contains('生命周期维度不可用'));
+        expect(prompt.systemPrompt, contains('selectedUseSpiritAxis'));
+        expect(
+          prompt.systemPrompt,
+          contains('禁止据此宣告整件事'),
+        );
+        expect(
+          prompt.systemPrompt,
+          contains('conditions=[] 且 timingCandidates=[] 时'),
+        );
+        expect(
+          prompt.userPrompt,
+          contains('"verdictMode":"explainSelectedVerdict"'),
+        );
+        expect(
+          prompt.userPrompt,
+          contains('"mayIssueOverallOutcome":false'),
+        );
+        expect(
+          prompt.userPrompt,
+          contains('"legacyVerdictScope":"selectedUseSpiritAxis"'),
+        );
+        expect(prompt.userPrompt, contains('"lifecycleVerdict":null'));
+        expect(prompt.userPrompt, contains('"verdict":{"trend":'));
+        expect(prompt.userPrompt, contains('"matchedDecisionRowId":'));
+        _expectLiuYaoOutputContract(
+          prompt.userPrompt,
+          '[LIUYAO_DECISION] mode=explainSelectedVerdict;'
+          'overall=withheld;timing=withheld',
+        );
+        _expectNoTimingResultBoundary(
+          prompt.userPrompt,
+          expectLifecycle: false,
+        );
+        _expectLegacyTimingSummaryAbsent(prompt.userPrompt);
+        expect(
+          prompt.userPrompt,
+          contains('正文必须逐字单独一行输出“单轴裁决锚点：trend='),
+        );
+        expect(
+          RegExp(
+            r'单轴裁决锚点：trend=[^；]+；matchedDecisionRowId=[^”；]+',
+          ).hasMatch(prompt.userPrompt),
+          isTrue,
+        );
+      }
+    });
+
+    test('unselected non-rental output contract contains no rental wording',
+        () async {
+      final result = await _castRentalResult(selected: false);
+      final prompt = await assembler.preview(
+        result,
+        question: '这次求职能否成功',
+        analysisTemplateContent: 'CUSTOM WITHOUT STRUCTURED OUTPUT',
+      );
+
+      expect(prompt.userPrompt, contains('"classification":"unspecified"'));
+      expect(prompt.userPrompt, contains('不能判断所问事项的总体结果'));
+      expect(prompt.userPrompt, isNot(contains('租房')));
+      expect(prompt.userPrompt, isNot(contains('出租权')));
+      expect(prompt.userPrompt, isNot(contains('收费')));
+      expect(prompt.userPrompt, isNot(contains('租期')));
+      _expectLiuYaoOutputContract(
+        prompt.userPrompt,
+        '[LIUYAO_DECISION] mode=abstain;'
+        'overall=withheld;timing=withheld',
+      );
+    });
+
+    test('phase anchor skips an unpaired early effect and finds a later pair',
+        () async {
+      formatterRegistry.register(_PhaseAnchorFormatter());
+      final result = await _castRentalResult(selected: true);
+      final prompt = await assembler.preview(
+        result,
+        question: '阶段作用测试',
+        analysisTemplateContent: 'CUSTOM USER',
+      );
+
+      expect(
+        prompt.userPrompt,
+        contains(
+          '阶段锚点：main:yao:3 在 earlyProcess 对 main:yao:1 的克制已经发生；'
+          'changed:yao:3 在 laterProcess 回头克并限制 main:yao:3 的后段/最终；'
+          '后段限制不追溯抹除前段作用。',
+        ),
+      );
+      expect(prompt.userPrompt, isNot(contains('阶段锚点：main:yao:2')));
+    });
+
+    test('timing provided path requires the program-owned observation anchor',
+        () async {
+      formatterRegistry.register(_PhaseAnchorFormatter(timingProvided: true));
+      final result = await _castRentalResult(selected: true);
+      final prompt = await assembler.preview(
+        result,
+        question: '应期边界测试',
+        analysisTemplateContent: 'CUSTOM USER',
+      );
+
+      _expectLiuYaoOutputContract(
+        prompt.userPrompt,
+        '[LIUYAO_DECISION] mode=explainLifecycle;'
+        'overall=lifecycle;timing=provided',
+      );
+      final outputContract =
+          prompt.userPrompt.split('[LIUYAO_OUTPUT_CONTRACT]').last;
+      expect(
+        outputContract,
+        contains(PromptAssembler.liuYaoTimingObservationAnchor),
+      );
+      expect(
+        outputContract,
+        contains('除该锚点外不讨论观察窗口对事项结果的确定程度'),
+      );
+      expect(
+        outputContract,
+        contains(PromptAssembler.liuYaoUnauthorizedResultBoundary),
+      );
+      expect(
+        RegExp(r'必然|必定|保证|一定').hasMatch(outputContract),
+        isFalse,
+      );
+    });
+
+    test('production timing path retains verdict summary exactly once',
+        () async {
+      final base = await _castRentalResult(selected: false);
+      final result = base.copyWith(yongShenPosition: 6);
+      final prompt = await assembler.preview(
+        result,
+        question: '租房是否顺利',
+        analysisTemplateContent: BuiltInTemplates.liuYaoAnalysisPrompt.content,
+      );
+      final analysis = prompt.structuredOutput.sections.singleWhere(
+        (section) => section.key == 'analysis',
+      );
+      final projection =
+          (analysis.metadata!['projection']! as Map<Object?, Object?>)
+              .cast<String, Object?>();
+      final verdict = (projection['verdict']! as Map<Object?, Object?>)
+          .cast<String, Object?>();
+      final summary = verdict['summary']! as String;
+
+      expect(projection['timingCandidates'], isNotEmpty);
+      expect(summary, contains('应期候选'));
+      expect(summary, contains('触发窗口'));
+      expect(summary, contains('优先观察'));
+      expect(prompt.userPrompt.split(summary), hasLength(2));
+    });
   });
 }
 
@@ -306,6 +746,14 @@ Future<LiuYaoResult> _castLiuYaoResult() async {
   ) as LiuYaoResult;
 }
 
+Future<LiuYaoResult> _castRentalResult({required bool selected}) async {
+  final result = await LiuYaoSystem().castByManualYaoNumbers(
+    const <int>[8, 8, 6, 7, 8, 6],
+    castTime: DateTime(2026, 2, 28, 8),
+  );
+  return selected ? result.copyWith(yongShenPosition: 1) : result;
+}
+
 void _expectLiuYaoGuardAtEnd(String systemPrompt) {
   expect(systemPrompt, endsWith(PromptAssembler.liuYaoImmutablePolicy));
   expect(
@@ -314,16 +762,136 @@ void _expectLiuYaoGuardAtEnd(String systemPrompt) {
   );
   expect(systemPrompt, contains('calculationOwner=program'));
   expect(systemPrompt, contains('mayOverrideVerdict=false'));
+  expect(systemPrompt, contains('mayOverrideLifecycle=false'));
   expect(systemPrompt, contains('mayInventSources=false'));
   expect(systemPrompt, contains('mayInventTiming=false'));
+  expect(systemPrompt, contains('responsePrefixOwner=program'));
+  expect(systemPrompt, contains('mayPrependResponseText=false'));
+  expect(systemPrompt, contains('原始回复必须从该标记的第一个 `[` 字符开始'));
+  expect(systemPrompt, contains('禁止举例、类比或猜测'));
+  expect(
+    systemPrompt,
+    contains('只写当前盘面事实与程序已授权裁决'),
+  );
+  expect(systemPrompt, contains('不得扩写任何释放路径、观察窗口、未来状态、行动建议或新日期'));
+  expect(
+    RegExp(
+      r'出空|出月|填实|冲开|解除合绊|合绊已解|等待|等到|等至|待到|待至|择日|时机|届时',
+    ).hasMatch(PromptAssembler.liuYaoImmutablePolicy),
+    isFalse,
+  );
+  expect(
+    systemPrompt,
+    contains('[LIUYAO_IMMUTABLE_POLICY '
+        '${PromptAssembler.liuYaoPromptPolicyVersion}]'),
+  );
+  expect(systemPrompt, contains('不得复述 compact view 已省略的关系'));
+  expect(systemPrompt, isNot(contains('日冲已解除合绊')));
+  expect(systemPrompt, isNot(contains('合绊=true')));
+  expect(systemPrompt, isNot(contains('冲开=true')));
+  expect(systemPrompt, isNot(contains('全文必须且只能出现一次')));
+  expect(systemPrompt, isNot(contains('该句独占一行')));
+  expect(systemPrompt, isNot(contains('禁止解释或复述')));
+  expect(systemPrompt, contains('不得用否定式描述前段作用'));
+  expect(systemPrompt, contains('verdictMode=abstain'));
+  expect(systemPrompt, contains('verdictMode=explainLifecycle'));
+  expect(systemPrompt, contains('verdictMode=explainSelectedVerdict'));
+  expect(systemPrompt, contains('selectedUseSpiritAxis'));
+  expect(systemPrompt, contains('conditions=[] 且 timingCandidates=[] 时'));
+  expect(
+    systemPrompt,
+    contains(PromptAssembler.liuYaoUnauthorizedResultBoundary),
+  );
+  expect(
+    systemPrompt,
+    contains('output contract 的 timing=provided 约束'),
+  );
+  expect(
+    systemPrompt,
+    isNot(contains(PromptAssembler.liuYaoTimingObservationAnchor)),
+  );
+  expect(systemPrompt, contains('无论 timingCandidates 是否为空'));
+  expect(
+    RegExp(r'必然|必定|保证|一定').hasMatch(PromptAssembler.liuYaoImmutablePolicy),
+    isFalse,
+  );
+  expect(systemPrompt, contains('formation'));
+  expect(systemPrompt, contains('quality'));
+  expect(systemPrompt, contains('continuity'));
+  expect(systemPrompt, contains('persistence'));
 }
 
 void _expectAssemblerOwnedProjection(String userPrompt) {
   expect(userPrompt, contains('[LIUYAO_ASSEMBLER_PROJECTION]'));
   expect(userPrompt, contains('[/LIUYAO_ASSEMBLER_PROJECTION]'));
   expect(userPrompt, contains('"calculationOwner":"program"'));
-  expect(userPrompt, contains('"projectionSchemaVersion":1'));
+  expect(userPrompt, contains('"aiProjectionSchemaVersion":1'));
+  expect(userPrompt, contains('"projectionView":"aiCompact"'));
+  expect(userPrompt, contains('"projectionSchemaVersion":2'));
   expect(userPrompt, contains('"ruleSetId":"liuyao-zengshan-primary"'));
+}
+
+void _expectLiuYaoOutputContract(String userPrompt, String marker) {
+  expect(
+    RegExp(r'\[LIUYAO_OUTPUT_CONTRACT\]').allMatches(userPrompt),
+    hasLength(1),
+  );
+  expect(userPrompt, contains(marker));
+  expect(userPrompt, contains('必须直接逐字复制下一行作为第一行'));
+  expect(userPrompt, contains('rawResponse.startsWith("$marker\\n")'));
+  expect(userPrompt, endsWith(marker));
+}
+
+void _expectNoTimingResultBoundary(
+  String userPrompt, {
+  required bool expectLifecycle,
+}) {
+  final outputContract = userPrompt.split('[LIUYAO_OUTPUT_CONTRACT]').last;
+  expect(
+    outputContract,
+    contains(PromptAssembler.liuYaoUnauthorizedResultBoundary),
+  );
+  expect(
+    outputContract.contains(
+      'explainLifecycle 仍须原值输出已授权的 lifecycleVerdict',
+    ),
+    expectLifecycle,
+  );
+  expect(
+    RegExp(r'必然|必定|保证|一定').hasMatch(outputContract),
+    isFalse,
+  );
+}
+
+void _expectResolvedReleaseWordingForbidden(String userPrompt) {
+  final outputContract = userPrompt.split('[LIUYAO_OUTPUT_CONTRACT]').last;
+  expect(
+    outputContract,
+    contains('只写当前盘面事实与程序已授权裁决'),
+  );
+  expect(
+    RegExp(
+      r'出空|出月|填实|冲开|解除合绊|合绊已解|等待|等到|等至|待到|待至|择日|时机|届时',
+    ).hasMatch(outputContract),
+    isFalse,
+  );
+  expect(outputContract, contains('不得复述 compact view 已省略的关系'));
+  expect(outputContract, isNot(contains('日冲已解除合绊')));
+  expect(outputContract, isNot(contains('合绊=true')));
+  expect(outputContract, isNot(contains('冲开=true')));
+  expect(outputContract, isNot(contains('全文必须且只能出现一次')));
+  expect(outputContract, isNot(contains('该句独占一行')));
+  expect(outputContract, isNot(contains('禁止解释或复述')));
+}
+
+void _expectLegacyTimingSummaryAbsent(String prompt) {
+  for (final term in const <String>[
+    '应期候选',
+    '触发窗口',
+    '优先观察',
+  ]) {
+    expect(prompt, isNot(contains(term)));
+  }
 }
 
 tmpl.PromptTemplate _template({

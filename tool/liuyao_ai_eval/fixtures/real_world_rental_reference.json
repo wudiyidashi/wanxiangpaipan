@@ -1,0 +1,50 @@
+{
+  "schemaVersion": "liuyao-real-world-judge-reference/1.0.0",
+  "caseId": "liuyao.real.rental.2026-02-28",
+  "actualOutcome": {
+    "formation": "起初签约并入住",
+    "contractAuthority": "出租方实为二房东",
+    "fees": "多付数百元中介费并一次预付六个月房租",
+    "continuity": "实际居住三个月后出租方失联，被要求搬离",
+    "loss": "损失三千余元"
+  },
+  "retrospectiveMappings": [
+    "兄弟发动克财对应竞争、催促和费用分流风险",
+    "父母伏藏且飞克伏对应出租权、合同主体和身份文书核验风险",
+    "应入动墓对应对方后续联络和持续履约风险",
+    "双六合在主证不利时对应困局黏合和纠缠"
+  ],
+  "expectedLifecycleByScenario": {
+    "unselected": null,
+    "selected-main-1": {
+      "formation": "willForm",
+      "quality": "adverse",
+      "continuity": "unstable",
+      "persistence": "entangled"
+    }
+  },
+  "requiredRiskCategories": [
+    "contractAuthority",
+    "fees",
+    "possession",
+    "continuity"
+  ],
+  "forbiddenPreciseClaims": [
+    "二房东",
+    "黑中介",
+    "六个月",
+    "三个月",
+    "甲午月",
+    "跑路",
+    "被赶出",
+    "三千"
+  ],
+  "scoreDimensions": [
+    "stageCompleteness",
+    "riskRelevance",
+    "evidenceHierarchy",
+    "questionFit",
+    "uncertainty",
+    "actionableVerification"
+  ]
+}

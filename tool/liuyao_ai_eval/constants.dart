@@ -9,9 +9,21 @@ const String evalCanonicalAdapterSchemaVersion =
     'liuyao-ai-canonical-adapter/1.0.0';
 const String evalOfflineComparisonSchemaVersion =
     'liuyao-ai-offline-comparison/1.0.0';
-const String evalPairedRunSchemaVersion = 'liuyao-ai-paired-run/1.0.0';
+const String evalPairedRunSchemaVersion = 'liuyao-ai-paired-run/1.2.0';
 const String evalJudgeRequestSchemaVersion = 'liuyao-ai-judge-request/1.0.0';
 const String evalJudgeResponseSchemaVersion = 'liuyao-ai-judge-response/1.0.0';
+const String realWorldAdapterSchemaVersion = 'liuyao-real-world-adapter/1.0.0';
+const String realWorldJudgeReferenceManifestSchemaVersion =
+    'liuyao-real-world-judge-reference-manifest/1.0.0';
+const String realWorldJudgeResponseSchemaVersion =
+    'liuyao-real-world-judge-response/1.1.0';
+const String realWorldRunSchemaVersion = 'liuyao-real-world-run/1.3.0';
+const String candidatePromptPolicyRevision = '1.1.20';
+const String candidatePromptPolicyVersion =
+    'liuyao-ai-policy/$candidatePromptPolicyRevision';
+const String transportRetryPolicyVersion = 'liuyao-ai-transport-retry/1.2.0';
+const String evaluationReasoningEffort = 'none';
+const int transportMaxRetryCount = 2;
 const String holdoutSelectionSalt = 'liuyao-holdout-v1-2026-08-01';
 const String generationOrderSalt = 'liuyao-pair-order-v1';
 const String judgeOrderSalt = 'liuyao-judge-order-v1';
@@ -21,6 +33,9 @@ const int generationMaxTokens = 2048;
 const int judgeMaxTokens = 2048;
 const int generationInputUtf8ByteLimit = 128 * 1024;
 const int judgeInputUtf8ByteLimit = 256 * 1024;
+const int defaultTransportTimeoutSeconds = 240;
+const int minimumTransportTimeoutSeconds = 30;
+const int maximumTransportTimeoutSeconds = 600;
 
 const String canonicalProjectionSchemaVersion = '1';
 const String canonicalRuleSetId = 'liuyao-zengshan-primary';
@@ -44,8 +59,18 @@ const String evalCanonicalFixtureRelativePath =
     'tool/liuyao_ai_eval/fixtures/canonical_v2_fixture.json';
 const String evalClassicsFixtureRelativePath =
     'test/fixtures/liuyao/classics_cases.v1.json';
+const String realWorldGenerationFixtureRelativePath =
+    'tool/liuyao_ai_eval/fixtures/real_world_rental_generation.json';
+const String realWorldJudgeReferenceRelativePath =
+    'tool/liuyao_ai_eval/fixtures/real_world_rental_reference.json';
+const String realWorldJudgeReferenceManifestRelativePath =
+    'tool/liuyao_ai_eval/fixtures/real_world_rental_reference_manifest.json';
+const String realWorldBaselineRequestsRelativePath =
+    'tool/liuyao_ai_eval/frozen/actual_rental_v160_requests.json';
+const String realWorldAdapterRelativePath =
+    'tool/liuyao_ai_eval/fixtures/real_world_rental_adapter.json';
 const String evalOutputRootRelativePath =
-    '.trellis/tasks/08-01-liuyao-classics-analysis-prompt/research/eval';
+    '.trellis/tasks/08-02-liuyao-real-case-prompt-calibration/research/eval';
 
 const Set<String> supportedVariants = <String>{
   legacyDiagnosticVariant,

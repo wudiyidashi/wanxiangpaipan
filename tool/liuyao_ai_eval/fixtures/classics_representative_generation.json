@@ -1,0 +1,91 @@
+{
+  "cases": [
+    {
+      "caseId": "liuyao.case.golden.001",
+      "caseKind": "ruleValidation",
+      "pan": {
+        "dayGanZhi": "戊戌",
+        "declaredChangingGuaName": null,
+        "declaredMainGuaName": "乾为天",
+        "declaredMovingPositions": [],
+        "monthBranch": "申",
+        "numbers": [
+          7,
+          7,
+          7,
+          7,
+          7,
+          7
+        ]
+      },
+      "question": "兄弟所谋能否成",
+      "useSpirit": {
+        "declaredActorId": "main:yao:5",
+        "declaredBranch": "申",
+        "declaredLiuQin": "兄弟",
+        "declaredWuXing": "金",
+        "mode": "selectedVisible",
+        "position": 5
+      }
+    },
+    {
+      "caseId": "liuyao.case.golden.007",
+      "caseKind": "originalBook",
+      "pan": {
+        "dayGanZhi": "戊子",
+        "declaredChangingGuaName": "泽天夬",
+        "declaredMainGuaName": "乾为天",
+        "declaredMovingPositions": [
+          6
+        ],
+        "monthBranch": "辰",
+        "numbers": [
+          7,
+          7,
+          7,
+          7,
+          7,
+          9
+        ]
+      },
+      "question": "父何日归",
+      "useSpirit": {
+        "declaredActorId": "main:yao:6",
+        "declaredBranch": "戌",
+        "declaredLiuQin": "父母",
+        "declaredWuXing": "土",
+        "mode": "selectedVisible",
+        "position": 6
+      }
+    },
+    {
+      "caseId": "liuyao.case.golden.037",
+      "caseKind": "ruleValidation",
+      "pan": {
+        "dayGanZhi": "甲辰",
+        "declaredChangingGuaName": null,
+        "declaredMainGuaName": "天山遯",
+        "declaredMovingPositions": [],
+        "monthBranch": "午",
+        "numbers": [
+          8,
+          8,
+          7,
+          7,
+          7,
+          7
+        ]
+      },
+      "question": "伏神受飞神压制能否得用",
+      "useSpirit": {
+        "declaredActorId": "hidden:host-yao:1",
+        "declaredBranch": "子",
+        "declaredLiuQin": "子孙",
+        "declaredWuXing": "水",
+        "mode": "selectedHidden",
+        "position": 1
+      }
+    }
+  ],
+  "schemaVersion": "liuyao-classics-representative-generation/1.0.0"
+}

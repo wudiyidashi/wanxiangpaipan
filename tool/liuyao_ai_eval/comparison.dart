@@ -5,6 +5,8 @@ import 'constants.dart';
 import 'hard_gates.dart';
 import 'security.dart';
 
+const String _defaultTransportRetryPolicyVersion = transportRetryPolicyVersion;
+
 class ComparisonIdentity {
   const ComparisonIdentity({
     required this.runId,
@@ -16,7 +18,11 @@ class ComparisonIdentity {
     required this.caseInputSetHash,
     required this.modelHash,
     required this.judgeModelHash,
+    required this.transportEndpointHash,
+    required this.transportTimeoutSeconds,
+    required this.transportRetryPolicyVersion,
     required this.requestParametersHash,
+    required this.judgeRequestContractHash,
     required this.baselineRequestSetHash,
     required this.candidateRequestSetHash,
   });
@@ -30,7 +36,11 @@ class ComparisonIdentity {
   final String caseInputSetHash;
   final String modelHash;
   final String judgeModelHash;
+  final String transportEndpointHash;
+  final int transportTimeoutSeconds;
+  final String transportRetryPolicyVersion;
   final String requestParametersHash;
+  final String judgeRequestContractHash;
   final String baselineRequestSetHash;
   final String candidateRequestSetHash;
 
@@ -43,10 +53,21 @@ class ComparisonIdentity {
     required String caseInputSetHash,
     required String modelHash,
     required String judgeModelHash,
+    required String transportEndpointHash,
+    int transportTimeoutSeconds = defaultTransportTimeoutSeconds,
+    String transportRetryPolicyVersion = _defaultTransportRetryPolicyVersion,
     required String requestParametersHash,
+    required String judgeRequestContractHash,
     required String baselineRequestSetHash,
     required String candidateRequestSetHash,
   }) {
+    if (transportTimeoutSeconds < minimumTransportTimeoutSeconds ||
+        transportTimeoutSeconds > maximumTransportTimeoutSeconds) {
+      throw const FormatException('Transport timeout is outside bounds.');
+    }
+    if (transportRetryPolicyVersion.isEmpty) {
+      throw const FormatException('Transport retry policy is missing.');
+    }
     final String runHash = sha256Json(<String, Object?>{
       'runId': runId,
       'fixtureHash': fixtureHash,
@@ -56,7 +77,11 @@ class ComparisonIdentity {
       'caseInputSetHash': caseInputSetHash,
       'modelHash': modelHash,
       'judgeModelHash': judgeModelHash,
+      'transportEndpointHash': transportEndpointHash,
+      'transportTimeoutSeconds': transportTimeoutSeconds,
+      'transportRetryPolicyVersion': transportRetryPolicyVersion,
       'requestParametersHash': requestParametersHash,
+      'judgeRequestContractHash': judgeRequestContractHash,
       'baselineRequestSetHash': baselineRequestSetHash,
       'candidateRequestSetHash': candidateRequestSetHash,
     });
@@ -70,7 +95,11 @@ class ComparisonIdentity {
       caseInputSetHash: caseInputSetHash,
       modelHash: modelHash,
       judgeModelHash: judgeModelHash,
+      transportEndpointHash: transportEndpointHash,
+      transportTimeoutSeconds: transportTimeoutSeconds,
+      transportRetryPolicyVersion: transportRetryPolicyVersion,
       requestParametersHash: requestParametersHash,
+      judgeRequestContractHash: judgeRequestContractHash,
       baselineRequestSetHash: baselineRequestSetHash,
       candidateRequestSetHash: candidateRequestSetHash,
     );
@@ -89,7 +118,11 @@ class ComparisonIdentity {
         'caseInputSetHash',
         'modelHash',
         'judgeModelHash',
+        'transportEndpointHash',
+        'transportTimeoutSeconds',
+        'transportRetryPolicyVersion',
         'requestParametersHash',
+        'judgeRequestContractHash',
         'baselineRequestSetHash',
         'candidateRequestSetHash',
       },
@@ -104,7 +137,12 @@ class ComparisonIdentity {
       caseInputSetHash: _requireHash(json, 'caseInputSetHash'),
       modelHash: _requireHash(json, 'modelHash'),
       judgeModelHash: _requireHash(json, 'judgeModelHash'),
+      transportEndpointHash: _requireHash(json, 'transportEndpointHash'),
+      transportTimeoutSeconds: _requireTransportTimeout(json),
+      transportRetryPolicyVersion:
+          requireString(json, 'transportRetryPolicyVersion'),
       requestParametersHash: _requireHash(json, 'requestParametersHash'),
+      judgeRequestContractHash: _requireHash(json, 'judgeRequestContractHash'),
       baselineRequestSetHash: _requireHash(json, 'baselineRequestSetHash'),
       candidateRequestSetHash: _requireHash(json, 'candidateRequestSetHash'),
     );
@@ -120,7 +158,11 @@ class ComparisonIdentity {
         'caseInputSetHash': caseInputSetHash,
         'modelHash': modelHash,
         'judgeModelHash': judgeModelHash,
+        'transportEndpointHash': transportEndpointHash,
+        'transportTimeoutSeconds': transportTimeoutSeconds,
+        'transportRetryPolicyVersion': transportRetryPolicyVersion,
         'requestParametersHash': requestParametersHash,
+        'judgeRequestContractHash': judgeRequestContractHash,
         'baselineRequestSetHash': baselineRequestSetHash,
         'candidateRequestSetHash': candidateRequestSetHash,
       };
@@ -710,7 +752,11 @@ String comparisonRunHash(ComparisonIdentity identity) =>
       'caseInputSetHash': identity.caseInputSetHash,
       'modelHash': identity.modelHash,
       'judgeModelHash': identity.judgeModelHash,
+      'transportEndpointHash': identity.transportEndpointHash,
+      'transportTimeoutSeconds': identity.transportTimeoutSeconds,
+      'transportRetryPolicyVersion': identity.transportRetryPolicyVersion,
       'requestParametersHash': identity.requestParametersHash,
+      'judgeRequestContractHash': identity.judgeRequestContractHash,
       'baselineRequestSetHash': identity.baselineRequestSetHash,
       'candidateRequestSetHash': identity.candidateRequestSetHash,
     });
@@ -731,6 +777,18 @@ String _requireHash(Map<String, Object?> json, String key) {
   final String value = requireString(json, key);
   if (!RegExp(r'^[0-9a-f]{64}$').hasMatch(value)) {
     throw const FormatException('Expected a lowercase SHA-256 hash.');
+  }
+  return value;
+}
+
+int _requireTransportTimeout(Map<String, Object?> json) {
+  final value = requireInt(
+    json,
+    'transportTimeoutSeconds',
+    minimum: minimumTransportTimeoutSeconds,
+  );
+  if (value > maximumTransportTimeoutSeconds) {
+    throw const FormatException('Transport timeout exceeds maximum.');
   }
   return value;
 }

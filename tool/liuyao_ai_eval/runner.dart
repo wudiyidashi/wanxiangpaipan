@@ -6,12 +6,17 @@ import 'package:path/path.dart' as p;
 import 'assets.dart';
 import 'canonical_contract.dart';
 import 'canonical_json.dart';
+import 'classics_representative_contract.dart';
+import 'classics_representative_evaluation.dart';
 import 'comparison.dart';
 import 'constants.dart';
 import 'hard_gates.dart';
 import 'holdout.dart';
 import 'model_transport.dart';
 import 'paired_evaluation.dart';
+import 'real_world_contract.dart';
+import 'real_world_evaluation.dart';
+import 'real_world_hard_gates.dart';
 import 'security.dart';
 
 class CliInvocation {
@@ -58,6 +63,8 @@ class EvalCliParser {
       'model',
       'compare-offline',
       'paired-model',
+      'real-world-paired-model',
+      classicsRepresentativeCommand,
       'compare',
     }.contains(command)) {
       throw const EvalFailure('unknownCommand');
@@ -104,7 +111,10 @@ class EvalCliParser {
           '--output',
           '--repetitions',
         },
-      'paired-model' => <String>{
+      'paired-model' ||
+      'real-world-paired-model' ||
+      classicsRepresentativeCommand =>
+        <String>{
           '--run-id',
           '--output',
           '--repetitions',
@@ -115,7 +125,12 @@ class EvalCliParser {
         !values.keys.toSet().containsAll(expectedValueOptions)) {
       throw const EvalFailure('commandOptionContractMismatch');
     }
-    if (!<String>{'model', 'paired-model'}.contains(command) &&
+    if (!<String>{
+          'model',
+          'paired-model',
+          'real-world-paired-model',
+          classicsRepresentativeCommand,
+        }.contains(command) &&
         flags.isNotEmpty) {
       throw const EvalFailure('commandOptionContractMismatch');
     }
@@ -129,7 +144,12 @@ class EvalCliParser {
     if (command == 'model' && (repetitions == null || repetitions < 3)) {
       throw const EvalFailure('minimumThreeRepetitionsRequired');
     }
-    if (command == 'paired-model' && repetitions != 3) {
+    if (<String>{
+          'paired-model',
+          'real-world-paired-model',
+          classicsRepresentativeCommand,
+        }.contains(command) &&
+        repetitions != 3) {
       throw const EvalFailure('exactlyThreeRepetitionsRequired');
     }
     return CliInvocation(
@@ -160,17 +180,23 @@ class LiuYaoEvalRunner {
     EvalModelTransport? modelTransport,
     EvalAssets? assets,
     CanonicalAdapterProvider? canonicalAdapterProvider,
+    RealWorldAssetLoader Function(String repositoryRoot)?
+        realWorldAssetLoaderProvider,
   })  : _environment = environment,
         _modelTransport = modelTransport ?? OpenAiCompatibleEvalTransport(),
         _assets = assets ?? EvalAssets(repositoryRoot),
         _canonicalAdapterProvider = canonicalAdapterProvider ??
-            CanonicalAdapterFileLoader(repositoryRoot: repositoryRoot).load;
+            CanonicalAdapterFileLoader(repositoryRoot: repositoryRoot).load,
+        _realWorldAssetLoaderProvider = realWorldAssetLoaderProvider ??
+            ((root) => RealWorldAssetLoader(root));
 
   final String repositoryRoot;
   final Map<String, String>? _environment;
   final EvalModelTransport _modelTransport;
   final EvalAssets _assets;
   final CanonicalAdapterProvider _canonicalAdapterProvider;
+  final RealWorldAssetLoader Function(String repositoryRoot)
+      _realWorldAssetLoaderProvider;
 
   Future<CliResult> execute(CliInvocation invocation) async {
     try {
@@ -181,6 +207,9 @@ class LiuYaoEvalRunner {
         'model' => await _model(invocation),
         'compare-offline' => _compareOffline(invocation),
         'paired-model' => await _pairedModel(invocation),
+        'real-world-paired-model' => await _realWorldPairedModel(invocation),
+        classicsRepresentativeCommand =>
+          await _classicsRepresentativePairedModel(invocation),
         'compare' => _compare(invocation),
         _ => throw const EvalFailure('unknownCommand'),
       };
@@ -217,6 +246,26 @@ class LiuYaoEvalRunner {
     }
   }
 
+  Future<CliResult> _classicsRepresentativePairedModel(
+    CliInvocation invocation,
+  ) async {
+    if (!invocation.confirmRealModel) {
+      throw const EvalFailure('realModelConfirmationRequired');
+    }
+    final ClassicsRepresentativeRunResult result =
+        await ClassicsRepresentativeEvaluationRunner(
+      repositoryRoot: repositoryRoot,
+      environment: _environment,
+      modelTransport: _modelTransport,
+      assets: _assets,
+    ).run(
+      runId: invocation.runId,
+      output: invocation.output!,
+      repetitions: invocation.repetitions!,
+    );
+    return CliResult(exitCode: result.exitCode, payload: result.payload);
+  }
+
   CliResult _validate(CliInvocation invocation) {
     _validateRunId(invocation.runId);
     final EvalFixture fixture = _assets.loadFixture();
@@ -246,6 +295,23 @@ class LiuYaoEvalRunner {
         rethrow;
       }
     }
+    final RealWorldAssetLoader realWorldLoader =
+        _realWorldAssetLoaderProvider(repositoryRoot);
+    final RealWorldGenerationFixture realWorldFixture =
+        realWorldLoader.loadGenerationFixture();
+    final RealWorldEvalAdapter realWorldAdapter =
+        realWorldLoader.loadAdapter(realWorldFixture);
+    final RealWorldJudgeReferenceManifest realWorldReferenceManifest =
+        realWorldLoader.loadJudgeReferenceManifest();
+    final RealWorldJudgeReference realWorldReference =
+        realWorldLoader.loadJudgeReference(
+      manifest: realWorldReferenceManifest,
+    );
+    if (realWorldReference.caseId != realWorldFixture.caseId) {
+      throw const FormatException('Real-world reference identity mismatch.');
+    }
+    final String realWorldReferenceAssetHash =
+        realWorldReferenceManifest.referenceAssetSha256;
     return CliResult(
       exitCode: 0,
       payload: <String, Object?>{
@@ -262,6 +328,11 @@ class LiuYaoEvalRunner {
         'canonicalFixtureHash': canonicalFixtureHash,
         'canonicalFixturePath': evalCanonicalFixtureRelativePath,
         'canonicalAdapterPath': evalCanonicalAdapterRelativePath,
+        'realWorldStatus': 'ready',
+        'realWorldGenerationFixtureHash': realWorldFixture.hash,
+        'realWorldAdapterHash': realWorldAdapter.hash,
+        'realWorldJudgeReferenceHash': realWorldReference.hash,
+        'realWorldJudgeReferenceAssetHash': realWorldReferenceAssetHash,
       },
     );
   }
@@ -618,9 +689,9 @@ class LiuYaoEvalRunner {
         errorKind: 'generationInputTooLarge',
       );
     }
-    final _Scope scope = context.createRetryableScope('paired-model');
     final ConfigLoadResult config = context.config;
     if (config.realModelStatus != 'ready' || config.credentials == null) {
+      final _Scope scope = context.createRetryableScope('paired-model');
       return _writePairedStatus(
         invocation: invocation,
         context: context,
@@ -644,10 +715,19 @@ class LiuYaoEvalRunner {
       caseInputSetHash: contract.baseline.caseInputSetHash,
       modelHash: modelHash,
       judgeModelHash: modelHash,
+      transportEndpointHash: sha256Text(credentials.baseUrl),
+      transportTimeoutSeconds: credentials.timeoutSeconds,
       requestParametersHash: contract.baseline.requestParametersHash,
+      judgeRequestContractHash: judgeRequestContractHash,
       baselineRequestSetHash: contract.baseline.requestSetHash,
       candidateRequestSetHash: contract.candidate.requestSetHash,
     );
+    context.workspace.bindRetryIdentity(
+      command: 'paired-model',
+      identityHash: identity.runHash,
+      identity: identity.toJson(),
+    );
+    final _Scope scope = context.createRetryableScope('paired-model');
     final List<PairedEvaluation> pairs = <PairedEvaluation>[];
     final List<EvalCase> orderedCases = <EvalCase>[
       ...fixture.cases.where(
@@ -861,6 +941,7 @@ class LiuYaoEvalRunner {
       candidateHash: contract.candidateHash,
       model: credentials.model,
       providerLabel: credentials.providerLabel,
+      timeoutSeconds: credentials.timeoutSeconds,
       identity: identity,
       pairs: List<PairedEvaluation>.unmodifiable(pairs),
     );
@@ -885,6 +966,486 @@ class LiuYaoEvalRunner {
         'candidateHash': contract.candidateHash,
         'runHash': identity.runHash,
         'pairCount': pairs.length,
+      },
+    );
+  }
+
+  Future<CliResult> _realWorldPairedModel(CliInvocation invocation) async {
+    _validateRunId(invocation.runId);
+    if (!invocation.confirmRealModel) {
+      throw const EvalFailure('realModelConfirmationRequired');
+    }
+    if (invocation.repetitions != 3) {
+      throw const EvalFailure('exactlyThreeRepetitionsRequired');
+    }
+    final _EvaluationWorkspace context = _openEvaluationWorkspace(invocation);
+    final RealWorldAssetLoader loader =
+        _realWorldAssetLoaderProvider(repositoryRoot);
+    final RealWorldGenerationFixture fixture = loader.loadGenerationFixture();
+    final RealWorldEvalAdapter adapter = loader.loadAdapter(fixture);
+    final RealWorldJudgeReferenceManifest referenceManifest =
+        loader.loadJudgeReferenceManifest();
+    if (referenceManifest.caseId != fixture.caseId) {
+      throw const EvalFailure('realWorldReferenceIdentityMismatch');
+    }
+    final String judgeReferenceAssetHash =
+        referenceManifest.referenceAssetSha256;
+    for (final RealWorldAdapterCase item in adapter.cases) {
+      for (final RealWorldPromptVariant variant in <RealWorldPromptVariant>[
+        item.baseline,
+        item.candidate,
+      ]) {
+        validateModelInputUtf8Size(
+          systemPrompt: variant.systemPrompt,
+          userPrompt: variant.userPrompt,
+          byteLimit: generationInputUtf8ByteLimit,
+          errorKind: 'generationInputTooLarge',
+        );
+      }
+    }
+    final ConfigLoadResult config = context.config;
+    if (config.realModelStatus != 'ready' || config.credentials == null) {
+      final _Scope scope = context.createRetryableScope(
+        'real-world-paired-model',
+      );
+      return _writeRealWorldStatus(
+        invocation: invocation,
+        context: context,
+        scope: scope,
+        adapter: adapter,
+        judgeReferenceAssetHash: judgeReferenceAssetHash,
+        status: 'blocked',
+        realModelStatus: config.realModelStatus,
+        errorKind: config.errorKind,
+        exitCode: config.realModelStatus == 'blockedMissingCredentials' ? 4 : 2,
+      );
+    }
+    final EvalCredentials credentials = config.credentials!;
+    final String transportEndpointHash = sha256Text(credentials.baseUrl);
+    final Map<String, Object?> realWorldIdentity = realWorldRunIdentity(
+      runId: invocation.runId,
+      fixture: fixture,
+      adapter: adapter,
+      modelHash: sha256Text(credentials.model),
+      transportEndpointHash: transportEndpointHash,
+      transportTimeoutSeconds: credentials.timeoutSeconds,
+      judgeReferenceAssetHash: judgeReferenceAssetHash,
+    );
+    final String realWorldRunHash = requireString(realWorldIdentity, 'runHash');
+    context.workspace.bindRetryIdentity(
+      command: 'real-world-paired-model',
+      identityHash: realWorldRunHash,
+      identity: realWorldIdentity,
+    );
+    final _Scope scope = context.createRetryableScope(
+      'real-world-paired-model',
+    );
+    String transportRequestHash(String kind, String frozenRequestHash) {
+      final String requestContractHash = kind == 'judge'
+          ? realWorldJudgeRequestContractHash
+          : adapter.requestParameters.hash;
+      return sha256Json(<String, Object?>{
+        'kind': kind,
+        'frozenRequestHash': frozenRequestHash,
+        'modelHash': sha256Text(credentials.model),
+        'transportEndpointHash': transportEndpointHash,
+        'transportTimeoutSeconds': credentials.timeoutSeconds,
+        'transportRetryPolicyVersion': transportRetryPolicyVersion,
+        'requestContractHash': requestContractHash,
+      });
+    }
+
+    final List<Map<String, Object?>> pairs = <Map<String, Object?>>[];
+    bool candidatePassed = true;
+    for (final RealWorldAdapterCase adapterCase in adapter.cases) {
+      for (int repetition = 1; repetition <= 3; repetition += 1) {
+        final List<String> order = pairedGenerationOrder(
+          runId: invocation.runId,
+          caseId: adapterCase.scenarioId,
+          repetition: repetition,
+        )
+            .map(
+              (variant) => variant == baselineVariant
+                  ? realWorldBaselineVariant
+                  : realWorldCandidateVariant,
+            )
+            .toList(growable: false);
+        final Map<String, ModelCallResult> generationResults =
+            <String, ModelCallResult>{};
+        final Map<String, String> generationContent = <String, String>{};
+        for (final String variant in order) {
+          final RealWorldPromptVariant request =
+              variant == realWorldBaselineVariant
+                  ? adapterCase.baseline
+                  : adapterCase.candidate;
+          final ModelCallResult result = await _modelTransport.call(
+            credentials: credentials,
+            request: ModelCallRequest(
+              systemPrompt: request.systemPrompt,
+              userPrompt: request.userPrompt,
+              temperature: 0,
+              maxTokens: generationMaxTokens,
+              responseFormat: 'text',
+              seed: generationSeed,
+            ),
+          );
+          if (!result.completed ||
+              result.content == null ||
+              result.content!.trim().isEmpty) {
+            return _writeRealWorldStatus(
+              invocation: invocation,
+              context: context,
+              scope: scope,
+              adapter: adapter,
+              judgeReferenceAssetHash: judgeReferenceAssetHash,
+              status: 'generationFailed',
+              realModelStatus: 'failedTransport',
+              errorKind: result.errorKind ?? 'emptyGenerationResponse',
+              exitCode: 5,
+              scenarioId: adapterCase.scenarioId,
+              repetition: repetition,
+              failedVariant: variant,
+              failedRequestHash: request.requestHash,
+              failedTransportRequestHash:
+                  transportRequestHash('generation', request.requestHash),
+              transportResult: result,
+            );
+          }
+          generationResults[variant] = result;
+          generationContent[variant] = result.content!;
+        }
+
+        Map<String, Object?> generationArtifact(String variant) {
+          final ModelCallResult result = generationResults[variant]!;
+          return <String, Object?>{
+            'requestHash': variant == realWorldBaselineVariant
+                ? adapterCase.baseline.requestHash
+                : adapterCase.candidate.requestHash,
+            'transportRequestHash': transportRequestHash(
+              'generation',
+              variant == realWorldBaselineVariant
+                  ? adapterCase.baseline.requestHash
+                  : adapterCase.candidate.requestHash,
+            ),
+            'content': result.content,
+            'tokensUsed': result.tokensUsed,
+            'latencyMilliseconds': result.latencyMilliseconds,
+            'seedSupported': result.seedSupported,
+            'statusCode': result.statusCode,
+            'retryCount': result.retryCount,
+          };
+        }
+
+        final RealWorldHardGateResult baselineGates =
+            const RealWorldHardGateEvaluator().evaluate(
+          adapterCase: adapterCase,
+          rawOutput: generationContent[realWorldBaselineVariant]!,
+        );
+        final RealWorldHardGateResult candidateGates =
+            const RealWorldHardGateEvaluator().evaluate(
+          adapterCase: adapterCase,
+          rawOutput: generationContent[realWorldCandidateVariant]!,
+        );
+        candidatePassed = candidatePassed && candidateGates.passed;
+        if (!candidateGates.passed) {
+          final Map<String, Object?> pair = <String, Object?>{
+            'caseId': fixture.caseId,
+            'scenarioId': adapterCase.scenarioId,
+            'repetition': repetition,
+            'generationOrder': order,
+            'baseline': <String, Object?>{
+              'generation': generationArtifact(realWorldBaselineVariant),
+              'hardGates': baselineGates.gates,
+              'hardGateDiagnostics': baselineGates.diagnostics,
+            },
+            'candidate': <String, Object?>{
+              'generation': generationArtifact(realWorldCandidateVariant),
+              'hardGates': candidateGates.gates,
+              'hardGateDiagnostics': candidateGates.diagnostics,
+            },
+            'judgeStatus': 'skippedBeforeReferenceLoad',
+          };
+          pairs.add(pair);
+          scope.writer.writeJson(
+            '${adapterCase.scenarioId}/repetition-$repetition/pair.json',
+            pair,
+          );
+          final Map<String, Object?> manifest = <String, Object?>{
+            'schemaVersion': realWorldRunSchemaVersion,
+            'runId': invocation.runId,
+            'runHash': realWorldRunHash,
+            'status': 'rejected',
+            'generationFixtureHash': fixture.hash,
+            'adapterHash': adapter.hash,
+            'baselineSourceCommit': adapter.baselineSourceCommit,
+            'requestParameters': adapter.requestParameters.toJson(),
+            'requestParametersHash': adapter.requestParameters.hash,
+            'judgeRequestContractHash': realWorldJudgeRequestContractHash,
+            'judgeReferenceAssetHash': judgeReferenceAssetHash,
+            'transportEndpointHash': transportEndpointHash,
+            'transportRetryPolicyVersion': transportRetryPolicyVersion,
+            'modelMetadata': credentials.safeMetadata(),
+            'repetitions': 3,
+            'scenarioCount': adapter.cases.length,
+            'pairCount': pairs.length,
+            'candidateHardGatesPassed': false,
+            'failedGateIds': candidateGates.failedGateIds.toList()..sort(),
+            'pairs': pairs,
+          };
+          scope.writer.writeJson('manifest.json', manifest);
+          final ScanReport scan =
+              context.filter.scanDirectory(context.outputRoot);
+          if (!scan.isClean) {
+            throw const EvalFailure('postWriteSensitiveScanFailed');
+          }
+          scope.writer.writeJson('scan.json', scan.toJson());
+          scope.writer.writeMarker('_FAILED');
+          return CliResult(
+            exitCode: 6,
+            payload: <String, Object?>{
+              'runId': invocation.runId,
+              'command': invocation.command,
+              'status': 'rejected',
+              'pairCount': pairs.length,
+              'adapterHash': adapter.hash,
+              'failedGateIds': candidateGates.failedGateIds.toList()..sort(),
+            },
+          );
+        }
+
+        // The manifest is generation-safe. The hindsight-bearing asset itself
+        // is opened only after both raw generations are gated and the candidate
+        // passes. Baseline failures remain judgeable comparison evidence.
+        final RealWorldJudgeReference reference = loader.loadJudgeReference(
+          manifest: referenceManifest,
+        );
+        final Map<String, String> blindMapping = realWorldBlindMapping(
+          runId: invocation.runId,
+          scenarioId: adapterCase.scenarioId,
+          repetition: repetition,
+        );
+        final Map<String, Object?> judgeRequest = buildRealWorldJudgeRequest(
+          runId: invocation.runId,
+          fixture: fixture,
+          reference: reference,
+          adapterCase: adapterCase,
+          repetition: repetition,
+          blindMapping: blindMapping,
+          generationContent: generationContent,
+        );
+        final String judgeRequestHash = sha256Json(judgeRequest);
+        try {
+          validateModelInputUtf8Size(
+            systemPrompt: realWorldJudgeSystemPrompt,
+            userPrompt: canonicalJson(judgeRequest),
+            byteLimit: judgeInputUtf8ByteLimit,
+            errorKind: 'judgeInputTooLarge',
+          );
+        } on EvalFailure catch (error) {
+          return _writeRealWorldStatus(
+            invocation: invocation,
+            context: context,
+            scope: scope,
+            adapter: adapter,
+            judgeReferenceAssetHash: judgeReferenceAssetHash,
+            status: 'judgeInputRejected',
+            realModelStatus: 'completed',
+            errorKind: error.kind,
+            exitCode: 6,
+            scenarioId: adapterCase.scenarioId,
+            repetition: repetition,
+            failedVariant: 'judge',
+            failedRequestHash: judgeRequestHash,
+            failedTransportRequestHash:
+                transportRequestHash('judge', judgeRequestHash),
+          );
+        }
+        final ModelCallResult judgeResult = await _modelTransport.call(
+          credentials: credentials,
+          request: ModelCallRequest(
+            systemPrompt: realWorldJudgeSystemPrompt,
+            userPrompt: canonicalJson(judgeRequest),
+            temperature: 0,
+            maxTokens: judgeMaxTokens,
+            responseFormat: 'json',
+            seed: judgeSeed,
+          ),
+        );
+        if (!judgeResult.completed ||
+            judgeResult.content == null ||
+            judgeResult.content!.trim().isEmpty) {
+          return _writeRealWorldStatus(
+            invocation: invocation,
+            context: context,
+            scope: scope,
+            adapter: adapter,
+            judgeReferenceAssetHash: judgeReferenceAssetHash,
+            status: 'judgeFailed',
+            realModelStatus: 'failedTransport',
+            errorKind: judgeResult.errorKind ?? 'emptyJudgeResponse',
+            exitCode: 5,
+            scenarioId: adapterCase.scenarioId,
+            repetition: repetition,
+            failedVariant: 'judge',
+            failedRequestHash: judgeRequestHash,
+            failedTransportRequestHash:
+                transportRequestHash('judge', judgeRequestHash),
+            transportResult: judgeResult,
+          );
+        }
+        RealWorldJudgeEvaluation judge;
+        try {
+          judge = RealWorldJudgeEvaluation.fromContent(
+            content: judgeResult.content!,
+            reference: reference,
+            scenarioId: adapterCase.scenarioId,
+            repetition: repetition,
+          );
+        } on Object {
+          return _writeRealWorldStatus(
+            invocation: invocation,
+            context: context,
+            scope: scope,
+            adapter: adapter,
+            judgeReferenceAssetHash: judgeReferenceAssetHash,
+            status: 'malformedJudgeResult',
+            realModelStatus: 'completed',
+            errorKind: 'malformedJudgeResult',
+            exitCode: 6,
+            scenarioId: adapterCase.scenarioId,
+            repetition: repetition,
+            failedVariant: 'judge',
+            failedRequestHash: judgeRequestHash,
+            failedTransportRequestHash:
+                transportRequestHash('judge', judgeRequestHash),
+            transportResult: judgeResult,
+          );
+        }
+
+        final Map<String, Object?> pair = <String, Object?>{
+          'caseId': fixture.caseId,
+          'scenarioId': adapterCase.scenarioId,
+          'repetition': repetition,
+          'generationOrder': order,
+          'blindLabelMapping': blindMapping,
+          'baseline': <String, Object?>{
+            'generation': generationArtifact(realWorldBaselineVariant),
+            'hardGates': baselineGates.gates,
+            'hardGateDiagnostics': baselineGates.diagnostics,
+          },
+          'candidate': <String, Object?>{
+            'generation': generationArtifact(realWorldCandidateVariant),
+            'hardGates': candidateGates.gates,
+            'hardGateDiagnostics': candidateGates.diagnostics,
+          },
+          'judgeRequestHash': judgeRequestHash,
+          'judgeReferenceHash': reference.hash,
+          'judgeResponse': judge.raw,
+          'scores': <String, Object?>{
+            for (final MapEntry<String, RealWorldBlindDimensionScore> entry
+                in judge.scores.entries)
+              entry.key: entry.value.toJson(),
+          },
+        };
+        pairs.add(pair);
+        scope.writer.writeJson(
+          '${adapterCase.scenarioId}/repetition-$repetition/pair.json',
+          pair,
+        );
+      }
+    }
+    final Map<String, Object?> manifest = <String, Object?>{
+      'schemaVersion': realWorldRunSchemaVersion,
+      'runId': invocation.runId,
+      'runHash': realWorldRunHash,
+      'status': candidatePassed ? 'passed' : 'rejected',
+      'generationFixtureHash': fixture.hash,
+      'adapterHash': adapter.hash,
+      'baselineSourceCommit': adapter.baselineSourceCommit,
+      'requestParameters': adapter.requestParameters.toJson(),
+      'requestParametersHash': adapter.requestParameters.hash,
+      'judgeRequestContractHash': realWorldJudgeRequestContractHash,
+      'judgeReferenceAssetHash': judgeReferenceAssetHash,
+      'transportEndpointHash': transportEndpointHash,
+      'transportRetryPolicyVersion': transportRetryPolicyVersion,
+      'modelMetadata': credentials.safeMetadata(),
+      'repetitions': 3,
+      'scenarioCount': adapter.cases.length,
+      'pairCount': pairs.length,
+      'candidateHardGatesPassed': candidatePassed,
+      'pairs': pairs,
+    };
+    scope.writer.writeJson('manifest.json', manifest);
+    final ScanReport scan = context.filter.scanDirectory(context.outputRoot);
+    if (!scan.isClean) {
+      throw const EvalFailure('postWriteSensitiveScanFailed');
+    }
+    scope.writer.writeJson('scan.json', scan.toJson());
+    scope.writer.writeMarker(candidatePassed ? '_SUCCESS' : '_FAILED');
+    return CliResult(
+      exitCode: candidatePassed ? 0 : 6,
+      payload: <String, Object?>{
+        'runId': invocation.runId,
+        'command': invocation.command,
+        'status': candidatePassed ? 'passed' : 'rejected',
+        'pairCount': pairs.length,
+        'adapterHash': adapter.hash,
+      },
+    );
+  }
+
+  CliResult _writeRealWorldStatus({
+    required CliInvocation invocation,
+    required _EvaluationWorkspace context,
+    required _Scope scope,
+    required RealWorldEvalAdapter adapter,
+    required String judgeReferenceAssetHash,
+    required String status,
+    required String realModelStatus,
+    required String? errorKind,
+    required int exitCode,
+    String? scenarioId,
+    int? repetition,
+    String? failedVariant,
+    String? failedRequestHash,
+    String? failedTransportRequestHash,
+    ModelCallResult? transportResult,
+  }) {
+    scope.writer.writeJson('status.json', <String, Object?>{
+      'schemaVersion': realWorldRunSchemaVersion,
+      'runId': invocation.runId,
+      'status': status,
+      'realModelStatus': realModelStatus,
+      'errorKind': errorKind,
+      'scenarioId': scenarioId,
+      'repetition': repetition,
+      'failedVariant': failedVariant,
+      'failedRequestHash': failedRequestHash,
+      'failedTransportRequestHash': failedTransportRequestHash,
+      'statusCode': transportResult?.statusCode,
+      'retryCount': transportResult?.retryCount,
+      'latencyMilliseconds': transportResult?.latencyMilliseconds,
+      'seedSupported': transportResult?.seedSupported,
+      'adapterHash': adapter.hash,
+      'judgeReferenceAssetHash': judgeReferenceAssetHash,
+      'transportTimeoutSeconds': context.config.credentials?.timeoutSeconds ??
+          defaultTransportTimeoutSeconds,
+      'transportRetryPolicyVersion': transportRetryPolicyVersion,
+    });
+    final ScanReport scan = context.filter.scanDirectory(context.outputRoot);
+    if (!scan.isClean) {
+      throw const EvalFailure('postWriteSensitiveScanFailed');
+    }
+    scope.writer.writeJson('scan.json', scan.toJson());
+    scope.writer.writeMarker('_BLOCKED');
+    return CliResult(
+      exitCode: exitCode,
+      payload: <String, Object?>{
+        'runId': invocation.runId,
+        'command': invocation.command,
+        'status': status,
+        'realModelStatus': realModelStatus,
+        'errorKind': errorKind,
       },
     );
   }
@@ -928,6 +1489,7 @@ class LiuYaoEvalRunner {
       'modelMetadata': <String, Object?>{
         'providerLabel': paired.providerLabel,
         'model': paired.model,
+        'timeoutSeconds': paired.timeoutSeconds,
       },
       'identity': paired.identity.toJson(),
       'result': comparison.toJson(),
@@ -980,6 +1542,9 @@ class LiuYaoEvalRunner {
       'repetition': repetition,
       'baselineRequestSetHash': contract.baseline.requestSetHash,
       'candidateRequestSetHash': contract.candidate.requestSetHash,
+      'transportTimeoutSeconds': context.config.credentials?.timeoutSeconds ??
+          defaultTransportTimeoutSeconds,
+      'transportRetryPolicyVersion': transportRetryPolicyVersion,
     });
     final ScanReport postWrite =
         context.filter.scanDirectory(context.outputRoot);

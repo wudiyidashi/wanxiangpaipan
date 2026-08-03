@@ -16,11 +16,13 @@ import 'ai_snapshot_version_text.dart';
 class AIChatSheet extends StatefulWidget {
   final String resultId;
   final DivinationResult? fallbackResult;
+  final String? question;
 
   const AIChatSheet({
     super.key,
     required this.resultId,
     this.fallbackResult,
+    this.question,
   });
 
   @override
@@ -115,7 +117,8 @@ class _AIChatSheetState extends State<AIChatSheet> {
                           onRetry: m.status == ChatMessageStatus.failed &&
                                   m.role == ChatRole.user
                               ? () => service.retry(widget.resultId, m.id,
-                                  fallbackResult: widget.fallbackResult)
+                                  fallbackResult: widget.fallbackResult,
+                                  question: widget.question)
                               : null,
                         );
                       },
@@ -138,6 +141,7 @@ class _AIChatSheetState extends State<AIChatSheet> {
                 widget.resultId,
                 text,
                 fallbackResult: widget.fallbackResult,
+                question: widget.question,
               ),
               onStop: () => service.stop(widget.resultId),
             ),

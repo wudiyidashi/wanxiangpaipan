@@ -100,6 +100,28 @@ create one owner for:
 
 Rendering code may format fields, but it must not redefine the payload contract.
 
+### Mistake 5: Auditing Only One Model-Visible Serialization
+
+**Bad**: A compact JSON view omits a field, while a formatter summary, template,
+or assembler-owned paragraph independently renders the same full-data field.
+The unit test for the compact object passes, but the model still receives the
+omitted content.
+
+**Good**: Treat every model-visible surface as one cross-layer contract:
+
+```text
+full metadata (program only)
+  -> compact projection
+  -> human-readable formatter content
+  -> template rendering
+  -> assembler-owned guard and output contract
+  -> provider messages
+```
+
+For every omission rule, assert both sides: the full program projection retains
+the audit fact, and the final assembled system/user messages omit it. Also test
+the positive path where the field is authorized and must appear exactly once.
+
 ---
 
 ## Checklist for Cross-Layer Features

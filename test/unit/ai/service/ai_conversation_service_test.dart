@@ -352,11 +352,22 @@ void main() {
           .thenAnswer((_) => Stream.fromIterable(['ok']));
 
       // sendFollowUp 需要 DivinationResult 以便组装 prompt
-      await service.sendFollowUp('r1', '再问', fallbackResult: _FakeResult('r1'));
+      await service.sendFollowUp(
+        'r1',
+        '再问',
+        fallbackResult: _FakeResult('r1'),
+        question: '租房是否顺利',
+      );
 
       final conv = service.conversationOf('r1');
       expect(conv!.castSnapshot, isNotNull);
       expect(conv.messages, hasLength(3));
+      verify(() => assembler.assemble(
+            any(),
+            question: '租房是否顺利',
+            analysisType: any(named: 'analysisType'),
+            customVariables: any(named: 'customVariables'),
+          )).called(1);
     });
 
     test('持久化旧快照逐字重放，重新分析后切换到 current prompt', () async {

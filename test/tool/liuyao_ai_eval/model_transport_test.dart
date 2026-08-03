@@ -52,6 +52,7 @@ void main() {
     expect(body['temperature'], 0);
     expect(body['max_completion_tokens'], judgeMaxTokens);
     expect(body['response_format'], <String, Object?>{'type': 'json_object'});
+    expect(body['reasoning_effort'], evaluationReasoningEffort);
     expect(body['seed'], judgeSeed);
     expect(body['stream'], isFalse);
   });
@@ -108,6 +109,171 @@ void main() {
     expect(bodies, hasLength(2));
     expect(bodies.first['seed'], generationSeed);
     expect(bodies.last.containsKey('seed'), isFalse);
+  });
+
+  test('transport retries successful responses with empty model content',
+      () async {
+    int callCount = 0;
+    final OpenAiCompatibleEvalTransport transport =
+        OpenAiCompatibleEvalTransport(
+      client: MockClient((http.Request request) async {
+        callCount += 1;
+        return http.Response(
+          jsonEncode(<String, Object?>{
+            'choices': <Object?>[
+              <String, Object?>{
+                'message': <String, Object?>{
+                  'content': callCount < 3 ? '   ' : 'completed after retry',
+                },
+              },
+            ],
+          }),
+          200,
+        );
+      }),
+    );
+
+    final result = await transport.call(
+      credentials: const EvalCredentials(
+        apiKey: 'test-secret-value',
+        baseUrl: 'https://example.invalid/v1',
+        model: 'exact-model-id',
+        providerLabel: null,
+      ),
+      request: const ModelCallRequest(
+        systemPrompt: 'system',
+        userPrompt: 'input',
+        temperature: 0,
+        maxTokens: generationMaxTokens,
+      ),
+    );
+
+    expect(result.completed, isTrue);
+    expect(result.content, 'completed after retry');
+    expect(result.retryCount, transportMaxRetryCount);
+    expect(callCount, transportMaxRetryCount + 1);
+  });
+
+  test('transport retries empty HTTP bodies and null model content', () async {
+    int callCount = 0;
+    final OpenAiCompatibleEvalTransport transport =
+        OpenAiCompatibleEvalTransport(
+      client: MockClient((http.Request request) async {
+        callCount += 1;
+        if (callCount == 1) {
+          return http.Response('', 200);
+        }
+        return http.Response(
+          jsonEncode(<String, Object?>{
+            'choices': <Object?>[
+              <String, Object?>{
+                'message': <String, Object?>{
+                  'content': callCount == 2 ? null : 'completed after retry',
+                },
+              },
+            ],
+          }),
+          200,
+        );
+      }),
+    );
+
+    final result = await transport.call(
+      credentials: const EvalCredentials(
+        apiKey: 'test-secret-value',
+        baseUrl: 'https://example.invalid/v1',
+        model: 'exact-model-id',
+        providerLabel: null,
+      ),
+      request: const ModelCallRequest(
+        systemPrompt: 'system',
+        userPrompt: 'input',
+        temperature: 0,
+        maxTokens: generationMaxTokens,
+      ),
+    );
+
+    expect(result.completed, isTrue);
+    expect(result.content, 'completed after retry');
+    expect(result.retryCount, transportMaxRetryCount);
+    expect(callCount, transportMaxRetryCount + 1);
+  });
+
+  test(
+      'transport fails closed when only reasoning content is returned repeatedly',
+      () async {
+    int callCount = 0;
+    final OpenAiCompatibleEvalTransport transport =
+        OpenAiCompatibleEvalTransport(
+      client: MockClient((http.Request request) async {
+        callCount += 1;
+        return http.Response(
+          jsonEncode(<String, Object?>{
+            'choices': <Object?>[
+              <String, Object?>{
+                'message': <String, Object?>{
+                  'content': '',
+                  'reasoning_content': 'not a user-visible final answer',
+                },
+              },
+            ],
+          }),
+          200,
+        );
+      }),
+    );
+
+    final result = await transport.call(
+      credentials: const EvalCredentials(
+        apiKey: 'test-secret-value',
+        baseUrl: 'https://example.invalid/v1',
+        model: 'exact-model-id',
+        providerLabel: null,
+      ),
+      request: const ModelCallRequest(
+        systemPrompt: 'system',
+        userPrompt: 'input',
+        temperature: 0,
+        maxTokens: generationMaxTokens,
+      ),
+    );
+
+    expect(result.completed, isFalse);
+    expect(result.errorKind, 'emptyModelResponse');
+    expect(result.statusCode, 200);
+    expect(result.retryCount, transportMaxRetryCount);
+    expect(callCount, transportMaxRetryCount + 1);
+  });
+
+  test('transport does not retry a non-empty malformed response', () async {
+    int callCount = 0;
+    final OpenAiCompatibleEvalTransport transport =
+        OpenAiCompatibleEvalTransport(
+      client: MockClient((http.Request request) async {
+        callCount += 1;
+        return http.Response('{}', 200);
+      }),
+    );
+
+    final result = await transport.call(
+      credentials: const EvalCredentials(
+        apiKey: 'test-secret-value',
+        baseUrl: 'https://example.invalid/v1',
+        model: 'exact-model-id',
+        providerLabel: null,
+      ),
+      request: const ModelCallRequest(
+        systemPrompt: 'system',
+        userPrompt: 'input',
+        temperature: 0,
+        maxTokens: generationMaxTokens,
+      ),
+    );
+
+    expect(callCount, 1);
+    expect(result.completed, isFalse);
+    expect(result.errorKind, 'malformedResponse');
+    expect(result.retryCount, 0);
   });
 
   test('transport does not drop seed for an unrelated bad request', () async {

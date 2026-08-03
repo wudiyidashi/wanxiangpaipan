@@ -431,6 +431,7 @@ class _AIAnalysisWidgetState extends State<AIAnalysisWidget> {
         child: AIChatSheet(
           resultId: widget.result.id,
           fallbackResult: widget.result,
+          question: widget.question,
         ),
       ),
     );
@@ -688,6 +689,7 @@ class AIAnalysisFAB extends StatelessWidget {
         child: AIChatSheet(
           resultId: result.id,
           fallbackResult: result,
+          question: question,
         ),
       ),
     );

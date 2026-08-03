@@ -4,6 +4,8 @@ import 'dart:io';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:path/path.dart' as p;
 
+import '../../../tool/liuyao_ai_eval/canonical_json.dart';
+import '../../../tool/liuyao_ai_eval/constants.dart';
 import '../../../tool/liuyao_ai_eval/holdout.dart';
 import '../../../tool/liuyao_ai_eval/model_transport.dart';
 import '../../../tool/liuyao_ai_eval/runner.dart';
@@ -11,12 +13,13 @@ import '../../../tool/liuyao_ai_eval/security.dart';
 import 'eval_filesystem_test_lock.dart';
 
 class _FakeGitInspector extends GitInspector {
-  const _FakeGitInspector({this.tracked = false});
+  const _FakeGitInspector({this.ignored = true, this.tracked = false});
 
+  final bool ignored;
   final bool tracked;
 
   @override
-  bool isIgnored(String repositoryRoot, String relativePath) => true;
+  bool isIgnored(String repositoryRoot, String relativePath) => ignored;
 
   @override
   bool isTracked(String repositoryRoot, String relativePath) => tracked;
@@ -143,16 +146,113 @@ void main() {
     expect(result.realModelStatus, 'ready');
     expect(result.credentials!.model, 'environment-model');
     expect(
+      result.credentials!.timeoutSeconds,
+      defaultTransportTimeoutSeconds,
+    );
+    expect(
         result.credentials.toString(), isNot(contains('local-secret-value')));
+  });
+
+  test('transport timeout is bounded and exposed only as safe metadata', () {
+    final ConfigLoadResult configured = EvalConfigLoader(
+      repositoryRoot: temporaryRoot.path,
+      environment: const <String, String>{
+        'LIUYAO_AI_EVAL_API_KEY': 'secret-value',
+        'LIUYAO_AI_EVAL_BASE_URL': 'https://example.invalid/v1',
+        'LIUYAO_AI_EVAL_MODEL': 'model-id',
+        'LIUYAO_AI_EVAL_TIMEOUT_SECONDS': '360',
+      },
+      gitInspector: const _FakeGitInspector(),
+    ).load();
+    expect(configured.realModelStatus, 'ready');
+    expect(configured.credentials!.timeoutSeconds, 360);
+    expect(configured.credentials!.safeMetadata(), <String, Object?>{
+      'providerLabel': null,
+      'model': 'model-id',
+      'timeoutSeconds': 360,
+    });
+
+    final ConfigLoadResult rejected = EvalConfigLoader(
+      repositoryRoot: temporaryRoot.path,
+      environment: const <String, String>{
+        'LIUYAO_AI_EVAL_API_KEY': 'secret-value',
+        'LIUYAO_AI_EVAL_BASE_URL': 'https://example.invalid/v1',
+        'LIUYAO_AI_EVAL_MODEL': 'model-id',
+        'LIUYAO_AI_EVAL_TIMEOUT_SECONDS': '601',
+      },
+      gitInspector: const _FakeGitInspector(),
+    ).load();
+    expect(rejected.realModelStatus, 'blockedInvalidConfiguration');
+    expect(rejected.errorKind, 'invalidTimeoutSeconds');
+  });
+
+  test('retry identity persists the complete non-secret run contract', () {
+    final Directory outputRoot = Directory(
+      p.join(temporaryRoot.path, 'retry-output'),
+    )..createSync();
+    final RunWorkspace workspace = RunWorkspace.open(
+      outputRoot: outputRoot,
+      runId: 'retry-manifest-r1',
+    );
+    final String identityHash = 'a' * 64;
+    final Map<String, Object?> identity = <String, Object?>{
+      'runHash': identityHash,
+      'modelHash': 'b' * 64,
+      'transportEndpointHash': 'c' * 64,
+      'transportTimeoutSeconds': 360,
+      'generationRequestHash': 'd' * 64,
+      'judgeRequestContractHash': 'e' * 64,
+      'judgeReferenceAssetHash': 'f' * 64,
+      'transportRetryPolicyVersion': transportRetryPolicyVersion,
+    };
+
+    workspace.bindRetryIdentity(
+      command: 'paired-model',
+      identityHash: identityHash,
+      identity: identity,
+    );
+
+    final Map<String, Object?> document = decodeObject(
+      File(p.join(
+        workspace.directory.path,
+        'paired-model.identity.json',
+      )).readAsStringSync(),
+    );
+    expect(requireString(document, 'identityHash'), identityHash);
+    expect(requireObject(document, 'identity'), normalizeJson(identity));
+
+    workspace.bindRetryIdentity(
+      command: 'paired-model',
+      identityHash: identityHash,
+      identity: identity,
+    );
+    expect(
+      () => workspace.bindRetryIdentity(
+        command: 'paired-model',
+        identityHash: identityHash,
+        identity: <String, Object?>{
+          ...identity,
+          'transportTimeoutSeconds': 361,
+        },
+      ),
+      throwsA(
+        isA<EvalFailure>().having(
+          (error) => error.kind,
+          'kind',
+          'retryIdentityMismatch',
+        ),
+      ),
+    );
   });
 
   test('output guard rejects every path except the exact task eval root', () {
     final OutputPathGuard guard = OutputPathGuard(
       repositoryRoot: temporaryRoot.path,
+      gitInspector: const _FakeGitInspector(),
     );
     final String allowed = p.join(
       temporaryRoot.path,
-      '.trellis/tasks/08-01-liuyao-classics-analysis-prompt/research/eval',
+      evalOutputRootRelativePath,
     );
 
     expect(guard.validateAndCreateRoot(allowed).path, p.normalize(allowed));
@@ -160,6 +260,44 @@ void main() {
       () => guard.validateAndCreateRoot(p.join(temporaryRoot.path, 'outside')),
       throwsA(isA<EvalFailure>()),
     );
+  });
+
+  test('output guard fails closed when the eval root is not ignored or tracked',
+      () {
+    final String allowed = p.join(
+      temporaryRoot.path,
+      evalOutputRootRelativePath,
+    );
+    final OutputPathGuard notIgnored = OutputPathGuard(
+      repositoryRoot: temporaryRoot.path,
+      gitInspector: const _FakeGitInspector(ignored: false),
+    );
+    final OutputPathGuard tracked = OutputPathGuard(
+      repositoryRoot: temporaryRoot.path,
+      gitInspector: const _FakeGitInspector(tracked: true),
+    );
+
+    expect(
+      () => notIgnored.validateAndCreateRoot(allowed),
+      throwsA(
+        isA<EvalFailure>().having(
+          (error) => error.kind,
+          'kind',
+          'outputPathNotIgnored',
+        ),
+      ),
+    );
+    expect(
+      () => tracked.validateAndCreateRoot(allowed),
+      throwsA(
+        isA<EvalFailure>().having(
+          (error) => error.kind,
+          'kind',
+          'outputPathTracked',
+        ),
+      ),
+    );
+    expect(Directory(allowed).existsSync(), isFalse);
   });
 
   test('artifact writer redacts known and header-shaped secrets before write',
@@ -182,6 +320,44 @@ void main() {
     expect(content, isNot(contains('known-secret-value')));
     expect(content, isNot(contains('hidden-token-value')));
     expect(filter.scanDirectory(artifacts).isClean, isTrue);
+  });
+
+  test('artifact writer rejects a broken temporary symbolic link', () {
+    final Directory artifacts =
+        Directory(p.join(temporaryRoot.path, 'artifacts'))..createSync();
+    final SafeArtifactWriter writer = SafeArtifactWriter(
+      root: artifacts,
+      filter: SensitiveDataFilter(knownSensitiveValues: const <String>{}),
+    );
+    final String outsidePath = p.join(temporaryRoot.path, 'outside.json');
+    final Link temporaryLink = Link(
+      p.join(artifacts.path, 'result.json.tmp'),
+    );
+    try {
+      temporaryLink.createSync(outsidePath);
+    } on FileSystemException {
+      markTestSkipped('Symbolic links are unavailable on this platform.');
+      return;
+    }
+
+    expect(
+      FileSystemEntity.typeSync(temporaryLink.path, followLinks: false),
+      FileSystemEntityType.link,
+    );
+    expect(
+      () => writer.writeJson('result.json', const <String, Object?>{
+        'status': 'must-not-write',
+      }),
+      throwsA(
+        isA<EvalFailure>().having(
+          (EvalFailure error) => error.kind,
+          'kind',
+          'artifactTemporaryFileExists',
+        ),
+      ),
+    );
+    expect(File(outsidePath).existsSync(), isFalse);
+    expect(File(p.join(artifacts.path, 'result.json')).existsSync(), isFalse);
   });
 
   test('artifact reader rejects malformed and traversal inputs', () {
@@ -340,13 +516,13 @@ void main() {
     expect(store.isRevealed(freshCohortHash), isTrue);
   });
 
-  test('model command records blockedMissingCredentials without fake output',
+  test('model command records blocked configuration without fake output',
       () async {
     final String repositoryRoot = Directory.current.path;
     const String runId = 'gate0-test-blocked-model';
     final Directory runDirectory = Directory(p.join(
       repositoryRoot,
-      '.trellis/tasks/08-01-liuyao-classics-analysis-prompt/research/eval',
+      evalOutputRootRelativePath,
       runId,
     ));
     if (runDirectory.existsSync()) {
@@ -360,19 +536,20 @@ void main() {
 
     final CliResult result = await LiuYaoEvalRunner(
       repositoryRoot: repositoryRoot,
-      environment: const <String, String>{},
+      environment: const <String, String>{
+        'LIUYAO_AI_EVAL_BASE_URL': 'not-a-url',
+      },
       modelTransport: _FailIfCalledTransport(),
     ).execute(const CliInvocation(
       command: 'model',
       runId: runId,
       variant: 'legacy-e2e-diagnostic',
-      output:
-          '.trellis/tasks/08-01-liuyao-classics-analysis-prompt/research/eval',
+      output: evalOutputRootRelativePath,
       repetitions: 3,
       confirmRealModel: true,
     ));
 
-    expect(result.payload['realModelStatus'], 'blockedMissingCredentials');
+    expect(result.payload['realModelStatus'], 'blockedInvalidConfiguration');
     expect(
       File(p.join(
         runDirectory.path,
