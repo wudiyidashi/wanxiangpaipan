@@ -69,8 +69,7 @@ const String realWorldBaselineRequestsRelativePath =
     'tool/liuyao_ai_eval/frozen/actual_rental_v160_requests.json';
 const String realWorldAdapterRelativePath =
     'tool/liuyao_ai_eval/fixtures/real_world_rental_adapter.json';
-const String evalOutputRootRelativePath =
-    '.trellis/tasks/08-02-liuyao-real-case-prompt-calibration/research/eval';
+const String evalOutputRootRelativePath = '.tmp/liuyao_ai_eval';
 
 const Set<String> supportedVariants = <String>{
   legacyDiagnosticVariant,

@@ -1,7 +1,7 @@
 name: wanxiang_paipan
 description: "万象排盘 Flutter 应用 - 专业的排盘工具"
 publish_to: 'none'
-version: 1.6.1+2
+version: 1.6.2+3
 
 environment:
   sdk: '>=3.5.0 <4.0.0'
@@ -51,6 +51,7 @@ dependencies:
   flutter_markdown: ^0.7.7+1
   file_picker: ^8.1.2
   share_plus: ^12.0.2
+  package_info_plus: ^9.0.1
 
 dev_dependencies:
   flutter_test:

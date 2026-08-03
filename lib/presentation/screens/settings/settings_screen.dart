@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:package_info_plus/package_info_plus.dart';
 import 'package:provider/provider.dart';
 import '../../../ai/service/ai_analysis_service.dart';
 import '../../widgets/antique/antique.dart';
@@ -13,7 +14,9 @@ import '../../../core/theme/app_text_styles.dart';
 /// - 数据管理（备份、清除等）- 预留
 /// - 关于页面 - 预留
 class SettingsScreen extends StatelessWidget {
-  const SettingsScreen({super.key});
+  const SettingsScreen({super.key, this.applicationVersionLoader});
+
+  final Future<String> Function()? applicationVersionLoader;
 
   @override
   Widget build(BuildContext context) {
@@ -185,21 +188,7 @@ class SettingsScreen extends StatelessWidget {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
       child: AntiqueCard(
-        onTap: () {
-          showAboutDialog(
-            context: context,
-            applicationName: '万象排盘',
-            applicationVersion: '1.0.0',
-            applicationLegalese: '© 2026 万象排盘',
-            children: [
-              const SizedBox(height: 16),
-              const Text(
-                '一款支持多种术数系统的排盘应用，'
-                '包括六爻、大六壬、小六壬、梅花易数等。',
-              ),
-            ],
-          );
-        },
+        onTap: () => _showAboutDialog(context),
         child: Row(
           children: [
             Icon(Icons.info_outline, color: AppColors.zhusha, size: 24),
@@ -220,5 +209,40 @@ class SettingsScreen extends StatelessWidget {
         ),
       ),
     );
+  }
+
+  Future<void> _showAboutDialog(BuildContext context) async {
+    var applicationVersion = '未知';
+    try {
+      applicationVersion =
+          await (applicationVersionLoader ?? _loadApplicationVersion)();
+    } catch (_) {
+      // Keep the About dialog available if platform metadata cannot be read.
+    }
+
+    if (!context.mounted) return;
+
+    showAboutDialog(
+      context: context,
+      applicationName: '万象排盘',
+      applicationVersion: applicationVersion,
+      applicationLegalese: '© 2026 万象排盘',
+      children: [
+        const SizedBox(height: 16),
+        const Text(
+          '一款支持多种术数系统的排盘应用，'
+          '包括六爻、大六壬、小六壬、梅花易数等。',
+        ),
+      ],
+    );
+  }
+
+  static Future<String> _loadApplicationVersion() async {
+    final packageInfo = await PackageInfo.fromPlatform();
+    final version = packageInfo.version.trim();
+    final buildNumber = packageInfo.buildNumber.trim();
+
+    if (version.isEmpty) return '未知';
+    return buildNumber.isEmpty ? version : '$version+$buildNumber';
   }
 }
