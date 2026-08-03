@@ -26,9 +26,7 @@ class EvalFilesystemTestLock {
           await handle.lock(FileLock.exclusive);
           break;
         } on FileSystemException catch (error) {
-          if (!Platform.isWindows ||
-              error.osError?.errorCode != 33 ||
-              DateTime.now().isAfter(deadline)) {
+          if (!_isLockContention(error) || DateTime.now().isAfter(deadline)) {
             rethrow;
           }
           await Future<void>.delayed(const Duration(milliseconds: 50));
@@ -49,5 +47,13 @@ class EvalFilesystemTestLock {
     _handle = null;
     await handle.unlock();
     await handle.close();
+  }
+
+  bool _isLockContention(FileSystemException error) {
+    final int? errorCode = error.osError?.errorCode;
+    if (Platform.isWindows) return errorCode == 33;
+    if (Platform.isLinux || Platform.isAndroid) return errorCode == 11;
+    if (Platform.isMacOS || Platform.isIOS) return errorCode == 35;
+    return false;
   }
 }

@@ -109,6 +109,7 @@ void main() {
       'model': 'model-id',
       'unexpected': true,
     }));
+    _restrictToOwner(config);
 
     final ConfigLoadResult unknownKey = EvalConfigLoader(
       repositoryRoot: temporaryRoot.path,
@@ -134,6 +135,7 @@ void main() {
       'baseUrl': 'https://local.invalid/v1',
       'model': 'local-model',
     }));
+    _restrictToOwner(config);
 
     final ConfigLoadResult result = EvalConfigLoader(
       repositoryRoot: temporaryRoot.path,
@@ -567,4 +569,16 @@ void main() {
       isFalse,
     );
   });
+}
+
+void _restrictToOwner(File file) {
+  if (Platform.isWindows) return;
+
+  final ProcessResult result = Process.runSync('chmod', <String>[
+    '600',
+    file.path,
+  ]);
+  if (result.exitCode != 0) {
+    throw StateError('Unable to secure evaluator test config permissions.');
+  }
 }
