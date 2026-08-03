@@ -76,6 +76,7 @@ class LiuYaoAnalysisController extends ChangeNotifier {
     final riSplit = TianGanDiZhiService.splitGanZhi(riGanZhi)!;
     final monthSplit = TianGanDiZhiService.splitGanZhi(monthGanZhi)!;
     _result = _result.copyWith(
+      calendarInputMode: LiuYaoCalendarInputMode.userOverride,
       lunarInfo: _result.lunarInfo.copyWith(
         yearGanZhi: yearGanZhi,
         monthGanZhi: monthGanZhi,

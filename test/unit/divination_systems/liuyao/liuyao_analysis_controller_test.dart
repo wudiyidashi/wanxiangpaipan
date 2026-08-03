@@ -159,6 +159,10 @@ void main() {
       expect(lunar.kongWang, ['申', '酉']); // 乙亥在甲戌旬
       expect(lunar.hourGanZhi, isNull);
       expect(controller.result.liuShen.first, '青龙'); // 乙日起青龙
+      expect(
+        controller.result.calendarInputMode,
+        LiuYaoCalendarInputMode.userOverride,
+      );
       verify(() => repository.updateRecord(any())).called(1);
     });
 
@@ -183,9 +187,14 @@ void main() {
       final json = roundTrip(buildResult())
         ..remove('yongShenPosition')
         ..remove('yongShenIsFuShen');
+      json.remove('calendarInputMode');
       final decoded = LiuYaoResult.fromJson(json);
       expect(decoded.yongShenPosition, isNull);
       expect(decoded.yongShenIsFuShen, isFalse);
+      expect(
+        decoded.calendarInputMode,
+        LiuYaoCalendarInputMode.legacyUnknown,
+      );
     });
 
     test('用神字段完整往返', () {

@@ -14,6 +14,7 @@ import '../../../presentation/widgets/cast/number_cast_section.dart';
 import '../../../presentation/widgets/cast/report_number_cast_section.dart';
 import '../../../presentation/widgets/cast/time_cast_section.dart';
 import '../../../presentation/widgets/cast/yao_name_cast_section.dart';
+import '../liuyao_result.dart';
 import '../viewmodels/liuyao_viewmodel.dart';
 
 /// 六爻起卦页面。
@@ -256,6 +257,7 @@ class _LiuYaoCastScreenState extends State<LiuYaoCastScreen> {
     String? hourGanZhi,
     String benGuaId,
     String? bianGuaId,
+    DateTime? solarTime,
   ) async {
     if (_isProcessing) {
       return;
@@ -270,7 +272,10 @@ class _LiuYaoCastScreenState extends State<LiuYaoCastScreen> {
         riGanZhi: riGanZhi,
         yearGanZhi: yearGanZhi,
         hourGanZhi: hourGanZhi,
-        castTime: DateTime.now(),
+        castTime: solarTime ?? DateTime.now(),
+        calendarInputMode: solarTime == null
+            ? LiuYaoCalendarInputMode.providedGanZhi
+            : LiuYaoCalendarInputMode.providedSolar,
         question: _question.isNotEmpty ? _question : null,
       );
       if (viewModel.hasError) {

@@ -1,5 +1,6 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:wanxiang_paipan/divination_systems/liuyao/liuyao_system.dart';
+import 'package:wanxiang_paipan/divination_systems/liuyao/liuyao_result.dart';
 import 'package:wanxiang_paipan/domain/divination_system.dart';
 import 'package:wanxiang_paipan/domain/services/qigua_service.dart';
 
@@ -63,7 +64,64 @@ void main() {
       );
       expect(result.lunarInfo.yearGanZhi, '庚辰');
       expect(result.lunarInfo.hourGanZhi, '丁丑');
+      expect(result.calendarInputMode, LiuYaoCalendarInputMode.providedGanZhi);
     });
+
+    test('阳历模式保存所选时间并校验完整四柱', () async {
+      final castTime = DateTime(2026, 2, 28, 8);
+      final result = await system.castByGuaName(
+        benGuaId: '001000',
+        bianGuaId: '101001',
+        yueJian: '庚寅',
+        riGanZhi: '癸酉',
+        yearGanZhi: '丙午',
+        hourGanZhi: '丙辰',
+        castTime: castTime,
+        calendarInputMode: LiuYaoCalendarInputMode.providedSolar,
+      );
+
+      expect(result.castTime, castTime);
+      expect(result.lunarInfo.yearGanZhi, '丙午');
+      expect(result.lunarInfo.monthGanZhi, '庚寅');
+      expect(result.lunarInfo.riGanZhi, '癸酉');
+      expect(result.lunarInfo.yueJian, '寅');
+      expect(result.lunarInfo.kongWang, ['戌', '亥']);
+      expect(result.calendarInputMode, LiuYaoCalendarInputMode.providedSolar);
+    });
+
+    test('阳历模式拒绝 7 月记录时间与 2 月四柱错配', () async {
+      await expectLater(
+        system.castByGuaName(
+          benGuaId: '001000',
+          bianGuaId: '101001',
+          yueJian: '庚寅',
+          riGanZhi: '癸酉',
+          yearGanZhi: '丙午',
+          hourGanZhi: '丙辰',
+          castTime: DateTime(2026, 7, 31, 8),
+          calendarInputMode: LiuYaoCalendarInputMode.providedSolar,
+        ),
+        throwsArgumentError,
+      );
+    });
+
+    for (final invalidMode in <LiuYaoCalendarInputMode>[
+      LiuYaoCalendarInputMode.derivedFromCastTime,
+      LiuYaoCalendarInputMode.userOverride,
+      LiuYaoCalendarInputMode.legacyUnknown,
+    ]) {
+      test('卦名卦拒绝伪造历法来源 ${invalidMode.name}', () async {
+        await expectLater(
+          system.castByGuaName(
+            benGuaId: '001000',
+            yueJian: '寅',
+            riGanZhi: '癸酉',
+            calendarInputMode: invalidMode,
+          ),
+          throwsArgumentError,
+        );
+      });
+    }
 
     test('完整月干支：月建取支、月干支保留', () async {
       final result = await system.cast(

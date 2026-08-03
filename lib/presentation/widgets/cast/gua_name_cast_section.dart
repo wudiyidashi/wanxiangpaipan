@@ -18,7 +18,7 @@ class GuaNameCastSection extends StatefulWidget {
     this.isLoading = false,
   });
 
-  /// (yearGanZhi?, monthGanZhi, riGanZhi, hourGanZhi?, benGuaId, bianGuaId?)
+  /// 阳历模式额外返回用户选择的时间；干支模式返回 null。
   final void Function(
     String? yearGanZhi,
     String monthGanZhi,
@@ -26,6 +26,7 @@ class GuaNameCastSection extends StatefulWidget {
     String? hourGanZhi,
     String benGuaId,
     String? bianGuaId,
+    DateTime? solarTime,
   )? onCast;
   final bool isLoading;
 
@@ -120,6 +121,7 @@ class _GuaNameCastSectionState extends State<GuaNameCastSection> {
       hour,
       _benGuaId,
       _bianGuaId == _noBianGua || _bianGuaId == _benGuaId ? null : _bianGuaId,
+      _mode == _TimeInputMode.solar ? _solarTime : null,
     );
   }
 

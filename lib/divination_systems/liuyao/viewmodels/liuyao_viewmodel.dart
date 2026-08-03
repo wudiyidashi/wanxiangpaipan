@@ -85,6 +85,8 @@ class LiuYaoViewModel extends DivinationViewModel<LiuYaoResult> {
     String? yearGanZhi,
     String? hourGanZhi,
     DateTime? castTime,
+    LiuYaoCalendarInputMode calendarInputMode =
+        LiuYaoCalendarInputMode.providedGanZhi,
     String? question,
   }) async {
     await cast(
@@ -96,6 +98,7 @@ class LiuYaoViewModel extends DivinationViewModel<LiuYaoResult> {
         'riGanZhi': riGanZhi,
         'yearGanZhi': yearGanZhi,
         'hourGanZhi': hourGanZhi,
+        'calendarInputMode': calendarInputMode.name,
       },
       castTime: castTime,
     );

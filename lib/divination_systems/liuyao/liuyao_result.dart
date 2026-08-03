@@ -7,6 +7,14 @@ import '../../models/lunar_info.dart';
 part 'liuyao_result.freezed.dart';
 part 'liuyao_result.g.dart';
 
+enum LiuYaoCalendarInputMode {
+  derivedFromCastTime,
+  providedSolar,
+  providedGanZhi,
+  userOverride,
+  legacyUnknown,
+}
+
 /// 六爻占卜结果
 ///
 /// 继承自 DivinationResult，包含六爻特定的数据结构。
@@ -20,6 +28,8 @@ class LiuYaoResult with _$LiuYaoResult implements DivinationResult {
     Gua? changingGua,
     required LunarInfo lunarInfo,
     required List<String> liuShen,
+    @Default(LiuYaoCalendarInputMode.legacyUnknown)
+    LiuYaoCalendarInputMode calendarInputMode,
     @Default('') String questionId,
     @Default('') String detailId,
     @Default('') String interpretationId,

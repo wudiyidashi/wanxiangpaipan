@@ -6,6 +6,7 @@ import '../../domain/services/gua_calculator.dart';
 import '../../domain/services/shared/lunar_service.dart';
 import '../../domain/services/shared/tiangan_dizhi_service.dart';
 import '../../domain/services/liushen_service.dart';
+import '../../models/lunar_info.dart';
 import 'liuyao_result.dart';
 
 enum LiuYaoManualInputMode {
@@ -29,6 +30,12 @@ enum LiuYaoManualInputMode {
 /// 实现 DivinationSystem 接口，提供六爻占卜的完整功能。
 /// 支持六种起卦方式：钱币卦、爻名卦、数字卦、报数卦、时间卦、电脑卦。
 class LiuYaoSystem implements DivinationSystem {
+  static const Set<LiuYaoCalendarInputMode> _guaNameCalendarInputModes =
+      <LiuYaoCalendarInputMode>{
+    LiuYaoCalendarInputMode.providedSolar,
+    LiuYaoCalendarInputMode.providedGanZhi,
+  };
+
   @override
   DivinationType get type => DivinationType.liuYao;
 
@@ -121,7 +128,9 @@ class LiuYaoSystem implements DivinationSystem {
     // 2. 计算农历信息。卦名卦按用户给定四柱覆盖：
     //    月建取月支；年/时未给时分别沿用起卦时刻、置空
     var lunarInfo = LunarService.getLunarInfo(time);
+    var calendarInputMode = LiuYaoCalendarInputMode.derivedFromCastTime;
     if (method == CastMethod.guaName) {
+      calendarInputMode = _calendarInputMode(input);
       final monthRaw = (input['monthGanZhi'] ?? input['yueJian']) as String;
       final yueJian = monthRaw.length == 2 ? monthRaw[1] : monthRaw;
       final riGanZhi = input['riGanZhi'] as String;
@@ -136,6 +145,12 @@ class LiuYaoSystem implements DivinationSystem {
         yearGanZhi: (input['yearGanZhi'] as String?) ?? lunarInfo.yearGanZhi,
         hourGanZhi: input['hourGanZhi'] as String?,
       );
+      if (calendarInputMode == LiuYaoCalendarInputMode.providedSolar) {
+        _validateProvidedSolarCalendar(
+          castTime: time,
+          supplied: lunarInfo,
+        );
+      }
     }
 
     // 3. 计算主卦
@@ -156,6 +171,7 @@ class LiuYaoSystem implements DivinationSystem {
       changingGua: changingGua,
       lunarInfo: lunarInfo,
       liuShen: liuShen,
+      calendarInputMode: calendarInputMode,
     );
   }
 
@@ -255,8 +271,14 @@ class LiuYaoSystem implements DivinationSystem {
           return false;
         }
         final riGanZhi = input['riGanZhi'];
+        final calendarInputMode = input['calendarInputMode'];
         return riGanZhi is String &&
-            TianGanDiZhiService.isValidGanZhi(riGanZhi);
+            TianGanDiZhiService.isValidGanZhi(riGanZhi) &&
+            (calendarInputMode == null ||
+                calendarInputMode is String &&
+                    _guaNameCalendarInputModes.any(
+                      (mode) => mode.name == calendarInputMode,
+                    ));
       case CastMethod.characterStroke:
       case CastMethod.objectSound:
         return false;
@@ -353,6 +375,8 @@ class LiuYaoSystem implements DivinationSystem {
     String? yearGanZhi,
     String? hourGanZhi,
     DateTime? castTime,
+    LiuYaoCalendarInputMode calendarInputMode =
+        LiuYaoCalendarInputMode.providedGanZhi,
   }) async {
     final result = await cast(
       method: CastMethod.guaName,
@@ -363,6 +387,7 @@ class LiuYaoSystem implements DivinationSystem {
         'riGanZhi': riGanZhi,
         'yearGanZhi': yearGanZhi,
         'hourGanZhi': hourGanZhi,
+        'calendarInputMode': calendarInputMode.name,
       },
       castTime: castTime,
     );
@@ -387,6 +412,36 @@ class LiuYaoSystem implements DivinationSystem {
 
     return LiuYaoManualInputMode.fromId(rawMode);
   }
+
+  LiuYaoCalendarInputMode _calendarInputMode(Map<String, dynamic> input) {
+    final raw = input['calendarInputMode'];
+    if (raw == null) {
+      return LiuYaoCalendarInputMode.providedGanZhi;
+    }
+    return _guaNameCalendarInputModes.firstWhere(
+      (mode) => mode.name == raw,
+      orElse: () => throw ArgumentError('卦名卦不允许的六爻历法输入来源: $raw'),
+    );
+  }
+
+  void _validateProvidedSolarCalendar({
+    required DateTime castTime,
+    required LunarInfo supplied,
+  }) {
+    final derived = LunarService.getLunarInfo(castTime);
+    if (supplied.yearGanZhi != derived.yearGanZhi ||
+        supplied.monthGanZhi != derived.monthGanZhi ||
+        supplied.riGanZhi != derived.riGanZhi ||
+        supplied.hourGanZhi != derived.hourGanZhi ||
+        supplied.yueJian != derived.yueJian ||
+        !_sameBranches(supplied.kongWang, derived.kongWang)) {
+      throw ArgumentError('阳历时间与所给四柱不一致');
+    }
+  }
+
+  bool _sameBranches(List<String> left, List<String> right) =>
+      left.length == right.length &&
+      left.asMap().entries.every((entry) => entry.value == right[entry.key]);
 
   LiuYaoManualInputMode? _tryGetManualInputMode(Map<String, dynamic> input) {
     try {

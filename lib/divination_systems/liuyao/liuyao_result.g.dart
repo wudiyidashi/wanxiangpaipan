@@ -18,6 +18,9 @@ _$LiuYaoResultImpl _$$LiuYaoResultImplFromJson(Map<String, dynamic> json) =>
       lunarInfo: LunarInfo.fromJson(json['lunarInfo'] as Map<String, dynamic>),
       liuShen:
           (json['liuShen'] as List<dynamic>).map((e) => e as String).toList(),
+      calendarInputMode: $enumDecodeNullable(
+              _$LiuYaoCalendarInputModeEnumMap, json['calendarInputMode']) ??
+          LiuYaoCalendarInputMode.legacyUnknown,
       questionId: json['questionId'] as String? ?? '',
       detailId: json['detailId'] as String? ?? '',
       interpretationId: json['interpretationId'] as String? ?? '',
@@ -34,6 +37,8 @@ Map<String, dynamic> _$$LiuYaoResultImplToJson(_$LiuYaoResultImpl instance) =>
       'changingGua': instance.changingGua,
       'lunarInfo': instance.lunarInfo,
       'liuShen': instance.liuShen,
+      'calendarInputMode':
+          _$LiuYaoCalendarInputModeEnumMap[instance.calendarInputMode]!,
       'questionId': instance.questionId,
       'detailId': instance.detailId,
       'interpretationId': instance.interpretationId,
@@ -51,4 +56,12 @@ const _$CastMethodEnumMap = {
   CastMethod.time: 'time',
   CastMethod.computer: 'computer',
   CastMethod.guaName: 'guaName',
+};
+
+const _$LiuYaoCalendarInputModeEnumMap = {
+  LiuYaoCalendarInputMode.derivedFromCastTime: 'derivedFromCastTime',
+  LiuYaoCalendarInputMode.providedSolar: 'providedSolar',
+  LiuYaoCalendarInputMode.providedGanZhi: 'providedGanZhi',
+  LiuYaoCalendarInputMode.userOverride: 'userOverride',
+  LiuYaoCalendarInputMode.legacyUnknown: 'legacyUnknown',
 };
